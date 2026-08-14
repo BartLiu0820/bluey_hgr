@@ -1,0 +1,9 @@
+Create exactly one standalone wide creek water-gap obstacle for a gentle 2D children's side-scrolling game.
+
+The object is a shallow oval opening in a grassy path: calm clear blue creek water in the center, soft mossy grass banks on the left and right, two or three small rounded stones, and a subtle pale highlight on the water. It should read instantly as a safe cartoon gap that the player must jump across, not as a dark hole and not as a puddle painted on top of the road.
+
+Match the existing quiet hand-painted illustrated map style: clean rounded silhouette, soft but crisp dark teal-brown outline, matte pastel colors, low texture noise, no photographic detail, no harsh gradients. The water should be a little brighter and clearer than the background so a five-year-old can find it quickly, while remaining friendly rather than dangerous.
+
+Side-view gameplay object, wide horizontal composition around 2.4:1. Full object visible and centered inside the central 62% of the canvas with generous clear gutters on all sides. Keep the upper walkable edge visually clear. No characters, faces, eyes, text, icons, arrows, UI, particles, splash animation, bridge, floor plane, or cast shadow.
+
+Background must be 100% solid flat #FF00FF magenta with no gradient, texture, shadow, halo, or vignette. No part of the object may touch the canvas edge.

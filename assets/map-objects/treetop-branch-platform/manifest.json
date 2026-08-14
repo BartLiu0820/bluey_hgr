@@ -1,0 +1,57 @@
+{
+  "input": "assets/map-objects/raw/treetop-branch-platform.png",
+  "rows": 1,
+  "cols": 1,
+  "threshold": 100,
+  "edge_threshold": 150,
+  "component_mode": "largest",
+  "component_padding": 8,
+  "min_component_area": 500,
+  "edge_touch_margin": 0,
+  "accepted": [
+    {
+      "index": 0,
+      "label": "treetop-branch-platform",
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 191683,
+      "selected_component_bbox": [
+        215,
+        390,
+        1453,
+        547
+      ],
+      "crop_bbox": [
+        215,
+        390,
+        1453,
+        547
+      ],
+      "padded_crop_bbox": [
+        207,
+        382,
+        1461,
+        555
+      ],
+      "edge_touch": false,
+      "output_size": [
+        1254,
+        173
+      ],
+      "status": "accepted",
+      "image": "assets/map-objects/treetop-branch-platform/prop.png"
+    }
+  ],
+  "rejected": [],
+  "edge_touch_props": []
+}

@@ -1,0 +1,4 @@
+Use the visible tree-canopy stage reference immediately above as the exact style and material reference.
+Create one single wide side-view branch platform for a preschool vertical auto-bounce game. Warm medium-brown rounded log body, perfectly flat golden-tan walkable top edge, a few very small muted green leaf accents attached to the underside only. Friendly, sturdy, broad, readable at small size. No thin twigs, spikes, holes, detached leaves, vines, characters, or safety cloud.
+The platform must be much wider than tall, centered, fully visible, and occupy about 62% of the canvas width and 20% of the height with generous margin. The top edge must be exactly horizontal for collision alignment.
+Background must be 100% solid flat #FF00FF magenta, no gradient, texture, floor plane, cast shadow, glow, or checkerboard. No UI, text, watermark, borders, or guide marks. Clean HD project-native game asset, straight-on side view.

@@ -1,0 +1,57 @@
+{
+  "input": "assets/map-objects/raw/creek-ground-strip.png",
+  "rows": 1,
+  "cols": 1,
+  "threshold": 100,
+  "edge_threshold": 150,
+  "component_mode": "largest",
+  "component_padding": 8,
+  "min_component_area": 500,
+  "edge_touch_margin": 0,
+  "accepted": [
+    {
+      "index": 0,
+      "label": "creek-ground-strip",
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 169146,
+      "selected_component_bbox": [
+        194,
+        472,
+        1479,
+        607
+      ],
+      "crop_bbox": [
+        194,
+        472,
+        1479,
+        607
+      ],
+      "padded_crop_bbox": [
+        186,
+        464,
+        1487,
+        615
+      ],
+      "edge_touch": false,
+      "output_size": [
+        1301,
+        151
+      ],
+      "status": "accepted",
+      "image": "assets/map-objects/creek-ground-strip/prop.png"
+    }
+  ],
+  "rejected": [],
+  "edge_touch_props": []
+}

@@ -1,0 +1,3 @@
+Use case: stylized-concept
+Asset type: standalone collision-bearing platform skin
+Create one treetop branch platform whose underside curves gently downward while the golden walkable top remains perfectly straight and horizontal. Rounded cut ends and small olive leaves; match the existing branch palette and lighting. Clean HD hand-painted children's 2D platform, matte, low texture noise. Single centered side-view object about 4:1 on uniform #FF00FF chroma key. No character, text, icon, watermark, floor, cast shadow, or edge contact.

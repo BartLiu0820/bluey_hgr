@@ -1,0 +1,57 @@
+{
+  "input": "assets/map-objects/raw/firefly-leaf-barrier.png",
+  "rows": 1,
+  "cols": 1,
+  "threshold": 100,
+  "edge_threshold": 150,
+  "component_mode": "largest",
+  "component_padding": 8,
+  "min_component_area": 500,
+  "edge_touch_margin": 0,
+  "accepted": [
+    {
+      "index": 0,
+      "label": "firefly-leaf-barrier",
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        941,
+        1672
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 499532,
+      "selected_component_bbox": [
+        250,
+        115,
+        660,
+        1537
+      ],
+      "crop_bbox": [
+        250,
+        115,
+        660,
+        1537
+      ],
+      "padded_crop_bbox": [
+        242,
+        107,
+        668,
+        1545
+      ],
+      "edge_touch": false,
+      "output_size": [
+        426,
+        1438
+      ],
+      "status": "accepted",
+      "image": "assets/map-objects/firefly-leaf-barrier/prop.png"
+    }
+  ],
+  "rejected": [],
+  "edge_touch_props": []
+}

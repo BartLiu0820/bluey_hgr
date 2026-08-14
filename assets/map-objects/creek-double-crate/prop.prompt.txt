@@ -1,0 +1,3 @@
+Use case: stylized-concept
+Asset type: standalone collision-bearing side-scroll obstacle
+Create one double soft-crate obstacle matching assets/map-objects/soft-crate/prop.png: two rounded honey-brown toy crates stacked with the upper crate slightly offset and a simple recessed X brace. Clean HD hand-painted children's 2D prop, matte, low texture noise. Single centered side-view object on uniform #FF00FF chroma key. No character, text, icon, watermark, floor, cast shadow, or edge contact.

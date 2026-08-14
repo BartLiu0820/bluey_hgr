@@ -1,0 +1,57 @@
+{
+  "input": "assets/map-objects/raw/safety-cloud.png",
+  "rows": 1,
+  "cols": 1,
+  "threshold": 100,
+  "edge_threshold": 150,
+  "component_mode": "largest",
+  "component_padding": 8,
+  "min_component_area": 500,
+  "edge_touch_margin": 0,
+  "accepted": [
+    {
+      "index": 0,
+      "label": "safety-cloud",
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 329024,
+      "selected_component_bbox": [
+        148,
+        315,
+        1513,
+        610
+      ],
+      "crop_bbox": [
+        148,
+        315,
+        1513,
+        610
+      ],
+      "padded_crop_bbox": [
+        140,
+        307,
+        1521,
+        618
+      ],
+      "edge_touch": false,
+      "output_size": [
+        1381,
+        311
+      ],
+      "status": "accepted",
+      "image": "assets/map-objects/safety-cloud/prop.png"
+    }
+  ],
+  "rejected": [],
+  "edge_touch_props": []
+}

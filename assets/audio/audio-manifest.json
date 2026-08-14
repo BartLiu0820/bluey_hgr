@@ -1,0 +1,194 @@
+{
+  "version": 1,
+  "generator": "ElevenLabs text-to-sound-effects",
+  "model_id": "eleven_text_to_sound_v2",
+  "output_format": "mp3_44100_128",
+  "design_rules": {
+    "audience": "5-year-old child with parent nearby",
+    "voice": "no speech, no vocals",
+    "mix": "soft transients, low-stimulation, event cues louder than background music",
+    "looping": "all BGM files must loop seamlessly"
+  },
+  "assets": [
+    {
+      "id": "bgm_menu",
+      "kind": "bgm",
+      "file": "bgm/menu-adventure-rich-loop.mp3",
+      "duration_seconds": 18,
+      "loop": true,
+      "prompt_influence": 0.62,
+      "usage": "输入准备、玩法大厅、玩法说明",
+      "prompt": "Seamless looping joyful preschool adventure menu music, playful marimba melody, warm ukulele strums, pizzicato strings, tiny hand claps and soft shaker, bright garden morning, varied call-and-response phrases, energetic but gentle, no vocals, no speech, no dramatic hits, no harsh percussion, clean loop ending"
+    },
+    {
+      "id": "bgm_creek",
+      "kind": "bgm",
+      "file": "bgm/creek-hop-rich-loop.mp3",
+      "duration_seconds": 18,
+      "loop": true,
+      "prompt_influence": 0.64,
+      "usage": "L1 溪边跳跳计分段",
+      "prompt": "Seamless looping cheerful preschool creek hopping game music, bouncy wooden marimba lead, plucked ukulele, light pizzicato strings, playful hand percussion, small flute answers, sunny outdoor rhythm with richer melodic variation, energetic and joyful but gentle, no vocals, no speech, no sharp percussion, no dramatic hits, clean loop ending"
+    },
+    {
+      "id": "bgm_firefly",
+      "kind": "bgm",
+      "file": "bgm/firefly-dodge-rich-loop.mp3",
+      "duration_seconds": 18,
+      "loop": true,
+      "prompt_influence": 0.64,
+      "usage": "L2 萤火虫躲躲计分段",
+      "prompt": "Seamless looping magical cheerful preschool firefly dodge game music, sparkling celesta melody, warm marimba pulse, airy woodwind, tiny bells, soft shaker and light pizzicato, flowing playful call-and-response, whimsical twilight adventure without suspense, no vocals, no speech, no sharp hits, clean loop ending"
+    },
+    {
+      "id": "bgm_treetop",
+      "kind": "bgm",
+      "file": "bgm/treetop-bounce-rich-loop.mp3",
+      "duration_seconds": 18,
+      "loop": true,
+      "prompt_influence": 0.64,
+      "usage": "L3 树梢蹦蹦计分段",
+      "prompt": "Seamless looping joyful preschool treetop bouncing game music, buoyant pizzicato strings, lively marimba, playful clarinet and flute puffs, soft hand percussion, rising melodic phrases and airy pauses, adventurous upward motion but safe and gentle, no vocals, no speech, no loud drums, clean loop ending"
+    },
+    {
+      "id": "sfx_ui_tap",
+      "kind": "sfx",
+      "file": "sfx/ui-tap.mp3",
+      "duration_seconds": 0.5,
+      "loop": false,
+      "prompt_influence": 0.8,
+      "usage": "通用按钮确认",
+      "prompt": "A very short soft wooden UI tap for a preschool game, warm rounded transient, clean, friendly, no voice, no harsh click"
+    },
+    {
+      "id": "sfx_mode_select",
+      "kind": "sfx",
+      "file": "sfx/mode-select.mp3",
+      "duration_seconds": 0.8,
+      "loop": false,
+      "prompt_influence": 0.78,
+      "usage": "选择玩法卡片",
+      "prompt": "Short playful two-note marimba confirmation for selecting a game mode, bright and friendly preschool style, no voice, soft attack"
+    },
+    {
+      "id": "sfx_gesture_ready",
+      "kind": "sfx",
+      "file": "sfx/gesture-ready.mp3",
+      "duration_seconds": 0.8,
+      "loop": false,
+      "prompt_influence": 0.78,
+      "usage": "识别到准备手势或输入就绪",
+      "prompt": "Gentle rising two-note chime meaning ready in a preschool motion game, warm bell and soft marimba, reassuring, no speech, no sharp high frequencies"
+    },
+    {
+      "id": "sfx_countdown_tick",
+      "kind": "sfx",
+      "file": "sfx/countdown-tick.mp3",
+      "duration_seconds": 0.5,
+      "loop": false,
+      "prompt_influence": 0.82,
+      "usage": "开局 3、2、1",
+      "prompt": "Tiny soft woodblock countdown tick for a preschool game, rounded, clear but quiet, no voice, no tension"
+    },
+    {
+      "id": "sfx_countdown_go",
+      "kind": "sfx",
+      "file": "sfx/countdown-go.mp3",
+      "duration_seconds": 0.9,
+      "loop": false,
+      "prompt_influence": 0.78,
+      "usage": "正式进入玩法",
+      "prompt": "Short cheerful start cue for a preschool adventure game, quick marimba flourish with soft shaker, energetic but gentle, no voice, no loud impact"
+    },
+    {
+      "id": "sfx_jump",
+      "kind": "sfx",
+      "file": "sfx/jump-soft.mp3",
+      "duration_seconds": 0.7,
+      "loop": false,
+      "prompt_influence": 0.82,
+      "usage": "L1 高跳动作",
+      "prompt": "Soft cartoony spring jump sound for a friendly puppy in a preschool game, small upward boing with airy whoosh, cute but not squeaky, no voice"
+    },
+    {
+      "id": "sfx_collect",
+      "kind": "sfx",
+      "file": "sfx/star-cookie-collect.mp3",
+      "duration_seconds": 0.8,
+      "loop": false,
+      "prompt_influence": 0.8,
+      "usage": "收集星星饼干",
+      "prompt": "Bright compact collectible sparkle for picking up a star cookie in a preschool game, three tiny warm bell notes, rewarding but soft, no voice"
+    },
+    {
+      "id": "sfx_pass_success",
+      "kind": "sfx",
+      "file": "sfx/pass-success.mp3",
+      "duration_seconds": 0.8,
+      "loop": false,
+      "prompt_influence": 0.76,
+      "usage": "成功越障或穿过通道",
+      "prompt": "Short gentle success swoosh and marimba note for safely passing an obstacle in a preschool game, warm and encouraging, no voice, not triumphant"
+    },
+    {
+      "id": "sfx_collision_soft",
+      "kind": "sfx",
+      "file": "sfx/collision-soft.mp3",
+      "duration_seconds": 0.8,
+      "loop": false,
+      "prompt_influence": 0.82,
+      "usage": "碰撞、落坑、未落台",
+      "prompt": "Soft harmless cartoon bump for a preschool game mistake, muted cushion thud with tiny wobble, reassuring, no pain, no crash, no voice, no harsh low end"
+    },
+    {
+      "id": "sfx_rescue",
+      "kind": "sfx",
+      "file": "sfx/rescue-lift.mp3",
+      "duration_seconds": 1.2,
+      "loop": false,
+      "prompt_influence": 0.76,
+      "usage": "伙伴、泡泡或安全云托回",
+      "prompt": "Gentle magical rescue lift in a preschool game, soft airy upward whoosh followed by a warm reassuring chime, safe and comforting, no voice"
+    },
+    {
+      "id": "sfx_platform_land",
+      "kind": "sfx",
+      "file": "sfx/platform-land.mp3",
+      "duration_seconds": 0.6,
+      "loop": false,
+      "prompt_influence": 0.82,
+      "usage": "L3 落上踏板",
+      "prompt": "Soft springy wooden platform landing sound for a small friendly character, compact cushioned tap with a tiny bounce, preschool game, no voice, no hard impact"
+    },
+    {
+      "id": "sfx_character_switch",
+      "kind": "sfx",
+      "file": "sfx/character-switch.mp3",
+      "duration_seconds": 1.0,
+      "loop": false,
+      "prompt_influence": 0.76,
+      "usage": "伙伴接力与角色切换",
+      "prompt": "Playful magical character swap sound for a preschool game, quick soft swirl with two warm marimba notes, friendly teamwork feeling, no voice"
+    },
+    {
+      "id": "sfx_pause",
+      "kind": "sfx",
+      "file": "sfx/pause-soft.mp3",
+      "duration_seconds": 0.5,
+      "loop": false,
+      "prompt_influence": 0.78,
+      "usage": "家长暂停或安全等待",
+      "prompt": "Very short gentle descending wooden chime for pausing a preschool game, calm and neutral, no voice, no alarm"
+    },
+    {
+      "id": "sfx_round_complete",
+      "kind": "sfx",
+      "file": "sfx/round-complete.mp3",
+      "duration_seconds": 2.4,
+      "loop": false,
+      "prompt_influence": 0.72,
+      "usage": "单局成绩页庆祝",
+      "prompt": "Short warm celebration jingle for finishing a preschool adventure game round, marimba, ukulele and tiny bells, proud and encouraging without fanfare, no vocals, no speech, gentle ending"
+    }
+  ]
+}

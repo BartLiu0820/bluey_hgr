@@ -1,0 +1,4 @@
+Use the visible firefly stage reference immediately above as the exact style and palette reference.
+Create one single tall narrow marsh leaf-barrier segment for a preschool side-view hand-follow game. It is a reusable collision skin: dense rounded blue-green leaves and a few broad cattail blades forming one friendly solid vertical column, with one softly rounded leafy face at the lower end. No thorns, sharp twigs, holes, flowers, detached particles, or firefly lights.
+The object must be taller than wide, centered, fully visible inside the central 58% of the canvas, and have a clear broad silhouette. It will be rotated 180 degrees for the lower matching barrier, so keep the body visually balanced.
+Background must be 100% solid flat #FF00FF magenta, no gradient, texture, floor plane, cast shadow, glow, or transparent checkerboard. No characters, scenery, safe gap, UI, text, watermark, borders, or guide marks. Clean HD project-native game asset, straight-on side view.

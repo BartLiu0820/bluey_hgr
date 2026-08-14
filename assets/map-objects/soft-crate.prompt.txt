@@ -1,0 +1,4 @@
+Use the visible creek stage reference immediately above as the exact style and palette reference.
+Create one compact friendly wooden crate obstacle for a preschool side-view runner game. Rounded square silhouette, warm honey-brown wood, one simple inset X brace, soft thick edges, readable at small size, no sharp corners, no splinters, no dangerous metal, no face, no character traits.
+Single object only, centered and fully visible inside the central 55% of the canvas with generous margin on all sides. Straight-on side view with only a tiny top face, no isometric tilt.
+Background must be 100% solid flat #FF00FF magenta, no gradient, texture, floor plane, cast shadow, sparkles, or glow. No characters, ground, water, UI, text, watermark, borders, or guide marks. Clean HD project-native game asset.
