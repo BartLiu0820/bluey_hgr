@@ -1,0 +1,11 @@
+Use case: stylized-concept
+Asset type: reusable game UI modal panel background for a children’s side-scrolling adventure game
+Input images: the three supplied prototype screenshots were style and context references only
+Primary request: one blank illustrated game UI panel with a warm cream parchment center, softly irregular rounded silhouette, a subtle light wood branch base, and sparse green leaves around the outer corners and bottom edge
+Style/medium: polished hand-painted 2D children’s game UI matching the project’s warm paper-and-nature visual language
+Composition/framing: one centered 4:3 panel occupying about 82% of the canvas, generous clean interior for HTML text and icons, balanced vertically and horizontally
+Scene/backdrop: perfectly flat solid #ff00ff chroma-key background for local removal
+Constraints: no text, letters, numbers, icons, characters, logos, or watermark; no cast shadow outside the panel; quiet center; complete crisp silhouette; no #ff00ff in the panel
+Avoid: glassmorphism, modern SaaS card, ornate fantasy frame, heavy decoration, dense foliage, extra objects, multiple panels
+
+Generation: built-in image generation tool. The magenta source was converted locally to RGBA with the installed chroma-key removal helper.

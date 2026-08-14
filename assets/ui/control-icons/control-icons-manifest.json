@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "source": "built-in imagegen + local chroma-key removal",
+  "sheet": "control-icons-sheet.png",
+  "grid": { "rows": 2, "columns": 3, "sourceCell": 512, "outputSize": 256 },
+  "icons": {
+    "parent-control.png": "parent helper control",
+    "ready-check.png": "ready or complete",
+    "open-palm.png": "open raised palm",
+    "fist.png": "gentle closed fist",
+    "vertical-guide.png": "open palm with up/down arrows",
+    "horizontal-guide.png": "open palm with left/right arrows"
+  }
+}

@@ -1,0 +1,7 @@
+Use case: stylized-concept
+Asset type: transparent game UI panel background for the camera preparation screen.
+Reference: assets/ui/panels/paper-branch-panel.png for exact palette and material.
+Request: wide 3:2 storybook setup board with one continuous cream parchment safe area, warm natural wood frame, small green leaves and white flowers restricted to the outer edge.
+Layout: large clean center for a camera preview on the left and narrow action column on the right; at least 10% horizontal and 12% vertical content padding; the full right edge remains inside a 4% transparent outer margin.
+Background: perfectly flat #FF00FF chroma key.
+Avoid: text, icons, buttons, camera, characters, inner cards, dividers, watermarks, logos or background gradients.

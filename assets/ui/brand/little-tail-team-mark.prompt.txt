@@ -1,0 +1,8 @@
+Use case: logo-brand
+Asset type: original children’s game team emblem for a web game header
+Primary request: one original emblem for “小尾巴探险队”, with no text. Two small friendly puppy tails curve upward into a subtle heart-and-compass silhouette, plus one tiny leaf accent, expressing friendship, movement, exploration and safety.
+Style/medium: polished hand-painted children’s game UI icon, soft rounded 3D storybook rendering, warm tactile shapes, thick clean silhouette, matching a sunny meadow adventure game with cream parchment, blue sky, green leaves and honey-colored wood.
+Composition/framing: single centered compact emblem, near-square, readable at 48–96 px, generous padding, no surrounding badge plate, no border frame.
+Color palette: river blue and sky blue, warm cream highlight, small fresh-green leaf, tiny honey-gold accent. No magenta in subject.
+Scene/backdrop: perfectly flat solid #ff00ff chroma-key background.
+Constraints: uniform key background; crisp isolated edges; no shadow/reflection; no text, letters, watermark, paw print, existing character or trademark.

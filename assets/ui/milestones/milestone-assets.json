@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0.0",
+  "changeId": "CR-20260814-endless-milestone-ramp",
+  "visualSource": "built-in image_gen with project stage references",
+  "progression": {
+    "L1": {"metric": "distance_m", "thresholds": [0, 100, 250, 450, 700], "endlessStep": 300},
+    "L2": {"metric": "distance_m", "thresholds": [0, 100, 250, 450, 700], "endlessStep": 300},
+    "L3": {"metric": "height_m", "thresholds": [0, 20, 50, 90, 140], "endlessStep": 60}
+  },
+  "panels": {
+    "creek_jump": {"image": "assets/ui/milestones/creek/badge.png", "prompt": "assets/ui/milestones/creek/badge.prompt.txt", "sourceSize": [1935, 812], "displayAspect": 2.38, "textBaked": false},
+    "firefly_dodge": {"image": "assets/ui/milestones/firefly/badge.png", "prompt": "assets/ui/milestones/firefly/badge.prompt.txt", "sourceSize": [1942, 809], "displayAspect": 2.4, "textBaked": false},
+    "treetop_bounce": {"image": "assets/ui/milestones/treetop/badge.png", "prompt": "assets/ui/milestones/treetop/badge.prompt.txt", "sourceSize": [1942, 809], "displayAspect": 2.4, "textBaked": false}
+  },
+  "obstacles": {
+    "creek_log": {"image": "assets/map-objects/creek-log/prop.png", "prompt": "assets/map-objects/creek-log/prop.prompt.txt", "collisionRole": "runtime target rect", "sourceSize": [1942, 809]},
+    "creek_double_crate": {"image": "assets/map-objects/creek-double-crate/prop.png", "prompt": "assets/map-objects/creek-double-crate/prop.prompt.txt", "collisionRole": "runtime target rect", "sourceSize": [1341, 1173]},
+    "firefly_roundleaf": {"image": "assets/map-objects/firefly-roundleaf-barrier/prop.png", "prompt": "assets/map-objects/firefly-roundleaf-barrier/prop.prompt.txt", "collisionRole": "runtime safeY rect skin", "sourceSize": [778, 2022]},
+    "firefly_reed": {"image": "assets/map-objects/firefly-reed-barrier/prop.png", "prompt": "assets/map-objects/firefly-reed-barrier/prop.prompt.txt", "collisionRole": "runtime safeY rect skin", "sourceSize": [778, 2022]},
+    "treetop_narrow": {"image": "assets/map-objects/treetop-narrow-branch/prop.png", "prompt": "assets/map-objects/treetop-narrow-branch/prop.prompt.txt", "collisionRole": "runtime platform rect skin", "sourceSize": [1881, 836]},
+    "treetop_curved": {"image": "assets/map-objects/treetop-curved-branch/prop.png", "prompt": "assets/map-objects/treetop-curved-branch/prop.prompt.txt", "collisionRole": "runtime platform rect skin", "sourceSize": [1774, 887]}
+  },
+  "qc": {"alphaRequired": true, "transparentCornersRequired": true, "collisionFromPixels": false, "status": "PASS"}
+}

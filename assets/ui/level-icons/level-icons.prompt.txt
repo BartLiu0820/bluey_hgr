@@ -1,0 +1,7 @@
+All three assets use the built-in image generation path and the same production constraints: polished hand-painted preschool game UI icon, soft rounded 3D storybook rendering, thick clean silhouette, generous square padding, no badge plate, no text, no characters, no trademark, and a perfectly flat #ff00ff chroma-key background removed locally.
+
+creek-jump.png: a curved stepping log over a sparkling blue stream, one upward jump arc, two small splashes; river blue, honey wood, fresh green leaves and cream highlights.
+
+firefly-dodge.png: one large friendly glowing firefly flying through a wide safe opening between two soft leafy reed clusters, with a gentle up-and-down motion trail; firefly gold, mint/leaf green and small river-blue accents.
+
+treetop-bounce.png: a springy curved leafy branch platform, two small cream clouds below, and one bold upward bounce arrow ending in a golden star; honey wood, fresh green, sky blue and warm cream.

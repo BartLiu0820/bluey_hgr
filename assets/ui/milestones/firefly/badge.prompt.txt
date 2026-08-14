@@ -1,0 +1,3 @@
+Use case: stylized-concept
+Asset type: standalone game HUD milestone plaque
+Create one wide child-friendly wetland milestone plaque using assets/maps/firefly/stage-reference.png as the style and palette reference. Show a warm cream paper plaque nested in rounded green leaves with two cattail tips and two tiny golden firefly glows. Keep the center empty for live HTML distance text. Clean HD hand-painted children's 2D UI, matte, rounded, low texture noise. Single centered full object on uniform #FF00FF chroma key. No text, letters, numbers, unit, character, logo, watermark, floor, cast shadow, or edge contact.

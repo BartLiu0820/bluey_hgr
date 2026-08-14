@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: cohesive game UI icon sheet for a children's gesture adventure game
+Reference: assets/ui/buttons/sheet-transparent.png for exact style, palette, material and rendering.
+Request: exactly six compact circular storybook garden UI badges in a strict 2x3 grid. Top row: parent helper control, ready check, open raised palm. Bottom row: gentle closed fist, open palm with up/down arrows, open palm with left/right arrows.
+Style: hand-painted warm cream wood disks, honey-brown rim, green leaves, white flowers, chunky colorful symbols.
+Composition: 1536x1024, equal 512x512 cells, each badge centered with at least 12% safe padding.
+Background: perfectly flat #FF00FF chroma key.
+Avoid: text, numbers, characters, outer panels, separators, watermarks, logos, shadows or texture in the chroma background.

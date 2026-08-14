@@ -1,0 +1,1 @@
+Use the visible storybook garden map as the style and palette reference. Exactly six compact hand-painted UI badge icons in a 2x3 grid: play, replay, map, camera, keyboard, pause. Solid #FF00FF background, equal invisible cells, central safe area, no text, characters, panels, borders or separators.

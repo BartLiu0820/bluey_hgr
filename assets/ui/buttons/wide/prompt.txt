@@ -1,0 +1,6 @@
+Use case: ui-mockup
+Asset type: 2x3 production atlas of wide 3:1 image-only game buttons
+Reference: original circular action-button atlas plus the generated wide empty panel master
+Grid order: play, replay, map / camera, keyboard, pause
+Style: warm cream parchment, honey-brown carved wood, restrained leaves and white flowers
+Constraints: action symbol directly on parchment; no circular inner panel; no text; flat #ff00ff chroma-key background; no separators; complete silhouettes inside each cell

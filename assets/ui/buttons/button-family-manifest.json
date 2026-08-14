@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "style": "hand-painted storybook adventure handbook",
+  "actions": [
+    "play",
+    "replay",
+    "map",
+    "camera",
+    "keyboard",
+    "pause"
+  ],
+  "families": {
+    "compact": {
+      "purpose": "compact icon slots",
+      "aspect_ratio": "1:1",
+      "files": "icon-1.png ... icon-6.png"
+    },
+    "wide": {
+      "purpose": "setup and primary CTA slots",
+      "target_aspect_ratio": "approximately 1.86:1",
+      "panel_master": "wide/panel-master.png",
+      "files": "wide/button-1.png ... wide/button-6.png",
+      "prompt": "wide/prompt.txt",
+      "pipeline_meta": "wide/pipeline-meta.json"
+    },
+    "medium": {
+      "purpose": "level launch and result action slots",
+      "target_aspect_ratio": "approximately 1.72:1",
+      "panel_master": "medium/panel-master.png",
+      "files": "medium/button-1.png ... medium/button-6.png",
+      "prompt": "medium/prompt.txt",
+      "pipeline_meta": "medium/pipeline-meta.json"
+    }
+  },
+  "action_index": {
+    "1": "play",
+    "2": "replay",
+    "3": "map",
+    "4": "camera",
+    "5": "keyboard",
+    "6": "pause"
+  },
+  "runtime_contract": "Use a complete button image as the clickable visual. Keep the accessible name in HTML aria-label/title; do not place the generated image inside a second CSS button panel."
+}
