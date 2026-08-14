@@ -1,0 +1,131 @@
+{
+  "phase": "Phase 4B 手势输入闭环 HTML 主干 Demo",
+  "artifact": "04B-prototype-手势输入闭环.html",
+  "status": "confirmed",
+  "updated_at": "2026-08-12",
+  "summary": {
+    "key_decisions": [
+      "一个纯产品 HTML 自然连通 GI-01 至 GI-06；家长设置、摄像头练习、键盘热身和两类输入结论均由真实产品操作到达",
+      "键盘路径可真实试玩；摄像头权限拒绝有明确键盘恢复，家长确认切换会停止视频轨道",
+      "camera_full 与 keyboard_full 都交付三类标准动作，且 input-ready 对每次档案只派发一次"
+    ],
+    "discarded_options": [
+      "不加入 prototype shell、inspector、screen-nav、state-nav 或调试按钮",
+      "不在手势输入模块中伪造横版关卡，不引入账号、榜单、生命值或 Game Over",
+      "不使用 Bluey 角色或官方资产；本原型只使用原创 SVG 小狗"
+    ],
+    "next_stage_conditions": [
+      "PM 确认 6 屏自然主干与低龄单动作舞台",
+      "PM 确认 InputProfile 交接、安全降级和摄像头轨道释放",
+      "PM 接受演示识别仅用于流程验证，真实儿童手势准确率仍待实现和验证"
+    ],
+    "execution_details_not_for_pm": [
+      "SVG 路径、CSS 动画参数、fake media 参数和自动化选择器",
+      "通用静态检查器要求 shell/inspector 的失败项；已确认规格明确禁止把脚手架放进纯产品画布"
+    ]
+  },
+  "materials": [
+    { "title": "Phase 4B 可试玩手势输入原型", "file": "04B-prototype-手势输入闭环.html" },
+    { "title": "Phase 4A 手势输入原型规格", "file": "04A-prototype-spec-手势输入闭环.md" },
+    { "title": "QA-TARGETED 自动化脚本", "file": "tests/phase4b-targeted.mjs" },
+    { "title": "Gesture Lab 代表性截图", "file": "prototype-qa/phase4b-gi03-lab.png" }
+  ],
+  "visualizations": [
+    {
+      "type": "stage_flow",
+      "title": "已实现的 04B 自然主干",
+      "description": "从家长设置自然分为摄像头和键盘路径，并在同一输入合同处汇合。",
+      "steps": [
+        { "label": "GI-01 家长设置", "status": "done", "detail": "隐私确认前不请求权限；手势与按键并列" },
+        { "label": "GI-02 摄像头准备", "status": "done", "detail": "真实权限请求、镜像预览、错误恢复" },
+        { "label": "GI-03 Gesture Lab", "status": "done", "detail": "三动作示范、倒计时、识别、释放、10 次进度" },
+        { "label": "GI-04 camera_full", "status": "done", "detail": "三动作摘要与摄像头输入档案" },
+        { "label": "GI-05 按键热身", "status": "done", "detail": "Space/↑、↓、V 依次验证；长按去重" },
+        { "label": "GI-06 keyboard_full", "status": "done", "detail": "三类键位摘要与不使用摄像头的输入档案" },
+        { "label": "核心关卡循环", "status": "pending", "detail": "下一模块规格消费 input-ready，不在 04B 伪造" }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "QA-TARGETED 结果",
+      "description": "定向浏览器验收使用 Playwright fake media，不采集真实儿童画面。",
+      "columns": ["检查范围", "结果", "证据"],
+      "rows": [
+        { "label": "Web 视口", "values": ["PASS", "1440×900 与 1024×700 无横向溢出；活动按钮 ≥44px"] },
+        { "label": "键盘完整路径", "values": ["PASS", "GI-01 → GI-05 → GI-06；三类映射均触发"] },
+        { "label": "摄像头恢复", "values": ["PASS", "权限拒绝后可见键盘 CTA，不循环请求"] },
+        { "label": "摄像头安全退出", "values": ["PASS", "家长确认切键盘后所有轨道停止"] },
+        { "label": "输入交接", "values": ["PASS", "camera_full / keyboard_full 均只派发一次 input-ready"] },
+        { "label": "总计", "values": ["12 / 12 PASS", "无 pageerror、无控制台错误"] }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "输入档案交接",
+      "description": "后续关卡只消费标准动作和来源白名单，不依赖摄像头实现细节。",
+      "columns": ["档案", "儿童动作", "输入来源", "摄像头"],
+      "rows": [
+        { "label": "camera_full", "values": ["JUMP / DUCK / SWITCH_CHARACTER", "camera + parent_keyboard", "进入关卡时保持 active"] },
+        { "label": "keyboard_full", "values": ["JUMP / DUCK / SWITCH_CHARACTER", "child_keyboard + child_button + parent_keyboard", "false；切换前释放轨道"] }
+      ]
+    },
+    {
+      "type": "impact_map",
+      "title": "确认后的下游影响",
+      "description": "04B 只证明输入准备闭环可理解、可恢复和可交接；完整可试玩 MVP 还需要核心关卡。",
+      "source": "已验证的 InputProfile + StandardCommand",
+      "items": [
+        { "label": "03-feature-核心关卡循环.md", "detail": "定义约 3 分钟横版卷轴、收集、温和障碍、角色切换和贴纸庆祝" },
+        { "label": "04A 核心关卡原型规格", "detail": "消费统一输入合同，补齐横版画布的 screen/state/interaction" },
+        { "label": "真实手势接入", "detail": "替换演示识别适配器，并用真实儿童样本验证每手势 8/10 门槛" },
+        { "label": "最终 04B MVP", "detail": "输入准备与关卡自然衔接，键盘路径始终独立可通关" }
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-04B-GI-001",
+      "question": "是否确认 GI-01 至 GI-06 的自然主干、低龄单动作舞台和家长/儿童分层符合已确认的 Phase 4A？",
+      "why_it_matters": "这决定手势输入模块是否可以从原型规格层下沉为可信实现，并成为后续关卡的固定入口。",
+      "recommended_decision": "确认：保留当前纯产品画布与两条自然路径，不加入原型导航或 Inspector。",
+      "options": ["确认", "请求实现层调整", "返回原型规格层调整"],
+      "source_files": ["04B-prototype-手势输入闭环.html", "04A-prototype-spec-手势输入闭环.md"],
+      "evidence_refs": ["6 screens", "单一 backbone group", "Product Canvas Rules"],
+      "downstream_impact": ["03-feature-核心关卡循环.md", "最终 MVP 的输入准备流程"],
+      "route_hint": "L0"
+    },
+    {
+      "question_id": "Q-04B-GI-002",
+      "question": "是否确认 InputProfile、标准动作、单次 input-ready、摄像头释放和键盘完整降级已经达到进入核心关卡规格的条件？",
+      "why_it_matters": "后续关卡必须只依赖稳定输入合同；如果此处仍有来源冲突或资源泄漏，关卡实现会被迫理解摄像头细节。",
+      "recommended_decision": "确认：以现有 camera_full / keyboard_full 合同作为关卡输入边界，camera_hybrid 后续按已确认规则补齐。",
+      "options": ["确认", "调整输入合同", "增加 04C 后再确认"],
+      "source_files": ["04B-prototype-手势输入闭环.html", "03-feature-手势输入闭环.md"],
+      "evidence_refs": ["QA-TARGETED 12/12", "input-ready 去重", "camera tracks stopped"],
+      "downstream_impact": ["核心关卡 Input Adapter", "关卡键盘与摄像头控制", "最终 QA"],
+      "route_hint": "L2"
+    },
+    {
+      "question_id": "Q-04B-GI-003",
+      "question": "是否接受本 04B 的演示识别边界：它可验证摄像头流程与练习状态机，但不能证明真实儿童手势达到 8/10？",
+      "why_it_matters": "若把演示识别误当成真实模型验证，会让项目过早声称核心技术假设成立；若完全拒绝演示适配器，又无法在模型接入前检查产品闭环。",
+      "recommended_decision": "接受该边界并通过本 Gate；把真实识别接入与儿童样本验证保留为最终 MVP 的明确未完成项。",
+      "options": ["接受并通过", "先接真实模型再通过", "调整交付说明"],
+      "source_files": ["04B-prototype-手势输入闭环.html", "04A-prototype-spec-手势输入闭环.md", "01-research.md"],
+      "evidence_refs": ["演示识别状态 chip", "fake media QA", "Careful Go"],
+      "downstream_impact": ["真实识别技术实现", "儿童试玩计划", "MVP 完成定义"],
+      "route_hint": "L1"
+    }
+  ],
+  "risks": [
+    "演示识别按固定节奏产生成功事件，只验证状态机和体验节奏，绝不能据此宣称真实手势准确率",
+    "camera_hybrid 尚未进入 04B 主干；其产品规则已在 Phase 3/4A 确认，最终 MVP 接入真实识别时必须实现",
+    "单文件直接以 file:// 打开时，不同浏览器可能限制摄像头；正式试玩应通过本地 HTTP 启动",
+    "通用 prototype checker 仍报告 shell/inspector 缺失；这是与纯产品 04B 规则冲突的非阻塞检查项"
+  ],
+  "next_actions": [
+    "三项 Phase 4B 决策已由 PM 确认",
+    "进入 03-feature-核心关卡循环.md，补齐约 3 分钟横版游戏的业务规则",
+    "最终 MVP 阶段替换演示识别适配器并完成真实儿童手势验证"
+  ]
+}

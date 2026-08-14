@@ -1,0 +1,1132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phase 1A 竞品页面与交互体验 Benchmark Review Console</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --surface-soft: #f0f3f7;
+      --ink: #172033;
+      --muted: #68758a;
+      --line: #d9e0ea;
+      --accent: #2458d3;
+      --accent-soft: #e7eefc;
+      --warn: #9a5a00;
+      --warn-soft: #fff2cf;
+      --ok: #0f766e;
+      --radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.55; }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      padding: 28px clamp(18px, 4vw, 48px);
+    }
+    main {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 24px auto 56px;
+      display: grid;
+      gap: 18px;
+    }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { font-size: clamp(26px, 4vw, 40px); margin-bottom: 8px; }
+    h2 { font-size: 20px; margin-bottom: 14px; }
+    h3 { font-size: 17px; margin-bottom: 10px; }
+    h4 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+    code {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      color: #24324a;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); margin-top: 12px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    ul { padding-left: 20px; margin-bottom: 0; }
+    .muted { color: var(--muted); }
+
+    /* ── Material cards ── */
+    .materials { display: grid; gap: 12px; }
+    .material-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      background: #fbfcfe;
+      transition: border-color 0.15s;
+    }
+    .material-card:hover { border-color: #b5c7e8; }
+    .material-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .material-card-info { display: flex; flex-direction: column; gap: 5px; }
+    .material-card-info h3 { margin: 0; font-size: 16px; }
+    .material-path { font-size: 12px; color: var(--muted); }
+    .material-card-actions { flex-shrink: 0; }
+    .mat-badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .mat-badge-ok { background: var(--accent-soft); color: var(--accent); }
+    .mat-badge-warn { background: var(--warn-soft); color: var(--warn); }
+    .btn-mat {
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      padding: 8px 16px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .btn-mat:hover { background: #d0e0f8; }
+    .btn-mat[disabled] { border-color: var(--line); background: transparent; color: var(--muted); cursor: not-allowed; }
+    .btn-mat-html { border-color: var(--ok); background: #eefaf7; color: var(--ok); }
+    .btn-mat-html:hover { background: #d8f3ed; }
+
+    /* ── Visualizations ── */
+    .visualizations { display: grid; gap: 16px; }
+    .visualization {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: #fbfcfe;
+    }
+    .viz-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .viz-head h3 { margin-bottom: 4px; }
+    .viz-type {
+      align-self: start;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 3px 8px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .flow { display: flex; align-items: stretch; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+    .flow-item {
+      min-width: 170px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #ffffff;
+    }
+    .flow-node { display: grid; gap: 4px; }
+    .flow-node span { font-weight: 800; }
+    .flow-node em { color: var(--muted); font-style: normal; font-size: 12px; }
+    .flow-item.done { border-color: #9fd8c9; background: #f0fbf8; }
+    .flow-item.pending { border-color: #efd18a; background: #fff9e8; }
+    .flow-item.blocked { border-color: #f0a7a7; background: #fff3f3; }
+    .flow-arrow { align-self: center; color: var(--muted); font-weight: 900; }
+    .impact-map {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.7fr) auto minmax(260px, 1.6fr);
+      gap: 14px;
+      align-items: center;
+    }
+    .impact-source, .impact-target {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      background: #ffffff;
+    }
+    .impact-arrow { color: var(--accent); font-size: 24px; font-weight: 900; }
+    .impact-targets { display: grid; gap: 10px; }
+    .matrix-wrap { overflow-x: auto; }
+    table.matrix {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .matrix th, .matrix td {
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      min-width: 120px;
+    }
+    .matrix th { background: var(--surface-soft); color: #2b374b; font-weight: 800; }
+    .risk-list { display: grid; gap: 12px; }
+    .risk-row { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; background: #ffffff; }
+    .risk-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .risk-head span { color: var(--warn); font-weight: 800; }
+    .risk-bar { height: 10px; border-radius: 999px; background: #edf1f6; overflow: hidden; }
+    .risk-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2fbf9f, #f2b84b, #e45757); }
+    .evidence-map { display: grid; gap: 10px; }
+    .evidence-item {
+      display: grid;
+      grid-template-columns: minmax(90px, auto) auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 11px;
+      background: #ffffff;
+    }
+    .evidence-item span, .evidence-item em { color: var(--muted); font-style: normal; font-size: 13px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+    .metric-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #ffffff; }
+    .metric-card span { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .metric-card strong { display: block; margin-top: 6px; font-size: 24px; }
+    .tone-warn { border-color: #efd18a; background: #fff9e8; }
+    .tone-good { border-color: #9fd8c9; background: #f0fbf8; }
+    .tone-bad { border-color: #f0a7a7; background: #fff3f3; }
+
+    /* ── Decision cards ── */
+    .decision-list { display: grid; gap: 16px; }
+    .decision-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; background: #ffffff; }
+    .card-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+    .qid { color: var(--accent); font-weight: 800; font-size: 13px; }
+    .route { color: var(--warn); background: var(--warn-soft); border-radius: 999px; padding: 3px 9px; font-size: 13px; font-weight: 650; }
+    .card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 12px 0; }
+    .meta-block { margin-top: 12px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 7px; }
+    .pill { border: 1px solid var(--line); background: var(--surface-soft); border-radius: 999px; padding: 4px 9px; font-size: 13px; color: #2d3a4f; overflow-wrap: anywhere; }
+    .impact .pill { background: #eefaf7; border-color: #bee8df; color: var(--ok); }
+    .muted-pill { color: var(--muted); background: transparent; }
+    fieldset.feedback { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin: 16px 0 0; background: #fbfcfe; }
+    legend { padding: 0 6px; color: var(--muted); font-weight: 700; font-size: 13px; }
+    label { display: grid; gap: 6px; margin-top: 10px; color: #344156; font-size: 14px; font-weight: 650; }
+    select, textarea { width: 100%; border: 1px solid var(--line); border-radius: 7px; padding: 10px 11px; font: inherit; color: var(--ink); background: #ffffff; }
+    textarea { min-height: 92px; resize: vertical; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    button { border: 0; border-radius: 7px; padding: 10px 14px; background: var(--accent); color: white; font-weight: 750; cursor: pointer; }
+    button.secondary { background: #253044; }
+    .inline-file-link {
+      display: inline-flex;
+      align-items: center;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .inline-file-link code { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .pill-button {
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      color: #2d3a4f;
+      padding: 4px 9px;
+      font-weight: 500;
+      text-align: left;
+    }
+    .pill-button:hover { border-color: #b5c7e8; color: var(--accent); }
+    pre { max-height: 260px; overflow: auto; background: #101827; color: #f8fafc; border-radius: var(--radius); padding: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .notice { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 12px 14px; border-radius: 6px; color: #183b89; }
+
+    /* ── Overlay ── */
+    .overlay-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 18, 36, 0.48);
+      z-index: 200;
+      align-items: stretch;
+      justify-content: flex-end;
+    }
+    .overlay-backdrop.visible { display: flex; }
+    .overlay-panel {
+      width: min(72vw, 920px);
+      height: 100%;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -6px 0 32px rgba(0, 0, 0, 0.18);
+      animation: slideIn 0.18s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(6%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .overlay-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+      flex-shrink: 0;
+    }
+    .overlay-title { flex: 1; min-width: 0; }
+    .overlay-title h2 { margin: 0; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .overlay-title code { font-size: 12px; color: var(--muted); }
+    .overlay-close {
+      flex-shrink: 0;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 12px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .overlay-close:hover { background: #eef1f5; }
+    .overlay-body { flex: 1; overflow-y: auto; padding: 24px 28px; }
+    .overlay-html-notice {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .overlay-html-frame-wrap {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+    }
+    .overlay-html-frame-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfe;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .overlay-html-frame {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+    .overlay-open-btn {
+      border: 1px solid var(--ok);
+      border-radius: 8px;
+      padding: 12px 28px;
+      background: var(--ok);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .overlay-open-btn:hover { background: #0a5f58; }
+
+    /* ── Markdown content ── */
+    .md-content { line-height: 1.72; color: var(--ink); font-size: 15px; }
+    .md-content .md-h { font-weight: 700; margin: 1.4em 0 0.5em; color: #1a2840; }
+    .md-content h2.md-h { font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    .md-content h3.md-h { font-size: 16px; }
+    .md-content h4.md-h { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .md-content h5.md-h, .md-content h6.md-h { font-size: 13px; }
+    .md-content p { margin: 0.65em 0; }
+    .md-content .md-ul, .md-content .md-ol { padding-left: 22px; margin: 0.5em 0; }
+    .md-content .md-ul li, .md-content .md-ol li { margin-bottom: 4px; }
+    .md-content .md-pre { background: #101827; color: #f8fafc; padding: 14px; border-radius: var(--radius); overflow-x: auto; max-height: 380px; margin: 1em 0; font-size: 13px; }
+    .md-content .md-pre code { background: none; color: inherit; padding: 0; font-size: 13px; }
+    .md-content .md-bq { border-left: 3px solid var(--accent); margin: 0.8em 0; padding: 6px 14px; background: var(--accent-soft); border-radius: 0 6px 6px 0; color: #1b3272; }
+    .md-content .md-hr { border: none; border-top: 1px solid var(--line); margin: 1.4em 0; }
+    .md-content .md-table-wrap { overflow-x: auto; margin: 1em 0; }
+    .md-content .md-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    .md-content .md-table th, .md-content .md-table td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .md-content .md-table th { background: var(--surface-soft); font-weight: 700; }
+    .md-content code { font-size: 13px; }
+
+    @media (max-width: 760px) {
+      .summary-grid, .card-grid, .impact-map, .evidence-item { grid-template-columns: 1fr; }
+      .impact-arrow { transform: rotate(90deg); justify-self: start; }
+      .material-card-head { flex-direction: column; }
+      .overlay-panel { width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="badge">PM Review Console</span>
+    <h1>Phase 1A 竞品页面与交互体验 Benchmark</h1>
+    <p class="muted">这是阶段审查入口，不是正式阶段产物。PM 反馈在第一版中仅保存在浏览器本地，可复制或下载为 JSON。</p>
+    <div class="meta">
+      <span>产物：<button type="button" class="inline-file-link" data-open-file="01A-competitor-page-experience.md"><code>01A-competitor-page-experience.md</code></button></span>
+      <span>状态：<code>confirmed</code></span>
+      <span>更新：<code>2026-08-13</code></span>
+    </div>
+  </header>
+  <main>
+    <section class="section">
+      <h2>阶段摘要</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>本阶段关键决策</h4>
+          <ul><li>Target Surface 保持已确认的 web-only，笔记本摄像头优先并提供完整键盘降级</li><li>采用家长分步设置、Gesture Lab、三关地图、多玩法运行时宿主与单关庆祝的渐进骨架</li><li>L1 继承情境化离散指令，L2 继承掌心位置直接跟手，L3 继承容错叠高；关卡时长分别为 40/45/50 秒</li><li>摄像头与键盘都提供两种能力：L1/L3 的离散拳掌事件，以及 L2 的连续上下位置输入</li><li>三关无生命值、Game Over 或成绩锁关；不新增必需手型，完成本关即可继续</li></ul>
+        </div>
+        <div>
+          <h4>被放弃的方案</h4>
+          <ul><li>不做专用硬件式复杂设置、内容目录、订阅、全身高强度动作、排行榜或官方 IP 素材复制</li><li>不采用重力下坠、窄缝、碰撞即死与反复重开的机制</li><li>不把技术置信度展示给儿童，不把 Pointing_Up 或 Victory 设为主线要求</li></ul>
+        </div>
+        <div>
+          <h4>进入下一阶段的条件</h4>
+          <ul><li>已满足：PM 已确认多玩法三关、双通道输入、键盘降级、低挫败边界与 web-only</li><li>已完成对 Phase 2 的架构传播：共享能力、三独立运行时和 4 层 17 模块</li></ul>
+        </div>
+        <div>
+          <h4>不需要 PM 审查的执行细节</h4>
+          <ul><li>竞品营销页层级、价格、视频台词、付费入口与具体识别参数</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>产出物阅读</h2>
+      <p class="muted" style="margin-bottom:14px;">点击"阅读原文"在右侧浮层阅读完整产物内容；Markdown 会渲染为可读 HTML，HTML 产物会在浮层中预览。</p>
+      <div class="materials">
+        
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>Phase 1A 竞品页面与交互体验 Benchmark</h3>
+            <code class="material-path">01A-competitor-page-experience.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(0)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>Phase 1 产品方向研究</h3>
+            <code class="material-path">01-research.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(1)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>关键可视化</h2>
+      <div class="visualizations">
+        
+    <article class="visualization matrix">
+      <div class="viz-head">
+        <div>
+          <h3>多玩法参考机制继承矩阵</h3>
+          <p class="muted">每个样本只承担最擅长的机制参考，不复制视觉、IP 或惩罚结构。</p>
+        </div>
+        <span class="viz-type">matrix</span>
+      </div>
+      
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th>参考来源</th><th>继承重点</th><th>落到本项目</th><th>明确删除</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>GoNoodle / Bluey 体感</th><td>一个时刻一个情境动作</td><td>L1 拳→掌高跳与伙伴接力</td><td>高频口令、全身高强度动作</td></tr><tr><th>Nex / MediaPipe</th><td>动作直接反馈；位置与类别解耦</td><td>L2 掌心 Y 跟手，Unknown 仍工作</td><td>技术置信度与复杂设置</td></tr><tr><th>Square Bird</th><td>单输入叠高与障碍高度预读</td><td>L3 每轮拳→掌生成一朵云</td><td>精确层数惩罚、提速和敌人</td></tr><tr><th>Jetpack / Flappy 反例边界</th><td>自动前进与清晰上下通道</td><td>只保留 L2 宽松纵向躲避</td><td>重力坠落、窄缝、碰撞即死</td></tr>
+        </tbody>
+      </table>
+    </div>
+  
+    </article>
+  
+    <article class="visualization stage_flow">
+      <div class="viz-head">
+        <div>
+          <h3>已确认的体验骨架</h3>
+          <p class="muted">家长准备完成后，儿童通过短练习进入一条三段冒险。</p>
+        </div>
+        <span class="viz-type">stage_flow</span>
+      </div>
+      
+    <div class="flow">
+      
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>家长设置</span>
+            <em>done</em>
+          </div>
+          <p>隐私、模式、授权与取景</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>Gesture Lab</span>
+            <em>done</em>
+          </div>
+          <p>完成一次拳→掌→拳，可自愿复练</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>三关地图</span>
+            <em>done</em>
+          </div>
+          <p>顺序节点与完成即解锁</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>L1 40s</span>
+            <em>done</em>
+          </div>
+          <p>command_runner 高跳/接力</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>L2 45s</span>
+            <em>done</em>
+          </div>
+          <p>hand_follow_dodge 掌心 Y 跟手</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>L3 50s</span>
+            <em>done</em>
+          </div>
+          <p>cloud_stack 叠 1–3 朵云</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>单关庆祝</span>
+            <em>done</em>
+          </div>
+          <p>无排名、无失败评级</p>
+        </div>
+      
+    </div>
+  
+    </article>
+  
+    <article class="visualization impact_map">
+      <div class="viz-head">
+        <div>
+          <h3>Benchmark 对产品架构的影响</h3>
+          <p class="muted">体验结论直接固定 Phase 2 的模块与能力边界。</p>
+        </div>
+        <span class="viz-type">impact_map</span>
+      </div>
+      
+    <div class="impact-map">
+      <div class="impact-source">
+        <h4>源决策</h4>
+        <strong>多玩法三关 + 双通道输入 + 低挫败规则</strong>
+      </div>
+      <div class="impact-arrow">→</div>
+      <div class="impact-targets">
+        
+          <div class="impact-target">
+            <strong>共享 Session / Safety / Reward / Coach</strong>
+            <p>把三种玩法缝合为同一场冒险，并统一无损恢复与庆祝</p>
+          </div>
+        
+          <div class="impact-target">
+            <strong>三个独立玩法运行时</strong>
+            <p>分别承载 command_runner、hand_follow_dodge、cloud_stack</p>
+          </div>
+        
+          <div class="impact-target">
+            <strong>双通道 Input Adapter</strong>
+            <p>输出 PoseTransitionEvent 与 HandTrackingFrame，键盘提供等价能力</p>
+          </div>
+        
+          <div class="impact-target">
+            <strong>单视口页面形态</strong>
+            <p>家长任务流、短练习、地图、全屏画布/浮动教练与庆祝卡</p>
+          </div>
+        
+      </div>
+    </div>
+  
+    </article>
+  
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>待确认问题</h2>
+      <div class="decision-list">
+        
+      <article class="decision-card" data-question-id="Q-01A-001">
+        <div class="card-top">
+          <span class="qid">Q-01A-001</span>
+          <span class="route">Route hint: L4</span>
+        </div>
+        <h3>已确认的三种玩法参考关系是否继续作为下游设计基线？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>竞品结论决定三关的控制语法、运行时边界和儿童在每关需要理解的唯一目标。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>维持已确认：L1 情境化拳掌指令、L2 掌心 Y 直接跟手、L3 容错叠云，时长 40/45/50 秒。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="01A-competitor-page-experience.md">01A-competitor-page-experience.md</button><button type="button" class="pill pill-button" data-open-file="01-research.md">01-research.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill">Bluey: Bust-a-Move</span><span class="pill">Nex Playground</span><span class="pill">GoNoodle Games</span><span class="pill">Square Bird</span><span class="pill">Jetpack Joyride</span><span class="pill">MediaPipe</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">02-architecture.html</span><span class="pill">03-feature-核心关卡循环.md</span><span class="pill">04A-prototype-spec-核心关卡循环.md</span><span class="pill">04B-prototype-*.html</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="0">
+              <option value="">请选择</option>
+              <option value="维持已确认">维持已确认</option><option value="申请变更">申请变更</option><option value="暂缓，补材料">暂缓，补材料</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="0" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      <article class="decision-card" data-question-id="Q-01A-002">
+        <div class="card-top">
+          <span class="qid">Q-01A-002</span>
+          <span class="route">Route hint: L4</span>
+        </div>
+        <h3>已确认的双通道输入和键盘等价降级是否继续保持？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>三关需要离散动作与连续位置两种输入语义；任何摄像头阻塞都必须存在完整出口。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>维持已确认：L1/L3 使用离散拳掌事件或 Space，L2 使用连续掌心 Y 或 ↑/↓；Unknown 不阻断位置流。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="01A-competitor-page-experience.md">01A-competitor-page-experience.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill">Nex Playground</span><span class="pill">MediaPipe Gesture Recognizer</span><span class="pill">Camera fallback requirement</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">02-architecture.html</span><span class="pill">03-feature-手势输入闭环.md</span><span class="pill">03-feature-核心关卡循环.md</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="1">
+              <option value="">请选择</option>
+              <option value="维持已确认">维持已确认</option><option value="申请变更">申请变更</option><option value="暂缓，补材料">暂缓，补材料</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="1" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      <article class="decision-card" data-question-id="Q-01A-003">
+        <div class="card-top">
+          <span class="qid">Q-01A-003</span>
+          <span class="route">Route hint: L4</span>
+        </div>
+        <h3>已确认的低挫败和手型边界是否继续保持？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>失败惩罚或新增手型都会放大识别误差、认知切换和 5 岁儿童的挫败感。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>维持已确认：不新增必需手型，完成即解锁；碰撞弹开、护盾或自动托底，不扣奖励。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="01A-competitor-page-experience.md">01A-competitor-page-experience.md</button><button type="button" class="pill pill-button" data-open-file="01-research.md">01-research.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill">Bluey: Let’s Play</span><span class="pill">Square Bird</span><span class="pill">Flappy Bird 反例边界</span><span class="pill">Liberi</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">02-architecture.html</span><span class="pill">03-feature-核心关卡循环.md</span><span class="pill">04B-prototype-*.html</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="2">
+              <option value="">请选择</option>
+              <option value="维持已确认">维持已确认</option><option value="申请变更">申请变更</option><option value="暂缓，补材料">暂缓，补材料</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="2" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>风险与下一步</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>风险</h4>
+          <ul><li>公开资料不能替代 Nex 硬件、付费 App 和本项目原型的真实儿童可用性测试</li><li>GoNoodle 与 Liberi 的目标年龄不同，动作频率和提示节奏仍需针对 5 岁儿童验证</li><li>三种控制关系的切换可能造成短时认知迁移，需要每关安全示范段和统一教练语言</li></ul>
+        </div>
+        <div>
+          <h4>下一步</h4>
+          <ul><li>Phase 1A Gate 保持 confirmed</li><li>Benchmark 结论已传播为 Phase 2 的共享服务、三独立运行时和双通道输入</li><li>后续真实试玩重点观察成人提示次数、首次操作理解、误触、疲劳与情绪反应</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>直接反馈</h2>
+      <p class="muted">这里用于填写不属于单个决策卡的整体意见、补充背景或下一步指令。</p>
+      <label class="direct-feedback-label">
+        整体反馈
+        <textarea id="directFeedback" class="direct-feedback-textarea" placeholder="例如：整体确认，但第 2 个问题需要补材料；或请回到 Phase 3 修改字段模型。"></textarea>
+      </label>
+    </section>
+
+    <section class="section">
+      <h2>反馈导出</h2>
+      <p class="notice">第一版 Review Console 不会自动写回项目文件。请复制或下载反馈 JSON 后，让 Claude / Codex 继续处理。</p>
+      <div class="actions">
+        <button type="button" id="copyFeedback">复制反馈 JSON</button>
+        <button type="button" id="downloadFeedback" class="secondary">下载反馈 JSON</button>
+        <span class="muted" id="copyStatus" aria-live="polite"></span>
+      </div>
+      <pre id="feedbackPreview"></pre>
+    </section>
+  </main>
+
+  <template id="mat-tpl-0"><div class="md-content"><h2 class="md-h">Phase 1A 竞品页面与交互体验 Benchmark</h2>
+<blockquote class="md-bq"><p>更新日期：2026-08-13 | 研究人：Codex | Target Surface：web-only</p></blockquote>
+<h3 class="md-h">1. Benchmark 目标与证据边界</h3>
+<p>本阶段不是寻找可以照搬的游戏，而是回答三个下游问题：</p>
+<ol class="md-ol"><li>家长如何安全、快速地把设备交给 5 岁儿童？</li><li>儿童如何在不依赖文字的情况下理解“做什么动作—系统有没有看见—动作产生了什么结果”？</li><li>离散指令、直接跟手与叠高三种玩法如何逐关出现，而不增加必过手型？</li><li>角色切换、家长辅助和完成反馈应该以什么页面结构出现？</li></ol>
+<p>参考样本已由 PM 确认：</p>
+<ul class="md-ul"><li><a href="https://www.nexplayground.com/blog/new-bluey-game" target="_blank" rel="noopener">Bluey: Bust-a-Move</a></li><li><a href="https://www.nexplayground.com/how-it-works" target="_blank" rel="noopener">Nex Playground</a></li><li><a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games</a></li><li><a href="https://www.bluey.tv/blog/bluey-lets-play-mobile-app-is-available-now/" target="_blank" rel="noopener">Bluey: Let’s Play</a></li><li><a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird</a></li><li><a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride</a></li><li><a href="https://www.forbes.com/sites/lananhnguyen/2014/02/11/exclusive-flappy-bird-creator-dong-nguyen-says-app-gone-forever-because-it-was-an-addictive-product/" target="_blank" rel="noopener">Flappy Bird 创作者访谈</a></li><li><a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture_recognizer" target="_blank" rel="noopener">MediaPipe Gesture Recognizer</a></li></ul>
+<p>证据来自官方产品页、帮助中心、公开玩法说明、视频文字稿和官方公开截图。本阶段没有购买 Nex 硬件或登录付费 App，因此关于完整应用内页面层级的判断标记为“结构推导”，不冒充真实设备可用性测试。</p>
+<hr class='md-hr'>
+<h3 class="md-h">2. 样本权重与使用方式</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>样本</th><th>主要参考价值</th><th>参考权重</th><th>不作为何种依据</th></tr></thead><tbody><tr><td>Bluey: Bust-a-Move</td><td>情境化动作、亲子辅助、低龄练习模式、单目标游戏画面</td><td>高</td><td>不复制 IP、美术、剧情或小游戏内容</td></tr><tr><td>Nex Playground</td><td>家长设置/儿童游玩分离、摄像头信任、空间提示、输入降级</td><td>高</td><td>不复制专用硬件、账号、订阅和一小时首次安装</td></tr><tr><td>GoNoodle Games</td><td>口令节奏、倒计时、动作重复、幽默鼓励、跑酷指令序列</td><td>中</td><td>不照搬高强度节奏、年长儿童内容或积分成长系统</td></tr><tr><td>Bluey: Let’s Play</td><td>无失败探索、角色/场景选择、低龄自主感</td><td>中低</td><td>不照搬触控沙盒、房间内容和付费解锁结构</td></tr><tr><td>Square Bird</td><td>单输入叠高、障碍高度预读、连续正确奖励</td><td>高</td><td>不照搬提速、精确层数惩罚、敌人和美术</td></tr><tr><td>Jetpack Joyride</td><td>自动前进、纵向控制、收集与躲避组合</td><td>中</td><td>不照搬无尽、高强度、武器或 10+ 内容</td></tr><tr><td>Flappy Bird</td><td>极少输入和清晰纵向通道；用于定义反例边界</td><td>中低</td><td>重力下坠、窄缝、碰撞即死、重复重开明确排除</td></tr><tr><td>MediaPipe / Liberi 研究</td><td>位置与类别解耦、输入平滑、单一动作按情境解释、低失败代价</td><td>高</td><td>不把技术状态暴露给儿童；研究样本不等同于典型 5 岁儿童</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">3. 单产品体验拆解</h3>
+<h4 class="md-h">3.1 Bluey: Bust-a-Move</h4>
+<p><strong>公开体验结构</strong>：选择游戏 → 选择单/多人和难度 → 用与情境一致的身体动作完成单一目标 → 分数/关卡/动画反馈 → 再玩或换小游戏。</p>
+<p><strong>值得继承</strong>：</p>
+<ul class="md-ul"><li>动作与故事目标一致：跳跃是顶气球、姿势是模仿动物、挥动是击球，孩子不需要先理解抽象控制器映射。</li><li>单人模式之外保留家长/第二玩家辅助。Keepy Uppy 允许用遥控器控制 Chattermax 帮忙，说明“辅助但不抢走主角”是亲子游戏的有效角色分工。</li><li>Cricket 提供不结束的练习模式并明确适合幼儿，证明低龄游戏需要“可练习、无淘汰”的入口。</li><li>官方公开截图显示游戏画面采用一个主场景、顶部少量进度信息、角色动作和目标物居中，不依赖高密度菜单。</li></ul>
+<p><strong>不适合照搬</strong>：</p>
+<ul class="md-ul"><li>六个小游戏会分散本项目最重要的手势验证。</li><li>全身跳、舞、挥拍需要更大的活动空间；本项目应先用近景静态手势降低门槛。</li><li>Play Pass、官方角色、剧集音乐和美术均不属于本项目资产范围。</li></ul>
+<p><strong>对本项目的决定</strong>：每个手势必须有情境含义；Gesture Lab 使用同一动作语义，不先教技术名称。家长键盘辅助作为并行控制通道，但不能自动替孩子完成全部关卡。</p>
+<p>来源：<a href="https://www.nexplayground.com/blog/new-bluey-game" target="_blank" rel="noopener">Nex 官方完整玩法说明</a>、<a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey 官方发布说明</a></p>
+<h4 class="md-h">3.2 Nex Playground</h4>
+<p><strong>公开体验结构</strong>：成人连接设备/网络/账号 → 选择游戏 → 摄像头自动跟踪活跃玩家 → 儿童用身体游玩；遥控器只负责导航，游戏本身不需要控制器。</p>
+<p><strong>值得继承</strong>：</p>
+<ul class="md-ul"><li>明确区分“成人导航”和“儿童动作”。这避免孩子在浏览器权限、设置和游戏之间切换心智。</li><li>对摄像头隐私给出可见承诺：本机处理、不存储视频、实体隐私盖。我们的浏览器版没有实体盖，但必须提供同等级的文字说明、摄像头状态和一键关闭。</li><li>明确空间条件和设备摆放。Nex 建议约 6×6 英尺空间，并指出部分高强度游戏可能让 6 岁以下儿童困难；这支持本项目使用手部近景、坐姿可玩和启动前取景检查。</li><li>“简单自然的动作 + 低延迟”是产品承诺，说明识别状态应通过游戏反馈体现，而不是让孩子阅读置信度数字。</li></ul>
+<p><strong>不适合照搬</strong>：</p>
+<ul class="md-ul"><li>官方首次设置可能包含电视、Wi-Fi、账号、下载和遥控器，帮助中心给出的预计时间最长可达一小时；浏览器 MVP 的目标应是家长 60 秒内进入 Gesture Lab。</li><li>游戏目录、订阅和下载状态不是本项目所需信息架构。</li></ul>
+<p><strong>对本项目的决定</strong>：设置层只对家长显示，儿童层全屏；首次流程限定为“隐私说明 → 摄像头授权 → 取景检查 → Gesture Lab”。拒绝权限、识别不稳定或家长主动选择时，立即进入键盘模式。</p>
+<p>来源：<a href="https://www.nexplayground.com/how-it-works" target="_blank" rel="noopener">Nex How It Works</a>、<a href="https://support.nexplayground.com/en/articles/13146476-how-do-i-setup-playground-for-the-first-time" target="_blank" rel="noopener">首次设置帮助</a>、<a href="https://www.nexplayground.com/en-gb/buy/playground" target="_blank" rel="noopener">空间与隐私 FAQ</a></p>
+<h4 class="md-h">3.3 GoNoodle Games</h4>
+<p><strong>公开体验结构</strong>：简短故事目标 → 倒计时 → 连续口头动作指令 → 角色即时幽默反馈 → 分段升级 → 完成鼓励。</p>
+<p>公开的 Fabio's Meatball Run 和 Big Nate's Detention Dash 反复使用 <code>Jump</code>、<code>Duck</code>、<code>Dodge left/right</code> 等单步口令，并在动作之间穿插笑话、角色反应和阶段庆祝。这种结构的价值不在于摄像头技术，而在于“一个时刻只要求一个动作”。</p>
+<p><strong>值得继承</strong>：</p>
+<ul class="md-ul"><li>动作前有明确口令，开始前有倒计时。</li><li>相同动作多次复现，让孩子在真实关卡里练习，而不是只在教程里成功一次。</li><li>错过动作后故事仍然继续，不依赖失败重开。</li><li>成人功能与儿童内容有显式分隔，站点多处提示需要成人帮助进入设置区域。</li></ul>
+<p><strong>不适合照搬</strong>：</p>
+<ul class="md-ul"><li>示例内容标注 3–5 年级，语速、梗密度和动作频率明显高于 5 岁儿童首玩需求。</li><li>连续左右躲避需要全身位置识别，本项目 P0 不做。</li><li>积分、角色升级和内容导航会增加 MVP 噪音。</li></ul>
+<p><strong>对本项目的决定</strong>：每个动作使用“视觉图标 + 一句中文语音 + 角色预演”，口令后预留宽松响应窗口。GoNoodle 式口令序列只用于 L1 <code>command_runner</code>：拳→掌高跳，末段同一张掌按情境完成伙伴接力；L2/L3 改变的是玩法关系，不继续堆叠口令。</p>
+<p>来源：<a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games</a>、<a href="https://www.gonoodle.com/videos/7YjO6X/fabios-meatball-run" target="_blank" rel="noopener">Fabio's Meatball Run</a>、<a href="https://www.gonoodle.com/videos/rwq6MY/big-nates-detention-dash" target="_blank" rel="noopener">Big Nate's Detention Dash</a></p>
+<h4 class="md-h">3.4 Bluey: Let’s Play</h4>
+<p><strong>公开体验结构</strong>：选择房间/角色 → 自由触碰环境和道具 → 重现熟悉情境 → 无固定失败地持续探索。</p>
+<p><strong>值得继承</strong>：</p>
+<ul class="md-ul"><li>Bluey 和 Bingo 作为可选角色，验证了低龄儿童理解“选择谁来玩”比理解复杂属性表更自然。</li><li>房间探索、做饭、玩玩具和音乐等活动没有传统失败压力，适合作为本项目低挫败基调参考。</li><li>免费内容先提供少量角色和地点，说明首次体验应先让孩子成功，而不是先展示大量锁定内容。</li></ul>
+<p><strong>不适合照搬</strong>：</p>
+<ul class="md-ul"><li>触控沙盒没有横版卷轴的节奏和手势反馈要求。</li><li>订阅解锁角色/房间不适合家庭 MVP。</li><li>官方角色、家庭场景和道具不进入本项目资产。</li></ul>
+<p><strong>对本项目的决定</strong>：角色切换只显示两个大头像和能力图形，不展示数值；L1 末段的伙伴接力复用拳→掌，不新增角色切换专用手型。关卡结果强调收集贴纸和角色庆祝，不使用失败评级或成绩锁关。</p>
+<p>来源：<a href="https://www.bluey.tv/blog/bluey-lets-play-mobile-app-is-available-now/" target="_blank" rel="noopener">Bluey: Let’s Play 官方说明</a></p>
+<h4 class="md-h">3.5 多玩法三关 Benchmark</h4>
+<p>本轮用户确认三个短关卡必须形成明显不同的玩法。Benchmark 的结论是“新增能力与空间问题，而不是新增手型”。</p>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>参考机制</th><th>经验证的核心关系</th><th>本项目可复用方式</th><th>5 岁版本必须删除的部分</th></tr></thead><tbody><tr><td>GoNoodle / Bluey 体感</td><td>一个时刻一个动作，动作与故事目标一致</td><td>L1 用拳→掌完成高跳；末段同一动作按伙伴门情境变为接力</td><td>高频连续口令、复杂文本和全身高强度动作</td></tr><tr><td>Nex / Fruit Ninja 体感</td><td>身体动作与画面结果直接、即时对应</td><td>L2 掌心 Y 直接控制角色纵向位置；游戏内同步显示跟手爪印</td><td>以技术置信度取代儿童可理解反馈</td></tr><tr><td>Square Bird</td><td>单一输入叠加高度，以障碍外形表达需要几层</td><td>L3 每次完成拳→掌生成一朵云，明显障碍只需 1–3 朵；多叠无害</td><td>精确层数惩罚、持续提速、敌人和碰撞失败</td></tr><tr><td>Jetpack Joyride / Flappy Bird</td><td>自动前进配合纵向避障，输入少但障碍可组合</td><td>只借鉴 L2 的自动前进和清晰上下通道</td><td>经典 Flappy 重力下坠、窄缝、碰撞即死、无限重开</td></tr></tbody></table></div>
+<p>MediaPipe 会同时输出手势类别和手部关键点，因此 L2 的掌心位置可以在分类为 <code>Unknown</code> 时继续工作。分类只服务 L1/L3 的离散拳掌动作，不成为位置控制的前置门槛。<a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture_recognizer" target="_blank" rel="noopener">MediaPipe 官方说明</a></p>
+<p>儿童 exergame <code>Liberi</code> 使用单一动作键按游戏情境决定动作，对运动输入做平滑，并让失败可见但只需很少重复。这支持本项目复用拳掌、平滑掌心位置和无 Game Over；其样本为 8–12 岁 ASD 儿童，因此只作为设计原则参考，不外推为 5 岁可用性结论。<a href="https://www.frontiersin.org/journals/virtual-reality/articles/10.3389/frvir.2022.817303/full" target="_blank" rel="noopener">Frontiers Liberi 研究</a></p>
+<p><strong>已确认的三关源真相</strong>：</p>
+<ol class="md-ol"><li><strong>L1 <code>command_runner</code>｜40 秒</strong>：自动前进；握拳上膛、张掌高跳；末段伙伴门复用同一拳→掌完成情境接力。</li><li><strong>L2 <code>hand<em>follow</em>dodge</code>｜45 秒</strong>：掌心 Y 直接控制角色在宽通道中上下躲避；检测到手部关键点即可跟随，手势分类为 <code>Unknown</code> 也不能停。</li><li><strong>L3 <code>cloud_stack</code>｜50 秒</strong>：每个稳定的拳→掌边沿触发叠一朵云，以 1、2、3 朵的可读障碍逐步组合；多叠无害，少叠由伙伴补云并安全托底。</li></ol>
+<p>三关均无生命值、无 Game Over、无成绩锁关；完成本关即可继续。<code>Pointing_Up</code> / <code>Victory</code> 不作为主线手势。</p>
+<p>来源：<a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey 官方 Bust-a-Move</a>、<a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games</a>、<a href="https://www.nexplayground.com/en-ie/blog/the-ultimate-nex-playground-game-guide" target="_blank" rel="noopener">Nex 低龄游戏指南</a>、<a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird 官方 Google Play 页面</a>、<a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride 官方 Google Play 页面</a>、<a href="https://www.forbes.com/sites/lananhnguyen/2014/02/11/exclusive-flappy-bird-creator-dong-nguyen-says-app-gone-forever-because-it-was-an-addictive-product/" target="_blank" rel="noopener">Flappy Bird 创作者访谈</a></p>
+<hr class='md-hr'>
+<h3 class="md-h">4. 继承矩阵</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>体验环节</th><th>竞品有效模式</th><th>本项目继承决策</th><th>优先级</th><th>明确不做</th></tr></thead><tbody><tr><td>家长进入</td><td>成人负责设置，儿童负责游玩</td><td>家长欢迎页 + 隐私说明 + 模式选择</td><td>P0</td><td>账号、订阅、内容商店</td></tr><tr><td>摄像头授权</td><td>可见隐私承诺和硬件/空间说明</td><td>授权前说明“只在本机处理”，显示摄像头状态和关闭入口</td><td>P0</td><td>后台录制、上传、隐藏权限状态</td></tr><tr><td>取景检查</td><td>系统确认玩家进入追踪范围</td><td>显示手部轮廓目标区；识别到手后给友好动画</td><td>P0</td><td>要求完整身体或 6×6 英尺空间</td></tr><tr><td>动作教学</td><td>单动作示范、自然语义、练习模式</td><td>Gesture Lab 完成一次拳→掌→拳即可进入，留页可自愿复练</td><td>P0</td><td>一次展示全部能力、强制刷次数</td></tr><tr><td>关卡指令</td><td>少量动作词汇、单步口令、逐关切换空间问题</td><td>L1 拳掌高跳/接力，L2 掌心 Y 跟手，L3 拳掌叠云；每关只显示当前控制图示</td><td>P0</td><td>每关新增一个必需手型、高频连续口令</td></tr><tr><td>即时反馈</td><td>世界反应、音效、进度变化</td><td>L1/L3 触发即动作；L2 关键点存在即持续跟手，并显示游戏内爪印</td><td>P0</td><td>向孩子显示置信度、把 <code>Unknown</code> 当失败</td></tr><tr><td>家长辅助</td><td>第二输入通道帮助但不抢主角</td><td>摄像头失败可完整切换键盘；L1/L3 用 Space，L2 用 ↑/↓</td><td>P0</td><td>自动代玩或家长长期持有主控制</td></tr><tr><td>角色切换</td><td>两个熟悉角色，大图选择</td><td>L1 末段伙伴门复用拳→掌情境接力；2.5 秒后显示大头像兜底</td><td>P0 可降级</td><td>角色属性表、装备、付费解锁、必需 V 手势</td></tr><tr><td>完成反馈</td><td>分段庆祝、奖励动画、再来一次</td><td>贴纸册 + 双角色庆祝 + 再玩一次</td><td>P0</td><td>失败页、排行榜、星级羞辱</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">5. 推荐页面骨架</h3>
+<pre class="md-pre"><code>家长欢迎页
+  ↓
+隐私与模式选择（摄像头 / 键盘）
+  ↓
+摄像头授权与取景检查 ──权限拒绝/识别失败──→ 键盘模式说明
+  ↓                                         ↓
+Gesture Lab：握拳准备 / 张掌行动 ←─────────┘
+  ↓ 完成拳→掌→拳或家长选择按键
+三关地图
+  ↓
+L1 指令跑酷 40s → 单关庆祝 → L2 跟手躲避 45s → 单关庆祝 → L3 云朵叠高 50s
+  ↓
+贴纸庆祝 / 回地图 / 再玩本关</code></pre>
+<p><strong>页面角色分工</strong>：</p>
+<ul class="md-ul"><li>家长层：文字可以较完整，负责隐私、权限、模式和退出。</li><li>儿童层：全屏、极少文字、一个时刻一个目标，以图形、语音、角色动作反馈为主。</li><li>系统层：持续监控摄像头、手是否入镜、识别稳定性和降级状态，但不把技术细节直接暴露给孩子。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">6. 不可丢失点</h3>
+<ol class="md-ol"><li><strong>Gesture Lab 是正式产品页面，不是隐藏调试工具。</strong> 它决定能否进入手势模式，并记录每类手势成功/混淆结果。</li><li><strong>家长控制和儿童控制分层。</strong> 摄像头权限、退出和模式切换必须避免被儿童误触。</li><li><strong>每关只教当前控制关系。</strong> L1 是拳→掌高跳/末段接力，L2 是“手在哪里，小狗就去哪里”，L3 是拳→掌叠云；每关先有安全示范段。</li><li><strong>失败不打断故事。</strong> 碰撞只产生轻微弹开、短暂减速或泡泡护盾，几秒内自动恢复；已经获得的贴纸和收集物全部保留。</li><li><strong>任何摄像头阻塞都有键盘出口。</strong> 权限拒绝、手离开画面、光线不足和持续低置信度都不能形成死路。</li><li><strong>角色切换保留产品价值，但不增加必需手型。</strong> L1 末段伙伴门复用拳→掌并保留大头像，玩法目标优先于坚持某一种手势。</li><li><strong>位置与分类解耦。</strong> L2 只要有可靠关键点就持续跟手，<code>Unknown</code> 不得冻结角色；丢手短时保持，持续丢失才暂停。</li><li><strong>动作反馈与目标结算解耦。</strong> L1/L3 无目标时合法拳掌也必须产生角色动作；目标窗口只负责越障/收集判定。</li><li><strong>不使用经典 Flappy 失败循环。</strong> 不做重力下坠、窄缝、碰撞即死或失败重开；碰撞只弹开、触发护盾或自动托底，不扣除任何已经获得的奖励。</li><li><strong>不使用未经授权的官方素材。</strong> 只继承交互原则，不复制角色、美术、音乐、台词或关卡内容。</li></ol>
+<hr class='md-hr'>
+<h3 class="md-h">7. 下游架构影响</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Phase 1A 结论</th><th>对 Phase 2 的直接影响</th></tr></thead><tbody><tr><td>家长层 / 儿童层分离</td><td>架构需拆为 Parent Setup Shell 与 Child Play Surface</td></tr><tr><td>Gesture Lab 为 P0</td><td>手势校准与可用性数据不能只放在开发工具中</td></tr><tr><td>输入可降级</td><td>需要统一 Input Adapter，让摄像头和键盘都能提供离散拳掌动作与连续上下位置能力；键盘映射固定为 L1/L3 Space、L2 ↑/↓</td></tr><tr><td>三种玩法 + 两种手型/一个位置轴</td><td>关卡系统需要 <code>command<em>runner</code>、<code>hand</em>follow<em>dodge</code>、<code>cloud</em>stack</code> 三种 mechanic；Input Adapter 同时输出离散动作边沿与连续掌心 Y</td></tr><tr><td>失败不打断故事</td><td>不设计生命值与 Game Over，碰撞进入短恢复状态</td></tr><tr><td>角色切换可降级</td><td>L1 末段情境接力复用拳掌，并保留大头像辅助，不能耦合新增手型</td></tr><tr><td>本地隐私承诺</td><td>Camera Service 默认不录制、不上传，并提供可见状态与停止入口</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">8. PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：</li></ul>
+<p>  - 采用“家长分步设置 + Gesture Lab + 三关地图 + 多玩法运行时宿主 + 单关庆祝”的渐进骨架。<br>  - L1 为 40 秒 <code>command<em>runner</code>（拳→掌高跳/末段情境接力），L2 为 45 秒 <code>hand</em>follow<em>dodge</code>（掌心 Y 直接跟手且 <code>Unknown</code> 仍跟手），L3 为 50 秒 <code>cloud</em>stack</code>（拳→掌叠 1–3 朵云）。<br>  - 键盘降级固定为 L1/L3 使用 Space、L2 使用 ↑/↓；软碰撞不扣除任何已经获得的贴纸或收集物。<br>  - 继承 Nex 的直接动作反馈、GoNoodle/Bluey 的情境指令、Square Bird 的叠高越障和 Jetpack 的自动前进纵向躲避；Gesture Lab、统一输入降级、无 Game Over 和无成绩锁关均为 P0。</p>
+<ul class="md-ul"><li>被放弃的方案：</li></ul>
+<p>  - 不做专用硬件式复杂设置、内容目录/订阅、全身高强度动作、每关新增必需手型、排行榜、失败评级和官方 IP 素材复制。<br>  - 经典 Flappy 的重力、窄缝、碰撞即死与反复重开不进入主线；不采用 <code>Pointing_Up</code> / <code>Victory</code> 必过方案。<br>  - 不把摄像头置信度、模型状态等技术细节直接展示给儿童。</p>
+<ul class="md-ul"><li>需要 PM 确认的问题：</li></ul>
+<p>  - 无。本轮用户已明确确认多玩法三关、<code>web-only</code>、不新增必过手型、无 Game Over 和无成绩锁关，本 Review Slice 状态为 <code>confirmed</code>。</p>
+<ul class="md-ul"><li>不需要 PM 审查的执行细节：</li></ul>
+<p>  - 各竞品营销页层级、付费价格、具体视频台词和具体识别参数。</p>
+<ul class="md-ul"><li>进入下一阶段的条件：</li></ul>
+<p>  - 已满足：PM 已确认当前 Benchmark 结论，可继续按相同源真相同步 Phase 2 至 04B。</p></div></template>
+<template id="mat-tpl-1"><div class="md-content"><h2 class="md-h">产品方向研究：5 岁儿童手势控制横版亲子游戏</h2>
+<blockquote class="md-bq"><p>更新日期：2026-08-13 | 研究人：Codex</p></blockquote>
+<h3 class="md-h">核心判断</h3>
+<p><strong>结论</strong>：Careful Go</p>
+<p><strong>一句话理由</strong>：摄像头体感亲子游戏、单输入横版玩法和布鲁伊家庭体感产品都已有真实验证，浏览器也能同时取得手势类别与手部关键点；本项目可用两种手型和掌心位置构成三种不同玩法，不必用新增手型制造丰富度。</p>
+<p><strong>信心程度</strong>：中 — 技术与品类证据较强，目标用户和家庭场景也已明确；但尚无本项目真实儿童试玩数据，最核心的手势可用性假设仍未验证。</p>
+<p><strong>Target Surface</strong>：web-only</p>
+<p><strong>端型选择依据</strong>：PM 已于 2026-08-11 确认首版采用浏览器、优先适配带摄像头的笔记本电脑；移动端不进入本轮 04A/04B 默认范围。</p>
+<hr class='md-hr'>
+<h3 class="md-h">市场机会</h3>
+<p><strong>规模与趋势</strong>：</p>
+<ul class="md-ul"><li>官方 <code>Bluey: Bust-a-Move</code> 已把布鲁伊、家庭共同游玩和体感小游戏结合起来，包含定格舞、Keepy Uppy、模仿动物、烹饪动作与壁球等五类玩法，证明“布鲁伊 × 动作控制 × 家庭娱乐”不是纯概念。<a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey 官方介绍</a></li><li>Nex Playground 将“无需控制器、摄像头体感、5 岁起、家庭多人和隐私安全”作为核心卖点，并提供包括 Bluey 在内的儿童 IP 游戏，说明低龄家庭体感游戏已经形成成熟产品形态。<a href="https://www.nexplayground.com/home-kids" target="_blank" rel="noopener">Nex Playground 官方页面</a></li><li>GoNoodle Games 让儿童通过跳跃、下蹲和躲闪控制移动小游戏，强调无需控制器、数据连接或额外硬件，说明普通智能设备上的动作控制具有明确使用场景。<a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle 官方页面</a></li><li>Square Bird 使用一次点击增加角色脚下堆叠高度，再以不同高度越过障碍，验证了“一个输入、障碍组合逐步变化”的可读横版循环。<a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird 官方 Google Play 页面</a></li><li>Jetpack Joyride 以自动前进、单一纵向控制、收集与躲避构成主循环，验证了低输入词汇也可以产生持续变化；其高强度、无尽和面向 10 岁以上的内容不是本项目目标。<a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride 官方 Google Play 页面</a></li><li>本项目是家庭 MVP，不以商业市场规模为 Go/No-Go 依据；本阶段不引用缺少可靠口径的 TAM 数据。</li></ul>
+<p><strong>切入点判断</strong>：现在适合做“验证型家庭原型”，因为浏览器端 2D 游戏与实时手势识别都已有可直接使用的基础设施。差异化不在于发明体感玩法，而在于：无需专用主机、打开浏览器即可玩、针对单个 5 岁儿童降低手势数量和失败惩罚，并允许家长陪玩或随时切换到键盘降级控制。</p>
+<hr class='md-hr'>
+<h3 class="md-h">竞品格局</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>竞品</th><th>核心定位</th><th>关键优势</th><th>主要局限</th></tr></thead><tbody><tr><td><a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey: Bust-a-Move</a></td><td>官方布鲁伊体感小游戏合集</td><td>IP、家庭共同游玩、动作与剧集情节结合紧密</td><td>依赖 Nex Playground 与 Play Pass；不是浏览器轻量体验</td></tr><tr><td><a href="https://www.nexplayground.com/home-kids" target="_blank" rel="noopener">Nex Playground</a></td><td>面向 5 岁以上家庭的摄像头体感主机</td><td>无控制器、多人、成熟游戏目录、隐私和儿童安全定位清晰</td><td>需要专用硬件；完整身体追踪对空间和动作能力有要求</td></tr><tr><td><a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games</a></td><td>用跳、蹲、躲等动作驱动的儿童移动小游戏</td><td>无额外控制器、动作直观、强调身体活动</td><td>以移动 App/内容生态为主，不提供本项目想要的角色切换横版体验</td></tr><tr><td><a href="https://www.bluey.tv/blog/bluey-lets-play-mobile-app-is-available-now/" target="_blank" rel="noopener">Bluey: Let’s Play</a></td><td>布鲁伊家庭场景中的触控探索与角色扮演</td><td>低龄熟悉角色、可探索房间、可切换角色与情境</td><td>主要是触控沙盒，不验证摄像头手势和横版卷轴机制</td></tr><tr><td><a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird</a></td><td>单输入叠高越障横版游戏</td><td>障碍高度就是动作目标，输入与结果关系清晰</td><td>原作追求精确叠层、提速并包含敌人；对 5 岁儿童需要大幅容错</td></tr><tr><td><a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride</a></td><td>单触纵向飞行的自动卷轴游戏</td><td>自动前进、收集和纵向避障形成清晰闭环</td><td>原作节奏强、无尽且标注 10+；只借鉴抽象控制关系</td></tr><tr><td><a href="https://www.forbes.com/sites/lananhnguyen/2014/02/11/exclusive-flappy-bird-creator-dong-nguyen-says-app-gone-forever-because-it-was-an-addictive-product/" target="_blank" rel="noopener">Flappy Bird 创作者访谈</a></td><td>单输入穿越纵向障碍</td><td>证明极少输入和清晰障碍可形成强反馈</td><td>窄缝、重力下坠、碰撞即死和反复重开明确不进入主线</td></tr></tbody></table></div>
+<p><strong>差异化空间</strong>：本项目不应复制官方布鲁伊小游戏内容，而应验证一个更窄的体验：笔记本浏览器即开即玩、单人优先、三个合计 135 秒的短关卡、两种手型与掌心位置复用为三种玩法、无账号无广告、视频只在本机处理。若未来公开发行，必须切换为原创角色或先取得正式授权。</p>
+<p><strong>Phase 1A 覆盖范围</strong>：<code>01A-competitor-page-experience.md</code> 负责把上述参考收敛为“家长设置 → 儿童校准 → 三种玩法 → 结果”的页面与交互结构，并只继承抽象机制，不复制视觉素材。</p>
+<hr class='md-hr'>
+<h3 class="md-h">用户痛点</h3>
+<p><strong>痛点优先级排序</strong>（按频率 × 强度）：</p>
+<ol class="md-ol"><li><strong>传统控制方式对 5 岁儿童不够自然</strong></li></ol>
+<p>   - 具体表现：“我想直接用身体或手来玩，不想先记住一排按键。”<br>   - 信息来源：PM 一手目标 + 同类产品定位验证；Nex 和 GoNoodle 都把“动作就是控制器”作为核心价值。<br>   - 当前解法：家长代操作、使用触摸屏、简化键盘按键或购买体感主机。<br>   - 解法的不足：家长代操作削弱自主感；触屏不符合横版体感目标；专用主机增加成本和准备门槛。</p>
+<ol class="md-ol"><li><strong>误识别会把动作游戏迅速变成挫败体验</strong></li></ol>
+<p>   - 具体表现：“我明明做了动作，角色为什么没跳？”<br>   - 信息来源：技术文档 + 产品推断，尚待真实试玩验证。MediaPipe Web 能实时输出预设手势与手部关键点，但视频识别调用会同步占用 UI 线程，需要节流或移至 Worker。<a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture<em>recognizer/web</em>js" target="_blank" rel="noopener">MediaPipe Web 指南</a><br>   - 当前解法：提高识别阈值、要求更标准动作、反复教学。<br>   - 解法的不足：阈值过高会漏识别，过低会误触；要求孩子做“机器友好”的标准动作会损害自然性。</p>
+<ol class="md-ol"><li><strong>家长需要放心且低成本地完成摄像头设置</strong></li></ol>
+<p>   - 具体表现：“摄像头拍到什么、会不会上传、拒绝权限后还能不能玩？”<br>   - 信息来源：浏览器权限要求与儿童隐私规则。浏览器摄像头需要安全上下文并由用户授权；儿童照片、视频和生物识别信息可能属于受保护个人信息。<a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia" target="_blank" rel="noopener">MDN <code>getUserMedia</code></a>、<a href="https://consumer.ftc.gov/articles/protecting-your-childs-privacy-online" target="_blank" rel="noopener">FTC 儿童隐私说明</a><br>   - 当前解法：直接弹出浏览器权限框，或用键盘替代。<br>   - 解法的不足：没有家长说明时容易产生不信任；没有降级控制会让拒绝权限等于无法游玩。</p>
+<ol class="md-ol"><li><strong>家长希望屏幕活动是主动且可共同参与的</strong></li></ol>
+<p>   - 具体表现：“可以玩屏幕，但最好不是一直坐着看。”<br>   - 信息来源：外部专业建议与同类产品定位。NAEYC 建议低龄技术体验应主动、动手、赋能儿童并提供适应性支持，且不替代真实世界活动。<a href="https://www.naeyc.org/node/3796" target="_blank" rel="noopener">NAEYC 儿童发展原则</a><br>   - 当前解法：观看运动视频、跟跳、家长陪玩或限制屏幕时长。<br>   - 解法的不足：纯观看缺少因果反馈；复杂游戏又容易让家长成为长期操作员。</p>
+<hr class='md-hr'>
+<h3 class="md-h">核心假设</h3>
+<p>如果以下假设不成立，Careful Go 的判断就不成立：</p>
+<ol class="md-ol"><li><strong>拳掌与位置输入可分开成立</strong>：5 岁儿童能完成 <code>Closed<em>Fist → Open</em>Palm</code> 的离散动作；同时，只要 MediaPipe 仍输出手部关键点，掌心 Y 就可持续驱动角色，即使手势类别是 <code>Unknown</code>。→ 验证方式：Gesture Lab 完成一轮拳→掌→拳；真实儿童样本阶段验证拳掌各至少 8/10，并单独验证掌心从舒适上位移动到下位时角色连续跟随。</li><li><strong>低挫败三关循环</strong>：自动卷轴、宽松碰撞、即时反馈与自然停点能让孩子独立完成 40/45/50 秒三关。→ 验证方式：首次试玩在一次示范后完成，成人干预不超过 2 次，不出现因误识别连续卡住超过 10 秒；收集成绩不影响解锁。</li><li><strong>三种控制语法可以逐关理解</strong>：第 1 关 <code>command<em>runner</code> 用拳→掌高跳并在末段情境接力；第 2 关 <code>hand</em>follow<em>dodge</code> 用掌心 Y 直接跟手躲避；第 3 关 <code>cloud</em>stack</code> 用拳→掌叠 1–3 朵云。→ 验证方式：每关开头提供一段安全练习；孩子能在第一个正式障碍前做出对应控制，不新增第三种必需手型。</li><li><strong>家长设置可接受</strong>：家长能理解本地处理说明，并在 60 秒内完成摄像头授权和校准。→ 验证方式：用全新浏览器配置走一次家长设置流程；拒绝权限时键盘模式仍可通关。</li></ol>
+<hr class='md-hr'>
+<h3 class="md-h">风险点</h3>
+<ol class="md-ol"><li><strong>儿童手势误识别与输入延迟</strong></li></ol>
+<p>   - 影响：高；它直接决定游戏是否有趣，而不是单纯技术指标。<br>   - 应对思路：Gesture Lab 先于游戏；离散拳掌采用连续帧确认、动作冷却和重新握拳上膛；掌心位置独立使用关键点、死区与平滑，不因类别为 <code>Unknown</code> 停止；保留清晰反馈和键盘降级。</p>
+<ol class="md-ol"><li><strong>角色/IP 授权边界</strong></li></ol>
+<p>   - 影响：高；Bluey 官方页面明确标注角色和标识受 Ludo Studio/BBC Studios 授权体系保护。<br>   - 应对思路：当前代码和仓库只使用原创蓝色/橙色小狗占位角色；私人本地替换与公开发行分开管理，未获授权不公开使用官方素材。</p>
+<ol class="md-ol"><li><strong>浏览器权限与部署环境</strong></li></ol>
+<p>   - 影响：中；<code>getUserMedia</code> 需要 HTTPS 或受信任本地环境，权限拒绝会阻断摄像头输入。<br>   - 应对思路：开发用 localhost，预览部署使用 HTTPS；先展示家长说明，再请求权限；提供重新授权指导和键盘模式。</p>
+<ol class="md-ol"><li><strong>身体差异、空间和疲劳</strong></li></ol>
+<p>   - 影响：中；孩子的动作幅度、身高、左右手和活动空间不同。<br>   - 应对思路：优先静态手势而非大幅跳跃；允许坐姿；校准时同时检查手是否进入取景框；单局约 3 分钟并可随时暂停。</p>
+<ol class="md-ol"><li><strong>三种玩法的控制语法切换造成认知负担</strong></li></ol>
+<p>   - 影响：中；即使手型不增加，离散跳跃、连续跟手和离散叠云之间仍可能互相干扰。<br>   - 应对思路：三关顺序固定；每关开场提供 3–5 秒无障碍安全段和唯一图形提示。第 2 关明确写成“手在哪里，小狗就去哪里”，且不要求张掌；第 3 关重新示范拳→掌。全程不增加生命值、Game Over、成绩锁关或组合技。</p>
+<hr class='md-hr'>
+<h3 class="md-h">建议下一步</h3>
+<p><strong>如果 Careful Go</strong>：</p>
+<ul class="md-ul"><li>最需要尽快验证的假设是：5 岁儿童的拳→掌完成率、掌心 Y 跟手稳定性，以及逐关切换控制语法时是否无需成人反复解释。</li><li>建议 MVP 范围：家长说明页、Gesture Lab、三关地图、40 秒 <code>command<em>runner</code>、45 秒 <code>hand</em>follow<em>dodge</code>、50 秒 <code>cloud</em>stack</code>、单关庆祝页、键盘降级、本地摄像头处理。关卡完成即可继续，收集数只用于庆祝反馈，不设置 Game Over 或成绩锁关。</li><li>下游行动：以当前已确认源真相同步 Phase 1A 至 04B；Gesture Lab 继续作为 P0 产品页面，而不是隐藏的开发调试页。</li><li>技术建议：Phaser 负责浏览器 2D 游戏循环；MediaPipe Tasks Vision 负责手势输入；输入层与游戏指令层解耦。Phaser 官方定位即浏览器 2D 游戏并支持 JavaScript/TypeScript。<a href="https://phaser.io/why-phaser" target="_blank" rel="noopener">Phaser 官方说明</a></li></ul>
+<p><strong>本轮不覆盖的端型 / 后续扩展</strong>：</p>
+<ul class="md-ul"><li><code>mobile-only</code> 与 <code>web-mobile-parallel</code> 不在本轮范围。</li><li>手机和平板适配、原生 App、多人、账号、排行榜、超过三关的内容扩展、云端视频分析不进入 04A/04B 默认原型和 QA。</li><li>公开发行和商业化不属于本轮目标；若方向改变，必须重新评估授权、隐私合规和发布渠道。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">用户任务类型与页面形态启发</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>核心任务</th><th>对象规模</th><th>用户需要比较的字段</th><th>推荐页面形态</th><th>依据</th></tr></thead><tbody><tr><td>家长完成权限与环境设置</td><td>1 个设备、1 个摄像头</td><td>权限状态、取景状态、识别状态、降级入口</td><td>低密度分步任务流</td><td>每一步只有一个主决策，需避免儿童误触系统设置</td></tr><tr><td>儿童学习输入</td><td>2 个手型 + 1 个掌心位置轴</td><td>当前示范、关键点反馈、动作是否上膛、跟手位置</td><td>全屏 Gesture Lab / 单卡教学</td><td>需要即时因果反馈，不适合菜单或表格</td></tr><tr><td>儿童选择并完成关卡</td><td>3 个顺序解锁关卡、少量即时对象</td><td>当前关卡、进度、收集数、唯一动作提示</td><td>单屏三关地图 + 全屏横版世界 + 浮动小教练</td><td>关卡提供自然停点；游戏主体不应被固定侧栏压缩</td></tr><tr><td>查看完成结果</td><td>1 次游玩结果</td><td>收集成果、角色庆祝、再玩一次</td><td>单屏庆祝卡</td><td>不使用排行榜或失败评分，强调完成与共同庆祝</td></tr></tbody></table></div>
+<p><strong>认可样本 / 参考原型拆解</strong>：</p>
+<ul class="md-ul"><li>可复用结构：Nex/GoNoodle 的“无需控制器、身体动作直接驱动结果”；Bluey 官方体感游戏的家庭共同参与与情境化；Square Bird 与 Jetpack Joyride 的少输入、多障碍组合。</li><li>可复用交互：动作示范、拳掌边沿触发、掌心位置直接跟手、逐关切换玩法、即时世界反馈、低门槛加入、家长辅助角色。</li><li>可复用字段模型：输入状态、识别置信度、动作冷却、当前角色、收集数、摄像头/键盘模式。</li><li>不可丢失点：本地处理说明、降级入口、校准可见性、低挫败碰撞、短回合。</li><li>不适合照搬点：专用主机前提、完整身体大动作、官方角色素材、订阅与付费门槛、复杂小游戏合集。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">信息来源</h3>
+<p><strong>一手信息</strong>：</p>
+<ul class="md-ul"><li>E-001：PM 原始目标——为 5 岁儿童设计手势控制、收集、避障和角色切换的横版游戏。</li><li>E-002：PM 已确认首版 <code>web-only</code>、笔记本摄像头优先、原创占位素材。</li></ul>
+<p><strong>搜索信息</strong>：</p>
+<ul class="md-ul"><li>E-003：<a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey: Bust-a-Move 官方介绍</a>——布鲁伊体感家庭小游戏的直接品类验证与授权标识。</li><li>E-004：<a href="https://www.nexplayground.com/home-kids" target="_blank" rel="noopener">Nex Playground 官方页面</a>——5 岁以上、无控制器、家庭多人、儿童隐私和体感产品定位。</li><li>E-005：<a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games 官方页面</a>——跳、蹲、躲等动作控制与无需额外硬件的移动游戏形态。</li><li>E-006：<a href="https://www.bluey.tv/blog/bluey-lets-play-mobile-app-is-available-now/" target="_blank" rel="noopener">Bluey: Let’s Play 官方介绍</a>——低龄角色探索、房间互动和角色内容形态。</li><li>E-007：<a href="https://www.naeyc.org/node/3796" target="_blank" rel="noopener">NAEYC 儿童发展原则</a>——主动、动手、赋能和适应性支持的低龄技术体验原则。</li><li>E-008：<a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture<em>recognizer/web</em>js" target="_blank" rel="noopener">MediaPipe Gesture Recognizer for Web</a>——实时预设手势、手部关键点与主线程阻塞风险。</li><li>E-009：<a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia" target="_blank" rel="noopener">MDN <code>getUserMedia</code></a>——摄像头安全上下文和用户授权要求。</li><li>E-010：<a href="https://consumer.ftc.gov/articles/protecting-your-childs-privacy-online" target="_blank" rel="noopener">FTC 儿童隐私说明</a>——儿童照片、视频和生物识别信息的隐私边界。</li><li>E-011：<a href="https://phaser.io/why-phaser" target="_blank" rel="noopener">Phaser 官方说明</a>——浏览器 2D 游戏与 JavaScript/TypeScript 技术适配。</li><li>E-012：<a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture_recognizer" target="_blank" rel="noopener">MediaPipe Gesture Recognizer</a>——实时返回手势类别、左右手以及图像/世界坐标关键点，支持把位置控制与分类结果解耦。</li><li>E-013：<a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird 官方 Google Play 页面</a>——点击叠高、越过不同高度障碍与连续正确奖励机制。</li><li>E-014：<a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride 官方 Google Play 页面</a>——自动前进、纵向飞行、收集/躲避和单触控制。</li><li>E-015：<a href="https://www.forbes.com/sites/lananhnguyen/2014/02/11/exclusive-flappy-bird-creator-dong-nguyen-says-app-gone-forever-because-it-was-an-addictive-product/" target="_blank" rel="noopener">Flappy Bird 创作者访谈</a>——窄通道、碰撞即死和高失败循环，作为明确负面边界。</li><li>E-016：<a href="https://www.nexplayground.com/en-ie/blog/the-ultimate-nex-playground-game-guide" target="_blank" rel="noopener">Nex Playground 低龄游戏指南</a>——3–5 岁应采用大动作、清楚提示、即时反馈和低压力体验。</li><li>E-017：<a href="https://www.frontiersin.org/journals/virtual-reality/articles/10.3389/frvir.2022.817303/full" target="_blank" rel="noopener">Frontiers Liberi 儿童 exergame 研究</a>——一个动作键按情境解释、输入平滑、失败可见但少重复；研究对象并非典型 5 岁儿童，只作为设计原则参考。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：</li></ul>
+<p>  - <code>Careful Go</code>：推进家庭 MVP，并以三种短玩法验证不同控制关系；Target Surface 继续为已确认的 <code>web-only</code>。<br>  - 三关源真相为：L1 <code>command<em>runner</code> 拳→掌高跳/末段情境接力 40 秒；L2 <code>hand</em>follow<em>dodge</code> 掌心 Y 直接跟手躲避 45 秒，<code>Unknown</code> 仍跟手；L3 <code>cloud</em>stack</code> 拳→掌叠 1–3 朵云 50 秒。<br>  - 主线不新增必过手型；无 Game Over、无生命值、无成绩锁关。完成本关即可继续，收集只服务庆祝。<br>  - 核心任务形态是“家长分步设置 + 儿童全屏动作任务流”，Gesture Lab 必须作为 P0 产品模块。</p>
+<ul class="md-ul"><li>被放弃的方案：</li></ul>
+<p>  - 暂不做移动端并行、专用硬件、全身大动作、超过三关的内容扩展、账号/排行榜和公开发行。<br>  - 经典 Flappy 式重力下坠、窄缝、碰撞即死和失败重开不进入主线；不采用逐关新增 <code>Pointing_Up</code> / <code>Victory</code> 的方案。<br>  - 不复制 <code>Bluey: Bust-a-Move</code> 的官方小游戏、视觉或角色素材。</p>
+<ul class="md-ul"><li>需要 PM 确认的问题：</li></ul>
+<p>  - 无。本轮用户已明确确认上述多玩法三关、<code>web-only</code>、无新增必过手型和低挫败边界，本 Review Slice 状态为 <code>confirmed</code>。</p>
+<ul class="md-ul"><li>不需要 PM 审查的执行细节：</li></ul>
+<p>  - 搜索来源整理、框架安装方式、具体置信度参数与 Worker 实现细节。</p>
+<ul class="md-ul"><li>进入下一阶段的条件：</li></ul>
+<p>  - 已满足：PM 已确认方向，可按当前源真相继续同步 Phase 1A 至 04B。</p></div></template>
+
+  <div class="overlay-backdrop" id="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayHeading">
+    <div class="overlay-panel">
+      <div class="overlay-header">
+        <div class="overlay-title">
+          <h2 id="overlayHeading">产出物原文</h2>
+          <code id="overlayFile"></code>
+        </div>
+        <button class="overlay-close" onclick="closeOverlay()" aria-label="关闭浮层">关闭 ✕</button>
+      </div>
+      <div class="overlay-body" id="overlayBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const cards = [{"question_id":"Q-01A-001","question":"已确认的三种玩法参考关系是否继续作为下游设计基线？","why_it_matters":"竞品结论决定三关的控制语法、运行时边界和儿童在每关需要理解的唯一目标。","recommended_decision":"维持已确认：L1 情境化拳掌指令、L2 掌心 Y 直接跟手、L3 容错叠云，时长 40/45/50 秒。","options":["维持已确认","申请变更","暂缓，补材料"],"source_files":["01A-competitor-page-experience.md","01-research.md"],"evidence_refs":["Bluey: Bust-a-Move","Nex Playground","GoNoodle Games","Square Bird","Jetpack Joyride","MediaPipe"],"downstream_impact":["02-architecture.html","03-feature-核心关卡循环.md","04A-prototype-spec-核心关卡循环.md","04B-prototype-*.html"],"route_hint":"L4"},{"question_id":"Q-01A-002","question":"已确认的双通道输入和键盘等价降级是否继续保持？","why_it_matters":"三关需要离散动作与连续位置两种输入语义；任何摄像头阻塞都必须存在完整出口。","recommended_decision":"维持已确认：L1/L3 使用离散拳掌事件或 Space，L2 使用连续掌心 Y 或 ↑/↓；Unknown 不阻断位置流。","options":["维持已确认","申请变更","暂缓，补材料"],"source_files":["01A-competitor-page-experience.md"],"evidence_refs":["Nex Playground","MediaPipe Gesture Recognizer","Camera fallback requirement"],"downstream_impact":["02-architecture.html","03-feature-手势输入闭环.md","03-feature-核心关卡循环.md"],"route_hint":"L4"},{"question_id":"Q-01A-003","question":"已确认的低挫败和手型边界是否继续保持？","why_it_matters":"失败惩罚或新增手型都会放大识别误差、认知切换和 5 岁儿童的挫败感。","recommended_decision":"维持已确认：不新增必需手型，完成即解锁；碰撞弹开、护盾或自动托底，不扣奖励。","options":["维持已确认","申请变更","暂缓，补材料"],"source_files":["01A-competitor-page-experience.md","01-research.md"],"evidence_refs":["Bluey: Let’s Play","Square Bird","Flappy Bird 反例边界","Liberi"],"downstream_impact":["02-architecture.html","03-feature-核心关卡循环.md","04B-prototype-*.html"],"route_hint":"L4"}];
+    const storageKey = "pm-review-console:phase-1a-竞品页面与交互体验-benchmark:01a-competitor-page-experience-md";
+    const basePayload = {
+      phase: "Phase 1A 竞品页面与交互体验 Benchmark",
+      artifact: "01A-competitor-page-experience.md",
+      source_status: "confirmed"
+    };
+    const materialMeta = [{"file":"01A-competitor-page-experience.md","href":"../01A-competitor-page-experience.md","type":"markdown","missing":false,"title":"Phase 1A 竞品页面与交互体验 Benchmark"},{"file":"01-research.md","href":"../01-research.md","type":"markdown","missing":false,"title":"Phase 1 产品方向研究"}];
+
+    const overlay = document.getElementById("overlay");
+    const overlayBody = document.getElementById("overlayBody");
+    const overlayHeading = document.getElementById("overlayHeading");
+    const overlayFile = document.getElementById("overlayFile");
+
+    function esc(s) {
+      return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    function escAttr(s) {
+      return String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function normalizeLocalPath(value) {
+      let raw = String(value || "").trim();
+      if (!raw || raw.startsWith("#") || /^[a-z]+:/i.test(raw)) return "";
+      raw = raw.split("#")[0].split("?")[0].replace(/\\/g, "/");
+      try { raw = decodeURIComponent(raw); } catch (_) {}
+      raw = raw.replace(/^\.\//, "");
+      while (raw.startsWith("../")) raw = raw.slice(3);
+      return raw;
+    }
+
+    function findMaterialIndexByFile(value) {
+      const target = normalizeLocalPath(value);
+      if (!target) return -1;
+      return materialMeta.findIndex((meta) => {
+        const file = normalizeLocalPath(meta.file);
+        const href = normalizeLocalPath(meta.href);
+        return file === target || href === target || file.endsWith("/" + target) || href.endsWith("/" + target);
+      });
+    }
+
+    function openFileReference(file) {
+      const index = findMaterialIndexByFile(file);
+      if (index >= 0) {
+        openOverlay(index);
+        return true;
+      }
+      return false;
+    }
+
+    function openOverlay(index) {
+      const meta = materialMeta[index];
+      if (!meta) return;
+      overlayHeading.textContent = meta.title || "产出物原文";
+      overlayFile.textContent = meta.file || "";
+
+      if (meta.missing) {
+        overlayBody.innerHTML =
+          '<p style="color:var(--warn);padding:20px 0">文件未找到：<code>' +
+          esc(meta.file) + '</code><br>请确认文件路径或重新生成 Review Console。</p>';
+      } else if (meta.type === "html") {
+        const href = meta.href || meta.file || "";
+        overlayBody.innerHTML =
+          '<div class="overlay-html-frame-wrap">' +
+          '<div class="overlay-html-frame-top">' +
+          '<span>HTML 产物正在右侧浮层中预览。若浏览器限制本地 iframe，可使用备用入口。</span>' +
+          '<a class="overlay-open-btn" href="' + escAttr(href) + '" target="_blank" rel="noopener">新窗口打开</a>' +
+          '</div>' +
+          '<iframe class="overlay-html-frame" src="' + escAttr(href) + '" title="' + escAttr(meta.title || "HTML 产物预览") + '"></iframe>' +
+          '</div>';
+      } else {
+        const tpl = document.getElementById("mat-tpl-" + index);
+        if (tpl && tpl.content.childElementCount > 0) {
+          overlayBody.innerHTML = "";
+          overlayBody.appendChild(tpl.content.cloneNode(true));
+        } else {
+          overlayBody.innerHTML = '<p class="muted">内容不可用。</p>';
+        }
+      }
+
+      overlay.classList.add("visible");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeOverlay() {
+      overlay.classList.remove("visible");
+      document.body.style.overflow = "";
+      overlayBody.innerHTML = "";
+    }
+
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("visible")) closeOverlay();
+    });
+    document.addEventListener("click", (e) => {
+      const fileTrigger = e.target.closest("[data-open-file]");
+      if (fileTrigger) {
+        const handled = openFileReference(fileTrigger.getAttribute("data-open-file"));
+        if (handled) e.preventDefault();
+        return;
+      }
+
+      const materialLink = e.target.closest(".md-content a[href]");
+      if (!materialLink) return;
+      const handled = openFileReference(materialLink.getAttribute("href"));
+      if (handled) e.preventDefault();
+    });
+
+    function collectFeedback() {
+      const directFeedback = document.getElementById("directFeedback")?.value || "";
+      const responses = cards.map((card, index) => {
+        const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]')?.value || "";
+        const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]')?.value || "";
+        return { question_id: card.question_id, question: card.question, decision, comment };
+      });
+      return { ...basePayload, exported_at: new Date().toISOString(), direct_feedback: directFeedback, responses };
+    }
+
+    function saveLocal() {
+      const payload = collectFeedback();
+      localStorage.setItem(storageKey, JSON.stringify(payload));
+      document.getElementById("feedbackPreview").textContent = JSON.stringify(payload, null, 2);
+    }
+
+    function restoreLocal() {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) { saveLocal(); return; }
+      try {
+        const payload = JSON.parse(raw);
+        const directFeedback = document.getElementById("directFeedback");
+        if (directFeedback) directFeedback.value = payload.direct_feedback || "";
+        payload.responses?.forEach((response, index) => {
+          const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]');
+          const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]');
+          if (decision) decision.value = response.decision || "";
+          if (comment) comment.value = response.comment || "";
+        });
+      } catch (_) { localStorage.removeItem(storageKey); }
+      saveLocal();
+    }
+
+    document.querySelectorAll("select, textarea").forEach((field) => {
+      field.addEventListener("input", saveLocal);
+      field.addEventListener("change", saveLocal);
+    });
+
+    document.getElementById("copyFeedback").addEventListener("click", async () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const status = document.getElementById("copyStatus");
+      if (navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(text);
+          if (status) status.textContent = "已复制";
+          return;
+        } catch (_) {
+          window.prompt("复制反馈 JSON", text);
+        }
+      } else {
+        window.prompt("复制反馈 JSON", text);
+      }
+      if (status) status.textContent = "请从弹窗复制";
+    });
+
+    document.getElementById("downloadFeedback").addEventListener("click", () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const blob = new Blob([text], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "phase-1a-竞品页面与交互体验-benchmark-feedback.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+
+    restoreLocal();
+  </script>
+</body>
+</html>

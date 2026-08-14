@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phase 3 手势输入闭环功能细节 Review Console</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --surface-soft: #f0f3f7;
+      --ink: #172033;
+      --muted: #68758a;
+      --line: #d9e0ea;
+      --accent: #2458d3;
+      --accent-soft: #e7eefc;
+      --warn: #9a5a00;
+      --warn-soft: #fff2cf;
+      --ok: #0f766e;
+      --radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.55; }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      padding: 28px clamp(18px, 4vw, 48px);
+    }
+    main {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 24px auto 56px;
+      display: grid;
+      gap: 18px;
+    }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { font-size: clamp(26px, 4vw, 40px); margin-bottom: 8px; }
+    h2 { font-size: 20px; margin-bottom: 14px; }
+    h3 { font-size: 17px; margin-bottom: 10px; }
+    h4 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+    code {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      color: #24324a;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); margin-top: 12px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    ul { padding-left: 20px; margin-bottom: 0; }
+    .muted { color: var(--muted); }
+
+    /* ── Material cards ── */
+    .materials { display: grid; gap: 12px; }
+    .material-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      background: #fbfcfe;
+      transition: border-color 0.15s;
+    }
+    .material-card:hover { border-color: #b5c7e8; }
+    .material-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .material-card-info { display: flex; flex-direction: column; gap: 5px; }
+    .material-card-info h3 { margin: 0; font-size: 16px; }
+    .material-path { font-size: 12px; color: var(--muted); }
+    .material-card-actions { flex-shrink: 0; }
+    .mat-badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .mat-badge-ok { background: var(--accent-soft); color: var(--accent); }
+    .mat-badge-warn { background: var(--warn-soft); color: var(--warn); }
+    .btn-mat {
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      padding: 8px 16px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .btn-mat:hover { background: #d0e0f8; }
+    .btn-mat[disabled] { border-color: var(--line); background: transparent; color: var(--muted); cursor: not-allowed; }
+    .btn-mat-html { border-color: var(--ok); background: #eefaf7; color: var(--ok); }
+    .btn-mat-html:hover { background: #d8f3ed; }
+
+    /* ── Visualizations ── */
+    .visualizations { display: grid; gap: 16px; }
+    .visualization {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: #fbfcfe;
+    }
+    .viz-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .viz-head h3 { margin-bottom: 4px; }
+    .viz-type {
+      align-self: start;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 3px 8px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .flow { display: flex; align-items: stretch; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+    .flow-item {
+      min-width: 170px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #ffffff;
+    }
+    .flow-node { display: grid; gap: 4px; }
+    .flow-node span { font-weight: 800; }
+    .flow-node em { color: var(--muted); font-style: normal; font-size: 12px; }
+    .flow-item.done { border-color: #9fd8c9; background: #f0fbf8; }
+    .flow-item.pending { border-color: #efd18a; background: #fff9e8; }
+    .flow-item.blocked { border-color: #f0a7a7; background: #fff3f3; }
+    .flow-arrow { align-self: center; color: var(--muted); font-weight: 900; }
+    .impact-map {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.7fr) auto minmax(260px, 1.6fr);
+      gap: 14px;
+      align-items: center;
+    }
+    .impact-source, .impact-target {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      background: #ffffff;
+    }
+    .impact-arrow { color: var(--accent); font-size: 24px; font-weight: 900; }
+    .impact-targets { display: grid; gap: 10px; }
+    .matrix-wrap { overflow-x: auto; }
+    table.matrix {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .matrix th, .matrix td {
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      min-width: 120px;
+    }
+    .matrix th { background: var(--surface-soft); color: #2b374b; font-weight: 800; }
+    .risk-list { display: grid; gap: 12px; }
+    .risk-row { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; background: #ffffff; }
+    .risk-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .risk-head span { color: var(--warn); font-weight: 800; }
+    .risk-bar { height: 10px; border-radius: 999px; background: #edf1f6; overflow: hidden; }
+    .risk-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2fbf9f, #f2b84b, #e45757); }
+    .evidence-map { display: grid; gap: 10px; }
+    .evidence-item {
+      display: grid;
+      grid-template-columns: minmax(90px, auto) auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 11px;
+      background: #ffffff;
+    }
+    .evidence-item span, .evidence-item em { color: var(--muted); font-style: normal; font-size: 13px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+    .metric-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #ffffff; }
+    .metric-card span { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .metric-card strong { display: block; margin-top: 6px; font-size: 24px; }
+    .tone-warn { border-color: #efd18a; background: #fff9e8; }
+    .tone-good { border-color: #9fd8c9; background: #f0fbf8; }
+    .tone-bad { border-color: #f0a7a7; background: #fff3f3; }
+
+    /* ── Decision cards ── */
+    .decision-list { display: grid; gap: 16px; }
+    .decision-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; background: #ffffff; }
+    .card-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+    .qid { color: var(--accent); font-weight: 800; font-size: 13px; }
+    .route { color: var(--warn); background: var(--warn-soft); border-radius: 999px; padding: 3px 9px; font-size: 13px; font-weight: 650; }
+    .card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 12px 0; }
+    .meta-block { margin-top: 12px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 7px; }
+    .pill { border: 1px solid var(--line); background: var(--surface-soft); border-radius: 999px; padding: 4px 9px; font-size: 13px; color: #2d3a4f; overflow-wrap: anywhere; }
+    .impact .pill { background: #eefaf7; border-color: #bee8df; color: var(--ok); }
+    .muted-pill { color: var(--muted); background: transparent; }
+    fieldset.feedback { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin: 16px 0 0; background: #fbfcfe; }
+    legend { padding: 0 6px; color: var(--muted); font-weight: 700; font-size: 13px; }
+    label { display: grid; gap: 6px; margin-top: 10px; color: #344156; font-size: 14px; font-weight: 650; }
+    select, textarea { width: 100%; border: 1px solid var(--line); border-radius: 7px; padding: 10px 11px; font: inherit; color: var(--ink); background: #ffffff; }
+    textarea { min-height: 92px; resize: vertical; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    button { border: 0; border-radius: 7px; padding: 10px 14px; background: var(--accent); color: white; font-weight: 750; cursor: pointer; }
+    button.secondary { background: #253044; }
+    .inline-file-link {
+      display: inline-flex;
+      align-items: center;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .inline-file-link code { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .pill-button {
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      color: #2d3a4f;
+      padding: 4px 9px;
+      font-weight: 500;
+      text-align: left;
+    }
+    .pill-button:hover { border-color: #b5c7e8; color: var(--accent); }
+    pre { max-height: 260px; overflow: auto; background: #101827; color: #f8fafc; border-radius: var(--radius); padding: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .notice { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 12px 14px; border-radius: 6px; color: #183b89; }
+
+    /* ── Overlay ── */
+    .overlay-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 18, 36, 0.48);
+      z-index: 200;
+      align-items: stretch;
+      justify-content: flex-end;
+    }
+    .overlay-backdrop.visible { display: flex; }
+    .overlay-panel {
+      width: min(72vw, 920px);
+      height: 100%;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -6px 0 32px rgba(0, 0, 0, 0.18);
+      animation: slideIn 0.18s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(6%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .overlay-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+      flex-shrink: 0;
+    }
+    .overlay-title { flex: 1; min-width: 0; }
+    .overlay-title h2 { margin: 0; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .overlay-title code { font-size: 12px; color: var(--muted); }
+    .overlay-close {
+      flex-shrink: 0;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 12px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .overlay-close:hover { background: #eef1f5; }
+    .overlay-body { flex: 1; overflow-y: auto; padding: 24px 28px; }
+    .overlay-html-notice {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .overlay-html-frame-wrap {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+    }
+    .overlay-html-frame-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfe;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .overlay-html-frame {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+    .overlay-open-btn {
+      border: 1px solid var(--ok);
+      border-radius: 8px;
+      padding: 12px 28px;
+      background: var(--ok);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .overlay-open-btn:hover { background: #0a5f58; }
+
+    /* ── Markdown content ── */
+    .md-content { line-height: 1.72; color: var(--ink); font-size: 15px; }
+    .md-content .md-h { font-weight: 700; margin: 1.4em 0 0.5em; color: #1a2840; }
+    .md-content h2.md-h { font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    .md-content h3.md-h { font-size: 16px; }
+    .md-content h4.md-h { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .md-content h5.md-h, .md-content h6.md-h { font-size: 13px; }
+    .md-content p { margin: 0.65em 0; }
+    .md-content .md-ul, .md-content .md-ol { padding-left: 22px; margin: 0.5em 0; }
+    .md-content .md-ul li, .md-content .md-ol li { margin-bottom: 4px; }
+    .md-content .md-pre { background: #101827; color: #f8fafc; padding: 14px; border-radius: var(--radius); overflow-x: auto; max-height: 380px; margin: 1em 0; font-size: 13px; }
+    .md-content .md-pre code { background: none; color: inherit; padding: 0; font-size: 13px; }
+    .md-content .md-bq { border-left: 3px solid var(--accent); margin: 0.8em 0; padding: 6px 14px; background: var(--accent-soft); border-radius: 0 6px 6px 0; color: #1b3272; }
+    .md-content .md-hr { border: none; border-top: 1px solid var(--line); margin: 1.4em 0; }
+    .md-content .md-table-wrap { overflow-x: auto; margin: 1em 0; }
+    .md-content .md-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    .md-content .md-table th, .md-content .md-table td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .md-content .md-table th { background: var(--surface-soft); font-weight: 700; }
+    .md-content code { font-size: 13px; }
+
+    @media (max-width: 760px) {
+      .summary-grid, .card-grid, .impact-map, .evidence-item { grid-template-columns: 1fr; }
+      .impact-arrow { transform: rotate(90deg); justify-self: start; }
+      .material-card-head { flex-direction: column; }
+      .overlay-panel { width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="badge">PM Review Console</span>
+    <h1>Phase 3 手势输入闭环功能细节</h1>
+    <p class="muted">这是阶段审查入口，不是正式阶段产物。PM 反馈在第一版中仅保存在浏览器本地，可复制或下载为 JSON。</p>
+    <div class="meta">
+      <span>产物：<button type="button" class="inline-file-link" data-open-file="03-feature-手势输入闭环.md"><code>03-feature-手势输入闭环.md</code></button></span>
+      <span>状态：<code>confirmed</code></span>
+      <span>更新：<code>2026-08-13</code></span>
+    </div>
+  </header>
+  <main>
+    <section class="section">
+      <h2>阶段摘要</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>本阶段关键决策</h4>
+          <ul><li>Gesture Lab 只教一次 Closed_Fist → Open_Palm → 700ms freeze → Closed_Fist；首轮完成即达标，之后可自愿重复且小狗持续响应</li><li>输入合同拆为离散 PoseTransitionEvent 与逐帧 HandTrackingFrame，运行时只订阅自己需要的通道</li><li>camera_full 与 keyboard_full 都输出具名 boolean capability map：poseTransition=true、handTrackingY=true；L2 的 None/Unknown 不阻断掌心 Y 跟手</li></ul>
+        </div>
+        <div>
+          <h4>被放弃的方案</h4>
+          <ul><li>不再使用旧版多动作计次训练、识别倒计时或强制多轮练习</li><li>不让输入适配器按目标情境预判具体游戏动作；L1/L3 自行解释姿态边沿，L2 只消费位置帧</li><li>不新增跟手校准 screen，不把置信度、未知标签或重复次数表达为儿童成绩</li></ul>
+        </div>
+        <div>
+          <h4>进入下一阶段的条件</h4>
+          <ul><li>已满足：04A 保持 GI-01–GI-06，并完整定义双通道事件合同与 capability 路由</li><li>已满足：集成 04B 实现 Unknown 跟手、键盘上下控制、两轮复练与五视口单屏 QA</li><li>后续只由真实儿童试玩校准拳掌理解、700ms freeze 与成人提示需求</li></ul>
+        </div>
+        <div>
+          <h4>不需要 PM 审查的执行细节</h4>
+          <ul><li>连续 3 帧稳定确认、80ms 推理间隔、700ms 初始冻结与虚拟掌心步长</li><li>关键点绘制、模型线程调度、EMA/死区和自动化测试 seam</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>产出物阅读</h2>
+      <p class="muted" style="margin-bottom:14px;">点击"阅读原文"在右侧浮层阅读完整产物内容；Markdown 会渲染为可读 HTML，HTML 产物会在浮层中预览。</p>
+      <div class="materials">
+        
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>Phase 3 手势输入闭环功能规格</h3>
+            <code class="material-path">03-feature-手势输入闭环.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(0)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>Phase 4A 手势输入闭环原型规格</h3>
+            <code class="material-path">04A-prototype-spec-手势输入闭环.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(1)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">HTML</span>
+            <h3>Phase 2 可交互产品架构图</h3>
+            <code class="material-path">02-architecture.html</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat btn-mat-html" onclick="openOverlay(2)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>关键可视化</h2>
+      <div class="visualizations">
+        
+    <article class="visualization stage_flow">
+      <div class="viz-head">
+        <div>
+          <h3>低龄拳掌练习闭环</h3>
+          <p class="muted">一次完整循环即可离开；成功状态不锁死练习，孩子可继续让小狗响应。</p>
+        </div>
+        <span class="viz-type">stage_flow</span>
+      </div>
+      
+    <div class="flow">
+      
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>握拳准备</span>
+            <em>done</em>
+          </div>
+          <p>stable Closed_Fist → gate=armed</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>张掌执行</span>
+            <em>done</em>
+          </div>
+          <p>stable Open_Palm → 立即动作并进入 700ms freeze</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>握拳复位</span>
+            <em>done</em>
+          </div>
+          <p>首次复位即 control_cycle_passed=true，并重新 armed</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>自愿重复或离开</span>
+            <em>done</em>
+          </div>
+          <p>看看结果常驻；后续每轮小狗继续响应</p>
+        </div>
+      
+    </div>
+  
+    </article>
+  
+    <article class="visualization matrix">
+      <div class="viz-head">
+        <div>
+          <h3>双通道输入与运行时路由</h3>
+          <p class="muted">姿态分类与关键点位置是互不门控的合同；Unknown 只影响离散事件。</p>
+        </div>
+        <span class="viz-type">matrix</span>
+      </div>
+      
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th>通道</th><th>数据</th><th>消费方</th><th>None/Unknown</th><th>键盘等价</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>PoseTransitionEvent</th><td>姿态变化边沿</td><td>L1 / L3</td><td>不派发新事件</td><td>Space 生成规范拳→掌循环</td></tr><tr><th>HandTrackingFrame</th><td>handPresent / palmCenterY / confidence / timestamp</td><td>L2 每个处理帧</td><td>关键点有效则继续跟手</td><td>↑/↓ 连续改变虚拟 palmCenterY</td></tr>
+        </tbody>
+      </table>
+    </div>
+  
+    </article>
+  
+    <article class="visualization matrix">
+      <div class="viz-head">
+        <div>
+          <h3>InputProfile capability map</h3>
+          <p class="muted">full 档案都能支撑三关，具体运行时仍只订阅单一所需 capability。</p>
+        </div>
+        <span class="viz-type">matrix</span>
+      </div>
+      
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th>模式</th><th>poseTransition</th><th>handTrackingY</th><th>L1/L3</th><th>L2</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>camera_full</th><td>true</td><td>true</td><td>拳掌姿态边沿</td><td>逐帧掌心 Y；Unknown 仍工作</td></tr><tr><th>keyboard_full</th><td>true</td><td>true</td><td>Space</td><td>↑/↓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  
+    </article>
+  
+    <article class="visualization impact_map">
+      <div class="viz-head">
+        <div>
+          <h3>已确认合同的下游影响</h3>
+          <p class="muted">功能层固定输入语义，04A/04B 只负责忠实实现和验证。</p>
+        </div>
+        <span class="viz-type">impact_map</span>
+      </div>
+      
+    <div class="impact-map">
+      <div class="impact-source">
+        <h4>源决策</h4>
+        <strong>拳掌一次循环 + 双通道事件 + boolean capability map</strong>
+      </div>
+      <div class="impact-arrow">→</div>
+      <div class="impact-targets">
+        
+          <div class="impact-target">
+            <strong>04A Gesture Lab</strong>
+            <p>固定六屏，不新增位置练习门槛；GI-03 首轮达标后仍可重复</p>
+          </div>
+        
+          <div class="impact-target">
+            <strong>L1 / L3</strong>
+            <p>消费 PoseTransitionEvent，由各自 runtime 解释为高跳/接力或叠云</p>
+          </div>
+        
+          <div class="impact-target">
+            <strong>L2</strong>
+            <p>消费 HandTrackingFrame；分类未知但关键点有效时仍连续更新角色</p>
+          </div>
+        
+          <div class="impact-target">
+            <strong>QA</strong>
+            <p>验证持续张掌不连发、Unknown 跟手、键盘 ↑/↓、五视口与本机隐私边界</p>
+          </div>
+        
+      </div>
+    </div>
+  
+    </article>
+  
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>待确认问题</h2>
+      <div class="decision-list">
+        
+      <article class="decision-card" data-question-id="Q-03-GI-001">
+        <div class="card-top">
+          <span class="qid">Q-03-GI-001</span>
+          <span class="route">Route hint: L2</span>
+        </div>
+        <h3>是否确认 Gesture Lab 只要求一次拳→掌→拳循环，首轮达标即可进入结果页，后续练习完全自愿？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>这决定儿童记忆负担、练习状态机和进入游戏的门槛；额外手势、倒计时或次数目标会重新增加等待与挫败。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>已确认：一次循环达标，看看结果常驻，留页时小狗继续逐轮响应。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="03-feature-手势输入闭环.md">03-feature-手势输入闭环.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill muted-pill">无 Evidence ID</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">04A-prototype-spec-手势输入闭环.md</span><span class="pill">04B-prototype-手势小狗探险MVP.html</span><span class="pill">儿童试玩计划</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="0">
+              <option value="">请选择</option>
+              <option value="维持已确认方案">维持已确认方案</option><option value="要求变更">要求变更</option><option value="补真实儿童试玩材料">补真实儿童试玩材料</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="0" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      <article class="decision-card" data-question-id="Q-03-GI-002">
+        <div class="card-top">
+          <span class="qid">Q-03-GI-002</span>
+          <span class="route">Route hint: L2</span>
+        </div>
+        <h3>是否确认 PoseTransitionEvent 与 HandTrackingFrame 两个通道互不门控，L2 在 None/Unknown 时仍按有效关键点跟手？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>若把位置流绑定到姿态分类，L2 会在模型无法命名手型时无故冻结；若适配器预判目标动作，三个运行时会重新耦合。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>已确认：Unknown 不产生离散边沿，但 handPresent=true 与 palmCenterY 继续有效。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="03-feature-手势输入闭环.md">03-feature-手势输入闭环.md</button><button type="button" class="pill pill-button" data-open-file="03-feature-核心关卡循环.md">03-feature-核心关卡循环.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill muted-pill">无 Evidence ID</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">Input Adapter</span><span class="pill">L1/L2/L3 runtime</span><span class="pill">Unknown 跟手 QA</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="1">
+              <option value="">请选择</option>
+              <option value="维持已确认方案">维持已确认方案</option><option value="要求变更">要求变更</option><option value="补运行时证据">补运行时证据</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="1" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      <article class="decision-card" data-question-id="Q-03-GI-003">
+        <div class="card-top">
+          <span class="qid">Q-03-GI-003</span>
+          <span class="route">Route hint: L2</span>
+        </div>
+        <h3>是否确认 camera_full 与 keyboard_full 都使用具名 boolean capability map，并同时提供 poseTransition 与 handTrackingY？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>这保证任一 full 输入模式都能走完三关，也避免把某个运行时的具体按键或手势塞进通用帧结构。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>已确认：两项 capability 均为 true；Space 服务 L1/L3，↑/↓ 服务 L2。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="03-feature-手势输入闭环.md">03-feature-手势输入闭环.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill muted-pill">无 Evidence ID</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">InputProfile</span><span class="pill">GI-04/GI-06</span><span class="pill">RuntimeHost capability guard</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="2">
+              <option value="">请选择</option>
+              <option value="维持已确认方案">维持已确认方案</option><option value="要求变更">要求变更</option><option value="补档案兼容性材料">补档案兼容性材料</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="2" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>风险与下一步</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>风险</h4>
+          <ul><li>拳头是否被 5 岁儿童自然理解为准备键、700ms freeze 是否合适，仍需真实儿童陪同试玩</li><li>None/Unknown 跟手依赖关键点有效；关键点真正丢失时仍必须进入短保持或安全暂停，而不是伪造位置</li><li>自动化只能验证合同与状态机，不能替代真实儿童的动作疲劳、误触和情绪观察</li></ul>
+        </div>
+        <div>
+          <h4>下一步</h4>
+          <ul><li>Phase 3 手势输入闭环已确认并已传播至 04A/04B</li><li>后续试玩重点记录拳掌理解、重复意愿、Unknown 跟手连续性与成人提示次数</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>直接反馈</h2>
+      <p class="muted">这里用于填写不属于单个决策卡的整体意见、补充背景或下一步指令。</p>
+      <label class="direct-feedback-label">
+        整体反馈
+        <textarea id="directFeedback" class="direct-feedback-textarea" placeholder="例如：整体确认，但第 2 个问题需要补材料；或请回到 Phase 3 修改字段模型。"></textarea>
+      </label>
+    </section>
+
+    <section class="section">
+      <h2>反馈导出</h2>
+      <p class="notice">第一版 Review Console 不会自动写回项目文件。请复制或下载反馈 JSON 后，让 Claude / Codex 继续处理。</p>
+      <div class="actions">
+        <button type="button" id="copyFeedback">复制反馈 JSON</button>
+        <button type="button" id="downloadFeedback" class="secondary">下载反馈 JSON</button>
+        <span class="muted" id="copyStatus" aria-live="polite"></span>
+      </div>
+      <pre id="feedbackPreview"></pre>
+    </section>
+  </main>
+
+  <template id="mat-tpl-0"><div class="md-content"><h2 class="md-h">功能规格：手势输入闭环</h2>
+<blockquote class="md-bq"><p>关联架构模块：手势练习室 / 手部观测与稳定化 / 双通道输入适配 / 摄像头与隐私 | 更新日期：2026-08-13</p></blockquote>
+<h3 class="md-h">功能目标</h3>
+<p><strong>解决的问题</strong>：让 5 岁儿童只练会一套拳掌动作，同时让关卡能可靠取得离散姿态事件和连续掌心位置；姿态暂时无法分类时，跟手玩法也不能失效。</p>
+<p><strong>目标用户</strong>：主要用户是 5 岁儿童；家长负责摄像头授权、降级与暂停；关卡只消费 <code>PoseTransitionEvent</code> 或 <code>HandTrackingFrame</code>，不直接读取视频或模型标签。</p>
+<p><strong>成功标准</strong>：</p>
+<ul class="md-ul"><li>儿童只学习一个循环：<code>Closed<em>Fist（准备）→ Open</em>Palm（执行）→ 700ms 输入冻结 → Closed_Fist（重新解锁）</code>。</li><li>Gesture Lab 实时检测，不使用 3、2、1 开启观察窗口；一次完整循环即通过，达标后可自愿重复任意轮次，不把重复次数作为门槛。</li><li><code>Open<em>Palm</code> 只有在已经稳定识别 <code>Closed</em>Fist</code> 后才派发动作；保持张掌不会重复触发。</li><li>角色在接到合法张掌的同一反馈周期内立即动作，儿童能看到骨架、识别结果与控制状态变化。</li><li>输入适配器输出两个互不门控的通道：L1/L3 消费 <code>PoseTransitionEvent</code>，L2 每个处理帧消费 <code>HandTrackingFrame{handPresent,palmCenterY,confidence,timestamp}</code>。</li><li>手部关键点有效但分类标签为 <code>None/Unknown</code> 时，不派发离散姿态事件，但 <code>HandTrackingFrame.handPresent</code> 仍为 true，掌心 Y 仍有效。</li><li><code>camera<em>full</code> 与 <code>keyboard</em>full</code> 都声明 <code>capabilities.poseTransition=true</code>、<code>capabilities.handTrackingY=true</code>；键盘在 L2 使用 ↑/↓ 控制虚拟掌心 Y。</li><li>摄像头不可用时可完整切换到键盘；视频与关键点不上传、不录制、不持久化。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">页面形态决策</h3>
+<ul class="md-ul"><li>页面类型：低密度单任务 Gesture Lab + 家长辅助抽屉。</li><li>核心任务：手入镜 → 握拳准备 → 张掌触发角色 → 再握拳解锁 → 自愿继续练习或进入游戏。</li><li>默认布局：左侧大镜像摄像头与 21 点骨架；右侧只展示当前一步和角色反馈；底部展示一句儿童可读状态。</li><li>为什么不是多动作训练：多手势、倒计时采样和次数统计会把技术验证暴露成儿童玩法，增加记忆与等待成本。</li><li>Target Surface：<code>web-only</code>，笔记本浏览器优先；每个 screen 单视口完整呈现，无页面滚动。</li><li>用户确认状态：用户已明确要求按低龄儿童易操作方向收敛。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">用户流程</h3>
+<h4 class="md-h">主流程：摄像头控制循环</h4>
+<ol class="md-ol"><li>家长确认隐私并开启摄像头 → 本机加载 MediaPipe 与手势模型。</li><li>系统检测到完整手部 → 实时显示关键点和“我看到：……”结果，不启动识别倒计时。</li><li>稳定识别 <code>Closed_Fist</code> → 控制门进入 <code>armed</code>，提示“准备好啦，现在张开手”。</li><li>稳定识别 <code>Open_Palm</code> → 立即派发姿态转换事件；Gesture Lab 小狗马上跳跃，控制门进入 700ms <code>freeze</code>。</li><li>冻结结束 → 提示“再做小拳头”；持续张掌不触发任何动作。</li><li>再次稳定识别 <code>Closed<em>Fist</code> → 首轮练习达标，立即输出可进入游戏的 <code>camera</em>full</code>，显示“看看结果”入口；该拳头同时把控制门重新置为 <code>armed</code>。</li><li>儿童留在本页并再次张掌 → 角色再次跳跃；之后继续遵循 700ms 冻结与握拳复位，可重复任意轮次。</li><li>儿童在首轮达标后的任意时刻选择“看看结果” → 进入 GI-04；重复轮次不影响模式结论。</li></ol>
+<h4 class="md-h">关卡内双通道循环</h4>
+<ol class="md-ol"><li>GI-04/GI-06 输出 InputProfile → 当前运行时只订阅自己需要的 capability，不读取视频或目标情境。</li><li>L1/L3 running → 订阅 <code>PoseTransitionEvent</code>；<code>Closed<em>Fist</code> 负责上膛，之后的 <code>Open</em>Palm</code> 触发该运行时自己的高跳/接力或叠云规则，再进入 700ms 冻结。</li><li>L2 running → 每个处理帧订阅 <code>HandTrackingFrame</code>，以 <code>palmCenterY</code> 连续更新目标高度；不等待拳掌姿态，也不读取分类标签。</li><li>摄像头标签为 <code>None/Unknown</code> 但关键点仍有效 → L2 继续跟手；L1/L3 只是不产生新的姿态转换事件。</li><li>键盘 L1/L3 按 Space → 适配器生成一次规范的拳→掌事件循环；键盘 L2 按住 ↑/↓ → 连续减小/增大虚拟 <code>palmCenterY</code>。</li></ol>
+<h4 class="md-h">异常流程</h4>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>异常情况</th><th>系统处理</th><th>儿童/家长提示</th></tr></thead><tbody><tr><td>张掌但尚未握拳准备</td><td>不派发动作</td><td>“先握拳准备，再张开手”</td></tr><tr><td>标签为 <code>None/Unknown</code>，关键点有效</td><td>不生成 <code>PoseTransitionEvent</code>；继续生成 handPresent=true 的位置帧</td><td>L2：“小狗正跟着小手”；GI/L1/L3 保持当前提示</td></tr><tr><td>手部关键点短暂丢失</td><td>每帧仍生成 handPresent=false 的位置帧；不计儿童失败</td><td>“正在找小手”</td></tr><tr><td>收到时间戳倒退或重复的位置帧</td><td>丢弃该帧，不允许角色倒跳</td><td>不额外打扰儿童</td></tr><tr><td>摄像头/模型不可用</td><td>停止视频轨道并进入键盘热身</td><td>“可以用按键继续”</td></tr><tr><td>关卡中无手超过 1.5 秒</td><td>危险推进安全暂停</td><td>“小路停下啦，正在找小手”</td></tr><tr><td>页面失焦/家长暂停</td><td>暂停计时和输入；返回时仅关卡使用安全倒计时</td><td>“回来后再出发”</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">界面状态清单</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>状态</th><th>触发条件</th><th>主要内容</th><th>可执行操作</th><th>退出条件</th></tr></thead><tbody><tr><td>摄像头未开启</td><td>初次进入</td><td>隐私说明、开启按钮、按键出口</td><td>开摄像头/切按键</td><td>授权或降级</td></tr><tr><td>模型加载中</td><td>摄像头已授权</td><td>本机加载状态、镜像预览</td><td>等待/切按键</td><td>ready/error</td></tr><tr><td>正在找手</td><td>无完整关键点</td><td>大镜像、手轮廓、取景建议</td><td>自然抬手</td><td>hand present</td></tr><tr><td>等待握拳</td><td><code>need_fist</code></td><td>“先做小拳头”</td><td>握拳</td><td>stable fist</td></tr><tr><td>已准备</td><td><code>armed</code></td><td>“现在张开手”黄色状态</td><td>张掌</td><td>stable palm/手丢失</td></tr><tr><td>动作冻结</td><td>动作刚触发</td><td>角色动作、绿色反馈</td><td>等待 700ms</td><td>freeze 结束</td></tr><tr><td>等待复位</td><td>冻结结束</td><td>“再做小拳头”</td><td>握拳</td><td>stable fist</td></tr><tr><td>已达标可继续</td><td>首轮完整循环完成</td><td>“已经学会”反馈、持续响应的小狗、常驻“看看结果”入口</td><td>继续拳掌循环/查看结果/切按键</td><td>主动进入结果页或切换输入</td></tr><tr><td>输入档案已就绪</td><td>GI-04/GI-06</td><td>儿童语言的输入准备结果；系统持有两项 capability</td><td>进入地图/重新练习/切模式</td><td>进入关卡或返回</td></tr><tr><td>摄像头错误</td><td>权限/模型失败</td><td>原因与恢复动作</td><td>切按键/返回</td><td>完成恢复</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">业务规则</h3>
+<h4 class="md-h">识别与控制门</h4>
+<ul class="md-ul"><li>IF 连续 3 帧稳定为 <code>Closed_Fist</code> THEN 当前稳定姿态为小拳头。</li><li>IF 连续 3 帧稳定为 <code>Open_Palm</code> THEN 当前稳定姿态为张开手掌。</li><li>IF 中间出现相反姿态或 <code>None</code> THEN 重新累计；交替噪声不得凑成稳定姿态。</li><li>IF 控制门为 <code>need<em>fist</code> AND 稳定姿态为 <code>Closed</em>Fist</code> THEN 控制门变为 <code>armed</code>。</li><li>IF 控制门为 <code>armed</code> AND 稳定姿态为 <code>Open_Palm</code> THEN 接受本次姿态转换并进入 700ms <code>freeze</code>；具体游戏结果由订阅该事件的 Lab/L1/L3 自行解释。</li><li>IF 控制门为 <code>need<em>fist</code> AND 稳定姿态为 <code>Open</em>Palm</code> THEN 不派发动作，只提示先握拳。</li><li>IF 控制门为 <code>freeze</code> THEN 忽略所有手势动作；冻结结束后进入 <code>need_fist</code>。</li><li>IF 儿童持续保持 <code>Open_Palm</code> THEN 不得连续派发第二次动作。</li><li>IF Gesture Lab 首次在 <code>waiting<em>reset</code> 稳定识别 <code>Closed</em>Fist</code> THEN <code>control<em>cycle</em>passed=true</code>、显示“看看结果”，并把控制门直接变为 <code>armed</code>。</li><li>IF <code>control<em>cycle</em>passed=true</code> AND 控制门为 <code>armed</code> AND 再次稳定识别 <code>Open_Palm</code> THEN 角色再次跳跃并进入 700ms <code>freeze</code>。</li><li>IF <code>control<em>cycle</em>passed=true</code> AND 后续每轮在 <code>waiting<em>reset</code> 稳定识别 <code>Closed</em>Fist</code> THEN 重复轮次加 1、控制门变为 <code>armed</code>，且“看看结果”保持可见。</li><li>IF <code>control<em>cycle</em>passed=true</code> AND 用户选择“看看结果” THEN 立即进入 GI-04；不得要求达到第二轮或更多轮次。</li><li>IF 已达标后儿童不再动作 THEN 页面保持可离开的成功状态，不自动开始下一轮、不判失败。</li><li>IF 新关卡目标出现且当前运行时为 L1/L3 THEN 保留当前控制门；目标出现本身不得让 <code>armed</code> 失效。</li></ul>
+<h4 class="md-h"><code>PoseTransitionEvent</code> 离散通道</h4>
+<ul class="md-ul"><li>IF 稳定姿态首次从非 <code>Closed<em>Fist</code> 进入 <code>Closed</em>Fist</code> THEN 派发一个 <code>PoseTransitionEvent</code>；字段包含 <code>stablePose</code>、<code>previousStablePose</code>、<code>source</code>、<code>confidence</code>、<code>timestamp</code>。</li><li>IF 稳定姿态首次从 <code>Closed<em>Fist</code> 进入 <code>Open</em>Palm</code> THEN 派发一个 <code>PoseTransitionEvent</code>；持续保持张掌不得逐帧重复派发。</li><li>IF 分类标签为 <code>None/Unknown</code> THEN 不派发离散姿态事件；不得据此把关键点有效的手判为缺失。</li><li>IF 当前运行时为 L1 或 L3 THEN 只把 <code>PoseTransitionEvent</code> 路由给该运行时；输入适配器不得根据目标情境预先转换成动作指令。</li><li>IF 当前运行时为 L2 THEN 不把 <code>PoseTransitionEvent</code> 路由为游戏动作。</li><li>IF <code>keyboard<em>full</code> 在 L1/L3 收到一次 Space THEN 依次生成 source=keyboard 的 <code>Closed</em>Fist</code> 与 <code>Open_Palm</code> 规范事件，使运行时获得一次完整动作机会。</li></ul>
+<h4 class="md-h"><code>HandTrackingFrame</code> 连续通道</h4>
+<ul class="md-ul"><li>IF 一个视频处理帧完成 THEN 必须派发一个 <code>HandTrackingFrame</code>，字段固定为 <code>handPresent</code>、<code>palmCenterY</code>、<code>confidence</code>、<code>timestamp</code>。</li><li>IF 手部关键点有效 THEN <code>handPresent=true</code>，<code>palmCenterY</code> 为归一化 0–1 数值，且与手势分类标签无关。</li><li>IF 输出 <code>HandTrackingFrame.confidence</code> THEN 该值表示手部存在/关键点追踪置信度，不得复用手势类别置信度。</li><li>IF 手部关键点无效 THEN <code>handPresent=false</code>、<code>palmCenterY=null</code>；不得沿用旧坐标冒充当前帧观测。</li><li>IF 标签为 <code>None/Unknown</code> 但关键点有效 THEN <code>handPresent=true</code> 且继续输出有效 <code>palmCenterY</code>。</li><li>IF 当前运行时为 L2 THEN 每个时间戳递增的位置帧都交给 L2；平滑、死区、短丢手保持和安全暂停由 L2/Safety 处理。</li><li>IF 当前运行时为 L1/L3 或 GI-03 THEN 仍可生成位置帧供取景反馈，但不得用它触发游戏动作或增加练习步骤。</li><li>IF <code>keyboard_full</code> 进入 L2 THEN 从 <code>palmCenterY=0.5</code> 开始；按住 ↑ 令数值减小，按住 ↓ 令数值增大，并按帧输出同一字段合同的等价位置帧；来源由 InputProfile.mode 表达，不给帧结构增加字段。</li></ul>
+<h4 class="md-h">InputProfile 与能力路由</h4>
+<ul class="md-ul"><li>IF GI-03 首轮拳→掌→拳完成且摄像头/关键点管线 ready THEN 输出 mode=<code>camera_full</code>，且 <code>capabilities.poseTransition=true</code>、<code>capabilities.handTrackingY=true</code>。</li><li>IF GI-06 按键热身完成 THEN 输出 mode=<code>keyboard_full</code>，且 <code>capabilities.poseTransition=true</code>、<code>capabilities.handTrackingY=true</code>。</li><li>IF InputProfile 缺少当前运行时所需 capability THEN 不进入危险推进；提示家长切换输入或重试。</li><li>IF InputProfile 两项 capability 均可用 THEN 运行时仍只能订阅自己所需通道，避免离散事件与连续位置争夺角色控制。</li></ul>
+<h4 class="md-h">反馈与取景</h4>
+<ul class="md-ul"><li>IF 未检测到关键点 THEN 显示“正在找小手”，不绘制假骨架。</li><li>IF 手部包围盒过小 THEN 只建议靠近，不直接判失败。</li><li>IF 手部接近画面边缘 THEN 提示“小手露全一点”。</li><li>IF 稳定识别姿态 THEN 显示“我看到：小拳头/张开手掌”，不显示置信度或英文类别。</li><li>IF 关键点有效但姿态标签未知 THEN 显示“我看到小手”，不得向儿童显示“未知/失败”；L2 跟手不受影响。</li><li>IF 合法张掌触发 THEN 角色在同一交互周期执行动作，骨架/状态变绿并给短正反馈。</li></ul>
+<h4 class="md-h">隐私与降级</h4>
+<ul class="md-ul"><li>IF 家长未确认隐私说明 THEN 不得请求摄像头权限。</li><li>IF 进入按键模式、退出或卸载页面 THEN 停止全部摄像头轨道并清空识别状态。</li><li>IF 视频帧进入识别器 THEN 只允许本机内存处理，不上传、不录制、不保存关键点序列。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">数据字段</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>字段</th><th>类型</th><th>来源/去向</th><th>必填</th><th>约束</th></tr></thead><tbody><tr><td><code>camera_status</code></td><td>系统状态</td><td>浏览器摄像头 → UI</td><td>是</td><td>idle/requesting/active/error/stopped</td></tr><tr><td><code>model_status</code></td><td>系统状态</td><td>MediaPipe → UI</td><td>是</td><td>idle/loading/ready/error</td></tr><tr><td><code>hand_presence</code></td><td>系统计算</td><td>当前帧 → UI/Frame</td><td>是</td><td>present/missing</td></tr><tr><td><code>stable_pose</code></td><td>系统计算</td><td>连续 3 帧 → Control Gate</td><td>否</td><td>Closed<em>Fist/Open</em>Palm/null</td></tr><tr><td><code>control_gate</code></td><td>系统状态</td><td>Control Gate → UI/Adapter</td><td>是</td><td>need_fist/armed/freeze</td></tr><tr><td><code>freeze<em>until</em>ms</code></td><td>系统计时</td><td>合法动作 → Control Gate</td><td>否</td><td>单调时钟；默认 700ms</td></tr><tr><td><code>pose<em>transition</em>event</code></td><td>输入事件</td><td>Adapter → L1/L3</td><td>否</td><td>stablePose/previousStablePose/source/confidence/timestamp；仅 Closed<em>Fist/Open</em>Palm</td></tr><tr><td><code>hand<em>tracking</em>frame</code></td><td>输入帧</td><td>Adapter → L2</td><td>是</td><td>handPresent/palmCenterY/confidence/timestamp；每个处理帧输出</td></tr><tr><td><code>control<em>cycle</em>passed</code></td><td>系统计算</td><td>Gesture Lab → InputProfile</td><td>是</td><td>boolean；完整循环一次为 true</td></tr><tr><td><code>practice<em>repeat</em>count</code></td><td>系统计数</td><td>Gesture Lab → 本地会话/QA</td><td>是</td><td>非负整数；首次完整循环后为 1；不作为儿童分数或进入游戏门槛</td></tr><tr><td><code>input_mode</code></td><td>系统结论</td><td>准备流程 → 关卡</td><td>是</td><td>camera<em>full/keyboard</em>full</td></tr><tr><td><code>input_capabilities</code></td><td>系统结论</td><td>InputProfile → RuntimeHost</td><td>是</td><td>具名 boolean map；poseTransition/handTrackingY 均为 true</td></tr><tr><td><code>virtual<em>palm</em>center_y</code></td><td>键盘状态</td><td>↑/↓ → Adapter</td><td>键盘必填</td><td>0–1；默认 0.5</td></tr><tr><td><code>video_recorded</code></td><td>隐私不变量</td><td>系统</td><td>是</td><td>false</td></tr><tr><td><code>video_uploaded</code></td><td>隐私不变量</td><td>系统</td><td>是</td><td>false</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">运营配置项</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>配置项</th><th>默认值</th><th>范围</th><th>修改者</th></tr></thead><tbody><tr><td>推理间隔</td><td>80ms</td><td>65–125ms</td><td>研发/试玩调参</td></tr><tr><td>张掌稳定确认</td><td>连续 3 帧</td><td>连续 3–4 帧</td><td>研发/儿童试玩</td></tr><tr><td>握拳稳定确认</td><td>连续 3 帧</td><td>连续 3–4 帧</td><td>研发/儿童试玩</td></tr><tr><td>输入冻结</td><td>700ms</td><td>500–1000ms</td><td>研发/儿童试玩</td></tr><tr><td>无手安全暂停</td><td>1500ms</td><td>800–3000ms</td><td>研发/儿童试玩</td></tr><tr><td>目标预告</td><td>4500ms</td><td>3500–6000ms</td><td>关卡调参</td></tr><tr><td>键盘虚拟掌心步长</td><td>每次 0.18</td><td>0.10–0.24</td><td>研发/儿童试玩</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">边界与排除</h3>
+<p><strong>本期不做</strong>：</p>
+<ul class="md-ul"><li>不使用握拳作为下蹲动作；握拳只负责准备/复位，避免同一手形承担冲突语义。</li><li>不要求儿童记忆点赞、V 手势或三套动作映射。</li><li>不在 Gesture Lab 使用识别倒计时、4 秒观察窗口、强制连续两次成功或三次失败计数。</li><li>不要求重复练习；首轮达标后只提供自愿继续，不显示带压力的次数目标或儿童评分。</li><li>不在 Gesture Lab 新增跟手校准步骤或新 screen；L2 的上下跟手在该关前 5 秒安全段教学。</li><li>不保留输入适配器按目标情境输出单一标准动作的旧合同；L1/L3 自行解释姿态事件，L2 只消费位置帧。</li><li>不做左右位置控制、全身追踪、多人识别、自定义手势训练。</li><li>不把置信度、失败率或技术错误表达为儿童能力。</li></ul>
+<p><strong>后续验证</strong>：由家长陪同真实儿童试玩验证拳掌切换是否自然、700ms 冻结是否合适、目标预告是否足够；自动化测试不能替代儿童手感验证。</p>
+<hr class='md-hr'>
+<h3 class="md-h">验收标准</h3>
+<ul class="md-ul"><li>GI-03 DOM 中不存在识别用 <code>3/2/1</code> 倒计时。</li><li>未握拳时张掌不触发角色；握拳后张掌在可感知时间内触发角色跳跃。</li><li>动作后 700ms 内不重复触发，且必须再次握拳才能解锁。</li><li>首轮复位握拳后立即解锁“看看结果”；留在 GI-03 再次张掌时右侧小狗必须再次跳跃，完成第二轮后仍可继续。</li><li>首轮达标后无论是否继续重复，“看看结果”始终可用，重复次数不得改变 <code>camera_full</code> 结论。</li><li><code>camera<em>full</code> 与 <code>keyboard</em>full</code> 的 InputProfile 均声明 <code>capabilities.poseTransition=true</code> 与 <code>capabilities.handTrackingY=true</code>；不得出现只支持一个关卡输入的 full 档案。</li><li>摄像头每个处理帧都输出 <code>HandTrackingFrame</code>；label=<code>None/Unknown</code> 且关键点有效时必须满足 <code>handPresent=true</code>、<code>palmCenterY</code> 为有限 0–1 数值。</li><li>无关键点帧必须输出 <code>handPresent=false</code>、<code>palmCenterY=null</code>；时间戳不得倒退。</li><li>L1/L3 只消费 <code>PoseTransitionEvent</code>；持续 <code>Open_Palm</code> 不重复派发。L2 只消费 <code>HandTrackingFrame</code>，不得因分类未知冻结角色。</li><li>键盘 L1/L3 的 Space 产生一次规范拳掌动作机会；L2 的 ↑/↓ 能连续改变虚拟掌心 Y，并走同一位置处理链。</li><li>GI screen inventory 仍为 GI-01–GI-06；GI-03 仍只要求首轮拳→掌→拳一次且可自愿重复。</li><li><code>1440×900</code>、<code>1280×720</code>、<code>1219×681</code>、<code>1024×700</code>、<code>919×843</code> 下所有 screen 无页面滚动、内部裁切、按钮越界、文字重叠和兄弟元素相交。</li><li>摄像头画面、骨架和“我看到”结果同步可见；中文标题不出现单字孤行或横向溢出。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：</li></ul>
+<p>  - 关卡输入合同拆为 <code>PoseTransitionEvent</code> 与逐帧 <code>HandTrackingFrame</code>；分类为 <code>None/Unknown</code> 时只影响离散事件，不影响 L2 掌心位置跟手。<br>  - Gesture Lab 仍只练一个拳掌循环；握拳是准备/复位，张掌是离散执行，不新增 GI screen 或位置练习门槛。<br>  - <code>camera<em>full</code> 与 <code>keyboard</em>full</code> 都提供两项 capability；键盘 L2 使用 ↑/↓。<br>  - Gesture Lab 取消识别倒计时和强制多次训练；首轮“握拳—张掌—握拳”即达标，之后可自愿无限重复且小狗逐轮响应。<br>  - 3、2、1 只保留给关卡开场或安全恢复，不参与实时手势判定。</p>
+<ul class="md-ul"><li>被放弃的方案：按目标情境输出单一标准动作、三手势固定映射、握拳下蹲、点赞换人、按尝试次数强制训练、首轮完成后锁死练习。</li><li>需要 PM 确认的问题：已确认；用户已确认双通道输入合同、现有六屏 Gesture Lab 和 <code>web-only</code> 单屏范围。</li><li>不需要 PM 审查的执行细节：连续 3 帧稳定确认、80ms 推理间隔、700ms 初始冻结、虚拟掌心步长。</li><li>进入下一阶段的条件：04A 与 04B 忠实实现两个事件合同，并通过状态机、Unknown 跟手、键盘上下控制和五视口 QA。</li></ul></div></template>
+<template id="mat-tpl-1"><div class="md-content"><h2 class="md-h">原型规格：手势输入闭环</h2>
+<blockquote class="md-bq"><p>来源：<code>03-feature-手势输入闭环.md</code> | 更新日期：2026-08-13 | Target Surface：web-only</p></blockquote>
+<h3 class="md-h">1. Product Frame</h3>
+<ul class="md-ul"><li>目标用户：5 岁儿童与陪同家长。</li><li>原型目标：验证无需识别倒计时的拳掌练习能被看懂并重复，同时把关卡输入可靠交接为离散姿态事件与连续掌心位置两项 capability。</li><li>Gesture Lab 控制：<code>Closed<em>Fist → Open</em>Palm → 700ms freeze → Closed_Fist</code>；一次达标，可自愿重复。</li><li>关卡输入合同：L1/L3 消费 <code>PoseTransitionEvent</code>；L2 每个处理帧消费 <code>HandTrackingFrame{handPresent,palmCenterY,confidence,timestamp}</code>，分类为 <code>None/Unknown</code> 仍可跟手。</li><li>本轮不覆盖：新增 GI screen、在 Lab 强制练习掌心位置、三手势训练、握拳下蹲、点赞换人、真实儿童准确率结论。</li></ul>
+<h3 class="md-h">2. Goals And Non-Goals</h3>
+<ul class="md-ul"><li>Goals：验证实时拳掌触发、冻结与复位；首轮达标即允许离开且可重复；验证 camera/keyboard 两种 InputProfile 都声明 <code>poseTransition</code> 与 <code>handTrackingY</code>；验证 L2 在标签未知时仍收到位置帧；保持六个 GI screen 与单视口清晰排版。</li><li>Non-Goals：不在 GI 流程新增跟手校准页，不验证三手势准确率，不强制儿童重复采样，不把重复次数作为成绩，不扩展移动端或账号系统。</li></ul>
+<h3 class="md-h">3. Page Archetype And Reference Alignment</h3>
+<ul class="md-ul"><li>类型：低密度单任务 Gesture Lab。</li><li>默认布局：左侧大镜像与关键点；右侧当前一步与角色；底部一句反馈。</li><li>产品画布规则：04B 只呈现最终产品 UI，无 inspector、状态导航或 QA 文案。</li><li>单视口规则：页面级禁止纵向/横向滚动；支持 1440×900、1280×720、1219×681、1024×700、919×843。</li><li>Reference Alignment：继承已确认的家长/儿童分层、左大镜像右单步教练、低挫败降级和单屏规则；保持 GI-01–GI-06 不扩屏；偏离旧版三手势训练、识别倒计时和按情境输出单一动作的输入合同；禁止复制受保护品牌素材。</li></ul>
+<h3 class="md-h">4. Information Architecture</h3>
+<ul class="md-ul"><li>家长层：GI-01 设置、GI-02 授权、家长抽屉。</li><li>儿童层：GI-03 单控制循环、GI-04 结果、GI-05/GI-06 键盘降级。</li><li>系统层：本地识别运行时、Control Gate、双通道 Input Adapter、InputProfile。</li></ul>
+<h3 class="md-h">5. Core Flows</h3>
+<p><code>GI-01 选择输入 → GI-02 摄像头/模型/手准备 → GI-03 首轮拳掌达标（可自愿重复）→ GI-04 结果 → 关卡</code></p>
+<p>降级流：任意摄像头阻塞 → <code>GI-05 按键热身 → GI-06 按键完成 → 关卡</code>。</p>
+<p>GI-03 交互顺序：</p>
+<ol class="md-ol"><li>页面进入即实时检测，不显示 3、2、1。</li><li><code>waiting_fist</code>：提示“先做小拳头”。</li><li>stable fist → <code>armed</code>：提示“现在张开手”。</li><li>stable palm → 角色立即跳跃，进入 700ms <code>freeze</code>。</li><li>freeze 结束 → <code>waiting_reset</code>：提示“再做小拳头”。</li><li>stable fist → <code>controlCyclePassed=true</code>、<code>practiceRepeatCount=1</code>，显示常驻“看看结果”；同一个拳头同时让控制门回到 <code>armed</code>。</li><li>留在 GI-03 再次 stable palm → 角色再次跳跃并进入 <code>freeze</code>；stable fist 复位后 <code>practiceRepeatCount+1</code> 并再次 <code>armed</code>。</li><li>首轮达标后任意时刻点击“看看结果” → GI-04；没有第二轮门槛。</li></ol>
+<p>关卡交接不新增 screen：</p>
+<ol class="md-ol"><li>GI-04 输出 <code>camera<em>full</code>；GI-06 输出 <code>keyboard</em>full</code>，两者都声明 <code>capabilities.poseTransition=true</code>、<code>capabilities.handTrackingY=true</code>。</li><li>L1/L3 只订阅 <code>PoseTransitionEvent</code>；输入适配器不读取当前目标，也不预先翻译为情境动作。</li><li>L2 只订阅逐帧 <code>HandTrackingFrame</code>；有效关键点的标签即使为 <code>None/Unknown</code>，<code>handPresent</code> 仍为 true 且 <code>palmCenterY</code> 仍更新。</li><li>键盘 L1/L3 用 Space 生成一次规范拳掌事件循环；L2 用 ↑/↓ 连续改变虚拟掌心 Y。</li><li>L2 的第一次上下跟手教学发生在关卡安全段，不回到 Gesture Lab 增加练习门槛。</li></ol>
+<h3 class="md-h">6. Screen Inventory</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Screen</th><th>名称</th><th>目的</th><th>入口</th><th>出口</th></tr></thead><tbody><tr><td>GI-01</td><td>家长输入设置</td><td>隐私确认与模式选择</td><td>起始</td><td>GI-02/GI-05</td></tr><tr><td>GI-02</td><td>摄像头准备</td><td>授权、加载模型、确认手入镜</td><td>GI-01</td><td>GI-03/GI-05</td></tr><tr><td>GI-03</td><td>控制练习室</td><td>首轮达标并支持自愿重复拳掌循环</td><td>GI-02</td><td>GI-04/GI-05</td></tr><tr><td>GI-04</td><td>摄像头输入准备完成</td><td>用儿童语言确认准备完成并进入三关地图</td><td>GI-03</td><td>LV-00/GI-03/GI-05</td></tr><tr><td>GI-05</td><td>按键热身</td><td>摄像头降级路径</td><td>GI-01/GI-02/GI-03</td><td>GI-06</td></tr><tr><td>GI-06</td><td>按键准备完成</td><td>进入三关地图</td><td>GI-05</td><td>LV-00/GI-05</td></tr></tbody></table></div>
+<h3 class="md-h">7. Coverage Plan</h3>
+<ul class="md-ul"><li>模式：04B 主干 Demo。</li><li>Backbone group：<code>gesture-input-main</code>。</li><li>起始 screen：GI-01。</li><li>Transitions：</li></ul>
+<p>  - GI-01 <code>用手势玩</code> → GI-02；<code>用按键玩</code> → GI-05。<br>  - GI-02 <code>开始练习</code> → GI-03；阻塞/切按键 → GI-05。<br>  - GI-03 首轮拳掌循环完成后显示 <code>看看结果</code> → GI-04；留在当前页继续拳掌循环不发生 screen 切换。<br>  - GI-04 <code>开始游戏</code> → LV-00（集成原型）；<code>重新练习</code> → GI-03。<br>  - GI-05 按键热身完成 → GI-06；GI-06 <code>开始游戏</code> → LV-00。</p>
+<ul class="md-ul"><li>Extension states：模型慢加载、权限拒绝、轨道结束、失焦恢复；在 04B 中只实现主干可恢复表现，不引入 inspector。</li></ul>
+<h3 class="md-h">8. Screen Specs</h3>
+<h4 class="md-h">GI-01 家长输入设置</h4>
+<ul class="md-ul"><li>Purpose / User intent：家长在请求权限前理解本机处理边界，并选择摄像头或完整键盘路径。</li><li>Layout / Content：低密度说明卡、隐私承诺、摄像头与按键两个大入口；无儿童技术指标。</li><li>Primary / Secondary：主操作“用手势玩”；次操作“用按键玩”、隐私详情。</li><li>States / Navigation：default → GI-02 或 GI-05；未确认隐私时摄像头入口 disabled；错误不在本页伪装成功。</li><li>Data / Interactions：读取隐私确认和设备支持；点击后才请求对应能力。</li><li>Responsive / Accessibility：单屏、按钮 ≥44px、键盘 focus-visible、说明可被读屏读取。</li><li>Acceptance：未确认隐私不得启动摄像头；两个入口都可自然到达完整输入档案。</li></ul>
+<h4 class="md-h">GI-02 摄像头准备</h4>
+<ul class="md-ul"><li>Purpose / User intent：家长完成授权与模型准备，孩子确认系统已看到一只手。</li><li>Layout / Content：左侧大镜像 video + 21 点 canvas；右侧三步说明；底部取景、模型、本机处理状态。</li><li>Primary / Secondary：ready 且 handPresent 后“开始练习”；次操作重试、切按键、家长帮助。</li><li>States / Navigation：requesting/loading/finding-hand/ready/error；成功进入 GI-03，阻塞进入 GI-05 或重试。</li><li>Data / Interactions：消费 camera/model/hand 状态与最新 <code>HandTrackingFrame</code>；姿态标签未知但关键点有效时显示“我看到小手”。</li><li>Responsive / Accessibility：左宽右窄，低高度先压缩装饰；状态 <code>aria-live=polite</code>，所有家长控件 ≥44px。</li><li>Acceptance：手不必塞满框；标题与按钮不重叠；标签为 <code>None/Unknown</code> 但 handPresent=true 时仍允许进入拳掌练习。</li></ul>
+<h4 class="md-h">GI-03 控制练习室</h4>
+<ul class="md-ul"><li>Purpose / User intent：孩子只练一次拳→掌→拳，并可在达标后自愿重复。</li><li>Layout / Content：左侧摄像头宽于右侧单步教练；顶部“练会一次就可以”；右侧角色与 <code>need<em>fist/armed/freeze/waiting</em>reset</code>；达标后常驻“看看结果”。</li><li>Primary / Secondary：主操作为自然拳掌；达标后主 CTA“看看结果”；次操作继续练习、切按键、家长帮助。</li><li>States / Navigation：waiting<em>fist → armed → freeze → waiting</em>reset → passed；首轮后可循环，不新增掌心位置练习状态；CTA 进入 GI-04。</li><li>Data / Interactions：只消费 stable pose、Control Gate 和练习计数；<code>HandTrackingFrame</code> 只用于骨架/取景反馈，不触发动作或新增门槛。</li><li>Feedback：未武装张掌不动作；武装后张掌立即跳；freeze 后必须握拳复位；首轮后小狗持续响应。</li><li>Responsive / Accessibility：单屏；控制状态 <code>aria-live=polite</code>；动画尊重 reduced motion；家长入口 ≥44px。</li><li>Acceptance：DOM 无识别倒计时；至少可完成两轮；GI-03 不出现“上下移动手”必做步骤。</li></ul>
+<h4 class="md-h">GI-04 摄像头输入准备完成</h4>
+<ul class="md-ul"><li>Purpose / User intent：确认拳掌练习已完成，并让孩子进入按关卡逐步教学的三关地图。</li><li>Layout / Content：标题“小拳头，张开手！”、三步贴纸、两种游戏控制的简短预告和单一开始 CTA；不展示 capability 技术名。</li><li>Primary / Secondary：主操作“开始游戏”；次操作“重新练习”“改用按键”。</li><li>States / Navigation：success 为 camera_full；模型失效时给按键出口；进入 LV-00/GI-03/GI-05。</li><li>Data / Interactions：生成 InputProfile，mode=camera_full 且两项 capability=true；位置 capability 只表示技术可用，不宣称孩子已练会。</li><li>Responsive / Accessibility：低密度居中卡，单屏，CTA ≥44px，状态可读屏。</li><li>Acceptance：不再展示三种动作次数或 hybrid 档；明确第二关会在安全路段教上下跟手。</li></ul>
+<h4 class="md-h">GI-05 按键热身</h4>
+<ul class="md-ul"><li>Purpose / User intent：摄像头不可用或家长主动降级时，用一次 Space 获得离散动作成功反馈。</li><li>Layout / Content：大 Space 键图、角色动作、简短说明；底部返回手势入口。</li><li>Primary / Secondary：按 Space 完成热身；次操作返回 GI-01/GI-02。</li><li>States / Navigation：waiting-key → action-feedback → ready；成功进入 GI-06。</li><li>Data / Interactions：Space 由适配器生成一次规范的 Closed<em>Fist/Open</em>Palm 事件循环；不要求儿童按两个键模拟两种手型。</li><li>Responsive / Accessibility：原生 keydown 与可点击大按钮等价；focus-visible；单屏无滚动。</li><li>Acceptance：一次 Space 后可继续；不得把键盘模式描述为较差或失败。</li></ul>
+<h4 class="md-h">GI-06 按键准备完成</h4>
+<ul class="md-ul"><li>Purpose / User intent：确认完整键盘路径，并说明动作关用 Space、跟手关用 ↑/↓。</li><li>Layout / Content：完成状态、Space 卡、↑/↓ 卡和“开始游戏”CTA；技术 capability 名不展示给儿童。</li><li>Primary / Secondary：主操作“开始游戏”；次操作“再试一次”“改用摄像头”。</li><li>States / Navigation：success 为 keyboard_full；进入 LV-00/GI-05/GI-01。</li><li>Data / Interactions：生成 InputProfile，mode=keyboard_full 且两项 capability=true；虚拟掌心 Y 初始为 0.5。</li><li>Responsive / Accessibility：方向键说明不依赖颜色；CTA ≥44px；读屏标签区分上移/下移。</li><li>Acceptance：InputProfile 不因 GI-05 只练 Space 而缺失 handTrackingY；L2 可直接读取 ↑/↓ 等价位置帧。</li></ul>
+<h3 class="md-h">9. Component And State Matrix</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>组件</th><th>Default</th><th>Loading</th><th>Error</th><th>Success</th><th>Disabled/Focused</th></tr></thead><tbody><tr><td>Camera setup</td><td>尚未开启</td><td>等待授权/模型</td><td>原因 + 按键出口</td><td>视频+骨架</td><td>未确认隐私禁用</td></tr><tr><td>Control status</td><td>先做小拳头</td><td>N/A</td><td>正在找手</td><td>已学会/可以继续</td><td>focus-visible</td></tr><tr><td>Gesture gate</td><td>need_fist</td><td>N/A</td><td>hand missing</td><td>armed/freeze + passed</td><td>暂停时 disabled</td></tr><tr><td>Tracking frame</td><td>handPresent=true</td><td>模型未 ready</td><td>handPresent=false</td><td>palmCenterY 有限且持续更新</td><td>非 L2 时不驱动玩法</td></tr><tr><td>InputProfile</td><td>模式未选择</td><td>能力准备中</td><td>capability unavailable</td><td>camera<em>full/keyboard</em>full + 两项 capability</td><td>CTA disabled/focused</td></tr><tr><td>Result</td><td>N/A</td><td>N/A</td><td>建议按键</td><td>三步贴纸</td><td>CTA focus-visible</td></tr></tbody></table></div>
+<p>Empty state：无手/无识别结果时使用“正在找小手”，不显示空白面板或失败评价。</p>
+<h3 class="md-h">10. Sample Data</h3>
+<ul class="md-ul"><li>stable pose 样例：<code>Closed<em>Fist</code>、<code>Open</em>Palm</code>、<code>null</code>。</li><li>Control cycle 样例：<code>{resetPose:&quot;Closed<em>Fist&quot;, actionPose:&quot;Open</em>Palm&quot;, freezeMs:700, passed:true, repeatCount:2}</code>。</li><li><code>PoseTransitionEvent</code> 样例：<code>{stablePose:&quot;Open<em>Palm&quot;, previousStablePose:&quot;Closed</em>Fist&quot;, source:&quot;camera&quot;, confidence:0.91, timestamp:10240}</code>。</li><li><code>HandTrackingFrame</code> 样例：<code>{handPresent:true, palmCenterY:0.38, confidence:0.84, timestamp:10240}</code>；无手帧为 <code>{handPresent:false, palmCenterY:null, confidence:0, timestamp:10320}</code>。</li><li>InputProfile 样例：<code>{mode:&quot;camera<em>full&quot;, capabilities:{poseTransition:true, handTrackingY:true}}</code> / <code>{mode:&quot;keyboard</em>full&quot;, capabilities:{poseTransition:true, handTrackingY:true}}</code>。</li></ul>
+<h3 class="md-h">11. Data &amp; Events</h3>
+<h4 class="md-h"><code>PoseTransitionEvent</code></h4>
+<pre class="md-pre"><code>{
+  stablePose: &quot;Closed_Fist&quot; | &quot;Open_Palm&quot;,
+  previousStablePose: &quot;Closed_Fist&quot; | &quot;Open_Palm&quot; | null,
+  source: &quot;camera&quot; | &quot;keyboard&quot;,
+  confidence: number, // 0..1
+  timestamp: number   // 单调毫秒
+}</code></pre>
+<ul class="md-ul"><li>camera：稳定姿态真正改变时派发一次；持续保持不得逐帧重发。</li><li>keyboard：L1/L3 每次 Space 生成规范的 Closed<em>Fist → Open</em>Palm 事件循环。</li><li>路由：仅 GI-03、L1、L3 消费；Input Adapter 不读取目标情境，也不输出预判后的游戏动作。</li></ul>
+<h4 class="md-h"><code>HandTrackingFrame</code></h4>
+<pre class="md-pre"><code>{
+  handPresent: boolean,
+  palmCenterY: number | null, // handPresent=true 时为 0..1
+  confidence: number,         // 0..1
+  timestamp: number           // 单调毫秒
+}</code></pre>
+<ul class="md-ul"><li>camera：每个处理帧都派发；关键点有效时 label=<code>None/Unknown</code> 仍为 handPresent=true，并保留有效 palmCenterY。</li><li><code>confidence</code> 语义固定为手部存在/关键点追踪置信度，不是手势分类置信度。</li><li>无手：必须派发 handPresent=false、palmCenterY=null，不能伪造旧位置为新观测。</li><li>keyboard：L2 以 0.5 为初值，↑ 减小、↓ 增大虚拟 palmCenterY，并输出相同字段合同。</li><li>路由：L2 每帧消费；GI-02/GI-03 可用于取景反馈，但不得增加练习状态或触发角色动作。</li></ul>
+<h4 class="md-h">状态与 InputProfile</h4>
+<ul class="md-ul"><li>状态：<code>practicePhase</code>、<code>controlCyclePassed</code>、<code>practiceRepeatCount</code>、<code>gameGestureGate</code>、<code>freezeUntilMs</code>、<code>virtualPalmCenterY</code>。</li><li><code>camera_full</code>：<code>capabilities.poseTransition=true</code> 且 <code>capabilities.handTrackingY=true</code>；保留 <code>controlCycle.resetPose/actionPose/freezeMs/passed</code>。</li><li><code>keyboard_full</code>：两项 capability 同样为 true；声明 Space 等价离散循环与 ArrowUp/ArrowDown 等价位置控制。</li><li>当前 runtime 必须显式订阅所需 capability；L1/L3 不消费位置控制，L2 不消费姿态事件。</li></ul>
+<h3 class="md-h">12. Responsive Rules</h3>
+<ul class="md-ul"><li><code>html/body/product-canvas/screen</code> 高度锁定视口，<code>overflow:hidden</code>。</li><li>Grid 列使用 <code>minmax(0, ...)</code>，不得用造成横向挤出的固定最小宽度。</li><li>低高度优先压缩留白、角色示范和装饰；不得裁掉状态、CTA、取景结果或家长入口。</li><li>中文标题使用系统中文字体栈、平衡换行；关键短标签不得出现单字孤行。</li></ul>
+<h3 class="md-h">13. Acceptance Criteria For HTML Prototype</h3>
+<ul class="md-ul"><li>04B 无 prototype shell。</li><li>GI-03 无识别倒计时元素或倒计时分支。</li><li><code>Open<em>Palm</code> 在 <code>need</em>fist</code> 不触发；<code>Closed<em>Fist → Open</em>Palm</code> 立即产生 <code>JUMP</code>；700ms 后必须 <code>Closed_Fist</code> 才完成复位。</li><li>首轮复位后 <code>controlCyclePassed=true</code> 且“看看结果”可用；留在 GI-03 再做 <code>Open<em>Palm → freeze → Closed</em>Fist</code> 时小狗再次跳跃并重新武装，至少自动验证两轮。</li><li>Screen inventory 固定为 GI-01–GI-06；没有新增位置校准 screen，GI-03 仍只练拳掌一次且允许自愿复练。</li><li>camera<em>full/keyboard</em>full 都输出 <code>capabilities.poseTransition=true</code> 与 <code>capabilities.handTrackingY=true</code>。</li><li>camera 输入下，每个处理帧都有 <code>HandTrackingFrame</code>；label=<code>None/Unknown</code> 且关键点有效时 <code>handPresent=true</code>、<code>palmCenterY</code> 为有限 0–1 数值，并可持续驱动 L2。</li><li>无关键点时位置帧为 <code>handPresent=false</code>、<code>palmCenterY=null</code>；时间戳倒退帧被丢弃。</li><li>L1/L3 只收到 <code>PoseTransitionEvent</code>；持续张掌不重复事件，输入适配器不按当前目标预判动作。</li><li>keyboard_full 下 Space 生成一次规范拳掌循环；L2 中 ↑/↓ 连续改变虚拟 palmCenterY 并复用相同位置帧合同。</li><li>五个目标视口的 6 个 screen 无根滚动、局部 overflow、控件越界、文本/按钮相交。</li><li>视频、模型、WASM 均从 localhost 本地资源加载；无 CDN；file:// 有明确启动保护。</li></ul>
+<h3 class="md-h">14. Assumptions</h3>
+<ul class="md-ul"><li>拳掌连续 3 帧稳定确认与 700ms 冻结是首轮可用参数。</li><li>GI 不练掌心位置；L2 前 5 秒安全区承担首次上下跟手教学，不作为关卡解锁门槛。</li><li><code>HandTrackingFrame.palmCenterY</code> 是归一化观测值；平滑、死区和安全暂停由 L2/Safety 实现。</li></ul>
+<h3 class="md-h">15. Open Questions</h3>
+<ul class="md-ul"><li>待真实试玩：5 岁儿童是否自然理解“拳头是准备键”；是否需要把冻结调到 500–900ms。</li><li>无阻塞问题。</li></ul>
+<h3 class="md-h">16. QA Strategy For HTML Prototype</h3>
+<ul class="md-ul"><li>QA Mode：TARGETED；覆盖真实状态机、双通道事件合同、Unknown 跟手、键盘 ↑/↓、五视口布局、页面形态、产品画布纯净度、Reference Alignment、模型本地加载、file:// 启动保护与资源边界。</li></ul>
+<h3 class="md-h">17. PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：保持 GI-01–GI-06 与 GI-03 一次拳掌练习；关卡输入拆为 <code>PoseTransitionEvent</code> 和逐帧 <code>HandTrackingFrame</code>，<code>None/Unknown</code> 不阻断 L2；camera<em>full/keyboard</em>full 均声明两项 capability，键盘 L2 用 ↑/↓。</li><li>被放弃的方案：新增跟手练习 screen、按目标情境输出单一动作、三手势练习、强制次数目标、首轮后锁死小狗响应。</li><li>需要 PM 确认的问题：已确认；用户已确认双通道合同、现有 GI 屏幕、<code>web-only</code> 与单屏范围。</li><li>不需要 PM 审查的执行细节：CSS 压缩参数、连续 3 帧确认、700ms 初始冻结、虚拟掌心步长。</li><li>进入下一阶段的条件：集成 04B 实现两个输入合同，并通过 Unknown 跟手、键盘上下控制、两轮复练与五视口 QA。</li></ul>
+<h3 class="md-h">18. Quality Self-check</h3>
+<p>Spec self-check</p>
+<ul class="md-ul"><li>Screen coverage: PASS — GI-01–GI-06 均包含 purpose、content、actions、states、navigation、data、响应式/无障碍与验收。</li><li>State coverage: PASS — default/loading/empty/error/success/disabled/focused + 控制门、位置帧与 InputProfile 状态已覆盖。</li><li>Target surface coverage: PASS — 仅 <code>web-only</code>，未扩展移动端。</li><li>Page archetype coverage: PASS — 低密度单任务 Gesture Lab，保持六屏任务流。</li><li>Reference alignment: PASS — 继承左大镜像/右教练、低挫败降级与单屏，明确禁止旧输入合同和新增训练屏。</li><li>Product canvas rules: PASS — 04B 仍为纯产品 UI，无 inspector/state-nav/QA 文案。</li><li>Responsive coverage: PASS — 五个目标 Web 视口，根与局部均无滚动或相交。</li><li>Handoff readiness: PASS — 两个事件 schema、capability、路由、键盘等价与验收均可实现。</li><li>PM review gate readiness: PASS — 核心合同与 screen inventory 已确认，无阻塞问题。</li></ul></div></template>
+<template id="mat-tpl-2"></template>
+
+  <div class="overlay-backdrop" id="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayHeading">
+    <div class="overlay-panel">
+      <div class="overlay-header">
+        <div class="overlay-title">
+          <h2 id="overlayHeading">产出物原文</h2>
+          <code id="overlayFile"></code>
+        </div>
+        <button class="overlay-close" onclick="closeOverlay()" aria-label="关闭浮层">关闭 ✕</button>
+      </div>
+      <div class="overlay-body" id="overlayBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const cards = [{"question_id":"Q-03-GI-001","question":"是否确认 Gesture Lab 只要求一次拳→掌→拳循环，首轮达标即可进入结果页，后续练习完全自愿？","why_it_matters":"这决定儿童记忆负担、练习状态机和进入游戏的门槛；额外手势、倒计时或次数目标会重新增加等待与挫败。","recommended_decision":"已确认：一次循环达标，看看结果常驻，留页时小狗继续逐轮响应。","options":["维持已确认方案","要求变更","补真实儿童试玩材料"],"source_files":["03-feature-手势输入闭环.md"],"evidence_refs":[],"downstream_impact":["04A-prototype-spec-手势输入闭环.md","04B-prototype-手势小狗探险MVP.html","儿童试玩计划"],"route_hint":"L2"},{"question_id":"Q-03-GI-002","question":"是否确认 PoseTransitionEvent 与 HandTrackingFrame 两个通道互不门控，L2 在 None/Unknown 时仍按有效关键点跟手？","why_it_matters":"若把位置流绑定到姿态分类，L2 会在模型无法命名手型时无故冻结；若适配器预判目标动作，三个运行时会重新耦合。","recommended_decision":"已确认：Unknown 不产生离散边沿，但 handPresent=true 与 palmCenterY 继续有效。","options":["维持已确认方案","要求变更","补运行时证据"],"source_files":["03-feature-手势输入闭环.md","03-feature-核心关卡循环.md"],"evidence_refs":[],"downstream_impact":["Input Adapter","L1/L2/L3 runtime","Unknown 跟手 QA"],"route_hint":"L2"},{"question_id":"Q-03-GI-003","question":"是否确认 camera_full 与 keyboard_full 都使用具名 boolean capability map，并同时提供 poseTransition 与 handTrackingY？","why_it_matters":"这保证任一 full 输入模式都能走完三关，也避免把某个运行时的具体按键或手势塞进通用帧结构。","recommended_decision":"已确认：两项 capability 均为 true；Space 服务 L1/L3，↑/↓ 服务 L2。","options":["维持已确认方案","要求变更","补档案兼容性材料"],"source_files":["03-feature-手势输入闭环.md"],"evidence_refs":[],"downstream_impact":["InputProfile","GI-04/GI-06","RuntimeHost capability guard"],"route_hint":"L2"}];
+    const storageKey = "pm-review-console:phase-3-手势输入闭环功能细节:03-feature-手势输入闭环-md";
+    const basePayload = {
+      phase: "Phase 3 手势输入闭环功能细节",
+      artifact: "03-feature-手势输入闭环.md",
+      source_status: "confirmed"
+    };
+    const materialMeta = [{"file":"03-feature-手势输入闭环.md","href":"../03-feature-手势输入闭环.md","type":"markdown","missing":false,"title":"Phase 3 手势输入闭环功能规格"},{"file":"04A-prototype-spec-手势输入闭环.md","href":"../04A-prototype-spec-手势输入闭环.md","type":"markdown","missing":false,"title":"Phase 4A 手势输入闭环原型规格"},{"file":"02-architecture.html","href":"../02-architecture.html","type":"html","missing":false,"title":"Phase 2 可交互产品架构图"}];
+
+    const overlay = document.getElementById("overlay");
+    const overlayBody = document.getElementById("overlayBody");
+    const overlayHeading = document.getElementById("overlayHeading");
+    const overlayFile = document.getElementById("overlayFile");
+
+    function esc(s) {
+      return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    function escAttr(s) {
+      return String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function normalizeLocalPath(value) {
+      let raw = String(value || "").trim();
+      if (!raw || raw.startsWith("#") || /^[a-z]+:/i.test(raw)) return "";
+      raw = raw.split("#")[0].split("?")[0].replace(/\\/g, "/");
+      try { raw = decodeURIComponent(raw); } catch (_) {}
+      raw = raw.replace(/^\.\//, "");
+      while (raw.startsWith("../")) raw = raw.slice(3);
+      return raw;
+    }
+
+    function findMaterialIndexByFile(value) {
+      const target = normalizeLocalPath(value);
+      if (!target) return -1;
+      return materialMeta.findIndex((meta) => {
+        const file = normalizeLocalPath(meta.file);
+        const href = normalizeLocalPath(meta.href);
+        return file === target || href === target || file.endsWith("/" + target) || href.endsWith("/" + target);
+      });
+    }
+
+    function openFileReference(file) {
+      const index = findMaterialIndexByFile(file);
+      if (index >= 0) {
+        openOverlay(index);
+        return true;
+      }
+      return false;
+    }
+
+    function openOverlay(index) {
+      const meta = materialMeta[index];
+      if (!meta) return;
+      overlayHeading.textContent = meta.title || "产出物原文";
+      overlayFile.textContent = meta.file || "";
+
+      if (meta.missing) {
+        overlayBody.innerHTML =
+          '<p style="color:var(--warn);padding:20px 0">文件未找到：<code>' +
+          esc(meta.file) + '</code><br>请确认文件路径或重新生成 Review Console。</p>';
+      } else if (meta.type === "html") {
+        const href = meta.href || meta.file || "";
+        overlayBody.innerHTML =
+          '<div class="overlay-html-frame-wrap">' +
+          '<div class="overlay-html-frame-top">' +
+          '<span>HTML 产物正在右侧浮层中预览。若浏览器限制本地 iframe，可使用备用入口。</span>' +
+          '<a class="overlay-open-btn" href="' + escAttr(href) + '" target="_blank" rel="noopener">新窗口打开</a>' +
+          '</div>' +
+          '<iframe class="overlay-html-frame" src="' + escAttr(href) + '" title="' + escAttr(meta.title || "HTML 产物预览") + '"></iframe>' +
+          '</div>';
+      } else {
+        const tpl = document.getElementById("mat-tpl-" + index);
+        if (tpl && tpl.content.childElementCount > 0) {
+          overlayBody.innerHTML = "";
+          overlayBody.appendChild(tpl.content.cloneNode(true));
+        } else {
+          overlayBody.innerHTML = '<p class="muted">内容不可用。</p>';
+        }
+      }
+
+      overlay.classList.add("visible");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeOverlay() {
+      overlay.classList.remove("visible");
+      document.body.style.overflow = "";
+      overlayBody.innerHTML = "";
+    }
+
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("visible")) closeOverlay();
+    });
+    document.addEventListener("click", (e) => {
+      const fileTrigger = e.target.closest("[data-open-file]");
+      if (fileTrigger) {
+        const handled = openFileReference(fileTrigger.getAttribute("data-open-file"));
+        if (handled) e.preventDefault();
+        return;
+      }
+
+      const materialLink = e.target.closest(".md-content a[href]");
+      if (!materialLink) return;
+      const handled = openFileReference(materialLink.getAttribute("href"));
+      if (handled) e.preventDefault();
+    });
+
+    function collectFeedback() {
+      const directFeedback = document.getElementById("directFeedback")?.value || "";
+      const responses = cards.map((card, index) => {
+        const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]')?.value || "";
+        const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]')?.value || "";
+        return { question_id: card.question_id, question: card.question, decision, comment };
+      });
+      return { ...basePayload, exported_at: new Date().toISOString(), direct_feedback: directFeedback, responses };
+    }
+
+    function saveLocal() {
+      const payload = collectFeedback();
+      localStorage.setItem(storageKey, JSON.stringify(payload));
+      document.getElementById("feedbackPreview").textContent = JSON.stringify(payload, null, 2);
+    }
+
+    function restoreLocal() {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) { saveLocal(); return; }
+      try {
+        const payload = JSON.parse(raw);
+        const directFeedback = document.getElementById("directFeedback");
+        if (directFeedback) directFeedback.value = payload.direct_feedback || "";
+        payload.responses?.forEach((response, index) => {
+          const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]');
+          const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]');
+          if (decision) decision.value = response.decision || "";
+          if (comment) comment.value = response.comment || "";
+        });
+      } catch (_) { localStorage.removeItem(storageKey); }
+      saveLocal();
+    }
+
+    document.querySelectorAll("select, textarea").forEach((field) => {
+      field.addEventListener("input", saveLocal);
+      field.addEventListener("change", saveLocal);
+    });
+
+    document.getElementById("copyFeedback").addEventListener("click", async () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const status = document.getElementById("copyStatus");
+      if (navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(text);
+          if (status) status.textContent = "已复制";
+          return;
+        } catch (_) {
+          window.prompt("复制反馈 JSON", text);
+        }
+      } else {
+        window.prompt("复制反馈 JSON", text);
+      }
+      if (status) status.textContent = "请从弹窗复制";
+    });
+
+    document.getElementById("downloadFeedback").addEventListener("click", () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const blob = new Blob([text], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "phase-3-手势输入闭环功能细节-feedback.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+
+    restoreLocal();
+  </script>
+</body>
+</html>

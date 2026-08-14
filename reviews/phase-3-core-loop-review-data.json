@@ -1,0 +1,126 @@
+{
+  "phase": "Phase 3 核心关卡循环功能细节",
+  "artifact": "03-feature-核心关卡循环.md",
+  "status": "confirmed",
+  "updated_at": "2026-08-13",
+  "summary": {
+    "key_decisions": [
+      "一条三段冒险内部挂载 command_runner、hand_follow_dodge、cloud_stack 三个独立运行时，分别处理离散高跳、连续跟手和拳掌叠云",
+      "L1/L2/L3 时长固定 40/45/50 秒，每关 6 枚收集物；到达终点即解锁下一关，不按成绩锁关",
+      "L1 高跳峰值 clamp(150px,24vh,220px)，L2 在 None/Unknown 时仍跟随掌心 Y，L3 每轮拳掌只加一朵云；所有碰撞或不足都软恢复"
+    ],
+    "discarded_options": [
+      "不继续三个同构跑酷关，不用一个按目标动作分支伪装成三种运行时",
+      "不引入额外必需手型，也不复刻经典 Flappy 的重力窄缝即死",
+      "不使用生命值、Game Over、掉落收集物、失败评级或完成成绩门槛"
+    ],
+    "next_stage_conditions": [
+      "已满足：04A 用 ModeDefinition.runtimeType 定义三运行时和 LV-00–LV-03 宿主",
+      "已满足：集成 04B 实现 L1 高跳、L2 Unknown 跟手、L3 叠云/补垫/星星与五视口单屏",
+      "后续由真实儿童试玩校准 L1 手感、L2 理解速度和 L3 动作疲劳"
+    ],
+    "execution_details_not_for_pm": [
+      "L2 EMA 0.28、3.5% 死区、单帧最大 12% 位移与 600ms grace",
+      "目标毫秒值、CSS 云层高度、测试注入 API 和动画粒子"
+    ]
+  },
+  "materials": [
+    { "title": "Phase 3 核心关卡循环功能规格", "file": "03-feature-核心关卡循环.md" },
+    { "title": "Phase 3 手势输入闭环功能规格", "file": "03-feature-手势输入闭环.md" },
+    { "title": "Phase 1A 竞品页面体验 Benchmark", "file": "01A-competitor-page-experience.md" },
+    { "title": "Phase 2 可交互产品架构图", "file": "02-architecture.html" }
+  ],
+  "visualizations": [
+    {
+      "type": "stage_flow",
+      "title": "三关多玩法冒险",
+      "description": "共享地图、安全、奖励和庆祝；每关玩法状态、判定与输入频率独立。",
+      "steps": [
+        { "label": "L1 溪边跳跳", "status": "done", "detail": "40s · command_runner · 拳掌高跳/接力 · 6 枚" },
+        { "label": "L2 萤火虫躲躲", "status": "done", "detail": "45s · hand_follow_dodge · 掌心 Y 跟手 · 6 枚" },
+        { "label": "L3 云朵叠叠", "status": "done", "detail": "50s · cloud_stack · 拳掌叠云 · 6 枚" },
+        { "label": "三关完成", "status": "done", "detail": "完成即解锁；无 Game Over、无成绩锁关" }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "三独立 runtime 合同",
+      "description": "RuntimeHost 只共享基础服务，具体玩法状态与判定不交叉。",
+      "columns": ["关卡", "runtimeType", "时长", "输入", "主要世界反馈", "收集"],
+      "rows": [
+        { "label": "L1", "values": ["command_runner", "40s", "PoseTransitionEvent", "150–220px 高跳；末段接力", "6"] },
+        { "label": "L2", "values": ["hand_follow_dodge", "45s", "HandTrackingFrame.palmCenterY", "连续上下跟手；Unknown 仍移动", "6"] },
+        { "label": "L3", "values": ["cloud_stack", "50s", "PoseTransitionEvent", "每轮 +1 云；1/2/3 层目标", "6"] }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "低挫败恢复矩阵",
+      "description": "困难会改变短期世界反馈，但不会扣收集、回起点或阻断完成。",
+      "columns": ["情境", "世界处理", "奖励影响", "恢复出口"],
+      "rows": [
+        { "label": "L1 未越障", "values": ["约 1 秒减速 + 短护盾", "不扣饼干", "继续自动前进"] },
+        { "label": "L2 未进入间隙", "values": ["弹回安全区 + 1.2 秒护盾", "不扣饼干", "继续跟手"] },
+        { "label": "L3 云不足", "values": ["伙伴补安全云", "记录辅助但不展示失败", "照常越障"] },
+        { "label": "L3 云过多", "values": ["多余云转星星", "奖励反馈", "清空后进入下一目标"] },
+        { "label": "长时间无手", "values": ["危险推进安全冻结", "进度保留", "手回来 3/2/1 恢复或键盘接管"] }
+      ]
+    },
+    {
+      "type": "impact_map",
+      "title": "对原型与实现的影响",
+      "description": "功能层已固定玩法边界、时长、输入和软失败语义。",
+      "source": "40/45/50 秒 + 三 runtime + 每关 6 枚 + 软失败",
+      "items": [
+        { "label": "04A RuntimeHost", "detail": "ModeDefinition 暴露 runtimeType，LV-02 按关卡挂载独立状态机" },
+        { "label": "04A 世界反馈", "detail": "高跳弧线、跟手光点与持久云层必须先于侧栏文字被看见" },
+        { "label": "04B QA", "detail": "验证三关顺序解锁、L1 高跳、L2 Unknown、L3 单轮一云与软恢复" },
+        { "label": "真实试玩", "detail": "观察 10 秒内理解、成人提示、动作疲劳和碰撞情绪" }
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-03-CORE-001",
+      "question": "是否确认 L1/L2/L3 分别使用 command_runner、hand_follow_dodge、cloud_stack 三个独立运行时，而不是同一跑酷状态机换参数？",
+      "why_it_matters": "三种玩法分别依赖低频动作边沿、高频位置流和建造库存；共用单一状态机会重新造成输入门控和提示冲突。",
+      "recommended_decision": "已确认：只共享 Session/Safety/Reward/Coach，运行时状态和判定函数独立。",
+      "options": ["维持已确认方案", "要求变更", "补运行时证据"],
+      "source_files": ["03-feature-核心关卡循环.md", "02-architecture.html"],
+      "evidence_refs": [],
+      "downstream_impact": ["ModeDefinition", "LV-02 RuntimeHost", "04B 三玩法实现", "运行时 QA"],
+      "route_hint": "L2"
+    },
+    {
+      "question_id": "Q-03-CORE-002",
+      "question": "是否确认三关时长 40/45/50 秒、每关 6 枚收集物，并以到达终点无条件解锁下一关？",
+      "why_it_matters": "这些值直接决定内容配置、HUD、关卡节奏和真实试玩总时长；成绩锁关会破坏低挫败边界。",
+      "recommended_decision": "已确认：L1/L2/L3=40/45/50 秒，每关 6 枚，完成不检查收集或辅助次数。",
+      "options": ["维持已确认方案", "调整时长或收集数", "补试玩材料"],
+      "source_files": ["03-feature-核心关卡循环.md"],
+      "evidence_refs": [],
+      "downstream_impact": ["关卡配置", "HUD", "解锁逻辑", "儿童试玩计划"],
+      "route_hint": "L2"
+    },
+    {
+      "question_id": "Q-03-CORE-003",
+      "question": "是否确认 L1 高跳、L2 分类无关跟手、L3 单轮一云与全关软失败共同构成三关手感基线？",
+      "why_it_matters": "这是孩子能否看出三种玩法差异并建立动作因果的核心；若反馈只在文字侧栏或失败中断，体感价值会消失。",
+      "recommended_decision": "已确认：L1 150–220px/约 1s；L2 Unknown 仍跟手；L3 少云补垫、多云转星；不 Game Over。",
+      "options": ["维持已确认方案", "要求变更", "补实际试玩材料"],
+      "source_files": ["03-feature-核心关卡循环.md", "01A-competitor-page-experience.md"],
+      "evidence_refs": [],
+      "downstream_impact": ["04A 三玩法状态", "04B 世界反馈", "QA-TARGETED", "真实儿童试玩"],
+      "route_hint": "L2"
+    }
+  ],
+  "risks": [
+    "L1 150–220px 高跳是否清楚但不漂浮，仍需真实儿童与家长共同试玩",
+    "L2 上下映射是否能在 10 秒内理解、None/Unknown 与真正丢手是否正确区分，需要持续观察",
+    "L3 每关需要多轮拳掌，必须观察 5 岁儿童的动作疲劳与持续张掌误触"
+  ],
+  "next_actions": [
+    "Phase 3 核心关卡循环已确认并已传播至 04A/04B",
+    "后续试玩重点比较 L1 高跳、L2 跟手、L3 叠云三种实际手感和软失败情绪"
+  ]
+}

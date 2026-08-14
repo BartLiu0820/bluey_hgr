@@ -1,0 +1,137 @@
+{
+  "phase": "Phase 1 产品调研判断",
+  "artifact": "01-research.md",
+  "status": "confirmed",
+  "updated_at": "2026-08-13",
+  "summary": {
+    "key_decisions": [
+      "Careful Go：在已确认的 web-only 范围内推进家庭 MVP，以三种短玩法验证不同控制关系",
+      "L1 command_runner 40 秒、L2 hand_follow_dodge 45 秒、L3 cloud_stack 50 秒，组成一条顺序解锁的多玩法三关冒险",
+      "输入同时提供 PoseTransitionEvent 离散拳掌事件与 HandTrackingFrame 连续掌心位置帧，分类为 Unknown 时 L2 仍可跟手",
+      "主线不新增必需手型；完成即解锁，收集只服务庆祝，无生命值、Game Over 或成绩锁关"
+    ],
+    "discarded_options": [
+      "不做移动端并行、专用硬件、全身大动作、超过三关的内容扩展、账号或排行榜",
+      "不采用重力下坠、窄缝、碰撞即死和失败重开的高挫败循环",
+      "不为玩法差异增加 Pointing_Up、Victory 等必需手型，也不复制官方 Bluey 素材"
+    ],
+    "next_stage_conditions": [
+      "已满足：PM 已确认多玩法三关、web-only、双通道输入、低挫败边界与不新增必需手型",
+      "已完成 Phase 1A Benchmark，并已将结论传播至 Phase 2 及后续规格与原型"
+    ],
+    "execution_details_not_for_pm": [
+      "搜索来源整理、具体置信度参数、Worker 实现、位置平滑参数和依赖安装方式"
+    ]
+  },
+  "materials": [
+    {
+      "title": "Phase 1 产品方向研究报告",
+      "file": "01-research.md"
+    }
+  ],
+  "visualizations": [
+    {
+      "type": "evidence_map",
+      "title": "Careful Go 证据支撑图",
+      "description": "区分已有外部证据与仍需真实儿童试玩验证的关键假设。",
+      "items": [
+        {
+          "evidence": "E-003 / E-004 / E-005",
+          "supports": "摄像头体感控制与家庭亲子游戏的品类可行性",
+          "confidence": "高"
+        },
+        {
+          "evidence": "E-008 / E-009 / E-011",
+          "supports": "浏览器摄像头、2D 游戏与实时手部识别的技术可行性",
+          "confidence": "高"
+        },
+        {
+          "evidence": "E-001 / E-002",
+          "supports": "5 岁家庭场景、笔记本摄像头优先与 web-only 范围",
+          "confidence": "高"
+        },
+        {
+          "evidence": "待家长陪同真实儿童试玩",
+          "supports": "三种控制关系能否在低成人干预下被理解并完成",
+          "confidence": "待验证"
+        }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "三关控制关系与低挫败边界",
+      "description": "三关通过改变控制关系形成差异，不靠增加手型制造复杂度。",
+      "columns": ["关卡", "时长", "输入语义", "儿童结果"],
+      "rows": [
+        {
+          "label": "L1 command_runner",
+          "values": ["40 秒", "拳→掌高跳；末段复用同一动作接力", "宽松障碍，碰撞不扣奖励"]
+        },
+        {
+          "label": "L2 hand_follow_dodge",
+          "values": ["45 秒", "掌心 Y 连续跟手；Unknown 仍有效", "宽通道、短丢手保持、护盾恢复"]
+        },
+        {
+          "label": "L3 cloud_stack",
+          "values": ["50 秒", "每轮拳→掌叠一朵云", "少云补垫，多云转星，不坠落"]
+        }
+      ]
+    },
+    {
+      "type": "stage_flow",
+      "title": "已确认的阶段推进链路",
+      "description": "Phase 1 方向已经通过 Gate，并已向后续阶段传播。",
+      "steps": [
+        {"label": "Phase 1 调研", "status": "done", "detail": "Careful Go 与 web-only 已确认"},
+        {"label": "Phase 1A Benchmark", "status": "done", "detail": "三种玩法参考与负面边界已确认"},
+        {"label": "Phase 2 架构", "status": "done", "detail": "4 层 17 模块与三运行时已确认"},
+        {"label": "下游规格与原型", "status": "done", "detail": "按同一源真相完成传播"}
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-01-001",
+      "question": "已确认的产品方向是否继续保持为 web-only 的多玩法三关家庭 MVP？",
+      "why_it_matters": "端型与三关范围决定架构、原型视口、摄像头入口和后续真实试玩的边界。",
+      "recommended_decision": "维持已确认：web-only；L1/L2/L3 分别为 40/45/50 秒的三种不同控制玩法。",
+      "options": ["维持已确认", "申请变更", "暂缓，补材料"],
+      "source_files": ["01-research.md"],
+      "evidence_refs": ["E-002", "E-003", "E-004", "E-005", "E-008", "E-009", "E-011"],
+      "downstream_impact": ["01A-competitor-page-experience.md", "02-architecture.html", "03-feature-*.md", "04A-prototype-spec-*.md", "04B-prototype-*.html"],
+      "route_hint": "L4"
+    },
+    {
+      "question_id": "Q-01-002",
+      "question": "已确认的双通道输入与手型边界是否继续保持？",
+      "why_it_matters": "离散事件与连续位置帧分别服务 L1/L3 和 L2；若把分类结果变成位置控制前置条件，L2 会无故停住。",
+      "recommended_decision": "维持已确认：PoseTransitionEvent + HandTrackingFrame 双通道，主线只复用拳掌，不新增必需手型。",
+      "options": ["维持已确认", "申请变更", "暂缓，补材料"],
+      "source_files": ["01-research.md"],
+      "evidence_refs": ["E-008", "E-017"],
+      "downstream_impact": ["02-architecture.html", "03-feature-手势输入闭环.md", "03-feature-核心关卡循环.md"],
+      "route_hint": "L4"
+    },
+    {
+      "question_id": "Q-01-003",
+      "question": "已确认的低挫败完成规则是否继续作为三关共同底线？",
+      "why_it_matters": "识别误差不能被孩子理解为个人失败；惩罚性锁关也会破坏短时家庭试玩。",
+      "recommended_decision": "维持已确认：完成即解锁，收集只庆祝，碰撞自动恢复，无生命值、Game Over 或成绩锁关。",
+      "options": ["维持已确认", "申请变更", "暂缓，补材料"],
+      "source_files": ["01-research.md"],
+      "evidence_refs": ["E-014", "E-015", "E-017"],
+      "downstream_impact": ["01A-competitor-page-experience.md", "02-architecture.html", "03-feature-核心关卡循环.md", "04B-prototype-*.html"],
+      "route_hint": "L4"
+    }
+  ],
+  "risks": [
+    "尚无本项目 5 岁目标儿童的真实试玩数据，三种控制关系的可理解性仍需陪同试玩验证",
+    "家庭光线、左右手、距离与遮挡可能让成人测试结果无法代表儿童体验",
+    "公开发行前必须改用原创角色或取得正式授权，并重新评估隐私与发布边界"
+  ],
+  "next_actions": [
+    "Phase 1 Gate 保持 confirmed",
+    "当前源真相已传播至 Phase 1A、Phase 2、功能规格、原型规格与可试玩 MVP",
+    "下一验证重点是真实儿童对 L1 高跳、L2 跟手和 L3 叠云的理解与情绪反应"
+  ]
+}

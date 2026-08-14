@@ -1,0 +1,126 @@
+{
+  "phase": "Phase 4A 核心关卡循环原型规格",
+  "artifact": "04A-prototype-spec-核心关卡循环.md",
+  "status": "confirmed",
+  "updated_at": "2026-08-13",
+  "summary": {
+    "key_decisions": [
+      "一个 integrated-multi-mode-adventure backbone 共 10 屏：GI-01–GI-06 + LV-00 三关地图 + LV-01 出发 + LV-02 RuntimeHost + LV-03 庆祝",
+      "LV-02 按 ModeDefinition.runtimeType 挂载 command_runner、hand_follow_dodge、cloud_stack 三个独立运行时；L1/L2/L3=40/45/50 秒且每关 6 枚",
+      "HTML 必须可测地呈现 L1 150–220px 高跳、L2 None/Unknown 跟手、L3 单轮一云/补垫/星星，以及无 Game Over 的软失败"
+    ],
+    "discarded_options": [
+      "不复制三套完整产品外壳，也不继续单一参数化跑酷状态机",
+      "不把运行时内部状态拆成静态展示页，不添加可见跳关、倍速、inspector 或 QA 控件",
+      "不采用固定右栏、经典 Flappy 物理、成绩锁关或额外必需手型"
+    ],
+    "next_stage_conditions": [
+      "已满足：04B 用一个连续产品文件实现 10 屏 backbone 与三运行时宿主",
+      "已满足：QA-TARGETED 覆盖三关解锁、双输入、五视口、教练零遮挡与三玩法专项",
+      "当前下游条件是 PM 实际试玩并确认三种玩法手感，再进入真实儿童陪同试玩"
+    ],
+    "execution_details_not_for_pm": [
+      "具体 SVG、CSS keyframe、EMA/死区、障碍毫秒值和云层造型",
+      "不可见测试时钟、window 测试 seam、Playwright 选择器和脚本组织"
+    ]
+  },
+  "materials": [
+    { "title": "Phase 4A 核心关卡原型规格", "file": "04A-prototype-spec-核心关卡循环.md" },
+    { "title": "Phase 3 核心关卡功能规格", "file": "03-feature-核心关卡循环.md" },
+    { "title": "已确认的手势输入原型规格", "file": "04A-prototype-spec-手势输入闭环.md" },
+    { "title": "集成式可试玩 MVP", "file": "04B-prototype-手势小狗探险MVP.html" }
+  ],
+  "visualizations": [
+    {
+      "type": "stage_flow",
+      "title": "10 屏连续产品 backbone",
+      "description": "输入准备、三关地图、运行时宿主和庆祝通过真实产品交互贯通。",
+      "steps": [
+        { "label": "GI-01–GI-06 输入准备", "status": "done", "detail": "摄像头或键盘完整路径输出双 capability InputProfile" },
+        { "label": "LV-00 三关地图", "status": "done", "detail": "三张差异化玩法卡按 L1→L2→L3 顺序解锁" },
+        { "label": "LV-01 玩法出发", "status": "done", "detail": "一句新控制 + 世界启动 3/2/1" },
+        { "label": "LV-02 RuntimeHost", "status": "done", "detail": "按 runtimeType 挂载 L1 高跳 / L2 跟手 / L3 叠云" },
+        { "label": "LV-03 单关庆祝", "status": "done", "detail": "0–6 枚均接受；无条件解锁下一关" }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "ModeDefinition 与可测运行时",
+      "description": "每关的时长、输入、世界反馈和软恢复均成为 04B 验收项。",
+      "columns": ["关卡", "runtimeType", "配置", "核心验收", "软失败"],
+      "rows": [
+        { "label": "L1", "values": ["command_runner", "40s / 6 枚", "首互动≤6s；跳高≥150px；约 1s 完整落地", "软碰撞减速，不扣收集"] },
+        { "label": "L2", "values": ["hand_follow_dodge", "45s / 6 枚", "掌心 Y 同向移动；None/Unknown 仍跟手", "弹回安全区 + 1.2s 护盾"] },
+        { "label": "L3", "values": ["cloud_stack", "50s / 6 枚", "一次拳掌仅 +1 云；覆盖 1/2/3 层", "少云补垫，多云转星"] }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "Screen / State 职责边界",
+      "description": "页面只在用户目标变化时切换；运行时行为留在 LV-02 可达状态。",
+      "columns": ["Screen", "核心职责", "主要状态", "自然出口"],
+      "rows": [
+        { "label": "LV-00", "values": ["地图与顺序解锁", "locked/current/completed", "LV-01"] },
+        { "label": "LV-01", "values": ["当前玩法教学与启动", "ready/countdown/input-error", "LV-02"] },
+        { "label": "LV-02", "values": ["三运行时 + 共享 HUD/Safety/Coach", "running/assist/no-hand/paused/completed", "LV-03 或地图"] },
+        { "label": "LV-03", "values": ["温和完成反馈", "0–6 枚均成功/下一关解锁", "下一关/地图/重玩"] }
+      ]
+    },
+    {
+      "type": "impact_map",
+      "title": "对 04B 与 QA 的约束",
+      "description": "规格已把关键交互差异转为具体、可观察和可自动化的验收。",
+      "source": "10 屏 backbone + 三 runtime + 五视口 + QA-TARGETED",
+      "items": [
+        { "label": "集成文件", "detail": "04B-prototype-手势小狗探险MVP.html；输入准备可自然进入 LV-00" },
+        { "label": "运行时专项", "detail": "L1 Web Animation 位移、L2 synthetic Unknown 帧、L3 data-cloud-layer 单轮增长" },
+        { "label": "安全与恢复", "detail": "短丢手保持、长丢手暂停、键盘接管保留局部状态、无 Game Over" },
+        { "label": "响应式", "detail": "五个目标 Web 视口单屏；camera readout 在视频外且零相交" }
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-04A-CORE-001",
+      "question": "是否确认 04B 使用一个 10 屏连续 backbone：GI-01–GI-06 加 LV-00–LV-03？",
+      "why_it_matters": "地图 LV-00 是三种玩法差异与顺序解锁的必要产品 screen；漏掉它会把输入完成直接接到单关，无法验证完整冒险结构。",
+      "recommended_decision": "已确认：单一 integrated-multi-mode-adventure 文件，共 10 屏，通过真实 CTA 连通。",
+      "options": ["维持已确认规格", "要求变更", "补导航证据"],
+      "source_files": ["04A-prototype-spec-核心关卡循环.md", "04A-prototype-spec-手势输入闭环.md"],
+      "evidence_refs": [],
+      "downstream_impact": ["04B 文件结构", "三关地图", "输入交接", "导航 QA"],
+      "route_hint": "L1"
+    },
+    {
+      "question_id": "Q-04A-CORE-002",
+      "question": "是否确认 LV-02 根据 runtimeType 挂载三独立运行时，并固定 40/45/50 秒与每关 6 枚配置？",
+      "why_it_matters": "这决定状态机、时钟、输入路由、HUD 和测试接口；把三关塞回同一状态机会违背功能层边界。",
+      "recommended_decision": "已确认：command_runner / hand_follow_dodge / cloud_stack 独立，Session/Safety/Reward/Coach 共享。",
+      "options": ["维持已确认规格", "要求变更", "补 runtime 证据"],
+      "source_files": ["04A-prototype-spec-核心关卡循环.md", "03-feature-核心关卡循环.md"],
+      "evidence_refs": [],
+      "downstream_impact": ["ModeDefinition", "RuntimeHost", "HUD", "自动化测试"],
+      "route_hint": "L1"
+    },
+    {
+      "question_id": "Q-04A-CORE-003",
+      "question": "是否确认 L1 高跳、L2 Unknown 跟手、L3 叠云与软失败作为 QA-TARGETED 的必测基线？",
+      "why_it_matters": "这些是三关玩法差异最直接的可观察证据；只检查导航与静态布局无法证明手势真正控制世界。",
+      "recommended_decision": "已确认：L1 ≥150px，L2 None/Unknown 有关键点仍移动，L3 单轮一云/补垫/星星，所有关卡无 Game Over。",
+      "options": ["维持已确认规格", "要求变更", "追加专项 QA"],
+      "source_files": ["04A-prototype-spec-核心关卡循环.md", "AGENTS.md"],
+      "evidence_refs": [],
+      "downstream_impact": ["04B 世界反馈", "运行时专项 QA", "五视口浏览器回归", "PM 实际试玩"],
+      "route_hint": "L1"
+    }
+  ],
+  "risks": [
+    "自动化可证明位移、事件和状态，但不能判断 L1 是否漂浮、L2 是否无需解释、L3 是否疲劳",
+    "三运行时共享服务时必须避免共享可变玩法状态，否则暂停或切关可能串扰",
+    "919×843 与低高度视口仍需确保地图、camera readout、目标 cue 和 L3 四层云不相交"
+  ],
+  "next_actions": [
+    "Phase 4A 核心关卡循环已确认并已传播至集成 04B",
+    "下一步由 PM 实际试玩 L1 高跳、L2 跟手、L3 叠云，再决定是否进入真实儿童陪同试玩"
+  ]
+}

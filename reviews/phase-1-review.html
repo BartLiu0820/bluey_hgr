@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phase 1 产品调研判断 Review Console</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --surface-soft: #f0f3f7;
+      --ink: #172033;
+      --muted: #68758a;
+      --line: #d9e0ea;
+      --accent: #2458d3;
+      --accent-soft: #e7eefc;
+      --warn: #9a5a00;
+      --warn-soft: #fff2cf;
+      --ok: #0f766e;
+      --radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.55; }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      padding: 28px clamp(18px, 4vw, 48px);
+    }
+    main {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 24px auto 56px;
+      display: grid;
+      gap: 18px;
+    }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { font-size: clamp(26px, 4vw, 40px); margin-bottom: 8px; }
+    h2 { font-size: 20px; margin-bottom: 14px; }
+    h3 { font-size: 17px; margin-bottom: 10px; }
+    h4 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+    code {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      color: #24324a;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); margin-top: 12px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    ul { padding-left: 20px; margin-bottom: 0; }
+    .muted { color: var(--muted); }
+
+    /* ── Material cards ── */
+    .materials { display: grid; gap: 12px; }
+    .material-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      background: #fbfcfe;
+      transition: border-color 0.15s;
+    }
+    .material-card:hover { border-color: #b5c7e8; }
+    .material-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .material-card-info { display: flex; flex-direction: column; gap: 5px; }
+    .material-card-info h3 { margin: 0; font-size: 16px; }
+    .material-path { font-size: 12px; color: var(--muted); }
+    .material-card-actions { flex-shrink: 0; }
+    .mat-badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .mat-badge-ok { background: var(--accent-soft); color: var(--accent); }
+    .mat-badge-warn { background: var(--warn-soft); color: var(--warn); }
+    .btn-mat {
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      padding: 8px 16px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .btn-mat:hover { background: #d0e0f8; }
+    .btn-mat[disabled] { border-color: var(--line); background: transparent; color: var(--muted); cursor: not-allowed; }
+    .btn-mat-html { border-color: var(--ok); background: #eefaf7; color: var(--ok); }
+    .btn-mat-html:hover { background: #d8f3ed; }
+
+    /* ── Visualizations ── */
+    .visualizations { display: grid; gap: 16px; }
+    .visualization {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: #fbfcfe;
+    }
+    .viz-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .viz-head h3 { margin-bottom: 4px; }
+    .viz-type {
+      align-self: start;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 3px 8px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .flow { display: flex; align-items: stretch; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+    .flow-item {
+      min-width: 170px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #ffffff;
+    }
+    .flow-node { display: grid; gap: 4px; }
+    .flow-node span { font-weight: 800; }
+    .flow-node em { color: var(--muted); font-style: normal; font-size: 12px; }
+    .flow-item.done { border-color: #9fd8c9; background: #f0fbf8; }
+    .flow-item.pending { border-color: #efd18a; background: #fff9e8; }
+    .flow-item.blocked { border-color: #f0a7a7; background: #fff3f3; }
+    .flow-arrow { align-self: center; color: var(--muted); font-weight: 900; }
+    .impact-map {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.7fr) auto minmax(260px, 1.6fr);
+      gap: 14px;
+      align-items: center;
+    }
+    .impact-source, .impact-target {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      background: #ffffff;
+    }
+    .impact-arrow { color: var(--accent); font-size: 24px; font-weight: 900; }
+    .impact-targets { display: grid; gap: 10px; }
+    .matrix-wrap { overflow-x: auto; }
+    table.matrix {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .matrix th, .matrix td {
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      min-width: 120px;
+    }
+    .matrix th { background: var(--surface-soft); color: #2b374b; font-weight: 800; }
+    .risk-list { display: grid; gap: 12px; }
+    .risk-row { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; background: #ffffff; }
+    .risk-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .risk-head span { color: var(--warn); font-weight: 800; }
+    .risk-bar { height: 10px; border-radius: 999px; background: #edf1f6; overflow: hidden; }
+    .risk-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2fbf9f, #f2b84b, #e45757); }
+    .evidence-map { display: grid; gap: 10px; }
+    .evidence-item {
+      display: grid;
+      grid-template-columns: minmax(90px, auto) auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 11px;
+      background: #ffffff;
+    }
+    .evidence-item span, .evidence-item em { color: var(--muted); font-style: normal; font-size: 13px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+    .metric-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #ffffff; }
+    .metric-card span { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .metric-card strong { display: block; margin-top: 6px; font-size: 24px; }
+    .tone-warn { border-color: #efd18a; background: #fff9e8; }
+    .tone-good { border-color: #9fd8c9; background: #f0fbf8; }
+    .tone-bad { border-color: #f0a7a7; background: #fff3f3; }
+
+    /* ── Decision cards ── */
+    .decision-list { display: grid; gap: 16px; }
+    .decision-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; background: #ffffff; }
+    .card-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+    .qid { color: var(--accent); font-weight: 800; font-size: 13px; }
+    .route { color: var(--warn); background: var(--warn-soft); border-radius: 999px; padding: 3px 9px; font-size: 13px; font-weight: 650; }
+    .card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 12px 0; }
+    .meta-block { margin-top: 12px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 7px; }
+    .pill { border: 1px solid var(--line); background: var(--surface-soft); border-radius: 999px; padding: 4px 9px; font-size: 13px; color: #2d3a4f; overflow-wrap: anywhere; }
+    .impact .pill { background: #eefaf7; border-color: #bee8df; color: var(--ok); }
+    .muted-pill { color: var(--muted); background: transparent; }
+    fieldset.feedback { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin: 16px 0 0; background: #fbfcfe; }
+    legend { padding: 0 6px; color: var(--muted); font-weight: 700; font-size: 13px; }
+    label { display: grid; gap: 6px; margin-top: 10px; color: #344156; font-size: 14px; font-weight: 650; }
+    select, textarea { width: 100%; border: 1px solid var(--line); border-radius: 7px; padding: 10px 11px; font: inherit; color: var(--ink); background: #ffffff; }
+    textarea { min-height: 92px; resize: vertical; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    button { border: 0; border-radius: 7px; padding: 10px 14px; background: var(--accent); color: white; font-weight: 750; cursor: pointer; }
+    button.secondary { background: #253044; }
+    .inline-file-link {
+      display: inline-flex;
+      align-items: center;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .inline-file-link code { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .pill-button {
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      color: #2d3a4f;
+      padding: 4px 9px;
+      font-weight: 500;
+      text-align: left;
+    }
+    .pill-button:hover { border-color: #b5c7e8; color: var(--accent); }
+    pre { max-height: 260px; overflow: auto; background: #101827; color: #f8fafc; border-radius: var(--radius); padding: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .notice { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 12px 14px; border-radius: 6px; color: #183b89; }
+
+    /* ── Overlay ── */
+    .overlay-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 18, 36, 0.48);
+      z-index: 200;
+      align-items: stretch;
+      justify-content: flex-end;
+    }
+    .overlay-backdrop.visible { display: flex; }
+    .overlay-panel {
+      width: min(72vw, 920px);
+      height: 100%;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -6px 0 32px rgba(0, 0, 0, 0.18);
+      animation: slideIn 0.18s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(6%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .overlay-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+      flex-shrink: 0;
+    }
+    .overlay-title { flex: 1; min-width: 0; }
+    .overlay-title h2 { margin: 0; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .overlay-title code { font-size: 12px; color: var(--muted); }
+    .overlay-close {
+      flex-shrink: 0;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 12px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .overlay-close:hover { background: #eef1f5; }
+    .overlay-body { flex: 1; overflow-y: auto; padding: 24px 28px; }
+    .overlay-html-notice {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .overlay-html-frame-wrap {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+    }
+    .overlay-html-frame-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfe;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .overlay-html-frame {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+    .overlay-open-btn {
+      border: 1px solid var(--ok);
+      border-radius: 8px;
+      padding: 12px 28px;
+      background: var(--ok);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .overlay-open-btn:hover { background: #0a5f58; }
+
+    /* ── Markdown content ── */
+    .md-content { line-height: 1.72; color: var(--ink); font-size: 15px; }
+    .md-content .md-h { font-weight: 700; margin: 1.4em 0 0.5em; color: #1a2840; }
+    .md-content h2.md-h { font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    .md-content h3.md-h { font-size: 16px; }
+    .md-content h4.md-h { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .md-content h5.md-h, .md-content h6.md-h { font-size: 13px; }
+    .md-content p { margin: 0.65em 0; }
+    .md-content .md-ul, .md-content .md-ol { padding-left: 22px; margin: 0.5em 0; }
+    .md-content .md-ul li, .md-content .md-ol li { margin-bottom: 4px; }
+    .md-content .md-pre { background: #101827; color: #f8fafc; padding: 14px; border-radius: var(--radius); overflow-x: auto; max-height: 380px; margin: 1em 0; font-size: 13px; }
+    .md-content .md-pre code { background: none; color: inherit; padding: 0; font-size: 13px; }
+    .md-content .md-bq { border-left: 3px solid var(--accent); margin: 0.8em 0; padding: 6px 14px; background: var(--accent-soft); border-radius: 0 6px 6px 0; color: #1b3272; }
+    .md-content .md-hr { border: none; border-top: 1px solid var(--line); margin: 1.4em 0; }
+    .md-content .md-table-wrap { overflow-x: auto; margin: 1em 0; }
+    .md-content .md-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    .md-content .md-table th, .md-content .md-table td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .md-content .md-table th { background: var(--surface-soft); font-weight: 700; }
+    .md-content code { font-size: 13px; }
+
+    @media (max-width: 760px) {
+      .summary-grid, .card-grid, .impact-map, .evidence-item { grid-template-columns: 1fr; }
+      .impact-arrow { transform: rotate(90deg); justify-self: start; }
+      .material-card-head { flex-direction: column; }
+      .overlay-panel { width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="badge">PM Review Console</span>
+    <h1>Phase 1 产品调研判断</h1>
+    <p class="muted">这是阶段审查入口，不是正式阶段产物。PM 反馈在第一版中仅保存在浏览器本地，可复制或下载为 JSON。</p>
+    <div class="meta">
+      <span>产物：<button type="button" class="inline-file-link" data-open-file="01-research.md"><code>01-research.md</code></button></span>
+      <span>状态：<code>confirmed</code></span>
+      <span>更新：<code>2026-08-13</code></span>
+    </div>
+  </header>
+  <main>
+    <section class="section">
+      <h2>阶段摘要</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>本阶段关键决策</h4>
+          <ul><li>Careful Go：在已确认的 web-only 范围内推进家庭 MVP，以三种短玩法验证不同控制关系</li><li>L1 command_runner 40 秒、L2 hand_follow_dodge 45 秒、L3 cloud_stack 50 秒，组成一条顺序解锁的多玩法三关冒险</li><li>输入同时提供 PoseTransitionEvent 离散拳掌事件与 HandTrackingFrame 连续掌心位置帧，分类为 Unknown 时 L2 仍可跟手</li><li>主线不新增必需手型；完成即解锁，收集只服务庆祝，无生命值、Game Over 或成绩锁关</li></ul>
+        </div>
+        <div>
+          <h4>被放弃的方案</h4>
+          <ul><li>不做移动端并行、专用硬件、全身大动作、超过三关的内容扩展、账号或排行榜</li><li>不采用重力下坠、窄缝、碰撞即死和失败重开的高挫败循环</li><li>不为玩法差异增加 Pointing_Up、Victory 等必需手型，也不复制官方 Bluey 素材</li></ul>
+        </div>
+        <div>
+          <h4>进入下一阶段的条件</h4>
+          <ul><li>已满足：PM 已确认多玩法三关、web-only、双通道输入、低挫败边界与不新增必需手型</li><li>已完成 Phase 1A Benchmark，并已将结论传播至 Phase 2 及后续规格与原型</li></ul>
+        </div>
+        <div>
+          <h4>不需要 PM 审查的执行细节</h4>
+          <ul><li>搜索来源整理、具体置信度参数、Worker 实现、位置平滑参数和依赖安装方式</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>产出物阅读</h2>
+      <p class="muted" style="margin-bottom:14px;">点击"阅读原文"在右侧浮层阅读完整产物内容；Markdown 会渲染为可读 HTML，HTML 产物会在浮层中预览。</p>
+      <div class="materials">
+        
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>Phase 1 产品方向研究报告</h3>
+            <code class="material-path">01-research.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(0)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>关键可视化</h2>
+      <div class="visualizations">
+        
+    <article class="visualization evidence_map">
+      <div class="viz-head">
+        <div>
+          <h3>Careful Go 证据支撑图</h3>
+          <p class="muted">区分已有外部证据与仍需真实儿童试玩验证的关键假设。</p>
+        </div>
+        <span class="viz-type">evidence_map</span>
+      </div>
+      
+    <div class="evidence-map">
+      
+        <div class="evidence-item">
+          <code>E-003 / E-004 / E-005</code>
+          <span>支持</span>
+          <strong>摄像头体感控制与家庭亲子游戏的品类可行性</strong>
+          <em>高</em>
+        </div>
+      
+        <div class="evidence-item">
+          <code>E-008 / E-009 / E-011</code>
+          <span>支持</span>
+          <strong>浏览器摄像头、2D 游戏与实时手部识别的技术可行性</strong>
+          <em>高</em>
+        </div>
+      
+        <div class="evidence-item">
+          <code>E-001 / E-002</code>
+          <span>支持</span>
+          <strong>5 岁家庭场景、笔记本摄像头优先与 web-only 范围</strong>
+          <em>高</em>
+        </div>
+      
+        <div class="evidence-item">
+          <code>待家长陪同真实儿童试玩</code>
+          <span>支持</span>
+          <strong>三种控制关系能否在低成人干预下被理解并完成</strong>
+          <em>待验证</em>
+        </div>
+      
+    </div>
+  
+    </article>
+  
+    <article class="visualization matrix">
+      <div class="viz-head">
+        <div>
+          <h3>三关控制关系与低挫败边界</h3>
+          <p class="muted">三关通过改变控制关系形成差异，不靠增加手型制造复杂度。</p>
+        </div>
+        <span class="viz-type">matrix</span>
+      </div>
+      
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th>关卡</th><th>时长</th><th>输入语义</th><th>儿童结果</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>L1 command_runner</th><td>40 秒</td><td>拳→掌高跳；末段复用同一动作接力</td><td>宽松障碍，碰撞不扣奖励</td></tr><tr><th>L2 hand_follow_dodge</th><td>45 秒</td><td>掌心 Y 连续跟手；Unknown 仍有效</td><td>宽通道、短丢手保持、护盾恢复</td></tr><tr><th>L3 cloud_stack</th><td>50 秒</td><td>每轮拳→掌叠一朵云</td><td>少云补垫，多云转星，不坠落</td></tr>
+        </tbody>
+      </table>
+    </div>
+  
+    </article>
+  
+    <article class="visualization stage_flow">
+      <div class="viz-head">
+        <div>
+          <h3>已确认的阶段推进链路</h3>
+          <p class="muted">Phase 1 方向已经通过 Gate，并已向后续阶段传播。</p>
+        </div>
+        <span class="viz-type">stage_flow</span>
+      </div>
+      
+    <div class="flow">
+      
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>Phase 1 调研</span>
+            <em>done</em>
+          </div>
+          <p>Careful Go 与 web-only 已确认</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>Phase 1A Benchmark</span>
+            <em>done</em>
+          </div>
+          <p>三种玩法参考与负面边界已确认</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>Phase 2 架构</span>
+            <em>done</em>
+          </div>
+          <p>4 层 17 模块与三运行时已确认</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>下游规格与原型</span>
+            <em>done</em>
+          </div>
+          <p>按同一源真相完成传播</p>
+        </div>
+      
+    </div>
+  
+    </article>
+  
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>待确认问题</h2>
+      <div class="decision-list">
+        
+      <article class="decision-card" data-question-id="Q-01-001">
+        <div class="card-top">
+          <span class="qid">Q-01-001</span>
+          <span class="route">Route hint: L4</span>
+        </div>
+        <h3>已确认的产品方向是否继续保持为 web-only 的多玩法三关家庭 MVP？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>端型与三关范围决定架构、原型视口、摄像头入口和后续真实试玩的边界。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>维持已确认：web-only；L1/L2/L3 分别为 40/45/50 秒的三种不同控制玩法。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="01-research.md">01-research.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill">E-002</span><span class="pill">E-003</span><span class="pill">E-004</span><span class="pill">E-005</span><span class="pill">E-008</span><span class="pill">E-009</span><span class="pill">E-011</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">01A-competitor-page-experience.md</span><span class="pill">02-architecture.html</span><span class="pill">03-feature-*.md</span><span class="pill">04A-prototype-spec-*.md</span><span class="pill">04B-prototype-*.html</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="0">
+              <option value="">请选择</option>
+              <option value="维持已确认">维持已确认</option><option value="申请变更">申请变更</option><option value="暂缓，补材料">暂缓，补材料</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="0" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      <article class="decision-card" data-question-id="Q-01-002">
+        <div class="card-top">
+          <span class="qid">Q-01-002</span>
+          <span class="route">Route hint: L4</span>
+        </div>
+        <h3>已确认的双通道输入与手型边界是否继续保持？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>离散事件与连续位置帧分别服务 L1/L3 和 L2；若把分类结果变成位置控制前置条件，L2 会无故停住。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>维持已确认：PoseTransitionEvent + HandTrackingFrame 双通道，主线只复用拳掌，不新增必需手型。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="01-research.md">01-research.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill">E-008</span><span class="pill">E-017</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">02-architecture.html</span><span class="pill">03-feature-手势输入闭环.md</span><span class="pill">03-feature-核心关卡循环.md</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="1">
+              <option value="">请选择</option>
+              <option value="维持已确认">维持已确认</option><option value="申请变更">申请变更</option><option value="暂缓，补材料">暂缓，补材料</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="1" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      <article class="decision-card" data-question-id="Q-01-003">
+        <div class="card-top">
+          <span class="qid">Q-01-003</span>
+          <span class="route">Route hint: L4</span>
+        </div>
+        <h3>已确认的低挫败完成规则是否继续作为三关共同底线？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>识别误差不能被孩子理解为个人失败；惩罚性锁关也会破坏短时家庭试玩。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>维持已确认：完成即解锁，收集只庆祝，碰撞自动恢复，无生命值、Game Over 或成绩锁关。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="01-research.md">01-research.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill">E-014</span><span class="pill">E-015</span><span class="pill">E-017</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">01A-competitor-page-experience.md</span><span class="pill">02-architecture.html</span><span class="pill">03-feature-核心关卡循环.md</span><span class="pill">04B-prototype-*.html</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="2">
+              <option value="">请选择</option>
+              <option value="维持已确认">维持已确认</option><option value="申请变更">申请变更</option><option value="暂缓，补材料">暂缓，补材料</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="2" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>风险与下一步</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>风险</h4>
+          <ul><li>尚无本项目 5 岁目标儿童的真实试玩数据，三种控制关系的可理解性仍需陪同试玩验证</li><li>家庭光线、左右手、距离与遮挡可能让成人测试结果无法代表儿童体验</li><li>公开发行前必须改用原创角色或取得正式授权，并重新评估隐私与发布边界</li></ul>
+        </div>
+        <div>
+          <h4>下一步</h4>
+          <ul><li>Phase 1 Gate 保持 confirmed</li><li>当前源真相已传播至 Phase 1A、Phase 2、功能规格、原型规格与可试玩 MVP</li><li>下一验证重点是真实儿童对 L1 高跳、L2 跟手和 L3 叠云的理解与情绪反应</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>直接反馈</h2>
+      <p class="muted">这里用于填写不属于单个决策卡的整体意见、补充背景或下一步指令。</p>
+      <label class="direct-feedback-label">
+        整体反馈
+        <textarea id="directFeedback" class="direct-feedback-textarea" placeholder="例如：整体确认，但第 2 个问题需要补材料；或请回到 Phase 3 修改字段模型。"></textarea>
+      </label>
+    </section>
+
+    <section class="section">
+      <h2>反馈导出</h2>
+      <p class="notice">第一版 Review Console 不会自动写回项目文件。请复制或下载反馈 JSON 后，让 Claude / Codex 继续处理。</p>
+      <div class="actions">
+        <button type="button" id="copyFeedback">复制反馈 JSON</button>
+        <button type="button" id="downloadFeedback" class="secondary">下载反馈 JSON</button>
+        <span class="muted" id="copyStatus" aria-live="polite"></span>
+      </div>
+      <pre id="feedbackPreview"></pre>
+    </section>
+  </main>
+
+  <template id="mat-tpl-0"><div class="md-content"><h2 class="md-h">产品方向研究：5 岁儿童手势控制横版亲子游戏</h2>
+<blockquote class="md-bq"><p>更新日期：2026-08-13 | 研究人：Codex</p></blockquote>
+<h3 class="md-h">核心判断</h3>
+<p><strong>结论</strong>：Careful Go</p>
+<p><strong>一句话理由</strong>：摄像头体感亲子游戏、单输入横版玩法和布鲁伊家庭体感产品都已有真实验证，浏览器也能同时取得手势类别与手部关键点；本项目可用两种手型和掌心位置构成三种不同玩法，不必用新增手型制造丰富度。</p>
+<p><strong>信心程度</strong>：中 — 技术与品类证据较强，目标用户和家庭场景也已明确；但尚无本项目真实儿童试玩数据，最核心的手势可用性假设仍未验证。</p>
+<p><strong>Target Surface</strong>：web-only</p>
+<p><strong>端型选择依据</strong>：PM 已于 2026-08-11 确认首版采用浏览器、优先适配带摄像头的笔记本电脑；移动端不进入本轮 04A/04B 默认范围。</p>
+<hr class='md-hr'>
+<h3 class="md-h">市场机会</h3>
+<p><strong>规模与趋势</strong>：</p>
+<ul class="md-ul"><li>官方 <code>Bluey: Bust-a-Move</code> 已把布鲁伊、家庭共同游玩和体感小游戏结合起来，包含定格舞、Keepy Uppy、模仿动物、烹饪动作与壁球等五类玩法，证明“布鲁伊 × 动作控制 × 家庭娱乐”不是纯概念。<a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey 官方介绍</a></li><li>Nex Playground 将“无需控制器、摄像头体感、5 岁起、家庭多人和隐私安全”作为核心卖点，并提供包括 Bluey 在内的儿童 IP 游戏，说明低龄家庭体感游戏已经形成成熟产品形态。<a href="https://www.nexplayground.com/home-kids" target="_blank" rel="noopener">Nex Playground 官方页面</a></li><li>GoNoodle Games 让儿童通过跳跃、下蹲和躲闪控制移动小游戏，强调无需控制器、数据连接或额外硬件，说明普通智能设备上的动作控制具有明确使用场景。<a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle 官方页面</a></li><li>Square Bird 使用一次点击增加角色脚下堆叠高度，再以不同高度越过障碍，验证了“一个输入、障碍组合逐步变化”的可读横版循环。<a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird 官方 Google Play 页面</a></li><li>Jetpack Joyride 以自动前进、单一纵向控制、收集与躲避构成主循环，验证了低输入词汇也可以产生持续变化；其高强度、无尽和面向 10 岁以上的内容不是本项目目标。<a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride 官方 Google Play 页面</a></li><li>本项目是家庭 MVP，不以商业市场规模为 Go/No-Go 依据；本阶段不引用缺少可靠口径的 TAM 数据。</li></ul>
+<p><strong>切入点判断</strong>：现在适合做“验证型家庭原型”，因为浏览器端 2D 游戏与实时手势识别都已有可直接使用的基础设施。差异化不在于发明体感玩法，而在于：无需专用主机、打开浏览器即可玩、针对单个 5 岁儿童降低手势数量和失败惩罚，并允许家长陪玩或随时切换到键盘降级控制。</p>
+<hr class='md-hr'>
+<h3 class="md-h">竞品格局</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>竞品</th><th>核心定位</th><th>关键优势</th><th>主要局限</th></tr></thead><tbody><tr><td><a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey: Bust-a-Move</a></td><td>官方布鲁伊体感小游戏合集</td><td>IP、家庭共同游玩、动作与剧集情节结合紧密</td><td>依赖 Nex Playground 与 Play Pass；不是浏览器轻量体验</td></tr><tr><td><a href="https://www.nexplayground.com/home-kids" target="_blank" rel="noopener">Nex Playground</a></td><td>面向 5 岁以上家庭的摄像头体感主机</td><td>无控制器、多人、成熟游戏目录、隐私和儿童安全定位清晰</td><td>需要专用硬件；完整身体追踪对空间和动作能力有要求</td></tr><tr><td><a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games</a></td><td>用跳、蹲、躲等动作驱动的儿童移动小游戏</td><td>无额外控制器、动作直观、强调身体活动</td><td>以移动 App/内容生态为主，不提供本项目想要的角色切换横版体验</td></tr><tr><td><a href="https://www.bluey.tv/blog/bluey-lets-play-mobile-app-is-available-now/" target="_blank" rel="noopener">Bluey: Let’s Play</a></td><td>布鲁伊家庭场景中的触控探索与角色扮演</td><td>低龄熟悉角色、可探索房间、可切换角色与情境</td><td>主要是触控沙盒，不验证摄像头手势和横版卷轴机制</td></tr><tr><td><a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird</a></td><td>单输入叠高越障横版游戏</td><td>障碍高度就是动作目标，输入与结果关系清晰</td><td>原作追求精确叠层、提速并包含敌人；对 5 岁儿童需要大幅容错</td></tr><tr><td><a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride</a></td><td>单触纵向飞行的自动卷轴游戏</td><td>自动前进、收集和纵向避障形成清晰闭环</td><td>原作节奏强、无尽且标注 10+；只借鉴抽象控制关系</td></tr><tr><td><a href="https://www.forbes.com/sites/lananhnguyen/2014/02/11/exclusive-flappy-bird-creator-dong-nguyen-says-app-gone-forever-because-it-was-an-addictive-product/" target="_blank" rel="noopener">Flappy Bird 创作者访谈</a></td><td>单输入穿越纵向障碍</td><td>证明极少输入和清晰障碍可形成强反馈</td><td>窄缝、重力下坠、碰撞即死和反复重开明确不进入主线</td></tr></tbody></table></div>
+<p><strong>差异化空间</strong>：本项目不应复制官方布鲁伊小游戏内容，而应验证一个更窄的体验：笔记本浏览器即开即玩、单人优先、三个合计 135 秒的短关卡、两种手型与掌心位置复用为三种玩法、无账号无广告、视频只在本机处理。若未来公开发行，必须切换为原创角色或先取得正式授权。</p>
+<p><strong>Phase 1A 覆盖范围</strong>：<code>01A-competitor-page-experience.md</code> 负责把上述参考收敛为“家长设置 → 儿童校准 → 三种玩法 → 结果”的页面与交互结构，并只继承抽象机制，不复制视觉素材。</p>
+<hr class='md-hr'>
+<h3 class="md-h">用户痛点</h3>
+<p><strong>痛点优先级排序</strong>（按频率 × 强度）：</p>
+<ol class="md-ol"><li><strong>传统控制方式对 5 岁儿童不够自然</strong></li></ol>
+<p>   - 具体表现：“我想直接用身体或手来玩，不想先记住一排按键。”<br>   - 信息来源：PM 一手目标 + 同类产品定位验证；Nex 和 GoNoodle 都把“动作就是控制器”作为核心价值。<br>   - 当前解法：家长代操作、使用触摸屏、简化键盘按键或购买体感主机。<br>   - 解法的不足：家长代操作削弱自主感；触屏不符合横版体感目标；专用主机增加成本和准备门槛。</p>
+<ol class="md-ol"><li><strong>误识别会把动作游戏迅速变成挫败体验</strong></li></ol>
+<p>   - 具体表现：“我明明做了动作，角色为什么没跳？”<br>   - 信息来源：技术文档 + 产品推断，尚待真实试玩验证。MediaPipe Web 能实时输出预设手势与手部关键点，但视频识别调用会同步占用 UI 线程，需要节流或移至 Worker。<a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture<em>recognizer/web</em>js" target="_blank" rel="noopener">MediaPipe Web 指南</a><br>   - 当前解法：提高识别阈值、要求更标准动作、反复教学。<br>   - 解法的不足：阈值过高会漏识别，过低会误触；要求孩子做“机器友好”的标准动作会损害自然性。</p>
+<ol class="md-ol"><li><strong>家长需要放心且低成本地完成摄像头设置</strong></li></ol>
+<p>   - 具体表现：“摄像头拍到什么、会不会上传、拒绝权限后还能不能玩？”<br>   - 信息来源：浏览器权限要求与儿童隐私规则。浏览器摄像头需要安全上下文并由用户授权；儿童照片、视频和生物识别信息可能属于受保护个人信息。<a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia" target="_blank" rel="noopener">MDN <code>getUserMedia</code></a>、<a href="https://consumer.ftc.gov/articles/protecting-your-childs-privacy-online" target="_blank" rel="noopener">FTC 儿童隐私说明</a><br>   - 当前解法：直接弹出浏览器权限框，或用键盘替代。<br>   - 解法的不足：没有家长说明时容易产生不信任；没有降级控制会让拒绝权限等于无法游玩。</p>
+<ol class="md-ol"><li><strong>家长希望屏幕活动是主动且可共同参与的</strong></li></ol>
+<p>   - 具体表现：“可以玩屏幕，但最好不是一直坐着看。”<br>   - 信息来源：外部专业建议与同类产品定位。NAEYC 建议低龄技术体验应主动、动手、赋能儿童并提供适应性支持，且不替代真实世界活动。<a href="https://www.naeyc.org/node/3796" target="_blank" rel="noopener">NAEYC 儿童发展原则</a><br>   - 当前解法：观看运动视频、跟跳、家长陪玩或限制屏幕时长。<br>   - 解法的不足：纯观看缺少因果反馈；复杂游戏又容易让家长成为长期操作员。</p>
+<hr class='md-hr'>
+<h3 class="md-h">核心假设</h3>
+<p>如果以下假设不成立，Careful Go 的判断就不成立：</p>
+<ol class="md-ol"><li><strong>拳掌与位置输入可分开成立</strong>：5 岁儿童能完成 <code>Closed<em>Fist → Open</em>Palm</code> 的离散动作；同时，只要 MediaPipe 仍输出手部关键点，掌心 Y 就可持续驱动角色，即使手势类别是 <code>Unknown</code>。→ 验证方式：Gesture Lab 完成一轮拳→掌→拳；真实儿童样本阶段验证拳掌各至少 8/10，并单独验证掌心从舒适上位移动到下位时角色连续跟随。</li><li><strong>低挫败三关循环</strong>：自动卷轴、宽松碰撞、即时反馈与自然停点能让孩子独立完成 40/45/50 秒三关。→ 验证方式：首次试玩在一次示范后完成，成人干预不超过 2 次，不出现因误识别连续卡住超过 10 秒；收集成绩不影响解锁。</li><li><strong>三种控制语法可以逐关理解</strong>：第 1 关 <code>command<em>runner</code> 用拳→掌高跳并在末段情境接力；第 2 关 <code>hand</em>follow<em>dodge</code> 用掌心 Y 直接跟手躲避；第 3 关 <code>cloud</em>stack</code> 用拳→掌叠 1–3 朵云。→ 验证方式：每关开头提供一段安全练习；孩子能在第一个正式障碍前做出对应控制，不新增第三种必需手型。</li><li><strong>家长设置可接受</strong>：家长能理解本地处理说明，并在 60 秒内完成摄像头授权和校准。→ 验证方式：用全新浏览器配置走一次家长设置流程；拒绝权限时键盘模式仍可通关。</li></ol>
+<hr class='md-hr'>
+<h3 class="md-h">风险点</h3>
+<ol class="md-ol"><li><strong>儿童手势误识别与输入延迟</strong></li></ol>
+<p>   - 影响：高；它直接决定游戏是否有趣，而不是单纯技术指标。<br>   - 应对思路：Gesture Lab 先于游戏；离散拳掌采用连续帧确认、动作冷却和重新握拳上膛；掌心位置独立使用关键点、死区与平滑，不因类别为 <code>Unknown</code> 停止；保留清晰反馈和键盘降级。</p>
+<ol class="md-ol"><li><strong>角色/IP 授权边界</strong></li></ol>
+<p>   - 影响：高；Bluey 官方页面明确标注角色和标识受 Ludo Studio/BBC Studios 授权体系保护。<br>   - 应对思路：当前代码和仓库只使用原创蓝色/橙色小狗占位角色；私人本地替换与公开发行分开管理，未获授权不公开使用官方素材。</p>
+<ol class="md-ol"><li><strong>浏览器权限与部署环境</strong></li></ol>
+<p>   - 影响：中；<code>getUserMedia</code> 需要 HTTPS 或受信任本地环境，权限拒绝会阻断摄像头输入。<br>   - 应对思路：开发用 localhost，预览部署使用 HTTPS；先展示家长说明，再请求权限；提供重新授权指导和键盘模式。</p>
+<ol class="md-ol"><li><strong>身体差异、空间和疲劳</strong></li></ol>
+<p>   - 影响：中；孩子的动作幅度、身高、左右手和活动空间不同。<br>   - 应对思路：优先静态手势而非大幅跳跃；允许坐姿；校准时同时检查手是否进入取景框；单局约 3 分钟并可随时暂停。</p>
+<ol class="md-ol"><li><strong>三种玩法的控制语法切换造成认知负担</strong></li></ol>
+<p>   - 影响：中；即使手型不增加，离散跳跃、连续跟手和离散叠云之间仍可能互相干扰。<br>   - 应对思路：三关顺序固定；每关开场提供 3–5 秒无障碍安全段和唯一图形提示。第 2 关明确写成“手在哪里，小狗就去哪里”，且不要求张掌；第 3 关重新示范拳→掌。全程不增加生命值、Game Over、成绩锁关或组合技。</p>
+<hr class='md-hr'>
+<h3 class="md-h">建议下一步</h3>
+<p><strong>如果 Careful Go</strong>：</p>
+<ul class="md-ul"><li>最需要尽快验证的假设是：5 岁儿童的拳→掌完成率、掌心 Y 跟手稳定性，以及逐关切换控制语法时是否无需成人反复解释。</li><li>建议 MVP 范围：家长说明页、Gesture Lab、三关地图、40 秒 <code>command<em>runner</code>、45 秒 <code>hand</em>follow<em>dodge</code>、50 秒 <code>cloud</em>stack</code>、单关庆祝页、键盘降级、本地摄像头处理。关卡完成即可继续，收集数只用于庆祝反馈，不设置 Game Over 或成绩锁关。</li><li>下游行动：以当前已确认源真相同步 Phase 1A 至 04B；Gesture Lab 继续作为 P0 产品页面，而不是隐藏的开发调试页。</li><li>技术建议：Phaser 负责浏览器 2D 游戏循环；MediaPipe Tasks Vision 负责手势输入；输入层与游戏指令层解耦。Phaser 官方定位即浏览器 2D 游戏并支持 JavaScript/TypeScript。<a href="https://phaser.io/why-phaser" target="_blank" rel="noopener">Phaser 官方说明</a></li></ul>
+<p><strong>本轮不覆盖的端型 / 后续扩展</strong>：</p>
+<ul class="md-ul"><li><code>mobile-only</code> 与 <code>web-mobile-parallel</code> 不在本轮范围。</li><li>手机和平板适配、原生 App、多人、账号、排行榜、超过三关的内容扩展、云端视频分析不进入 04A/04B 默认原型和 QA。</li><li>公开发行和商业化不属于本轮目标；若方向改变，必须重新评估授权、隐私合规和发布渠道。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">用户任务类型与页面形态启发</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>核心任务</th><th>对象规模</th><th>用户需要比较的字段</th><th>推荐页面形态</th><th>依据</th></tr></thead><tbody><tr><td>家长完成权限与环境设置</td><td>1 个设备、1 个摄像头</td><td>权限状态、取景状态、识别状态、降级入口</td><td>低密度分步任务流</td><td>每一步只有一个主决策，需避免儿童误触系统设置</td></tr><tr><td>儿童学习输入</td><td>2 个手型 + 1 个掌心位置轴</td><td>当前示范、关键点反馈、动作是否上膛、跟手位置</td><td>全屏 Gesture Lab / 单卡教学</td><td>需要即时因果反馈，不适合菜单或表格</td></tr><tr><td>儿童选择并完成关卡</td><td>3 个顺序解锁关卡、少量即时对象</td><td>当前关卡、进度、收集数、唯一动作提示</td><td>单屏三关地图 + 全屏横版世界 + 浮动小教练</td><td>关卡提供自然停点；游戏主体不应被固定侧栏压缩</td></tr><tr><td>查看完成结果</td><td>1 次游玩结果</td><td>收集成果、角色庆祝、再玩一次</td><td>单屏庆祝卡</td><td>不使用排行榜或失败评分，强调完成与共同庆祝</td></tr></tbody></table></div>
+<p><strong>认可样本 / 参考原型拆解</strong>：</p>
+<ul class="md-ul"><li>可复用结构：Nex/GoNoodle 的“无需控制器、身体动作直接驱动结果”；Bluey 官方体感游戏的家庭共同参与与情境化；Square Bird 与 Jetpack Joyride 的少输入、多障碍组合。</li><li>可复用交互：动作示范、拳掌边沿触发、掌心位置直接跟手、逐关切换玩法、即时世界反馈、低门槛加入、家长辅助角色。</li><li>可复用字段模型：输入状态、识别置信度、动作冷却、当前角色、收集数、摄像头/键盘模式。</li><li>不可丢失点：本地处理说明、降级入口、校准可见性、低挫败碰撞、短回合。</li><li>不适合照搬点：专用主机前提、完整身体大动作、官方角色素材、订阅与付费门槛、复杂小游戏合集。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">信息来源</h3>
+<p><strong>一手信息</strong>：</p>
+<ul class="md-ul"><li>E-001：PM 原始目标——为 5 岁儿童设计手势控制、收集、避障和角色切换的横版游戏。</li><li>E-002：PM 已确认首版 <code>web-only</code>、笔记本摄像头优先、原创占位素材。</li></ul>
+<p><strong>搜索信息</strong>：</p>
+<ul class="md-ul"><li>E-003：<a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey: Bust-a-Move 官方介绍</a>——布鲁伊体感家庭小游戏的直接品类验证与授权标识。</li><li>E-004：<a href="https://www.nexplayground.com/home-kids" target="_blank" rel="noopener">Nex Playground 官方页面</a>——5 岁以上、无控制器、家庭多人、儿童隐私和体感产品定位。</li><li>E-005：<a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games 官方页面</a>——跳、蹲、躲等动作控制与无需额外硬件的移动游戏形态。</li><li>E-006：<a href="https://www.bluey.tv/blog/bluey-lets-play-mobile-app-is-available-now/" target="_blank" rel="noopener">Bluey: Let’s Play 官方介绍</a>——低龄角色探索、房间互动和角色内容形态。</li><li>E-007：<a href="https://www.naeyc.org/node/3796" target="_blank" rel="noopener">NAEYC 儿童发展原则</a>——主动、动手、赋能和适应性支持的低龄技术体验原则。</li><li>E-008：<a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture<em>recognizer/web</em>js" target="_blank" rel="noopener">MediaPipe Gesture Recognizer for Web</a>——实时预设手势、手部关键点与主线程阻塞风险。</li><li>E-009：<a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia" target="_blank" rel="noopener">MDN <code>getUserMedia</code></a>——摄像头安全上下文和用户授权要求。</li><li>E-010：<a href="https://consumer.ftc.gov/articles/protecting-your-childs-privacy-online" target="_blank" rel="noopener">FTC 儿童隐私说明</a>——儿童照片、视频和生物识别信息的隐私边界。</li><li>E-011：<a href="https://phaser.io/why-phaser" target="_blank" rel="noopener">Phaser 官方说明</a>——浏览器 2D 游戏与 JavaScript/TypeScript 技术适配。</li><li>E-012：<a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture_recognizer" target="_blank" rel="noopener">MediaPipe Gesture Recognizer</a>——实时返回手势类别、左右手以及图像/世界坐标关键点，支持把位置控制与分类结果解耦。</li><li>E-013：<a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird 官方 Google Play 页面</a>——点击叠高、越过不同高度障碍与连续正确奖励机制。</li><li>E-014：<a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride 官方 Google Play 页面</a>——自动前进、纵向飞行、收集/躲避和单触控制。</li><li>E-015：<a href="https://www.forbes.com/sites/lananhnguyen/2014/02/11/exclusive-flappy-bird-creator-dong-nguyen-says-app-gone-forever-because-it-was-an-addictive-product/" target="_blank" rel="noopener">Flappy Bird 创作者访谈</a>——窄通道、碰撞即死和高失败循环，作为明确负面边界。</li><li>E-016：<a href="https://www.nexplayground.com/en-ie/blog/the-ultimate-nex-playground-game-guide" target="_blank" rel="noopener">Nex Playground 低龄游戏指南</a>——3–5 岁应采用大动作、清楚提示、即时反馈和低压力体验。</li><li>E-017：<a href="https://www.frontiersin.org/journals/virtual-reality/articles/10.3389/frvir.2022.817303/full" target="_blank" rel="noopener">Frontiers Liberi 儿童 exergame 研究</a>——一个动作键按情境解释、输入平滑、失败可见但少重复；研究对象并非典型 5 岁儿童，只作为设计原则参考。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：</li></ul>
+<p>  - <code>Careful Go</code>：推进家庭 MVP，并以三种短玩法验证不同控制关系；Target Surface 继续为已确认的 <code>web-only</code>。<br>  - 三关源真相为：L1 <code>command<em>runner</code> 拳→掌高跳/末段情境接力 40 秒；L2 <code>hand</em>follow<em>dodge</code> 掌心 Y 直接跟手躲避 45 秒，<code>Unknown</code> 仍跟手；L3 <code>cloud</em>stack</code> 拳→掌叠 1–3 朵云 50 秒。<br>  - 主线不新增必过手型；无 Game Over、无生命值、无成绩锁关。完成本关即可继续，收集只服务庆祝。<br>  - 核心任务形态是“家长分步设置 + 儿童全屏动作任务流”，Gesture Lab 必须作为 P0 产品模块。</p>
+<ul class="md-ul"><li>被放弃的方案：</li></ul>
+<p>  - 暂不做移动端并行、专用硬件、全身大动作、超过三关的内容扩展、账号/排行榜和公开发行。<br>  - 经典 Flappy 式重力下坠、窄缝、碰撞即死和失败重开不进入主线；不采用逐关新增 <code>Pointing_Up</code> / <code>Victory</code> 的方案。<br>  - 不复制 <code>Bluey: Bust-a-Move</code> 的官方小游戏、视觉或角色素材。</p>
+<ul class="md-ul"><li>需要 PM 确认的问题：</li></ul>
+<p>  - 无。本轮用户已明确确认上述多玩法三关、<code>web-only</code>、无新增必过手型和低挫败边界，本 Review Slice 状态为 <code>confirmed</code>。</p>
+<ul class="md-ul"><li>不需要 PM 审查的执行细节：</li></ul>
+<p>  - 搜索来源整理、框架安装方式、具体置信度参数与 Worker 实现细节。</p>
+<ul class="md-ul"><li>进入下一阶段的条件：</li></ul>
+<p>  - 已满足：PM 已确认方向，可按当前源真相继续同步 Phase 1A 至 04B。</p></div></template>
+
+  <div class="overlay-backdrop" id="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayHeading">
+    <div class="overlay-panel">
+      <div class="overlay-header">
+        <div class="overlay-title">
+          <h2 id="overlayHeading">产出物原文</h2>
+          <code id="overlayFile"></code>
+        </div>
+        <button class="overlay-close" onclick="closeOverlay()" aria-label="关闭浮层">关闭 ✕</button>
+      </div>
+      <div class="overlay-body" id="overlayBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const cards = [{"question_id":"Q-01-001","question":"已确认的产品方向是否继续保持为 web-only 的多玩法三关家庭 MVP？","why_it_matters":"端型与三关范围决定架构、原型视口、摄像头入口和后续真实试玩的边界。","recommended_decision":"维持已确认：web-only；L1/L2/L3 分别为 40/45/50 秒的三种不同控制玩法。","options":["维持已确认","申请变更","暂缓，补材料"],"source_files":["01-research.md"],"evidence_refs":["E-002","E-003","E-004","E-005","E-008","E-009","E-011"],"downstream_impact":["01A-competitor-page-experience.md","02-architecture.html","03-feature-*.md","04A-prototype-spec-*.md","04B-prototype-*.html"],"route_hint":"L4"},{"question_id":"Q-01-002","question":"已确认的双通道输入与手型边界是否继续保持？","why_it_matters":"离散事件与连续位置帧分别服务 L1/L3 和 L2；若把分类结果变成位置控制前置条件，L2 会无故停住。","recommended_decision":"维持已确认：PoseTransitionEvent + HandTrackingFrame 双通道，主线只复用拳掌，不新增必需手型。","options":["维持已确认","申请变更","暂缓，补材料"],"source_files":["01-research.md"],"evidence_refs":["E-008","E-017"],"downstream_impact":["02-architecture.html","03-feature-手势输入闭环.md","03-feature-核心关卡循环.md"],"route_hint":"L4"},{"question_id":"Q-01-003","question":"已确认的低挫败完成规则是否继续作为三关共同底线？","why_it_matters":"识别误差不能被孩子理解为个人失败；惩罚性锁关也会破坏短时家庭试玩。","recommended_decision":"维持已确认：完成即解锁，收集只庆祝，碰撞自动恢复，无生命值、Game Over 或成绩锁关。","options":["维持已确认","申请变更","暂缓，补材料"],"source_files":["01-research.md"],"evidence_refs":["E-014","E-015","E-017"],"downstream_impact":["01A-competitor-page-experience.md","02-architecture.html","03-feature-核心关卡循环.md","04B-prototype-*.html"],"route_hint":"L4"}];
+    const storageKey = "pm-review-console:phase-1-产品调研判断:01-research-md";
+    const basePayload = {
+      phase: "Phase 1 产品调研判断",
+      artifact: "01-research.md",
+      source_status: "confirmed"
+    };
+    const materialMeta = [{"file":"01-research.md","href":"../01-research.md","type":"markdown","missing":false,"title":"Phase 1 产品方向研究报告"}];
+
+    const overlay = document.getElementById("overlay");
+    const overlayBody = document.getElementById("overlayBody");
+    const overlayHeading = document.getElementById("overlayHeading");
+    const overlayFile = document.getElementById("overlayFile");
+
+    function esc(s) {
+      return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    function escAttr(s) {
+      return String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function normalizeLocalPath(value) {
+      let raw = String(value || "").trim();
+      if (!raw || raw.startsWith("#") || /^[a-z]+:/i.test(raw)) return "";
+      raw = raw.split("#")[0].split("?")[0].replace(/\\/g, "/");
+      try { raw = decodeURIComponent(raw); } catch (_) {}
+      raw = raw.replace(/^\.\//, "");
+      while (raw.startsWith("../")) raw = raw.slice(3);
+      return raw;
+    }
+
+    function findMaterialIndexByFile(value) {
+      const target = normalizeLocalPath(value);
+      if (!target) return -1;
+      return materialMeta.findIndex((meta) => {
+        const file = normalizeLocalPath(meta.file);
+        const href = normalizeLocalPath(meta.href);
+        return file === target || href === target || file.endsWith("/" + target) || href.endsWith("/" + target);
+      });
+    }
+
+    function openFileReference(file) {
+      const index = findMaterialIndexByFile(file);
+      if (index >= 0) {
+        openOverlay(index);
+        return true;
+      }
+      return false;
+    }
+
+    function openOverlay(index) {
+      const meta = materialMeta[index];
+      if (!meta) return;
+      overlayHeading.textContent = meta.title || "产出物原文";
+      overlayFile.textContent = meta.file || "";
+
+      if (meta.missing) {
+        overlayBody.innerHTML =
+          '<p style="color:var(--warn);padding:20px 0">文件未找到：<code>' +
+          esc(meta.file) + '</code><br>请确认文件路径或重新生成 Review Console。</p>';
+      } else if (meta.type === "html") {
+        const href = meta.href || meta.file || "";
+        overlayBody.innerHTML =
+          '<div class="overlay-html-frame-wrap">' +
+          '<div class="overlay-html-frame-top">' +
+          '<span>HTML 产物正在右侧浮层中预览。若浏览器限制本地 iframe，可使用备用入口。</span>' +
+          '<a class="overlay-open-btn" href="' + escAttr(href) + '" target="_blank" rel="noopener">新窗口打开</a>' +
+          '</div>' +
+          '<iframe class="overlay-html-frame" src="' + escAttr(href) + '" title="' + escAttr(meta.title || "HTML 产物预览") + '"></iframe>' +
+          '</div>';
+      } else {
+        const tpl = document.getElementById("mat-tpl-" + index);
+        if (tpl && tpl.content.childElementCount > 0) {
+          overlayBody.innerHTML = "";
+          overlayBody.appendChild(tpl.content.cloneNode(true));
+        } else {
+          overlayBody.innerHTML = '<p class="muted">内容不可用。</p>';
+        }
+      }
+
+      overlay.classList.add("visible");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeOverlay() {
+      overlay.classList.remove("visible");
+      document.body.style.overflow = "";
+      overlayBody.innerHTML = "";
+    }
+
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("visible")) closeOverlay();
+    });
+    document.addEventListener("click", (e) => {
+      const fileTrigger = e.target.closest("[data-open-file]");
+      if (fileTrigger) {
+        const handled = openFileReference(fileTrigger.getAttribute("data-open-file"));
+        if (handled) e.preventDefault();
+        return;
+      }
+
+      const materialLink = e.target.closest(".md-content a[href]");
+      if (!materialLink) return;
+      const handled = openFileReference(materialLink.getAttribute("href"));
+      if (handled) e.preventDefault();
+    });
+
+    function collectFeedback() {
+      const directFeedback = document.getElementById("directFeedback")?.value || "";
+      const responses = cards.map((card, index) => {
+        const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]')?.value || "";
+        const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]')?.value || "";
+        return { question_id: card.question_id, question: card.question, decision, comment };
+      });
+      return { ...basePayload, exported_at: new Date().toISOString(), direct_feedback: directFeedback, responses };
+    }
+
+    function saveLocal() {
+      const payload = collectFeedback();
+      localStorage.setItem(storageKey, JSON.stringify(payload));
+      document.getElementById("feedbackPreview").textContent = JSON.stringify(payload, null, 2);
+    }
+
+    function restoreLocal() {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) { saveLocal(); return; }
+      try {
+        const payload = JSON.parse(raw);
+        const directFeedback = document.getElementById("directFeedback");
+        if (directFeedback) directFeedback.value = payload.direct_feedback || "";
+        payload.responses?.forEach((response, index) => {
+          const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]');
+          const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]');
+          if (decision) decision.value = response.decision || "";
+          if (comment) comment.value = response.comment || "";
+        });
+      } catch (_) { localStorage.removeItem(storageKey); }
+      saveLocal();
+    }
+
+    document.querySelectorAll("select, textarea").forEach((field) => {
+      field.addEventListener("input", saveLocal);
+      field.addEventListener("change", saveLocal);
+    });
+
+    document.getElementById("copyFeedback").addEventListener("click", async () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const status = document.getElementById("copyStatus");
+      if (navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(text);
+          if (status) status.textContent = "已复制";
+          return;
+        } catch (_) {
+          window.prompt("复制反馈 JSON", text);
+        }
+      } else {
+        window.prompt("复制反馈 JSON", text);
+      }
+      if (status) status.textContent = "请从弹窗复制";
+    });
+
+    document.getElementById("downloadFeedback").addEventListener("click", () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const blob = new Blob([text], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "phase-1-产品调研判断-feedback.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+
+    restoreLocal();
+  </script>
+</body>
+</html>

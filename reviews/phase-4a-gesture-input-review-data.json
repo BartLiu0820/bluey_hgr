@@ -1,0 +1,127 @@
+{
+  "phase": "Phase 4A 手势输入闭环原型规格",
+  "artifact": "04A-prototype-spec-手势输入闭环.md",
+  "status": "confirmed",
+  "updated_at": "2026-08-13",
+  "summary": {
+    "key_decisions": [
+      "保持 GI-01–GI-06 六个 screen 与单一 gesture-input-main backbone；GI-03 只练一次拳→掌→拳，首轮后可自愿重复",
+      "GI-04/GI-06 输出 camera_full 或 keyboard_full，二者都声明 capabilities.poseTransition=true 与 capabilities.handTrackingY=true",
+      "关卡交接使用 PoseTransitionEvent 与逐帧 HandTrackingFrame；L2 在 label=None/Unknown 且关键点有效时仍连续跟手"
+    ],
+    "discarded_options": [
+      "不新增跟手校准 screen，不恢复旧版多动作训练、识别倒计时、强制次数目标或中间结果档",
+      "不在 04B 添加 inspector、screen-nav、state-nav、QA 文案或可见调试入口",
+      "不把 Input Adapter 设计为按当前目标输出单一预判动作命令"
+    ],
+    "next_stage_conditions": [
+      "已满足：集成 04B 忠实实现两个输入合同、两轮复练、Unknown 跟手和键盘 ↑/↓",
+      "已满足：五个 Web 视口均单屏，产品画布无调试脚手架，file:// 有启动保护",
+      "后续仅需真实儿童试玩校准动作易懂性与参数，不新增规格门槛"
+    ],
+    "execution_details_not_for_pm": [
+      "连续 3 帧、700ms freeze、虚拟掌心步长与 CSS 压缩参数",
+      "本地模型/WASM 加载、关键点绘制、自动化选择器和测试注入接口"
+    ]
+  },
+  "materials": [
+    { "title": "Phase 4A 手势输入闭环原型规格", "file": "04A-prototype-spec-手势输入闭环.md" },
+    { "title": "Phase 3 手势输入闭环功能规格", "file": "03-feature-手势输入闭环.md" },
+    { "title": "集成式可试玩 MVP", "file": "04B-prototype-手势小狗探险MVP.html" }
+  ],
+  "visualizations": [
+    {
+      "type": "stage_flow",
+      "title": "六屏输入准备主干",
+      "description": "摄像头与键盘两条真实产品路径都生成完整 InputProfile，并自然进入 LV-00。",
+      "steps": [
+        { "label": "GI-01 家长输入设置", "status": "done", "detail": "隐私确认；选择手势或按键" },
+        { "label": "GI-02 摄像头准备", "status": "done", "detail": "本地模型、取景与关键点；Unknown 但有手也可继续" },
+        { "label": "GI-03 控制练习室", "status": "done", "detail": "拳→掌→拳一次达标；无识别倒计时，可自愿重复" },
+        { "label": "GI-04 摄像头完成", "status": "done", "detail": "camera_full + 两项 capability → LV-00" },
+        { "label": "GI-05–GI-06 按键路径", "status": "done", "detail": "Space 热身；keyboard_full + Space/↑/↓ → LV-00" }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "Screen 与当前验收重点",
+      "description": "六屏不扩张；双通道能力在结果页交接，在关卡运行时按需消费。",
+      "columns": ["Screen", "核心职责", "关键状态", "验收重点"],
+      "rows": [
+        { "label": "GI-01", "values": ["隐私与模式选择", "未确认/已确认", "授权前不请求摄像头，两条路径均可达"] },
+        { "label": "GI-02", "values": ["摄像头与手准备", "loading/finding/ready/error", "None/Unknown + handPresent=true 仍可进入练习"] },
+        { "label": "GI-03", "values": ["一次拳掌循环", "need_fist/armed/freeze/waiting_reset/passed", "无倒计时；首轮可离开；后续小狗继续响应"] },
+        { "label": "GI-04", "values": ["camera_full 结果", "success", "两项 capability=true；进入 LV-00"] },
+        { "label": "GI-05", "values": ["Space 热身", "waiting/action/ready", "一次 Space 即可继续，不表达为失败"] },
+        { "label": "GI-06", "values": ["keyboard_full 结果", "success", "Space + ↑/↓；两项 capability=true"] }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "事件合同与 capability 验收",
+      "description": "InputProfile 说明能力，事件对象承载观测；二者都不泄露当前关卡目标。",
+      "columns": ["对象", "关键字段", "路由", "关键验收"],
+      "rows": [
+        { "label": "PoseTransitionEvent", "values": ["stablePose / previousStablePose / source / confidence / timestamp", "GI-03、L1、L3", "持续张掌不重发；Space 生成规范循环"] },
+        { "label": "HandTrackingFrame", "values": ["handPresent / palmCenterY / confidence / timestamp", "L2；GI 仅取景反馈", "每帧输出；Unknown 有关键点仍跟手；无手为 null"] },
+        { "label": "InputProfile.capabilities", "values": ["poseTransition:boolean / handTrackingY:boolean", "RuntimeHost", "camera_full 与 keyboard_full 两项均为 true"] }
+      ]
+    },
+    {
+      "type": "impact_map",
+      "title": "对集成 04B 的实现边界",
+      "description": "Phase 4A 已固定产品主干、事件合同和 QA 范围。",
+      "source": "GI-01–GI-06 + 双通道 InputProfile + web-only 单屏",
+      "items": [
+        { "label": "产品画布", "detail": "纯产品 UI；无 inspector、screen-nav 或 QA 文案" },
+        { "label": "运行时交接", "detail": "L1/L3 只收姿态边沿；L2 只收逐帧位置" },
+        { "label": "响应式", "detail": "1440×900、1280×720、1219×681、1024×700、919×843 单屏无滚动" },
+        { "label": "QA-TARGETED", "detail": "两轮复练、Unknown 跟手、键盘上下、摄像头释放与本地资源" }
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-04A-GI-001",
+      "question": "是否确认 GI-01–GI-06 六屏不扩张，并把 GI-03 固定为一次拳→掌→拳达标、可自愿复练？",
+      "why_it_matters": "它限定 04B 的自然导航与儿童任务量；新增校准页或次数门槛会改变已确认的低龄输入闭环。",
+      "recommended_decision": "已确认：六屏、一次达标、结果入口常驻、复练小狗持续响应。",
+      "options": ["维持已确认规格", "要求变更", "补儿童试玩材料"],
+      "source_files": ["04A-prototype-spec-手势输入闭环.md", "03-feature-手势输入闭环.md"],
+      "evidence_refs": [],
+      "downstream_impact": ["04B GI 状态机", "集成 MVP 导航", "两轮复练 QA"],
+      "route_hint": "L1"
+    },
+    {
+      "question_id": "Q-04A-GI-002",
+      "question": "是否确认 camera_full / keyboard_full 都交付 poseTransition 与 handTrackingY 两项 boolean capability，并分别用双事件合同路由？",
+      "why_it_matters": "这决定两条输入路径能否完整支持三关，也决定 L2 是否能在姿态分类未知时保持连续控制。",
+      "recommended_decision": "已确认：两项 capability 均为 true；PoseTransitionEvent → L1/L3，HandTrackingFrame → L2。",
+      "options": ["维持已确认规格", "要求变更", "补接口证据"],
+      "source_files": ["04A-prototype-spec-手势输入闭环.md", "03-feature-核心关卡循环.md"],
+      "evidence_refs": [],
+      "downstream_impact": ["InputProfile", "RuntimeHost", "L2 Unknown 跟手", "键盘完整路径"],
+      "route_hint": "L1"
+    },
+    {
+      "question_id": "Q-04A-GI-003",
+      "question": "是否确认 web-only 五视口单屏与 QA-TARGETED 范围继续作为 HTML 验收基线？",
+      "why_it_matters": "输入闭环包含摄像头、键盘、状态机和具体布局风险；缩减为静态检查会漏掉 Unknown 跟手、复练响应或视口相交。",
+      "recommended_decision": "已确认：覆盖五个 Web 视口、双输入、两轮复练、Unknown 跟手、本地资源与 file:// 保护。",
+      "options": ["维持已确认规格", "要求变更", "追加专项 QA"],
+      "source_files": ["04A-prototype-spec-手势输入闭环.md", "AGENTS.md"],
+      "evidence_refs": [],
+      "downstream_impact": ["04B 浏览器 QA", "响应式 CSS", "摄像头隐私与释放"],
+      "route_hint": "L1"
+    }
+  ],
+  "risks": [
+    "真实儿童是否自然理解拳头是准备、是否愿意重复，仍不能由自动化确认",
+    "关键点丢失与姿态 Unknown 必须严格区分；前者需要安全恢复，后者在 L2 继续位置流",
+    "五视口压缩不得裁掉状态、CTA、摄像头 readout 或家长入口"
+  ],
+  "next_actions": [
+    "Phase 4A 手势输入闭环已确认并已传播至集成 04B",
+    "后续真实试玩重点验证拳掌易懂性、Unknown 跟手连续性和单屏教练可读性"
+  ]
+}

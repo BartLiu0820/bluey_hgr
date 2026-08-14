@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "audio:check": "node scripts/check-game-audio.mjs",
+    "audio:generate": "node scripts/generate-game-audio.mjs",
+    "qa:endless-milestones": "node scripts/check-endless-milestones.mjs",
+    "workflow:check-env": "node .pm-workflow/check-env.mjs",
+    "workflow:validate-gates": "node .pm-workflow/validate-gates.mjs",
+    "workflow:design-search": "node .pm-workflow/run-tool.mjs design-search",
+    "workflow:check-prototype": "node .pm-workflow/run-tool.mjs check-prototype",
+    "workflow:check-prototype:browser": "node .pm-workflow/run-tool.mjs check-prototype-browser",
+    "workflow:validate-spec": "node .pm-workflow/run-tool.mjs validate-spec",
+    "workflow:render-review-console": "node .pm-workflow/run-tool.mjs render-review-console",
+    "workflow:architecture": "node .pm-workflow/run-tool.mjs architecture",
+    "workflow:ensure-browsers": "node .pm-workflow/run-tool.mjs ensure-browsers",
+    "workflow:playwright-install": "node .pm-workflow/run-tool.mjs playwright-install"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "^1.0.1"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "targetCanvas": {
+    "width": 1536,
+    "height": 864
+  },
+  "levels": [
+    {
+      "level": "creek",
+      "canvas": {
+        "width": 1536,
+        "height": 864
+      },
+      "loopAxis": "x",
+      "repeatPolicy": "mirror_pair",
+      "layers": {
+        "far": "assets/maps/creek/far.png",
+        "mid": "assets/maps/creek/mid.png",
+        "farLoopPair": "assets/maps/creek/far-loop-pair.png",
+        "midLoopPair": "assets/maps/creek/mid-loop-pair.png"
+      },
+      "midAlphaCoverage": 0.1478,
+      "outerSeamDifferenceBBox": null,
+      "preview": "assets/maps/creek/background-preview.png"
+    },
+    {
+      "level": "firefly",
+      "canvas": {
+        "width": 1536,
+        "height": 864
+      },
+      "loopAxis": "x",
+      "repeatPolicy": "mirror_pair",
+      "layers": {
+        "far": "assets/maps/firefly/far.png",
+        "mid": "assets/maps/firefly/mid.png",
+        "farLoopPair": "assets/maps/firefly/far-loop-pair.png",
+        "midLoopPair": "assets/maps/firefly/mid-loop-pair.png"
+      },
+      "midAlphaCoverage": 0.106,
+      "outerSeamDifferenceBBox": null,
+      "preview": "assets/maps/firefly/background-preview.png"
+    },
+    {
+      "level": "treetop",
+      "canvas": {
+        "width": 1536,
+        "height": 864
+      },
+      "loopAxis": "y",
+      "repeatPolicy": "mirror_pair",
+      "layers": {
+        "far": "assets/maps/treetop/far.png",
+        "mid": "assets/maps/treetop/mid.png",
+        "farLoopPair": "assets/maps/treetop/far-loop-pair.png",
+        "midLoopPair": "assets/maps/treetop/mid-loop-pair.png"
+      },
+      "midAlphaCoverage": 0.1875,
+      "outerSeamDifferenceBBox": null,
+      "preview": "assets/maps/treetop/background-preview.png"
+    }
+  ]
+}

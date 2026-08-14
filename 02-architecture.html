@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>手势小狗三玩法大厅 · 产品架构图</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,400;1,9..144,600&family=Manrope:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   v3 — Luxury Technical Publication
+   Warm cream canvas · Earth-tone accents · Editorial serif display
+   ========================================================================== */
+
+:root {
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px;
+  --s6:24px; --s8:32px; --s10:40px; --s12:48px; --s16:64px;
+
+  --f-display: 'Fraunces', Georgia, serif;
+  --f-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-mono: 'Fira Code', 'SF Mono', Consolas, monospace;
+
+  /* Warm neutral palette — cream paper feel */
+  --cream: #FAF9F6;
+  --cream-dark: #F3F1EC;
+  --paper: #FFFFFF;
+  --ink-50: #F7F5F0;
+  --ink-100: #EBE8E1;
+  --ink-150: #DDD9CF;
+  --ink-200: #CEC9BD;
+  --ink-300: #AFA89A;
+  --ink-400: #8F8778;
+  --ink-500: #706858;
+  --ink-600: #574F42;
+  --ink-700: #403A30;
+  --ink-800: #2C2720;
+  --ink-900: #1B1814;
+
+  --hero-bg: #1B1814;
+  --hero-surface: #252119;
+
+  /* Earth-tone accents — 6 layer colors */
+  --earth-olive: #5F6B4E;
+  --earth-terra: #B86B4A;
+  --earth-slate: #627084;
+  --earth-amber: #C49A3C;
+  --earth-sage: #7A9E7E;
+  --earth-plum: #8B6B7E;
+
+  /* Risk — warm-shifted */
+  --rH: #C84B3A; --rH-bg: #FDF3F1; --rH-bdr: #F0C5BE;
+  --rM: #C87D2E; --rM-bg: #FDF7F0; --rM-bdr: #F0D9B8;
+  --rL: #B8A033; --rL-bg: #FDFBF0; --rL-bdr: #EDE0A8;
+
+  --P0: #403A30; --P0-bg: #F0EDE6;
+  --P1: #706858; --P1-bg: #F5F3EE;
+  --P2: #AFA89A; --P2-bg: #FAF9F6;
+
+  --cDep: #627084;
+  --cFlow: #7A9E7E;
+  --cCall: #C49A3C;
+
+  --r-sm:6px; --r-md:10px; --r-lg:14px; --r-xl:20px; --r-pill:999px;
+
+  --sh-xs: 0 1px 2px rgba(27,24,20,0.04);
+  --sh-sm: 0 1px 4px rgba(27,24,20,0.06), 0 1px 2px rgba(27,24,20,0.03);
+  --sh-md: 0 4px 12px -2px rgba(27,24,20,0.08), 0 2px 4px rgba(27,24,20,0.03);
+  --sh-lg: 0 12px 32px -4px rgba(27,24,20,0.1), 0 4px 8px rgba(27,24,20,0.02);
+  --sh-xl: 0 24px 48px -8px rgba(27,24,20,0.12);
+  --sh-warm-glow: 0 8px 24px -4px rgba(184,107,74,0.12);
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--f-body);
+  color: var(--ink-800);
+  background: var(--cream);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 9000;
+  opacity: 0.3;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* ====================================================================
+   HERO
+   ==================================================================== */
+.hero {
+  background: var(--hero-bg);
+  color: var(--cream);
+  padding: var(--s10) var(--s8) var(--s12);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: 10%;
+  width: 360px; height: 360px;
+  background: radial-gradient(circle, rgba(184,107,74,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: 15%;
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, rgba(122,158,126,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative; z-index: 1;
+  max-width: 1080px; margin: 0 auto;
+}
+
+.hero-brow {
+  font-family: var(--f-mono);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--earth-terra);
+  margin-bottom: var(--s3);
+  opacity: 0; animation: riseIn .6s var(--ease) .1s forwards;
+}
+
+.hero-title {
+  font-family: var(--f-display);
+  font-size: 36px; font-weight: 800;
+  letter-spacing: -0.025em; line-height: 1.15;
+  color: var(--cream);
+  opacity: 0; animation: riseIn .6s var(--ease) .2s forwards;
+}
+
+.hero-subtitle {
+  font-family: var(--f-display);
+  font-weight: 400; font-style: italic;
+  font-size: 15px; color: var(--ink-300);
+  margin-top: var(--s2);
+  opacity: 0; animation: riseIn .6s var(--ease) .25s forwards;
+}
+
+.hero-rule {
+  width: 48px; height: 2px;
+  background: var(--earth-terra);
+  margin: var(--s5) 0;
+  border: none; border-radius: 1px;
+  opacity: 0; animation: riseIn .6s var(--ease) .3s forwards;
+}
+
+.hero-metrics {
+  display: flex; gap: var(--s8);
+  opacity: 0; animation: riseIn .6s var(--ease) .4s forwards;
+}
+
+.hero-metric { text-align: left; }
+
+.hero-metric-val {
+  font-family: var(--f-display);
+  font-size: 32px; font-weight: 900;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.hero-metric-val.warn { color: var(--earth-terra); }
+
+.hero-metric-lbl {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 500;
+  color: var(--ink-400);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: var(--s1);
+}
+
+.hero-chips {
+  display: flex; gap: var(--s2); flex-wrap: wrap;
+  margin-top: var(--s5);
+  opacity: 0; animation: riseIn .6s var(--ease) .55s forwards;
+}
+
+.hero-chip {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 150ms ease;
+}
+
+.hero-chip:hover { transform: translateY(-1px); }
+
+.hero-chip.high {
+  background: rgba(200,75,58,0.15); color: #F0A89E;
+  border: 1px solid rgba(200,75,58,0.3);
+}
+
+.hero-chip.med {
+  background: rgba(200,125,46,0.12); color: #F0C888;
+  border: 1px solid rgba(200,125,46,0.25);
+}
+
+.hero-chip.more {
+  background: rgba(175,168,154,0.1); color: var(--ink-300);
+  border: 1px solid rgba(175,168,154,0.25);
+  cursor: default;
+}
+
+@keyframes riseIn {
+  from { opacity:0; transform:translateY(14px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.bridge {
+  height: 48px;
+  background: linear-gradient(to bottom, var(--hero-bg), var(--cream));
+}
+
+/* ====================================================================
+   OVERVIEW SECTION
+   ==================================================================== */
+.ov-section {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--s4) var(--s8) var(--s5);
+}
+
+.ov-section-label {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-400);
+  margin-bottom: var(--s4);
+  display: flex; align-items: center; gap: var(--s3);
+}
+
+.ov-section-label::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: var(--ink-100);
+}
+
+.ov-layer-row {
+  display: flex; align-items: flex-start; gap: var(--s3);
+  margin-bottom: 6px;
+}
+
+.ov-layer-label {
+  font-family: var(--f-mono);
+  font-size: 9.5px; font-weight: 600;
+  color: var(--ink-500);
+  width: 80px; min-width: 80px;
+  padding-top: 5px; padding-right: var(--s2);
+  text-align: right; line-height: 1.35;
+  border-right: 2px solid var(--ink-100);
+  letter-spacing: -0.005em; word-break: break-all;
+}
+
+.ov-mods-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--ov-cols, 4), 1fr);
+  gap: 5px;
+  flex: 1;
+}
+
+.ov-mod-card {
+  background: var(--paper);
+  border: 1px solid var(--ink-100);
+  border-left: 3px solid var(--ink-150);
+  border-radius: 5px;
+  padding: 5px 7px;
+}
+
+.ov-mod-card.risk-high { border-left-color: var(--rH); }
+.ov-mod-card.risk-medium { border-left-color: var(--rM); }
+.ov-mod-card.risk-low { border-left-color: var(--rL); }
+
+.ov-mod-top {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 4px;
+  margin-bottom: 3px;
+}
+
+.ov-mod-name {
+  font-family: var(--f-body);
+  font-size: 11px; font-weight: 700;
+  color: var(--ink-900);
+  line-height: 1.3; letter-spacing: -0.01em;
+  flex: 1;
+}
+
+.ov-badge {
+  font-family: var(--f-mono);
+  font-size: 8px; font-weight: 700;
+  padding: 1px 5px; border-radius: var(--r-pill);
+  white-space: nowrap; flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.ov-badge-p0 { background: var(--P0-bg); color: var(--P0); border: 1px solid var(--ink-200); }
+.ov-badge-p1 { background: var(--P1-bg); color: var(--P1); border: 1px solid var(--ink-150); }
+.ov-badge-p2 { background: var(--P2-bg); color: var(--P2); border: 1px solid var(--ink-150); }
+
+.ov-sub-item {
+  font-family: var(--f-body);
+  font-size: 9.5px; color: var(--ink-400);
+  line-height: 1.5;
+  padding-left: 8px;
+  position: relative;
+}
+
+.ov-sub-item::before {
+  content: '·';
+  position: absolute; left: 1px;
+  color: var(--ink-200);
+}
+
+.ov-detail-head {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-300);
+  max-width: 1080px; margin: 0 auto;
+  padding: var(--s3) var(--s8) var(--s1);
+  border-top: 1px solid var(--ink-100);
+}
+
+/* ====================================================================
+   TOOLBAR — warm frosted glass
+   ==================================================================== */
+.toolbar {
+  position: sticky; top: 0; z-index: 200;
+  min-height: 48px; padding: var(--s2) var(--s8);
+  display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap;
+  background: rgba(250,249,246,0.82);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border-bottom: 1px solid var(--ink-100);
+}
+
+.tb-search { position: relative; }
+
+.tb-search input {
+  font-family: var(--f-body);
+  width: 180px; height: 32px;
+  padding: 0 var(--s3) 0 30px;
+  border: 1px solid var(--ink-150);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  font-size: 12px; color: var(--ink-700);
+  outline: none; transition: all 250ms var(--ease);
+}
+
+.tb-search input::placeholder { color: var(--ink-300); }
+
+.tb-search input:focus {
+  width: 230px; border-color: var(--earth-terra);
+  box-shadow: 0 0 0 3px rgba(184,107,74,0.1);
+}
+
+.tb-search svg {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 13px; height: 13px; color: var(--ink-300); pointer-events: none;
+}
+
+.tb-group {
+  display: flex; gap: 3px; align-items: center;
+}
+
+.tb-lbl {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 500; color: var(--ink-400);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  margin-right: var(--s1);
+}
+
+.pill {
+  font-family: var(--f-mono);
+  height: 26px; padding: 0 10px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--ink-150);
+  background: var(--paper);
+  font-size: 10px; font-weight: 600; color: var(--ink-500);
+  cursor: pointer; transition: all 150ms ease;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+
+.pill:hover { border-color: var(--ink-200); background: var(--ink-50); }
+
+.pill.on {
+  background: var(--ink-800); border-color: var(--ink-800);
+  color: var(--cream);
+}
+
+.pill.on-h { background: var(--rH); border-color: var(--rH); color: var(--cream); }
+.pill.on-m { background: var(--rM); border-color: var(--rM); color: var(--cream); }
+.pill.on-l { background: var(--rL); border-color: var(--rL); color: var(--ink-900); }
+
+.tb-right {
+  display: flex; gap: var(--s2); align-items: center; margin-left: auto;
+}
+
+.tb-zoom {
+  display: flex; align-items: center;
+  background: var(--paper); border: 1px solid var(--ink-150);
+  border-radius: var(--r-sm); padding: 2px;
+}
+
+.tb-zbtn {
+  width: 26px; height: 26px; border: none; border-radius: var(--r-sm);
+  background: transparent; color: var(--ink-600); font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+
+.tb-zbtn:hover { background: var(--ink-50); }
+
+.tb-zval {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 600; color: var(--ink-400);
+  min-width: 34px; text-align: center;
+}
+
+.tb-export {
+  font-family: var(--f-mono);
+  height: 30px; padding: 0 14px;
+  border: none; border-radius: var(--r-sm);
+  background: var(--ink-800); color: var(--cream);
+  font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer; transition: all 150ms ease;
+  display: flex; align-items: center; gap: var(--s1);
+}
+
+.tb-export:hover {
+  background: var(--ink-900);
+  box-shadow: 0 4px 12px rgba(27,24,20,0.2);
+  transform: translateY(-1px);
+}
+
+.tb-risk {
+  font-family: var(--f-mono);
+  height: 30px; padding: 0 12px;
+  border: 1px solid var(--ink-150);
+  border-radius: var(--r-sm);
+  background: var(--paper); color: var(--ink-700);
+  font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer; transition: all 150ms ease;
+  display: flex; align-items: center; gap: var(--s2);
+  position: relative;
+}
+
+.tb-risk:hover {
+  border-color: var(--earth-terra);
+  background: var(--ink-50);
+}
+
+.tb-risk.has-h {
+  border-color: var(--rH);
+  color: var(--rH);
+}
+
+.tb-risk.has-h:hover {
+  background: var(--rH-bg);
+}
+
+.tb-risk-badge {
+  font-family: var(--f-mono);
+  font-size: 9px; font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--r-pill);
+  background: var(--ink-100);
+  color: var(--ink-700);
+  min-width: 18px; text-align: center;
+}
+
+.tb-risk.has-h .tb-risk-badge {
+  background: var(--rH); color: var(--cream);
+}
+
+/* ====================================================================
+   CANVAS
+   ==================================================================== */
+.canvas-wrap { position: relative; }
+
+.canvas {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--s6) var(--s8) 80px;
+  transform-origin: top center;
+  min-width: fit-content;
+  position: relative;
+  z-index: 2;
+}
+
+/* ====================================================================
+   LAYER
+   ==================================================================== */
+.layer {
+  margin-bottom: var(--s5);
+  padding: var(--s5) var(--s5) var(--s5) var(--s6);
+  background: var(--paper);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--ink-100);
+  border-left: 4px solid var(--ink-200);
+  box-shadow: var(--sh-sm);
+  opacity: 0;
+  animation: layerUp .5s var(--ease) forwards;
+}
+
+@keyframes layerUp {
+  from { opacity:0; transform:translateY(18px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.layer-head {
+  display: flex; align-items: baseline; gap: var(--s3);
+  margin-bottom: var(--s4);
+  padding-bottom: var(--s3);
+  border-bottom: 1px solid var(--ink-100);
+}
+
+.layer-name {
+  font-family: var(--f-display);
+  font-size: 15px; font-weight: 800;
+  color: var(--ink-800);
+  letter-spacing: -0.01em;
+}
+
+.layer-tag {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 500;
+  color: var(--ink-300);
+  letter-spacing: 0.04em;
+}
+
+/* ====================================================================
+   MODULE GRID
+   ==================================================================== */
+.mgrid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols,4), 1fr);
+  gap: var(--s3);
+}
+
+/* ====================================================================
+   MODULE CARD
+   ==================================================================== */
+.card {
+  background: var(--paper);
+  border-radius: var(--r-md);
+  border: 1px solid var(--ink-100);
+  padding: var(--s4);
+  position: relative;
+  transition:
+    box-shadow 300ms var(--ease),
+    transform 300ms var(--ease),
+    border-color 200ms ease,
+    opacity 250ms ease;
+  box-shadow: var(--sh-xs);
+  opacity: 0;
+  animation: cardPop .4s var(--ease) forwards;
+  cursor: pointer;
+  display: flex; flex-direction: column;
+}
+
+@keyframes cardPop {
+  from { opacity:0; transform:translateY(10px) scale(0.97); }
+  to { opacity:1; transform:translateY(0) scale(1); }
+}
+
+.card:hover {
+  box-shadow: var(--sh-lg), var(--sh-warm-glow);
+  transform: translateY(-3px);
+  border-color: var(--ink-200);
+}
+
+.card.risk-high { border-left: 3px solid var(--rH); }
+.card.risk-medium { border-left: 3px solid var(--rM); }
+.card.risk-low { border-left: 3px solid var(--rL); }
+
+.card-top {
+  display: flex; align-items: flex-start; gap: var(--s2);
+  margin-bottom: var(--s1);
+}
+
+.card-icon {
+  font-size: 12px; flex-shrink: 0; margin-top: 2px;
+}
+
+.card-name {
+  font-family: var(--f-body);
+  font-size: 14px; font-weight: 800; color: var(--ink-900);
+  flex: 1; line-height: 1.35; letter-spacing: -0.01em;
+}
+
+.card-gear {
+  font-size: 11px; color: var(--earth-amber);
+  flex-shrink: 0; margin-top: 2px;
+  cursor: help;
+}
+
+.card-desc {
+  font-size: 12px; color: var(--ink-400); line-height: 1.55;
+  margin-bottom: var(--s2);
+}
+
+/* Priority / status badge */
+.badge {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: var(--r-pill);
+  display: inline-flex; align-items: center;
+  white-space: nowrap; flex-shrink: 0; letter-spacing: 0.03em;
+}
+
+.badge-p0 { background: var(--P0-bg); color: var(--P0); border: 1px solid var(--ink-200); }
+.badge-p1 { background: var(--P1-bg); color: var(--P1); border: 1px solid var(--ink-150); }
+.badge-p2 { background: var(--P2-bg); color: var(--P2); border: 1px solid var(--ink-150); }
+
+.badge-stable { background: #F0F7F1; color: #4A7C5A; border: 1px solid #C5DFC9; }
+.badge-developing { background: #F0F4FA; color: #4A6A8C; border: 1px solid #C0D2E8; }
+.badge-planned { background: var(--ink-50); color: var(--ink-400); border: 1px solid var(--ink-150); }
+.badge-deprecated { background: var(--rH-bg); color: var(--rH); border: 1px solid var(--rH-bdr); text-decoration: line-through; }
+
+/* Priority reason — Fraunces italic */
+.reason {
+  font-family: var(--f-display);
+  font-style: italic; font-weight: 400;
+  font-size: 11.5px; line-height: 1.5;
+  color: var(--ink-500);
+  margin-top: var(--s1); margin-bottom: var(--s2);
+  padding-left: var(--s2);
+  border-left: 2px solid var(--ink-100);
+}
+
+.reason::before {
+  content: '理由 — ';
+  font-family: var(--f-mono);
+  font-style: normal; font-weight: 600;
+  font-size: 9px;
+  color: var(--ink-300);
+  letter-spacing: 0.06em;
+}
+
+/* Entities / Metrics info blocks */
+.info-block {
+  margin-top: var(--s2);
+  display: flex; align-items: flex-start; gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.info-label {
+  font-family: var(--f-mono);
+  font-size: 9px; font-weight: 600;
+  color: var(--ink-400);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  flex-shrink: 0; padding-top: 3px;
+  min-width: 42px;
+}
+
+.info-chips {
+  display: flex; gap: 4px; flex-wrap: wrap; flex: 1;
+}
+
+.info-chip {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 500;
+  padding: 2px 7px;
+  border-radius: var(--r-sm);
+  background: var(--ink-50);
+  color: var(--ink-600);
+  border: 1px solid var(--ink-100);
+}
+
+.info-chip.m {
+  background: rgba(184,107,74,0.06);
+  color: var(--earth-terra);
+  border-color: rgba(184,107,74,0.18);
+}
+
+/* Actor letter-circles */
+.actors {
+  display: flex; gap: 3px;
+  margin-left: auto;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.actor-chip {
+  font-family: var(--f-mono);
+  width: 18px; height: 18px; border-radius: 50%;
+  font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: 0;
+  cursor: help;
+}
+
+.actor-c { background: var(--earth-terra); color: var(--cream); }
+.actor-b { background: var(--earth-slate); color: var(--cream); }
+.actor-o { background: var(--earth-olive); color: var(--cream); }
+.actor-s { background: var(--earth-plum); color: var(--cream); }
+.actor-a { background: var(--ink-800); color: var(--cream); }
+.actor-x { background: var(--ink-200); color: var(--ink-700); }
+
+/* ====================================================================
+   SUB-MODULES
+   ==================================================================== */
+.subs {
+  margin-top: var(--s3); padding-top: var(--s3);
+  border-top: 1px dashed var(--ink-100);
+}
+
+.subs-flow {
+  display: flex; gap: var(--s2); flex-wrap: wrap; align-items: stretch;
+}
+
+.subs-flow .sub {
+  flex: 1 1 0; min-width: 68px; position: relative;
+}
+
+.subs-flow .sub:not(:last-child)::after {
+  content: '';
+  position: absolute; right: -5px; top: 50%; transform: translateY(-50%);
+  border: 3.5px solid transparent;
+  border-left: 4.5px solid var(--ink-200);
+}
+
+.subs-grid { display: flex; flex-direction: column; gap: var(--s2); }
+.subs-grid-row { display: flex; gap: var(--s2); }
+.subs-grid-row .sub { flex: 1; }
+
+.subs-stack { display: flex; flex-direction: column; gap: 0; }
+.subs-stack .sub { border-radius: 0; border-bottom: none; }
+.subs-stack .sub:first-child { border-top-left-radius: var(--r-sm); border-top-right-radius: var(--r-sm); }
+.subs-stack .sub:last-child { border-bottom-left-radius: var(--r-sm); border-bottom-right-radius: var(--r-sm); border-bottom: 1px solid var(--ink-100); }
+
+.sub {
+  background: var(--cream);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--r-sm);
+  padding: var(--s2) var(--s3);
+  transition: all 150ms ease;
+}
+
+.sub:hover {
+  background: var(--paper);
+  border-color: var(--ink-200);
+  box-shadow: var(--sh-xs);
+}
+
+.sub-name {
+  font-family: var(--f-body);
+  font-size: 12px; font-weight: 600; color: var(--ink-700);
+}
+
+.sub-desc {
+  font-size: 11px; color: var(--ink-400); margin-top: 1px; line-height: 1.4;
+}
+
+/* ====================================================================
+   INLINE RISK BOX
+   ==================================================================== */
+.rbox {
+  margin-top: var(--s3); padding: var(--s3);
+  border-radius: var(--r-sm); font-size: 11px; line-height: 1.55;
+}
+
+.rbox.rH { background: var(--rH-bg); border: 1px solid var(--rH-bdr); }
+.rbox.rM { background: var(--rM-bg); border: 1px solid var(--rM-bdr); }
+.rbox.rL { background: var(--rL-bg); border: 1px solid var(--rL-bdr); }
+
+.rbox .rt {
+  font-family: var(--f-mono); font-weight: 700; font-size: 10px;
+  margin-bottom: 2px; letter-spacing: 0.02em;
+}
+
+.rbox.rH .rt { color: var(--rH); }
+.rbox.rM .rt { color: var(--rM); }
+.rbox.rL .rt { color: var(--rL); }
+
+.rbox .rd { color: var(--ink-600); }
+.rbox .rs { margin-top: var(--s1); color: var(--ink-700); font-weight: 500; }
+.rbox .rs::before { content: '→ '; color: var(--ink-300); }
+
+/* ====================================================================
+   SVG CONNECTIONS
+   ==================================================================== */
+.csvg {
+  position: absolute; top: 0; left: 0;
+  pointer-events: none; z-index: 10;
+  transition: opacity 250ms ease;
+}
+
+.cp { fill: none; stroke-width: 1.5; opacity: 0.45; transition: opacity 200ms ease, stroke-width 200ms ease; }
+.cp.dep { stroke: var(--cDep); }
+.cp.flow { stroke: var(--cFlow); stroke-dasharray: 8 4; }
+.cp.call { stroke: var(--cCall); stroke-dasharray: 4 3; }
+
+.ct {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 500; fill: var(--ink-400);
+  paint-order: stroke; stroke: var(--cream); stroke-width: 4px;
+  transition: opacity 200ms ease;
+}
+
+.ca.dep { fill: var(--cDep); opacity: 0.45; }
+.ca.flow { fill: var(--cFlow); opacity: 0.45; }
+.ca.call { fill: var(--cCall); opacity: 0.45; }
+
+/* ====================================================================
+   SEARCH / FILTER STATES
+   ==================================================================== */
+.card.sm {
+  outline: 2px solid var(--earth-terra);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px rgba(184,107,74,0.1);
+  animation: warmPulse 1.5s ease 2;
+}
+
+@keyframes warmPulse {
+  0%,100% { box-shadow: 0 0 0 6px rgba(184,107,74,0.1); }
+  50% { box-shadow: 0 0 0 12px rgba(184,107,74,0.04); }
+}
+
+.card.sd { opacity: 0.1; transform: scale(0.97); }
+.card.fd { opacity: 0.1; }
+.card.ad { opacity: 0.12; }
+
+/* ====================================================================
+   FOCUS MODE — upstream/downstream highlighting
+   ==================================================================== */
+body.focus-mode .card { opacity: 0.12; }
+body.focus-mode .card.focused {
+  opacity: 1;
+  outline: 2px solid var(--earth-terra);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px rgba(184,107,74,0.08), var(--sh-lg);
+}
+body.focus-mode .card.linked-up {
+  opacity: 1;
+  outline: 1.5px solid var(--earth-slate);
+  outline-offset: 2px;
+}
+body.focus-mode .card.linked-down {
+  opacity: 1;
+  outline: 1.5px solid var(--earth-sage);
+  outline-offset: 2px;
+}
+body.focus-mode .cp { opacity: 0.08; }
+body.focus-mode .cp.active { opacity: 1; stroke-width: 2.2; }
+body.focus-mode .ct { opacity: 0.1; }
+body.focus-mode .ct.active { opacity: 1; }
+
+/* ====================================================================
+   RIGHT-SIDE RISK DRAWER (default hidden, toggled via toolbar button)
+   ==================================================================== */
+.rpanel-scrim {
+  position: fixed; inset: 0;
+  background: rgba(27,24,20,0.18);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 290;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms var(--ease);
+}
+
+.rpanel-scrim.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.rpanel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  z-index: 300;
+  width: 320px; max-width: 90vw;
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border-left: 1px solid var(--ink-100);
+  box-shadow: -12px 0 40px -8px rgba(27,24,20,0.14);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  transform: translateX(100%);
+  transition: transform 320ms var(--ease);
+}
+
+.rpanel.show { transform: translateX(0); }
+
+.rpanel-head {
+  padding: var(--s4) var(--s5);
+  display: flex; align-items: center; gap: var(--s3);
+  border-bottom: 1px solid var(--ink-100);
+  background: var(--cream);
+}
+
+.rpanel-brow {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--earth-terra);
+}
+
+.rpanel-title {
+  font-family: var(--f-display);
+  font-size: 16px; font-weight: 800;
+  color: var(--ink-800);
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+
+.rpanel-title-wrap { flex: 1; }
+
+.rpanel-count {
+  font-family: var(--f-mono);
+  font-size: 11px; font-weight: 600;
+  color: var(--ink-400);
+  padding: 3px 8px;
+  background: var(--paper);
+  border: 1px solid var(--ink-150);
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+}
+
+.rpanel-close {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid var(--ink-150);
+  background: var(--paper);
+  color: var(--ink-500);
+  font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 150ms ease;
+  flex-shrink: 0;
+}
+
+.rpanel-close:hover {
+  background: var(--ink-800); color: var(--cream);
+  border-color: var(--ink-800);
+}
+
+.rpanel-body {
+  padding: var(--s5);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.rpanel-empty {
+  font-family: var(--f-display); font-style: italic;
+  color: var(--ink-400); font-size: 13px;
+  text-align: center; padding: var(--s10) var(--s4);
+}
+
+.rgroup { margin-bottom: var(--s5); }
+
+.rgroup-head {
+  font-family: var(--f-mono);
+  font-size: 10px; font-weight: 700;
+  color: var(--ink-500);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: var(--s3);
+  padding-bottom: var(--s2);
+  border-bottom: 1px solid var(--ink-100);
+  display: flex; align-items: center; gap: var(--s2);
+}
+
+.rgroup-count {
+  font-family: var(--f-mono);
+  font-size: 9px; font-weight: 600;
+  color: var(--ink-300);
+  margin-left: auto;
+}
+
+.ritem {
+  font-family: var(--f-body);
+  font-size: 12px;
+  padding: var(--s3);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all 180ms ease;
+  margin-bottom: var(--s2);
+  background: var(--paper);
+  display: block;
+}
+
+.ritem:hover {
+  border-color: var(--ink-200);
+  box-shadow: var(--sh-sm);
+  transform: translateY(-1px);
+}
+
+.ritem.high { border-left: 3px solid var(--rH); }
+.ritem.medium { border-left: 3px solid var(--rM); }
+.ritem.low { border-left: 3px solid var(--rL); }
+
+.ritem-top {
+  display: flex; align-items: center; gap: var(--s2);
+  margin-bottom: 4px;
+}
+
+.ritem-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ritem-dot.high { background: var(--rH); }
+.ritem-dot.medium { background: var(--rM); }
+.ritem-dot.low { background: var(--rL); }
+
+.ritem-name {
+  color: var(--ink-800); font-weight: 700;
+  font-size: 12.5px;
+  flex: 1;
+}
+
+.ritem-level {
+  font-family: var(--f-mono);
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  border-radius: var(--r-pill);
+}
+
+.ritem-level.high { background: var(--rH-bg); color: var(--rH); border: 1px solid var(--rH-bdr); }
+.ritem-level.medium { background: var(--rM-bg); color: var(--rM); border: 1px solid var(--rM-bdr); }
+.ritem-level.low { background: var(--rL-bg); color: var(--rL); border: 1px solid var(--rL-bdr); }
+
+.ritem-desc {
+  font-size: 11.5px; color: var(--ink-500);
+  line-height: 1.55;
+  margin-top: 2px;
+}
+
+/* ====================================================================
+   MINI-MAP
+   ==================================================================== */
+.minimap {
+  position: fixed; bottom: var(--s5); right: var(--s5);
+  z-index: 150;
+  width: 160px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-md);
+  padding: 20px 6px 6px;
+  overflow: hidden;
+}
+
+.minimap-label {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 4px 8px;
+  font-family: var(--f-mono);
+  font-size: 9px; font-weight: 600;
+  color: var(--ink-400);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border-bottom: 1px solid var(--ink-100);
+  background: var(--cream);
+}
+
+.minimap-inner {
+  position: relative;
+  width: 100%; min-height: 80px;
+}
+
+.mm-layer {
+  background: var(--ink-50);
+  border-left: 2px solid var(--ink-200);
+  border-radius: 2px;
+  margin-bottom: 2px;
+  position: relative;
+}
+
+.mm-module {
+  background: var(--ink-200);
+  border-radius: 1px;
+  position: absolute;
+}
+
+.mm-module.high { background: var(--rH); }
+.mm-module.medium { background: var(--rM); }
+.mm-module.low { background: var(--rL); }
+
+.mm-vp {
+  position: absolute;
+  border: 1.5px solid var(--earth-terra);
+  background: rgba(184,107,74,0.08);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ====================================================================
+   LEGEND
+   ==================================================================== */
+.legend {
+  position: fixed; bottom: var(--s5); left: var(--s5); z-index: 150;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--r-md);
+  padding: var(--s4) var(--s5);
+  box-shadow: var(--sh-md);
+  border: 1px solid var(--ink-100);
+  max-width: 220px;
+  transition: all 250ms var(--ease);
+}
+
+.legend-x {
+  position: absolute; top: -8px; right: -8px;
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1px solid var(--ink-150); background: var(--paper);
+  font-size: 11px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--sh-sm); color: var(--ink-500);
+}
+
+.legend-x:hover { background: var(--ink-50); }
+
+.legend.col {
+  padding: var(--s2);
+  max-width: 40px;
+}
+
+.legend.col .lb, .legend.col h4 { display: none; }
+
+.legend h4 {
+  font-family: var(--f-display);
+  font-size: 12px; font-weight: 800; color: var(--ink-700);
+  margin-bottom: var(--s3);
+}
+
+.ls { margin-bottom: var(--s2); }
+
+.ls-t {
+  font-family: var(--f-mono);
+  font-size: 9px; font-weight: 600; color: var(--ink-400);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: var(--s1);
+}
+
+.lr {
+  display: flex; align-items: center; gap: var(--s2);
+  margin-bottom: 3px; font-size: 11px; color: var(--ink-600);
+}
+
+.lsw { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+.lln { width: 18px; height: 0; flex-shrink: 0; border-top: 2px solid; }
+.lln.dsh { border-top-style: dashed; }
+.lln.dot { border-top-style: dotted; }
+.lhr { margin: var(--s2) 0; border: none; border-top: 1px solid var(--ink-100); }
+
+/* ====================================================================
+   EXPORT MASK
+   ==================================================================== */
+.emask {
+  position: fixed; inset: 0;
+  background: rgba(27,24,20,0.3);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: none; place-items: center;
+}
+
+.emask.show { display: grid; }
+
+.emask .emsg {
+  font-family: var(--f-display);
+  background: var(--paper); padding: var(--s5) var(--s8);
+  border-radius: var(--r-md); box-shadow: var(--sh-xl);
+  font-size: 15px; font-weight: 600; color: var(--ink-700);
+}
+
+/* ====================================================================
+   PRINT
+   ==================================================================== */
+@media print {
+  .hero, .bridge, .toolbar, .legend, .csvg, .emask, .rpanel, .minimap { display: none !important; }
+  body { background: #fff; }
+  body::after { display: none; }
+  .canvas { padding: 0; transform: none !important; max-width: 100%; }
+  .layer { break-inside: avoid; animation: none; opacity: 1; box-shadow: none; border: 1px solid #ddd; }
+  .card { break-inside: avoid; animation: none; opacity: 1; box-shadow: none; border: 1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+
+<section class="hero" id="hero"></section>
+<div class="bridge"></div>
+
+<section class="ov-section" id="ov"></section>
+<div class="ov-detail-head">详细视图 · Detail View</div>
+
+<nav class="toolbar" id="toolbar">
+  <div class="tb-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="si" placeholder="搜索模块..." />
+  </div>
+  <div class="tb-group">
+    <span class="tb-lbl">Risk</span>
+    <button class="pill on" data-f="all" onclick="flt('all')">ALL</button>
+    <button class="pill" data-f="high" onclick="flt('high')">HIGH</button>
+    <button class="pill" data-f="medium" onclick="flt('medium')">MED</button>
+    <button class="pill" data-f="low" onclick="flt('low')">LOW</button>
+  </div>
+  <div class="tb-group" id="actorGroup">
+    <span class="tb-lbl">Actor</span>
+  </div>
+  <div class="tb-right">
+    <div class="tb-zoom">
+      <button class="tb-zbtn" onclick="zBy(-0.1)">−</button>
+      <span class="tb-zval" id="zv">100%</span>
+      <button class="tb-zbtn" onclick="zBy(0.1)">+</button>
+      <button class="tb-zbtn" onclick="zRst()">↺</button>
+    </div>
+    <button class="tb-export" onclick="expPNG()">↓ Export</button>
+    <button class="tb-risk" id="riskBtn" onclick="toggleRiskDrawer()" title="查看风险清单">
+      <span>⚠ Risks</span>
+      <span class="tb-risk-badge" id="riskBtnBadge">0</span>
+    </button>
+  </div>
+</nav>
+
+<div class="canvas-wrap">
+  <div class="canvas" id="cv"></div>
+  <svg class="csvg" id="csvg"></svg>
+</div>
+
+<div class="rpanel-scrim" id="rpanelScrim" onclick="toggleRiskDrawer()"></div>
+<aside class="rpanel" id="rpanel"></aside>
+<aside class="minimap" id="minimap"></aside>
+<aside class="legend" id="leg"></aside>
+<div class="emask" id="em"><div class="emsg">Generating…</div></div>
+
+<script>
+const D = {"title": "手势小狗三玩法大厅 · 产品架构图", "subtitle": "Phase 2 · Web-only 默认全解锁 · 玩法内教学 + 温和无限计分 · 2026-08-14", "status_mode": "priority", "target_surface": "web-only", "page_shape_gate": {"status": "confirmed", "confirmed_at": "2026-08-14", "decision": "家长低密度任务流 + 儿童输入就绪 + 单屏三玩法大厅 + 玩法内安全教学 + 全屏游戏画布/浮动小教练 + 单局成绩卡", "single_viewport_rule": "所有产品 screen 在支持的 Web 视口内完整呈现，不产生页面级横向或纵向滚动。"}, "pm_review_slice": {"status": "confirmed", "本阶段关键决策": ["三个入口本质是三种默认全解锁玩法；产品内部共享 Session/Safety/Score/Coach，并分别装载 command_runner、hand_follow_dodge、auto_bounce_climb。", "全局只确认输入就绪，三种控制关系分别在玩法内 3–5 秒安全段教学；PoseTransitionEvent 与含掌心 X/Y 的 HandTrackingFrame 继续作为双通道输入。", "三种玩法采用温和无限计分：每 20 秒分段提速、最多约 1.6 倍，每局 3 颗勇气心，第 3 次失误结算；每种玩法只保存设备内匿名 Top 5。", "Target Surface 继续为 web-only，并保留单视口页面形态 Gate。"], "被放弃的方案": ["不继续用一个参数化跑酷运行时承载三个只换障碍的同构关卡。", "不把经典 Flappy Bird 的高频拍动、重力坠落或一次碰撞即死放进 5 岁儿童主路径。", "不为玩法差异增加未经儿童验证的必需新手型。", "不做顺序锁关、固定关长、账号、昵称、联网公开榜或跨设备同步。"], "需要 PM 确认的问题": ["已确认：用户确认三个入口默认全部解锁、本质为玩法选择，并继续保持 web-only。", "已确认：教学下沉到玩法内，玩法内部采用递进速度、分数和排行榜逻辑；排行榜收敛为设备内个人 Top 5。"], "不需要 PM 审查的执行细节": ["架构图视觉样式、缩放、搜索、mini-map、风险筛选和导出控件。", "模块卡 entities/metrics 的展示顺序与连接线绘制细节。"], "进入下一阶段的条件": "已满足架构确认条件；下游重推核心玩法功能规格、输入闭环、原型规格、HTML 与三类运行时专项 QA。"}, "layers": [{"name": "用户触达与单屏页面形态", "modules": [{"name": "家长设置壳", "description": "用低密度分步任务流处理隐私说明、输入模式、摄像头授权、取景检查与安全退出。", "priority": "P0", "priority_reason": "家长必须先建立摄像头信任并准备可降级输入，孩子才能安全进入玩法大厅。", "risk": "medium", "configurable": true, "actors": ["admin", "c_user"], "entities": ["设备设置", "输入模式选择", "授权状态", "取景检查结果"], "metrics": ["设置完成率", "60 秒内完成率", "权限拒绝后可玩率"], "span": 1, "submodules": [{"name": "隐私说明", "description": "请求权限前说明本机处理、不录制、不上传。"}, {"name": "模式选择", "description": "选择摄像头或直接进入键盘模式。"}, {"name": "授权与取景", "description": "检查权限、光线、手部可见范围与位置控制空间。"}, {"name": "家长控制", "description": "暂停、退出、停止摄像头和切换模式。"}], "sub_layout": "stack"}, {"name": "儿童输入就绪", "description": "全局只确认摄像头已看见手或键盘已可用；成功后的主操作为“开始游戏”，不在玩法大厅之前训练三套控制。", "priority": "P0", "priority_reason": "先解决输入是否可用，再由各玩法在自己的安全世界内教学，避免全局教程与玩法控制冲突。", "risk": "high", "configurable": true, "actors": ["c_user", "admin"], "entities": ["手部可见状态", "输入就绪结论", "开始游戏操作", "降级建议"], "metrics": ["输入就绪率", "就绪完成时长", "开始游戏点击率", "家长辅助率"], "span": 1, "submodules": [{"name": "手部就绪", "description": "看到任意可靠手部关键点即可确认输入通道可用。"}, {"name": "键盘就绪", "description": "键盘模式直接确认 Space 与方向键通道可用。"}, {"name": "开始游戏", "description": "就绪后直接进入三玩法大厅，不经过全局成绩或动作教学页。"}, {"name": "友好降级", "description": "识别困难时建议键盘，不把结果描述为儿童失败。"}], "sub_layout": "stack"}, {"name": "三玩法大厅", "description": "三个大卡片分别表达玩法、控制方式与个人最好成绩，默认全部可选并可反复进入。", "priority": "P0", "priority_reason": "用户需要按兴趣选择玩法，而不是先完成一个玩法才能验证另一个；大厅同时承担差异说明和重玩入口。", "risk": "medium", "configurable": true, "actors": ["c_user", "admin"], "entities": ["玩法卡片", "玩法类型", "个人最好", "当前选择"], "metrics": ["玩法进入率", "各玩法重玩率", "切换玩法率", "大厅误触率"], "span": 1, "submodules": [{"name": "溪边跳跳", "description": "拳掌高跳的自动卷轴玩法；显示本玩法个人最好。"}, {"name": "萤火虫躲躲", "description": "掌心上下直接跟手的宽通道玩法；显示本玩法个人最好。"}, {"name": "树梢蹦蹦", "description": "自动弹跳并用掌心左右对准宽平台的攀升玩法；显示本玩法个人最好。"}, {"name": "默认全解锁", "description": "不使用关卡编号、锁态或“完成上一关”；每张卡都有开始操作。"}], "sub_layout": "flow"}, {"name": "儿童游戏画布", "description": "在同一个全屏 Web 舞台托管三类玩法，保持极简 HUD、玩法内安全教学、世界内反馈和浮动小型手势教练。", "priority": "P0", "priority_reason": "孩子需要在玩法切换时仍认得同一角色与交互语言，且所有核心反馈必须在角色与世界中可见。", "risk": "high", "configurable": false, "actors": ["c_user", "admin"], "entities": ["画布状态", "当前玩法", "当前角色", "本轮分数", "勇气心", "速度档", "暂停状态"], "metrics": ["首个互动时间", "输入到世界反馈延迟", "平均单局时长", "中途退出率"], "span": 1, "submodules": [{"name": "玩法舞台", "description": "按当前玩法装载对应运行时、世界对象和安全教学。"}, {"name": "极简 HUD", "description": "只显示分数、3 颗勇气心、速度档和安全暂停入口。"}, {"name": "世界内反馈", "description": "角色动作、跟手光标或云块先于文字做出响应。"}, {"name": "浮动小教练", "description": "相机与关键点不占固定侧栏，仅显示当前唯一操作。"}], "sub_layout": "grid", "sub_rows": [[0, 1], [2, 3]]}, {"name": "单局成绩页", "description": "第 3 次失误或主动结束后，用低密度庆祝卡展示本次分数、个人最好、设备内 Top 5 和重玩选择。", "priority": "P0", "priority_reason": "温和无限玩法需要自然停点和个人进步反馈，避免孩子把结束理解为羞辱性失败。", "risk": "medium", "configurable": true, "actors": ["c_user", "admin"], "entities": ["本次分数", "个人最好", "设备内 Top 5", "庆祝动画", "继续选择"], "metrics": ["成绩页到达率", "个人最好刷新率", "换玩法率", "重复游玩率"], "span": 1, "submodules": [{"name": "成果揭晓", "description": "展示本次分数与是否刷新个人最好。"}, {"name": "角色庆祝", "description": "当前角色与伙伴用轻量动画庆祝。"}, {"name": "个人 Top 5", "description": "只显示同一设备、同一种玩法的匿名历史分数。"}, {"name": "继续选择", "description": "优先再玩一次，也可返回玩法大厅。"}], "sub_layout": "stack"}]}, {"name": "共享玩法编排与儿童体验", "modules": [{"name": "会话编排 Session", "description": "编排设置、输入就绪、玩法大厅、玩法内教学、三类运行时与单局成绩，并在切换玩法时保留输入档案。", "priority": "P0", "priority_reason": "三类玩法只有共享一个会话状态源，输入切换、成绩结算与返回路径才不会分叉成死路。", "risk": "high", "configurable": false, "actors": ["c_user", "admin"], "entities": ["玩法会话", "当前阶段", "当前玩法", "输入档案", "退出原因"], "metrics": ["完整单局闭环率", "玩法切换成功率", "死路发生率", "恢复后状态一致率"], "span": 1, "submodules": [{"name": "主线状态机", "description": "设置 → 输入就绪 → 玩法大厅 → 玩法内教学 → 正式计分 → 单局成绩。"}, {"name": "运行时选择", "description": "按玩法卡装载 command_runner、hand_follow_dodge 或 auto_bounce_climb。"}, {"name": "输入模式切换", "description": "切换摄像头或键盘时不重建当前玩法进度。"}, {"name": "重玩与退出", "description": "重开当前玩法、返回大厅或安全退出并释放资源。"}], "sub_layout": "stack"}, {"name": "安全恢复 Safety", "description": "为三个运行时统一提供无手等待、3 颗勇气心、玩法化救援、短暂无敌、页面失焦、家长暂停与键盘接管。", "priority": "P0", "priority_reason": "连续跟手和离散动作的异常表现不同，但儿童必须获得一致、可预测、可解释且不丢既有分数的恢复体验。", "risk": "high", "configurable": true, "actors": ["c_user", "admin"], "entities": ["安全状态", "勇气心", "失误原因", "丢手宽限", "无敌窗口", "恢复检查点"], "metrics": ["安全暂停触发准确率", "失误反馈可感知率", "平均恢复时间", "误暂停率", "家长接管成功率"], "span": 1, "submodules": [{"name": "无手宽限", "description": "短暂丢手保持安全状态，持续丢手才冻结世界。"}, {"name": "勇气与救援", "description": "失误立即失去 1 颗勇气心、重置连续成功并触发弹开、托回、补垫或护盾。"}, {"name": "暂停与恢复", "description": "家长、失焦或异常暂停后用清晰倒计时继续。"}, {"name": "输入接管", "description": "键盘或家长辅助只替换输入来源，不改变本轮分数、勇气或速度档。"}], "sub_layout": "stack"}, {"name": "计分与个人榜 Score", "description": "跨三个玩法统一管理生存、收集、成功事件、速度阶梯、个人最好与设备内匿名 Top 5。", "priority": "P0", "priority_reason": "统一计分契约让三个不同运行时都能形成可解释的重玩循环，同时避免公开竞争和跨玩法不公平比较。", "risk": "medium", "configurable": true, "actors": ["c_user", "admin"], "entities": ["本轮分数", "生存时间", "成功事件", "连续成功", "速度档", "个人最好", "本机 Top 5"], "metrics": ["平均单局分数", "平均单局时长", "个人最好刷新率", "重复游玩率"], "span": 1, "submodules": [{"name": "标准得分事件", "description": "每秒生存、收集物、成功越障/完成一组分别产生可配置分数；失误不倒扣已得分。"}, {"name": "温和速度阶梯", "description": "正式计分后每 20 秒提升约 8%–12%，最高约 1.6 倍。"}, {"name": "个人最好", "description": "每种玩法独立比较本轮分数并更新个人最佳。"}, {"name": "设备内 Top 5", "description": "只在 localStorage 保存匿名分数，不采集姓名、不联网、不跨玩法。"}], "sub_layout": "flow"}, {"name": "儿童教练 Coach", "description": "把教学下沉到当前运行时：入场安全段只教一种控制，并协调图标、短语音、角色预演与世界反馈。", "priority": "P0", "priority_reason": "三种控制模型切换时最容易增加认知负担，必须用统一教练语言和世界内反馈降低解释成本。", "risk": "high", "configurable": true, "actors": ["c_user"], "entities": ["当前操作目标", "教练状态", "示范动画", "反馈事件", "柔和重试"], "metrics": ["首次指令理解率", "首次独立操作率", "重复提示率", "世界反馈感知率"], "span": 1, "submodules": [{"name": "单一目标", "description": "一个时刻只显示握拳/张掌、上下跟手或叠一朵云中的一个要求。"}, {"name": "玩法内示范", "description": "每次首次进入玩法先安全示范 3–5 秒；大厅不展示跨玩法操作流程。"}, {"name": "识别可见", "description": "用儿童语言显示看见手、准备好和做到了。"}, {"name": "世界先反馈", "description": "优先让角色、光标或云块响应，教练文字只补充。"}], "sub_layout": "grid", "sub_rows": [[0, 1], [2, 3]]}]}, {"name": "独立玩法运行时", "modules": [{"name": "动作指令运行时", "description": "command_runner · 溪边跳跳；用拳掌离散事件驱动即时高跳，以共享 worldSpeed 形成逐渐提速的可重复卷轴循环。", "priority": "P0", "priority_reason": "拳掌高跳是最直接的离散手势闭环；只有视觉卷轴、障碍、坑洞、跳跃与碰撞共享同一空间模型，动作时机才可学习。", "risk": "high", "configurable": true, "actors": ["c_user"], "entities": ["玩法定义", "worldSpeed", "障碍实例", "坑洞实例", "跳跃状态", "无敌状态"], "metrics": ["动作反馈延迟", "提前跳成功率", "坑洞反馈可见率", "平均单局时长", "速度档到达率"], "span": 1, "submodules": [{"name": "command_runner", "description": "消费 PoseTransitionEvent，不依赖连续位置流。"}, {"name": "拳掌高跳", "description": "Closed_Fist 准备，Open_Palm 立即进入约 1.2 秒的可读跳跃弧线。"}, {"name": "共享世界速度", "description": "背景、地面、障碍与坑洞都由同一 worldSpeed 位移；判定读取角色实际跳跃高度。"}, {"name": "坑洞救援", "description": "未越过坑洞时角色掉落、伙伴托回、勇气减一并获得约 1.2 秒无敌；第 3 次结束本轮。"}], "sub_layout": "flow"}, {"name": "跟手躲避运行时", "description": "hand_follow_dodge · 萤火虫躲躲；用掌心纵向位置直接控制角色穿过宽松间隙，并按速度阶梯持续组合通道。", "priority": "P0", "priority_reason": "连续跟手提供与动作关显著不同且直觉清晰的玩法，是多玩法价值的核心验证。", "risk": "high", "configurable": true, "actors": ["c_user"], "entities": ["跟手关定义", "掌心目标位置", "角色跟随位置", "间隙障碍", "护盾状态"], "metrics": ["跟手端到端延迟", "位置抖动幅度", "丢手恢复率", "宽间隙通过率"], "span": 1, "submodules": [{"name": "hand_follow_dodge", "description": "持续消费 HandTrackingFrame，手型 Unknown 时仍可跟随。"}, {"name": "纵向直接映射", "description": "角色 X 固定；运行时对 HandTrackingFrame 原始掌心 Y 应用 EMA、3.5% 死区和单帧最大 12% 限速后映射高度。"}, {"name": "安全教学", "description": "玩法前 5 秒为无障碍安全段，用世界反馈完成首次上/下跟手教学。"}, {"name": "护盾恢复", "description": "碰撞失去一颗勇气心、弹开并给短护盾；第 3 次失误结算本轮。"}], "sub_layout": "flow"}, {"name": "自动弹跳平台运行时", "description": "auto_bounce_climb · 树梢蹦蹦；角色自动弹跳，掌心 X 控制左右漂移，对准宽平台持续向上并累积高度成绩。", "priority": "P0", "priority_reason": "成熟的自动弹跳平台循环形成第三种清晰玩法，并把儿童任务收敛为单一横向连续控制。", "risk": "high", "configurable": true, "actors": ["c_user"], "entities": ["弹跳关定义", "滚动平台", "横向目标", "攀升高度", "安全云"], "metrics": ["横向跟手延迟", "平台落点率", "安全云触发率", "攀升高度", "平均单局时长"], "span": 1, "submodules": [{"name": "auto_bounce_climb", "description": "逐帧消费 HandTrackingFrame.palmCenterX；弹跳由运行时自动推进。"}, {"name": "横向直接映射", "description": "掌心左右移动控制角色漂移；运行时执行 EMA、死区与单帧限速。"}, {"name": "角色弹跳物理", "description": "维护角色世界 Y、竖直速度与重力；只在下降且横向重叠时落台，落台立即赋予下一次向上速度。"}, {"name": "向上镜头追随", "description": "角色达到画面上方阈值后 cameraY 单调上升；平台屏幕位置只由 platformWorldY-cameraY 推导，并在高处持续生成、低处自然回收。"}, {"name": "容错落台", "description": "跌出镜头下沿时由安全云托到最近可见平台并失去一颗勇气心；不坠落即死，第 3 次失误结算本轮。"}], "sub_layout": "flow"}]}, {"name": "输入与本地基础能力", "modules": [{"name": "双通道输入适配", "description": "把摄像头、键盘和家长辅助统一转换为离散 PoseTransitionEvent 与连续 HandTrackingFrame。", "priority": "P0", "priority_reason": "三类运行时依赖两种输入语义，必须在玩法外完成路由、去重、降级和来源冲突处理。", "risk": "high", "configurable": true, "actors": ["c_user", "admin"], "entities": ["PoseTransitionEvent", "HandTrackingFrame", "输入来源", "路由规则", "冷却状态"], "metrics": ["输入端到端延迟", "重复触发率", "位置帧有效率", "模式切换成功率"], "span": 1, "submodules": [{"name": "离散姿态通道", "description": "派发稳定的握拳、张掌及复位转换事件。"}, {"name": "连续位置通道", "description": "逐帧派发原始归一化掌心 X/Y、置信度、入镜状态和时间戳，不在适配层做玩法平滑。"}, {"name": "按键等价输入", "description": "为空格动作、上下跟手和左右跟手提供对应通关路径。"}, {"name": "路由与去重", "description": "只把当前玩法需要的通道交给运行时并抑制重复输入。"}], "sub_layout": "stack"}, {"name": "手部观测与稳定化", "description": "从本机视频帧输出拳掌转换、原始归一化掌心 X/Y、手部存在与低置信状态。", "priority": "P0", "priority_reason": "离散分类准确率和连续位置稳定性共同决定三种玩法能否真正由儿童控制。", "risk": "high", "configurable": true, "actors": ["c_user"], "entities": ["手部关键点", "候选姿态", "稳定姿态", "原始掌心位置", "追踪置信度"], "metrics": ["拳掌识别成功率", "掌心位置抖动", "漏手率", "观测到反馈延迟"], "span": 1, "submodules": [{"name": "关键点观测", "description": "输出 21 点骨架、掌心中心与手部可见范围。"}, {"name": "拳掌稳定", "description": "连续帧确认 Closed_Fist 与 Open_Palm 的转换。"}, {"name": "原始位置观测", "description": "为 HandTrackingFrame 提供未经玩法平滑的原始归一化掌心 X/Y；EMA、死区与限速由 L2/L3 运行时负责。"}, {"name": "低置信处理", "description": "不暴露技术数字，交给 Safety 做宽限或安全暂停。"}], "sub_layout": "stack"}, {"name": "摄像头与隐私", "description": "仅在浏览器本机获取视频帧，持续显示摄像头状态并支持一键停止。", "priority": "P0", "priority_reason": "无可信的授权、停止和本机处理边界，家长无法放心启用核心输入。", "risk": "high", "configurable": false, "actors": ["admin", "c_user", "external_system"], "entities": ["摄像头会话", "权限状态", "视频流状态", "隐私告知记录"], "metrics": ["权限请求成功率", "摄像头启动时间", "异常停止恢复率", "视频上传事件数为零"], "span": 1, "submodules": [{"name": "权限请求", "description": "在家长知情说明后主动触发。"}, {"name": "本机帧处理", "description": "不录制、不上传、不建立云端视频档案。"}, {"name": "可见状态", "description": "始终显示摄像头开启、寻找手或安全暂停。"}, {"name": "安全停止", "description": "退出、切换模式或异常时释放视频流。"}], "sub_layout": "stack"}, {"name": "本地会话状态", "description": "只在设备内保存设置、输入就绪、各玩法教学状态、个人最好、各玩法 Top 5 与必要诊断计数。", "priority": "P0", "priority_reason": "多运行时切换与输入接管需要唯一状态源，但儿童 MVP 不需要账号或云同步。", "risk": "medium", "configurable": false, "actors": ["c_user", "admin"], "entities": ["本地设置", "输入就绪摘要", "玩法教学状态", "个人最好", "玩法 Top 5", "当前运行时快照"], "metrics": ["状态恢复成功率", "跨运行时一致率", "异常状态清理率", "云端个人数据记录数为零"], "span": 1, "submodules": [{"name": "设置记忆", "description": "保留输入模式与非敏感偏好。"}, {"name": "成绩与教学", "description": "按玩法保存个人最好、匿名 Top 5 和是否看过安全教学。"}, {"name": "输入摘要", "description": "保存手部/键盘就绪和降级选择，不把任何玩法控制作为大厅解锁门槛。"}, {"name": "安全清理", "description": "退出时清理视频与短期运行状态。"}], "sub_layout": "stack"}, {"name": "内容与素材配置", "description": "统一管理原创角色、三种玩法定义、世界速度阶梯、障碍节奏、得分事件、儿童提示与授权边界。", "priority": "P0", "priority_reason": "三个独立运行时需要各自配置，同时必须共享可追踪的原创角色和内容授权规则。", "risk": "high", "configurable": true, "actors": ["admin"], "entities": ["玩法定义", "运行时配置", "速度阶梯", "得分规则", "原创角色素材", "授权标记"], "metrics": ["配置校验通过率", "提示内容完整率", "未授权素材数为零", "参数回退成功率"], "span": 1, "submodules": [{"name": "三玩法定义", "description": "绑定 command_runner、hand_follow_dodge 与 auto_bounce_climb，默认全部可选。"}, {"name": "玩法参数", "description": "分别配置初始速度、20 秒阶梯、上限、障碍窗口、跟手间隙、平台宽度与平滑宽限。"}, {"name": "儿童提示内容", "description": "管理图标、简短中文语音、示范与庆祝文案。"}, {"name": "授权边界", "description": "只使用原创占位角色；公开发行前单独处理 IP 授权。"}], "sub_layout": "grid", "sub_rows": [[0, 1], [2, 3]]}]}], "connections": [{"from": "家长设置壳", "to": "会话编排 Session", "label": "模式与授权结果", "type": "data_flow"}, {"from": "儿童输入就绪", "to": "会话编排 Session", "label": "输入档案与降级建议", "type": "data_flow"}, {"from": "三玩法大厅", "to": "会话编排 Session", "label": "当前玩法选择", "type": "data_flow"}, {"from": "会话编排 Session", "to": "儿童游戏画布", "label": "装载玩法与页面状态", "type": "call"}, {"from": "会话编排 Session", "to": "动作指令运行时", "label": "装载 command_runner", "type": "call"}, {"from": "会话编排 Session", "to": "跟手躲避运行时", "label": "装载 hand_follow_dodge", "type": "call"}, {"from": "会话编排 Session", "to": "自动弹跳平台运行时", "label": "装载 auto_bounce_climb", "type": "call"}, {"from": "安全恢复 Safety", "to": "动作指令运行时", "label": "暂停、保护与恢复", "type": "call"}, {"from": "安全恢复 Safety", "to": "跟手躲避运行时", "label": "丢手宽限与护盾", "type": "call"}, {"from": "安全恢复 Safety", "to": "自动弹跳平台运行时", "label": "安全云与继续", "type": "call"}, {"from": "动作指令运行时", "to": "儿童教练 Coach", "label": "离散动作状态", "type": "data_flow"}, {"from": "跟手躲避运行时", "to": "儿童教练 Coach", "label": "跟手与间隙状态", "type": "data_flow"}, {"from": "自动弹跳平台运行时", "to": "儿童教练 Coach", "label": "横向跟手与落台状态", "type": "data_flow"}, {"from": "儿童教练 Coach", "to": "儿童游戏画布", "label": "单一提示与世界反馈", "type": "call"}, {"from": "动作指令运行时", "to": "计分与个人榜 Score", "label": "生存、越障与收集事件", "type": "data_flow"}, {"from": "跟手躲避运行时", "to": "计分与个人榜 Score", "label": "生存、过门与收集事件", "type": "data_flow"}, {"from": "自动弹跳平台运行时", "to": "计分与个人榜 Score", "label": "生存、落台与高度事件", "type": "data_flow"}, {"from": "计分与个人榜 Score", "to": "三玩法大厅", "label": "各玩法个人最好", "type": "data_flow"}, {"from": "计分与个人榜 Score", "to": "单局成绩页", "label": "本次分数与 Top 5", "type": "data_flow"}, {"from": "手部观测与稳定化", "to": "双通道输入适配", "label": "姿态事件与位置帧", "type": "data_flow"}, {"from": "双通道输入适配", "to": "动作指令运行时", "label": "PoseTransitionEvent", "type": "data_flow"}, {"from": "双通道输入适配", "to": "跟手躲避运行时", "label": "HandTrackingFrame", "type": "data_flow"}, {"from": "双通道输入适配", "to": "自动弹跳平台运行时", "label": "HandTrackingFrame.palmCenterX", "type": "data_flow"}, {"from": "摄像头与隐私", "to": "手部观测与稳定化", "label": "本机视频帧", "type": "dependency"}, {"from": "本地会话状态", "to": "会话编排 Session", "label": "设置、教学与成绩", "type": "dependency"}, {"from": "本地会话状态", "to": "计分与个人榜 Score", "label": "个人最好与 Top 5", "type": "dependency"}, {"from": "内容与素材配置", "to": "会话编排 Session", "label": "三玩法定义", "type": "dependency"}, {"from": "内容与素材配置", "to": "动作指令运行时", "label": "L1 玩法配置", "type": "dependency"}, {"from": "内容与素材配置", "to": "跟手躲避运行时", "label": "L2 玩法配置", "type": "dependency"}, {"from": "内容与素材配置", "to": "自动弹跳平台运行时", "label": "L3 玩法配置", "type": "dependency"}], "risks": [{"module": "家长设置壳", "level": "medium", "type": "权限与角色边界", "description": "家长设置若侵入儿童画布，孩子可能误触摄像头、输入模式或退出。", "suggestion": "将设置集中在家长层，儿童层只保留受保护的暂停与求助入口。"}, {"module": "儿童输入就绪", "level": "high", "type": "儿童可用性风险", "description": "若在全局页同时训练拳掌、上下跟手与左右跟手，会增加 5 岁儿童认知负担，并与玩法内控制产生冲突。", "suggestion": "全局只确认看见手或键盘可用，主操作固定为“开始游戏”；控制教学全部下沉到当前玩法。"}, {"module": "三玩法大厅", "level": "medium", "type": "选择理解风险", "description": "三个入口若保留关卡编号、锁态或前后关系，会让孩子误以为必须按顺序完成。", "suggestion": "三张同权重可点击卡默认全解锁，分别显示控制图形、个人最好和开始操作。"}, {"module": "儿童游戏画布", "level": "high", "type": "认知负荷风险", "description": "三种控制模型、收集、障碍与相机反馈若同时竞争注意力，会让低龄儿童迷失。", "suggestion": "保持单视口 full-bleed 舞台，一个时刻一个目标，世界反馈先于教练文字。"}, {"module": "单局成绩页", "level": "medium", "type": "竞争压力风险", "description": "公开名次、昵称或跨玩法比较会把低龄体验变成外部竞争，并扩大隐私边界。", "suggestion": "只展示本次分数、同玩法个人最好与设备内匿名 Top 5；主操作为再玩一次，次操作为换玩法。"}, {"module": "会话编排 Session", "level": "high", "type": "状态机复杂", "description": "三运行时装载、输入切换、暂停、重玩和返回大厅会产生跨玩法状态分支。", "suggestion": "Session 作为唯一会话状态源，运行时只返回标准分数、速度、失误和安全事件。"}, {"module": "安全恢复 Safety", "level": "high", "type": "跨玩法一致性风险", "description": "离散动作、纵向跟手和横向自动弹跳对丢手与碰撞的处理不同，容易形成不可预测恢复。", "suggestion": "统一安全契约，再由每个运行时实现弹开、护盾或安全云等玩法化恢复。"}, {"module": "计分与个人榜 Score", "level": "medium", "type": "激励与隐私风险", "description": "计分若倒扣既有成果或公开昵称/名次，会放大识别误差、竞争压力和儿童隐私风险。", "suggestion": "失误只失去勇气并重置连续成功，不倒扣已得分；Top 5 按玩法匿名保存在本机。"}, {"module": "儿童教练 Coach", "level": "high", "type": "认知迁移风险", "description": "拳掌动作、上下跟手和左右对准平台需要不同指令，若教练语言不统一会增加切换成本。", "suggestion": "每段仅一次上下文示范，持续复用看见手、准备好、做到了三态语言。"}, {"module": "动作指令运行时", "level": "high", "type": "物理语义风险", "description": "若背景、地面、坑洞、障碍和跳跃使用不同速度或时间窗，提前跳也可能落坑，且判定无法从画面学习。", "suggestion": "所有世界对象使用同一 worldSpeed；碰撞读取实际跳跃高度；落坑必须触发掉落、托回、勇气减少和 1.2 秒无敌。"}, {"module": "跟手躲避运行时", "level": "high", "type": "连续控制风险", "description": "掌心位置抖动、镜像方向和短暂遮挡会直接放大为角色晃动或误撞。", "suggestion": "只做纵向映射，加入死区、限速、短丢手保持和大间隙护盾。"}, {"module": "自动弹跳平台运行时", "level": "high", "type": "连续控制与物理风险", "description": "自动弹跳相位、横向跟手、平台滚动和落台判定若不同步，会出现画面落台但系统判失败。", "suggestion": "用同一物理时钟驱动角色弹跳、平台位置与碰撞；采用宽平台、安全云和判定后继续离场。"}, {"module": "双通道输入适配", "level": "high", "type": "模块耦合度高", "description": "离散事件和连续位置帧若同时进入错误运行时，可能造成重复动作或角色争夺控制。", "suggestion": "按当前 runtime 显式订阅所需通道，所有事件携带来源、置信度与时间戳。"}, {"module": "手部观测与稳定化", "level": "high", "type": "识别准确性风险", "description": "家庭光线、左右手、距离与遮挡同时影响姿态分类和原始掌心位置质量。", "suggestion": "观测层只输出原始 X/Y 与追踪质量；拳掌稳定由输入层确认，位置 EMA、死区与限速由 L2/L3 运行时统一处理。"}, {"module": "摄像头与隐私", "level": "high", "type": "隐私与外部依赖", "description": "浏览器权限和家庭视频边界直接影响信任，权限拒绝也会阻断主输入。", "suggestion": "授权前明示本机处理、不录制、不上传，并保证拒绝后键盘仍可进入全部玩法。"}, {"module": "本地会话状态", "level": "medium", "type": "数据一致性风险", "description": "跨运行时重玩、输入接管和成绩写入可能留下与画面不一致的教学或 Top 5 状态。", "suggestion": "按玩法定义唯一成绩键和教学键；模式切换只替换输入来源，不重建本轮分数。"}, {"module": "内容与素材配置", "level": "high", "type": "IP 授权风险", "description": "参考成熟玩法不代表可以复制其美术、名称、关卡布局或受保护角色素材。", "suggestion": "只继承抽象控制机制，保持原创角色、云朵、障碍、声音与文案，并记录素材来源。"}]};
+const M = D.status_mode || 'priority';
+
+const RM = {};
+(D.risks||[]).forEach(r => { RM[r.module] = r; });
+
+/* Earth-tone layer accents */
+const LA = [
+  { c:'#5F6B4E', n:'olive' },
+  { c:'#B86B4A', n:'terra' },
+  { c:'#627084', n:'slate' },
+  { c:'#C49A3C', n:'amber' },
+  { c:'#7A9E7E', n:'sage'  },
+  { c:'#8B6B7E', n:'plum'  },
+];
+
+/* Actor meta */
+const ACT = {
+  c_user:          { letter:'C', cls:'actor-c', label:'C 端用户' },
+  b_user:          { letter:'B', cls:'actor-b', label:'B 端用户' },
+  operator:        { letter:'O', cls:'actor-o', label:'运营' },
+  customer_service:{ letter:'S', cls:'actor-s', label:'客服' },
+  admin:           { letter:'A', cls:'actor-a', label:'管理员' },
+  external_system: { letter:'X', cls:'actor-x', label:'外部系统' }
+};
+
+/* Reverse look-ups */
+const upMap = {}, downMap = {};
+(D.connections||[]).forEach(cn => {
+  (downMap[cn.from] = downMap[cn.from] || []).push(cn.to);
+  (upMap[cn.to] = upMap[cn.to] || []).push(cn.from);
+});
+
+let sc = 1;
+let activeActor = null;
+let focusedName = null;
+let minimapScale = 1;
+
+function mc() {
+  let m=0;
+  D.layers.forEach(l => {
+    let c=0;
+    l.modules.forEach(x => c+=(x.span||1));
+    if(c>m) m=c;
+  });
+  return Math.max(m,1);
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+function renderHero() {
+  const el = document.getElementById('hero');
+  const tL = D.layers.length;
+  const tM = D.layers.reduce((s,l)=>s+l.modules.length, 0);
+  const tC = (D.connections||[]).length;
+  const rs = D.risks||[];
+  const hR = rs.filter(r => r.level === 'high');
+  const mR = rs.filter(r => r.level === 'medium');
+
+  let chips = '';
+  hR.forEach(r => {
+    chips += `<span class="hero-chip high" onclick="scrollToCard('${r.module.replace(/'/g,"\\'")}')">${r.module}</span>`;
+  });
+  const MAX_MED = 8;
+  mR.slice(0, MAX_MED).forEach(r => {
+    chips += `<span class="hero-chip med" onclick="scrollToCard('${r.module.replace(/'/g,"\\'")}')">${r.module}</span>`;
+  });
+  if (mR.length > MAX_MED) {
+    chips += `<span class="hero-chip more">+${mR.length - MAX_MED} more</span>`;
+  }
+
+  const subtitleHtml = D.subtitle
+    ? `<div class="hero-subtitle">${D.subtitle}</div>`
+    : '';
+
+  el.innerHTML = `<div class="hero-inner">
+    <div class="hero-brow">Product Architecture</div>
+    <h1 class="hero-title">${D.title || '产品架构图'}</h1>
+    ${subtitleHtml}
+    <hr class="hero-rule">
+    <div class="hero-metrics">
+      <div class="hero-metric"><div class="hero-metric-val">${tL}</div><div class="hero-metric-lbl">Layers</div></div>
+      <div class="hero-metric"><div class="hero-metric-val">${tM}</div><div class="hero-metric-lbl">Modules</div></div>
+      <div class="hero-metric"><div class="hero-metric-val">${tC}</div><div class="hero-metric-lbl">Connections</div></div>
+      <div class="hero-metric"><div class="hero-metric-val ${hR.length?'warn':''}">${rs.length}</div><div class="hero-metric-lbl">Risks</div></div>
+    </div>
+    ${chips ? `<div class="hero-chips">${chips}</div>` : ''}
+  </div>`;
+}
+
+/* =========================================================
+   CANVAS
+   ========================================================= */
+function render() {
+  const cv = document.getElementById('cv');
+  cv.innerHTML = '';
+  const cols = mc();
+  let ci = 0;
+
+  D.layers.forEach((layer,i) => {
+    const a = LA[i%LA.length];
+    const el = document.createElement('div');
+    el.className = 'layer';
+    el.style.borderLeftColor = a.c;
+    el.style.animationDelay = (0.05 + i*0.08) + 's';
+
+    const head = document.createElement('div');
+    head.className = 'layer-head';
+    head.innerHTML = `<span class="layer-name">${escapeHTML(layer.name)}</span>
+      <span class="layer-tag">${layer.modules.length} modules</span>`;
+    el.appendChild(head);
+
+    const g = document.createElement('div');
+    g.className = 'mgrid';
+    g.style.setProperty('--cols', cols);
+
+    layer.modules.forEach(mod => {
+      const card = mkCard(mod, ci++);
+      card.style.gridColumn = 'span ' + (mod.span || 1);
+      g.appendChild(card);
+    });
+
+    el.appendChild(g);
+    cv.appendChild(el);
+  });
+}
+
+function escapeHTML(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+}
+
+function mkCard(mod, idx) {
+  const c = document.createElement('div');
+  c.className = 'card';
+  c.dataset.name = mod.name;
+  c.dataset.actors = (mod.actors||[]).join(',');
+  c.style.animationDelay = (0.1 + idx*0.035) + 's';
+
+  const risk = mod.risk || (RM[mod.name] ? RM[mod.name].level : null);
+  if (risk) c.classList.add('risk-' + risk);
+
+  /* top row: icon + name + gear + badge */
+  const top = document.createElement('div');
+  top.className = 'card-top';
+
+  if (risk) {
+    const ico = document.createElement('span');
+    ico.className = 'card-icon';
+    ico.textContent = risk === 'high' ? '⚠' : risk === 'medium' ? '◆' : 'ℹ';
+    ico.style.color = risk === 'high' ? 'var(--rH)' : risk === 'medium' ? 'var(--rM)' : 'var(--rL)';
+    top.appendChild(ico);
+  }
+
+  const nm = document.createElement('span');
+  nm.className = 'card-name';
+  nm.textContent = mod.name;
+  top.appendChild(nm);
+
+  if (mod.configurable) {
+    const gear = document.createElement('span');
+    gear.className = 'card-gear';
+    gear.textContent = '⚙';
+    gear.title = '运营可配置策略位';
+    top.appendChild(gear);
+  }
+
+  if (M === 'priority' && mod.priority) {
+    const b = document.createElement('span');
+    b.className = 'badge badge-' + mod.priority.toLowerCase();
+    b.textContent = mod.priority;
+    top.appendChild(b);
+  } else if (M === 'status' && mod.status) {
+    const b = document.createElement('span');
+    b.className = 'badge badge-' + mod.status;
+    const lb = {stable:'STABLE', developing:'DEV', planned:'PLAN', deprecated:'DEP'};
+    b.textContent = lb[mod.status] || mod.status;
+    top.appendChild(b);
+  }
+
+  c.appendChild(top);
+
+  /* description */
+  if (mod.description) {
+    const d = document.createElement('div');
+    d.className = 'card-desc';
+    d.textContent = mod.description;
+    c.appendChild(d);
+  }
+
+  /* priority reason */
+  if (M === 'priority' && mod.priority_reason) {
+    const r = document.createElement('div');
+    r.className = 'reason';
+    r.textContent = mod.priority_reason;
+    c.appendChild(r);
+  }
+
+  /* entities */
+  if (mod.entities && mod.entities.length) {
+    const ib = document.createElement('div');
+    ib.className = 'info-block';
+    let chips = '';
+    mod.entities.forEach(e => chips += `<span class="info-chip">${escapeHTML(e)}</span>`);
+    ib.innerHTML = `<div class="info-label">实体</div><div class="info-chips">${chips}</div>`;
+    c.appendChild(ib);
+  }
+
+  /* metrics */
+  if (mod.metrics && mod.metrics.length) {
+    const ib = document.createElement('div');
+    ib.className = 'info-block';
+    let chips = '';
+    mod.metrics.forEach(m => chips += `<span class="info-chip m">${escapeHTML(m)}</span>`);
+    ib.innerHTML = `<div class="info-label">指标</div><div class="info-chips">${chips}</div>`;
+    c.appendChild(ib);
+  }
+
+  /* actors */
+  if (mod.actors && mod.actors.length) {
+    const ib = document.createElement('div');
+    ib.className = 'info-block';
+    const actorsWrap = document.createElement('div');
+    actorsWrap.className = 'actors';
+    mod.actors.forEach(a => {
+      const cfg = ACT[a];
+      if (!cfg) return;
+      const chip = document.createElement('span');
+      chip.className = 'actor-chip ' + cfg.cls;
+      chip.textContent = cfg.letter;
+      chip.title = cfg.label;
+      actorsWrap.appendChild(chip);
+    });
+    ib.innerHTML = `<div class="info-label">角色</div>`;
+    ib.appendChild(actorsWrap);
+    c.appendChild(ib);
+  }
+
+  /* submodules */
+  if (mod.submodules && mod.submodules.length) {
+    const area = document.createElement('div');
+    area.className = 'subs';
+    const lt = mod.sub_layout || 'flow';
+
+    if (lt === 'grid' && mod.sub_rows) {
+      const w = document.createElement('div');
+      w.className = 'subs-grid';
+      mod.sub_rows.forEach(idxs => {
+        const row = document.createElement('div');
+        row.className = 'subs-grid-row';
+        idxs.forEach(i => { if (mod.submodules[i]) row.appendChild(mkSub(mod.submodules[i])); });
+        w.appendChild(row);
+      });
+      area.appendChild(w);
+    } else {
+      const w = document.createElement('div');
+      w.className = 'subs-' + lt;
+      mod.submodules.forEach(s => w.appendChild(mkSub(s)));
+      area.appendChild(w);
+    }
+    c.appendChild(area);
+  }
+
+  /* inline risk box */
+  const ri = RM[mod.name];
+  if (ri) {
+    const box = document.createElement('div');
+    const cls = ri.level === 'high' ? 'rH' : ri.level === 'medium' ? 'rM' : 'rL';
+    box.className = 'rbox ' + cls;
+    const ll = {high:'⚠ HIGH RISK', medium:'◆ MEDIUM', low:'ℹ LOW'};
+    box.innerHTML = `<div class="rt">${ll[ri.level]||''} · ${escapeHTML(ri.type||'')}</div>`
+      + `<div class="rd">${escapeHTML(ri.description||'')}</div>`
+      + (ri.suggestion ? `<div class="rs">${escapeHTML(ri.suggestion)}</div>` : '');
+    c.appendChild(box);
+  }
+
+  /* click to focus */
+  c.addEventListener('click', (e) => {
+    if (e.target.closest('.sub, .actor-chip')) return;
+    toggleFocus(mod.name);
+  });
+
+  return c;
+}
+
+function mkSub(s) {
+  const el = document.createElement('div');
+  el.className = 'sub';
+  const desc = s.description ? `<div class="sub-desc">${escapeHTML(s.description)}</div>` : '';
+  el.innerHTML = `<div class="sub-name">${escapeHTML(s.name)}</div>${desc}`;
+  return el;
+}
+
+/* =========================================================
+   CONNECTIONS
+   ========================================================= */
+function drawC() {
+  const svg = document.getElementById('csvg');
+  const cv = document.getElementById('cv');
+  const wrap = document.querySelector('.canvas-wrap');
+  const wR = wrap.getBoundingClientRect();
+  const cvR = cv.getBoundingClientRect();
+
+  const dH = Math.max(cv.scrollHeight * sc + 100, wR.height);
+  const dW = Math.max(document.body.scrollWidth, cvR.width);
+
+  svg.setAttribute('width', dW);
+  svg.setAttribute('height', dH);
+  svg.style.width = dW + 'px';
+  svg.style.height = dH + 'px';
+  svg.innerHTML = '';
+
+  if (!D.connections || !D.connections.length) return;
+
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  ['dep','flow','call'].forEach(t => {
+    const mk = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+    mk.setAttribute('id', 'a-'+t);
+    mk.setAttribute('markerWidth', '8');
+    mk.setAttribute('markerHeight', '6');
+    mk.setAttribute('refX', '8');
+    mk.setAttribute('refY', '3');
+    mk.setAttribute('orient', 'auto');
+    const pg = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    pg.setAttribute('points', '0 0, 8 3, 0 6');
+    pg.setAttribute('class', 'ca ' + t);
+    mk.appendChild(pg);
+    defs.appendChild(mk);
+  });
+  svg.appendChild(defs);
+
+  const tm = {dependency:'dep', data_flow:'flow', call:'call'};
+  const wrapRect = wrap.getBoundingClientRect();
+
+  D.connections.forEach(cn => {
+    const fe = document.querySelector('.card[data-name="' + CSS.escape(cn.from) + '"]');
+    const te = document.querySelector('.card[data-name="' + CSS.escape(cn.to) + '"]');
+    if (!fe || !te) return;
+
+    const fR = fe.getBoundingClientRect();
+    const tR = te.getBoundingClientRect();
+
+    const x1 = fR.left + fR.width/2 - wrapRect.left;
+    const y1 = fR.bottom - wrapRect.top;
+    const x2 = tR.left + tR.width/2 - wrapRect.left;
+    const y2 = tR.top - wrapRect.top;
+    const my = (y1 + y2) / 2;
+    const ct = tm[cn.type || 'dependency'] || 'dep';
+
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', `M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`);
+    p.setAttribute('class', 'cp ' + ct);
+    p.dataset.from = cn.from;
+    p.dataset.to = cn.to;
+    p.setAttribute('marker-end', 'url(#a-' + ct + ')');
+    svg.appendChild(p);
+
+    if (cn.label) {
+      const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      txt.setAttribute('x', (x1 + x2) / 2);
+      txt.setAttribute('y', my - 6);
+      txt.setAttribute('class', 'ct');
+      txt.setAttribute('text-anchor', 'middle');
+      txt.dataset.from = cn.from;
+      txt.dataset.to = cn.to;
+      txt.textContent = cn.label;
+      svg.appendChild(txt);
+    }
+  });
+
+  if (focusedName) applyFocusClasses();
+}
+
+/* =========================================================
+   FOCUS MODE
+   ========================================================= */
+function toggleFocus(name) {
+  if (focusedName === name) {
+    clearFocus();
+  } else {
+    focusedName = name;
+    document.body.classList.add('focus-mode');
+    applyFocusClasses();
+  }
+}
+
+function clearFocus() {
+  focusedName = null;
+  document.body.classList.remove('focus-mode');
+  document.querySelectorAll('.card').forEach(el => {
+    el.classList.remove('focused','linked-up','linked-down');
+  });
+  document.querySelectorAll('.cp, .ct').forEach(el => el.classList.remove('active'));
+}
+
+function applyFocusClasses() {
+  document.querySelectorAll('.card').forEach(el => {
+    el.classList.remove('focused','linked-up','linked-down');
+  });
+  document.querySelectorAll('.cp, .ct').forEach(el => el.classList.remove('active'));
+
+  if (!focusedName) return;
+
+  const ups = (upMap[focusedName] || []);
+  const downs = (downMap[focusedName] || []);
+
+  document.querySelectorAll('.card').forEach(el => {
+    const n = el.dataset.name;
+    if (n === focusedName) el.classList.add('focused');
+    else if (ups.includes(n)) el.classList.add('linked-up');
+    else if (downs.includes(n)) el.classList.add('linked-down');
+  });
+
+  document.querySelectorAll('.cp, .ct').forEach(el => {
+    if (el.dataset.from === focusedName || el.dataset.to === focusedName) {
+      el.classList.add('active');
+    }
+  });
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const drawer = document.getElementById('rpanel');
+    if (drawer && drawer.classList.contains('show')) {
+      toggleRiskDrawer();
+      return;
+    }
+    if (focusedName) clearFocus();
+  }
+});
+
+function scrollToCard(name) {
+  const el = document.querySelector('.card[data-name="' + CSS.escape(name) + '"]');
+  if (!el) return;
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  el.classList.add('sm');
+  setTimeout(() => el.classList.remove('sm'), 3000);
+}
+
+/* =========================================================
+   ZOOM
+   ========================================================= */
+function aZ() {
+  document.getElementById('cv').style.transform = 'scale(' + sc + ')';
+  document.getElementById('zv').textContent = Math.round(sc * 100) + '%';
+  requestAnimationFrame(() => { drawC(); updateMinimap(); });
+}
+
+function zBy(d) { sc = Math.max(0.3, Math.min(2, sc + d)); aZ(); }
+function zRst() { sc = 1; aZ(); window.scrollTo({top:0, behavior:'smooth'}); }
+
+window.addEventListener('wheel', e => {
+  if (e.ctrlKey || e.metaKey) {
+    e.preventDefault();
+    zBy(e.deltaY > 0 ? -0.05 : 0.05);
+  }
+}, {passive:false});
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+document.getElementById('si').addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  let found = false;
+  document.querySelectorAll('.card').forEach(el => {
+    el.classList.remove('sm', 'sd');
+    if (q && el.dataset.name.toLowerCase().includes(q)) {
+      el.classList.add('sm');
+      if (!found) {
+        el.scrollIntoView({behavior:'smooth', block:'center'});
+        found = true;
+      }
+    } else if (q) {
+      el.classList.add('sd');
+    }
+  });
+});
+
+/* =========================================================
+   RISK FILTER
+   ========================================================= */
+function flt(lv) {
+  document.querySelectorAll('.tb-group [data-f]').forEach(b => {
+    b.className = 'pill';
+    if (b.dataset.f === lv) {
+      if (lv === 'all') b.classList.add('on');
+      else if (lv === 'high') b.classList.add('on-h');
+      else if (lv === 'medium') b.classList.add('on-m');
+      else b.classList.add('on-l');
+    }
+  });
+  document.querySelectorAll('.card').forEach(el => {
+    el.classList.remove('fd');
+    if (lv === 'all') return;
+    const r = RM[el.dataset.name];
+    if (!r || r.level !== lv) el.classList.add('fd');
+  });
+}
+
+/* =========================================================
+   ACTOR FILTER
+   ========================================================= */
+function renderActorPills() {
+  const existing = new Set();
+  D.layers.forEach(l => l.modules.forEach(m => (m.actors || []).forEach(a => existing.add(a))));
+
+  const grp = document.getElementById('actorGroup');
+  const order = ['c_user','b_user','operator','customer_service','admin','external_system'];
+  const items = order.filter(k => existing.has(k));
+
+  if (!items.length) { grp.style.display = 'none'; return; }
+
+  let html = '<span class="tb-lbl">Actor</span>';
+  html += '<button class="pill on" data-a="all" onclick="actFlt(\'all\')">ALL</button>';
+  items.forEach(k => {
+    const cfg = ACT[k];
+    html += `<button class="pill" data-a="${k}" onclick="actFlt('${k}')" title="${cfg.label}">${cfg.letter}</button>`;
+  });
+  grp.innerHTML = html;
+}
+
+function actFlt(a) {
+  activeActor = (a === 'all') ? null : a;
+  document.querySelectorAll('#actorGroup [data-a]').forEach(b => {
+    b.classList.remove('on');
+    if (b.dataset.a === a) b.classList.add('on');
+  });
+  document.querySelectorAll('.card').forEach(el => {
+    el.classList.remove('ad');
+    if (!activeActor) return;
+    const actors = (el.dataset.actors || '').split(',').filter(Boolean);
+    if (!actors.includes(activeActor)) el.classList.add('ad');
+  });
+}
+
+/* =========================================================
+   RISK DRAWER (toggled via toolbar button)
+   ========================================================= */
+function renderRiskPanel() {
+  const el = document.getElementById('rpanel');
+  const btn = document.getElementById('riskBtn');
+  const badge = document.getElementById('riskBtnBadge');
+  const risks = D.risks || [];
+
+  /* Update toolbar badge */
+  badge.textContent = risks.length;
+  const hasHigh = risks.some(r => r.level === 'high');
+  if (hasHigh) btn.classList.add('has-h');
+  if (!risks.length) btn.style.display = 'none';
+
+  /* Group by type, order by level severity within each group */
+  const byType = {};
+  risks.forEach(r => {
+    const t = r.type || '其他';
+    (byType[t] = byType[t] || []).push(r);
+  });
+  const lvlOrder = {high:0, medium:1, low:2};
+  Object.keys(byType).forEach(t => byType[t].sort((a,b) => (lvlOrder[a.level]||9) - (lvlOrder[b.level]||9)));
+
+  let body = '';
+  if (!risks.length) {
+    body = '<div class="rpanel-empty">暂无标注风险</div>';
+  } else {
+    /* Sort types by whether they contain high-risk items */
+    const typeOrder = Object.keys(byType).sort((a,b) => {
+      const aHasH = byType[a].some(r => r.level === 'high') ? 0 : 1;
+      const bHasH = byType[b].some(r => r.level === 'high') ? 0 : 1;
+      return aHasH - bHasH;
+    });
+
+    typeOrder.forEach(type => {
+      const items = byType[type];
+      body += `<div class="rgroup"><div class="rgroup-head">
+        <span>${escapeHTML(type)}</span>
+        <span class="rgroup-count">${items.length}</span>
+      </div>`;
+      items.forEach(r => {
+        const safeModule = r.module.replace(/'/g, "\\'");
+        const lvlLabel = r.level === 'high' ? 'HIGH' : r.level === 'medium' ? 'MED' : 'LOW';
+        body += `<div class="ritem ${r.level}" onclick="scrollToCardAndClose('${safeModule}')">
+          <div class="ritem-top">
+            <span class="ritem-name">${escapeHTML(r.module)}</span>
+            <span class="ritem-level ${r.level}">${lvlLabel}</span>
+          </div>
+          <div class="ritem-desc">${escapeHTML(r.description || '')}</div>
+        </div>`;
+      });
+      body += '</div>';
+    });
+  }
+
+  el.innerHTML = `
+    <div class="rpanel-head">
+      <div class="rpanel-title-wrap">
+        <div class="rpanel-brow">Risk Register</div>
+        <div class="rpanel-title">风险清单</div>
+      </div>
+      <span class="rpanel-count">${risks.length}</span>
+      <button class="rpanel-close" onclick="toggleRiskDrawer()" title="关闭">×</button>
+    </div>
+    <div class="rpanel-body">${body}</div>
+  `;
+}
+
+function toggleRiskDrawer() {
+  const el = document.getElementById('rpanel');
+  const scrim = document.getElementById('rpanelScrim');
+  const isOpen = el.classList.toggle('show');
+  scrim.classList.toggle('show', isOpen);
+}
+
+function scrollToCardAndClose(name) {
+  toggleRiskDrawer();
+  setTimeout(() => scrollToCard(name), 200);
+}
+
+/* =========================================================
+   MINIMAP
+   ========================================================= */
+function renderMinimap() {
+  const mm = document.getElementById('minimap');
+  mm.innerHTML = '<div class="minimap-label">Overview</div><div class="minimap-inner" id="mmInner"></div>';
+
+  const inner = document.getElementById('mmInner');
+  const mmWidth = mm.clientWidth - 20; /* padding */
+
+  const cols = mc();
+  let totalH = 0;
+
+  D.layers.forEach((layer, li) => {
+    /* compute per-layer height relative */
+    const rowH = 18;
+    const lyr = document.createElement('div');
+    lyr.className = 'mm-layer';
+    lyr.style.height = rowH + 'px';
+    lyr.style.borderLeftColor = LA[li % LA.length].c;
+
+    let colPos = 0;
+    layer.modules.forEach(mod => {
+      const span = mod.span || 1;
+      const w = (span / cols) * mmWidth * 0.9;
+      const x = (colPos / cols) * mmWidth * 0.9 + 4;
+      colPos += span;
+
+      const risk = mod.risk || (RM[mod.name] ? RM[mod.name].level : null);
+      const el = document.createElement('div');
+      el.className = 'mm-module' + (risk ? ' ' + risk : '');
+      el.style.left = x + 'px';
+      el.style.top = '3px';
+      el.style.width = Math.max(w - 2, 4) + 'px';
+      el.style.height = (rowH - 6) + 'px';
+      el.title = mod.name;
+      lyr.appendChild(el);
+    });
+
+    inner.appendChild(lyr);
+    totalH += rowH + 2;
+  });
+
+  const vp = document.createElement('div');
+  vp.className = 'mm-vp';
+  vp.id = 'mmvp';
+  inner.appendChild(vp);
+
+  minimapScale = totalH / Math.max(document.getElementById('cv').scrollHeight * sc, 1);
+  updateMinimap();
+}
+
+function updateMinimap() {
+  const vp = document.getElementById('mmvp');
+  if (!vp) return;
+  const cv = document.getElementById('cv');
+  const inner = document.getElementById('mmInner');
+  if (!inner) return;
+
+  const cvH = cv.scrollHeight * sc;
+  const totalH = inner.offsetHeight || 80;
+  const s = totalH / Math.max(cvH, 1);
+
+  const vpTop = window.scrollY * s;
+  const vpH = window.innerHeight * s;
+
+  vp.style.left = '0';
+  vp.style.right = '0';
+  vp.style.top = Math.max(0, vpTop) + 'px';
+  vp.style.height = Math.min(vpH, totalH - vpTop) + 'px';
+}
+
+document.getElementById('minimap').addEventListener('click', e => {
+  const inner = document.getElementById('mmInner');
+  if (!inner) return;
+  const r = inner.getBoundingClientRect();
+  const y = e.clientY - r.top;
+  const totalH = inner.offsetHeight || 80;
+  const cvH = document.getElementById('cv').scrollHeight * sc;
+  const targetScroll = (y / totalH) * cvH - window.innerHeight / 2;
+  window.scrollTo({top: Math.max(0, targetScroll), behavior: 'smooth'});
+});
+
+/* =========================================================
+   LEGEND
+   ========================================================= */
+function renderLegend() {
+  const lg = document.getElementById('leg');
+  let h = '<button class="legend-x" onclick="tgLeg()">×</button>';
+  h += '<h4>Legend</h4><div class="lb">';
+
+  h += '<div class="ls"><div class="ls-t">Connections</div>';
+  h += '<div class="lr"><div class="lln" style="border-color:var(--cDep)"></div><span>依赖 Dependency</span></div>';
+  h += '<div class="lr"><div class="lln dsh" style="border-color:var(--cFlow)"></div><span>数据 Data Flow</span></div>';
+  h += '<div class="lr"><div class="lln dot" style="border-color:var(--cCall)"></div><span>调用 Call</span></div>';
+  h += '</div><hr class="lhr">';
+
+  h += '<div class="ls"><div class="ls-t">Risk</div>';
+  h += '<div class="lr"><div class="lsw" style="background:var(--rH-bg);border:2px solid var(--rH)"></div><span>高 High</span></div>';
+  h += '<div class="lr"><div class="lsw" style="background:var(--rM-bg);border:2px solid var(--rM)"></div><span>中 Medium</span></div>';
+  h += '<div class="lr"><div class="lsw" style="background:var(--rL-bg);border:2px solid var(--rL)"></div><span>低 Low</span></div>';
+  h += '</div><hr class="lhr">';
+
+  h += '<div class="ls">';
+  if (M === 'priority') {
+    h += '<div class="ls-t">Priority</div>';
+    h += '<div class="lr"><span class="badge badge-p0">P0</span><span>核心</span></div>';
+    h += '<div class="lr"><span class="badge badge-p1">P1</span><span>体验补全</span></div>';
+    h += '<div class="lr"><span class="badge badge-p2">P2</span><span>能力增强</span></div>';
+  } else {
+    h += '<div class="ls-t">Status</div>';
+    h += '<div class="lr"><span class="badge badge-stable">STABLE</span></div>';
+    h += '<div class="lr"><span class="badge badge-developing">DEV</span></div>';
+    h += '<div class="lr"><span class="badge badge-planned">PLAN</span></div>';
+  }
+  h += '</div></div>';
+  lg.innerHTML = h;
+}
+
+function tgLeg() {
+  const lg = document.getElementById('leg');
+  lg.classList.toggle('col');
+  lg.querySelector('.legend-x').textContent = lg.classList.contains('col') ? '☰' : '×';
+}
+
+/* =========================================================
+   EXPORT
+   ========================================================= */
+async function expPNG() {
+  const mask = document.getElementById('em');
+  mask.classList.add('show');
+  try {
+    if (!window.html2canvas) {
+      await new Promise((ok, no) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        s.onload = ok;
+        s.onerror = () => no(new Error('CDN'));
+        document.head.appendChild(s);
+      });
+    }
+    const csvg = document.getElementById('csvg');
+    csvg.style.display = 'none';
+
+    const result = await html2canvas(document.getElementById('cv'), {
+      scale: 2,
+      backgroundColor: '#FAF9F6',
+      useCORS: true,
+      logging: false,
+    });
+
+    csvg.style.display = '';
+    const a = document.createElement('a');
+    a.download = (D.title || 'Architecture') + '.png';
+    a.href = result.toDataURL('image/png');
+    a.click();
+  } catch(e) {
+    alert('Export requires network access. Use Ctrl/Cmd+P for PDF instead.');
+  } finally {
+    mask.classList.remove('show');
+  }
+}
+
+/* =========================================================
+   OVERVIEW
+   ========================================================= */
+function renderOverview() {
+  const el = document.getElementById('ov');
+  let h = '<div class="ov-section-label">架构总览 Overview</div>';
+
+  D.layers.forEach((layer, i) => {
+    const a = LA[i % LA.length];
+    let lCols = 0;
+    layer.modules.forEach(m => { lCols += (m.span || 1); });
+    lCols = Math.max(lCols, 1);
+
+    h += `<div class="ov-layer-row">`;
+    h += `<div class="ov-layer-label" style="color:${a.c};border-right-color:${a.c}50">${escapeHTML(layer.name)}</div>`;
+    h += `<div class="ov-mods-grid" style="--ov-cols:${lCols}">`;
+
+    layer.modules.forEach(mod => {
+      const risk = mod.risk || (RM[mod.name] ? RM[mod.name].level : null);
+      const rCls = risk ? ` risk-${risk}` : '';
+      const span = mod.span || 1;
+
+      h += `<div class="ov-mod-card${rCls}" style="grid-column:span ${span}">`;
+      h += `<div class="ov-mod-top"><div class="ov-mod-name">${escapeHTML(mod.name)}</div>`;
+      if (M === 'priority' && mod.priority) {
+        h += `<span class="ov-badge ov-badge-${mod.priority.toLowerCase()}">${escapeHTML(mod.priority)}</span>`;
+      }
+      h += `</div>`;
+
+      if (mod.submodules && mod.submodules.length) {
+        h += '<div class="ov-sub-list">';
+        mod.submodules.forEach(s => {
+          h += `<div class="ov-sub-item">${escapeHTML(s.name)}</div>`;
+        });
+        h += '</div>';
+      }
+
+      h += '</div>';
+    });
+
+    h += '</div></div>';
+  });
+
+  el.innerHTML = h;
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+window.addEventListener('resize', () => requestAnimationFrame(() => { drawC(); renderMinimap(); }));
+window.addEventListener('scroll', () => requestAnimationFrame(updateMinimap));
+
+renderOverview();
+renderHero();
+render();
+renderActorPills();
+renderRiskPanel();
+renderLegend();
+requestAnimationFrame(() => { drawC(); renderMinimap(); });
+</script>
+</body>
+</html>

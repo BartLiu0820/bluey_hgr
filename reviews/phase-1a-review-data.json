@@ -1,0 +1,116 @@
+{
+  "phase": "Phase 1A 竞品页面与交互体验 Benchmark",
+  "artifact": "01A-competitor-page-experience.md",
+  "status": "confirmed",
+  "updated_at": "2026-08-13",
+  "summary": {
+    "key_decisions": [
+      "Target Surface 保持已确认的 web-only，笔记本摄像头优先并提供完整键盘降级",
+      "采用家长分步设置、Gesture Lab、三关地图、多玩法运行时宿主与单关庆祝的渐进骨架",
+      "L1 继承情境化离散指令，L2 继承掌心位置直接跟手，L3 继承容错叠高；关卡时长分别为 40/45/50 秒",
+      "摄像头与键盘都提供两种能力：L1/L3 的离散拳掌事件，以及 L2 的连续上下位置输入",
+      "三关无生命值、Game Over 或成绩锁关；不新增必需手型，完成本关即可继续"
+    ],
+    "discarded_options": [
+      "不做专用硬件式复杂设置、内容目录、订阅、全身高强度动作、排行榜或官方 IP 素材复制",
+      "不采用重力下坠、窄缝、碰撞即死与反复重开的机制",
+      "不把技术置信度展示给儿童，不把 Pointing_Up 或 Victory 设为主线要求"
+    ],
+    "next_stage_conditions": [
+      "已满足：PM 已确认多玩法三关、双通道输入、键盘降级、低挫败边界与 web-only",
+      "已完成对 Phase 2 的架构传播：共享能力、三独立运行时和 4 层 17 模块"
+    ],
+    "execution_details_not_for_pm": [
+      "竞品营销页层级、价格、视频台词、付费入口与具体识别参数"
+    ]
+  },
+  "materials": [
+    {"title": "Phase 1A 竞品页面与交互体验 Benchmark", "file": "01A-competitor-page-experience.md"},
+    {"title": "Phase 1 产品方向研究", "file": "01-research.md"}
+  ],
+  "visualizations": [
+    {
+      "type": "matrix",
+      "title": "多玩法参考机制继承矩阵",
+      "description": "每个样本只承担最擅长的机制参考，不复制视觉、IP 或惩罚结构。",
+      "columns": ["参考来源", "继承重点", "落到本项目", "明确删除"],
+      "rows": [
+        {"label": "GoNoodle / Bluey 体感", "values": ["一个时刻一个情境动作", "L1 拳→掌高跳与伙伴接力", "高频口令、全身高强度动作"]},
+        {"label": "Nex / MediaPipe", "values": ["动作直接反馈；位置与类别解耦", "L2 掌心 Y 跟手，Unknown 仍工作", "技术置信度与复杂设置"]},
+        {"label": "Square Bird", "values": ["单输入叠高与障碍高度预读", "L3 每轮拳→掌生成一朵云", "精确层数惩罚、提速和敌人"]},
+        {"label": "Jetpack / Flappy 反例边界", "values": ["自动前进与清晰上下通道", "只保留 L2 宽松纵向躲避", "重力坠落、窄缝、碰撞即死"]}
+      ]
+    },
+    {
+      "type": "stage_flow",
+      "title": "已确认的体验骨架",
+      "description": "家长准备完成后，儿童通过短练习进入一条三段冒险。",
+      "steps": [
+        {"label": "家长设置", "status": "done", "detail": "隐私、模式、授权与取景"},
+        {"label": "Gesture Lab", "status": "done", "detail": "完成一次拳→掌→拳，可自愿复练"},
+        {"label": "三关地图", "status": "done", "detail": "顺序节点与完成即解锁"},
+        {"label": "L1 40s", "status": "done", "detail": "command_runner 高跳/接力"},
+        {"label": "L2 45s", "status": "done", "detail": "hand_follow_dodge 掌心 Y 跟手"},
+        {"label": "L3 50s", "status": "done", "detail": "cloud_stack 叠 1–3 朵云"},
+        {"label": "单关庆祝", "status": "done", "detail": "无排名、无失败评级"}
+      ]
+    },
+    {
+      "type": "impact_map",
+      "title": "Benchmark 对产品架构的影响",
+      "description": "体验结论直接固定 Phase 2 的模块与能力边界。",
+      "source": "多玩法三关 + 双通道输入 + 低挫败规则",
+      "items": [
+        {"label": "共享 Session / Safety / Reward / Coach", "detail": "把三种玩法缝合为同一场冒险，并统一无损恢复与庆祝"},
+        {"label": "三个独立玩法运行时", "detail": "分别承载 command_runner、hand_follow_dodge、cloud_stack"},
+        {"label": "双通道 Input Adapter", "detail": "输出 PoseTransitionEvent 与 HandTrackingFrame，键盘提供等价能力"},
+        {"label": "单视口页面形态", "detail": "家长任务流、短练习、地图、全屏画布/浮动教练与庆祝卡"}
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-01A-001",
+      "question": "已确认的三种玩法参考关系是否继续作为下游设计基线？",
+      "why_it_matters": "竞品结论决定三关的控制语法、运行时边界和儿童在每关需要理解的唯一目标。",
+      "recommended_decision": "维持已确认：L1 情境化拳掌指令、L2 掌心 Y 直接跟手、L3 容错叠云，时长 40/45/50 秒。",
+      "options": ["维持已确认", "申请变更", "暂缓，补材料"],
+      "source_files": ["01A-competitor-page-experience.md", "01-research.md"],
+      "evidence_refs": ["Bluey: Bust-a-Move", "Nex Playground", "GoNoodle Games", "Square Bird", "Jetpack Joyride", "MediaPipe"],
+      "downstream_impact": ["02-architecture.html", "03-feature-核心关卡循环.md", "04A-prototype-spec-核心关卡循环.md", "04B-prototype-*.html"],
+      "route_hint": "L4"
+    },
+    {
+      "question_id": "Q-01A-002",
+      "question": "已确认的双通道输入和键盘等价降级是否继续保持？",
+      "why_it_matters": "三关需要离散动作与连续位置两种输入语义；任何摄像头阻塞都必须存在完整出口。",
+      "recommended_decision": "维持已确认：L1/L3 使用离散拳掌事件或 Space，L2 使用连续掌心 Y 或 ↑/↓；Unknown 不阻断位置流。",
+      "options": ["维持已确认", "申请变更", "暂缓，补材料"],
+      "source_files": ["01A-competitor-page-experience.md"],
+      "evidence_refs": ["Nex Playground", "MediaPipe Gesture Recognizer", "Camera fallback requirement"],
+      "downstream_impact": ["02-architecture.html", "03-feature-手势输入闭环.md", "03-feature-核心关卡循环.md"],
+      "route_hint": "L4"
+    },
+    {
+      "question_id": "Q-01A-003",
+      "question": "已确认的低挫败和手型边界是否继续保持？",
+      "why_it_matters": "失败惩罚或新增手型都会放大识别误差、认知切换和 5 岁儿童的挫败感。",
+      "recommended_decision": "维持已确认：不新增必需手型，完成即解锁；碰撞弹开、护盾或自动托底，不扣奖励。",
+      "options": ["维持已确认", "申请变更", "暂缓，补材料"],
+      "source_files": ["01A-competitor-page-experience.md", "01-research.md"],
+      "evidence_refs": ["Bluey: Let’s Play", "Square Bird", "Flappy Bird 反例边界", "Liberi"],
+      "downstream_impact": ["02-architecture.html", "03-feature-核心关卡循环.md", "04B-prototype-*.html"],
+      "route_hint": "L4"
+    }
+  ],
+  "risks": [
+    "公开资料不能替代 Nex 硬件、付费 App 和本项目原型的真实儿童可用性测试",
+    "GoNoodle 与 Liberi 的目标年龄不同，动作频率和提示节奏仍需针对 5 岁儿童验证",
+    "三种控制关系的切换可能造成短时认知迁移，需要每关安全示范段和统一教练语言"
+  ],
+  "next_actions": [
+    "Phase 1A Gate 保持 confirmed",
+    "Benchmark 结论已传播为 Phase 2 的共享服务、三独立运行时和双通道输入",
+    "后续真实试玩重点观察成人提示次数、首次操作理解、误触、疲劳与情绪反应"
+  ]
+}

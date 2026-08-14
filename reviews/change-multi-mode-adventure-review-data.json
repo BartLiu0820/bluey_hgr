@@ -1,0 +1,116 @@
+{
+  "phase": "CR-20260813 多玩法三关变更审查（已确认并传播）",
+  "artifact": "01A-competitor-page-experience.md",
+  "status": "confirmed",
+  "updated_at": "2026-08-13",
+  "summary": {
+    "key_decisions": [
+      "用户已确认用一条三段冒险、三个独立玩法运行时取代三个同构跑酷关",
+      "L1/L3 使用拳掌离散事件，L2 使用掌心 Y 连续位置流；主线不增加必过新手型",
+      "三关固定为 L1 40 秒高跳、L2 45 秒直接跟手、L3 50 秒叠云",
+      "继续保持 web-only、无 Game Over、无成绩锁关，软碰撞不扣已经获得的奖励"
+    ],
+    "discarded_options": [
+      "继续只换障碍和文案、复用同一个跑酷状态机",
+      "沿用三个只换障碍与文案的同构跑酷关",
+      "每关增加必需新手型",
+      "原样复制 Square Bird 或经典 Flappy Bird 的失败循环"
+    ],
+    "next_stage_conditions": [
+      "已满足：用户明确确认多玩法三关、web-only 与低挫败边界",
+      "已完成：结论已传播至 01A、01、02、两份 03、两份 04A、集成 04B 与专项测试",
+      "当前只等待独立的 Phase 4B 实现 Gate 试玩确认"
+    ],
+    "execution_details_not_for_pm": [
+      "EMA 系数、位置死区、单帧限速、碰撞带与测试注入接口",
+      "关卡目标毫秒值、视觉样式与内部 runtime 分支"
+    ]
+  },
+  "materials": [
+    { "title": "已确认的竞品与玩法 Benchmark", "file": "01A-competitor-page-experience.md" },
+    { "title": "当前产品方向", "file": "01-research.md" },
+    { "title": "当前三关功能规则", "file": "03-feature-核心关卡循环.md" },
+    { "title": "当前三关原型规格", "file": "04A-prototype-spec-核心关卡循环.md" },
+    { "title": "当前可试玩实现", "file": "04B-prototype-手势小狗探险MVP.html" },
+    { "title": "多玩法专项测试", "file": "tests/three-level-mvp-targeted.mjs" }
+  ],
+  "visualizations": [
+    {
+      "type": "matrix",
+      "title": "已确认的三段冒险",
+      "columns": ["关卡", "输入模型", "玩法循环", "温和恢复"],
+      "rows": [
+        { "label": "L1 溪边跳跳 · 40s", "values": ["PoseTransitionEvent", "拳→掌高跳 150–220px / 末段接力", "轻碰继续，不扣奖励"] },
+        { "label": "L2 萤火虫躲躲 · 45s", "values": ["HandTrackingFrame.palmCenterY", "EMA/死区/12% 限速后直接跟手", "短丢手保持；弹开 + 护盾"] },
+        { "label": "L3 云朵叠叠 · 50s", "values": ["PoseTransitionEvent", "拳→掌叠 1–3 朵云", "少云可见补垫；多云可见星星"] }
+      ]
+    },
+    {
+      "type": "stage_flow",
+      "title": "L4 → L0 传播状态",
+      "description": "方向已经确认，正式源真相与可试玩实现均已传播。",
+      "steps": [
+        { "label": "01A / 01", "status": "done", "detail": "参考机制、核心假设与风险已更新" },
+        { "label": "02", "status": "done", "detail": "三个运行时与双通道边界已更新" },
+        { "label": "两份 03", "status": "done", "detail": "功能规则和输入合同已更新" },
+        { "label": "两份 04A", "status": "done", "detail": "screen、状态与验收已更新" },
+        { "label": "04B / QA", "status": "done", "detail": "三玩法实现与专项测试已完成" }
+      ]
+    },
+    {
+      "type": "metric_cards",
+      "title": "传播后的实现证据",
+      "items": [
+        { "label": "浏览器回归", "value": "25 / 25", "note": "主干与恢复路径" },
+        { "label": "多玩法专项", "value": "10 / 10", "note": "三个运行时 + 五视口" },
+        { "label": "识别运行时", "value": "1 / 1", "note": "拳掌稳定与噪声拒绝" },
+        { "label": "支持视口", "value": "5 / 5", "note": "web-only 笔记本范围" }
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-CR-MULTI-CONFIRMED-001",
+      "question": "已确认记录：是否采用‘高跳动作关 + 掌心直接跟手 + 容错叠云’作为多玩法三关方向？",
+      "why_it_matters": "这是本 Change 的高层产品决策，已经决定输入层、运行时、教程和关卡内容边界。",
+      "recommended_decision": "已确认并完成 L4→L0 传播；除非 PM 提出新的变更，不重新打开本方向决策。",
+      "options": ["已确认（当前决策）", "提出新变更（走 Change Router）"],
+      "source_files": ["01A-competitor-page-experience.md", "03-feature-核心关卡循环.md", "04B-prototype-手势小狗探险MVP.html"],
+      "evidence_refs": ["用户明确确认多玩法三关", "L4→L0 propagation complete", "multi-runtime targeted 10/10"],
+      "downstream_impact": ["双通道输入合同", "三个独立关卡运行时", "真实儿童试玩脚本"],
+      "route_hint": "L4"
+    },
+    {
+      "question_id": "Q-CR-MULTI-CONFIRMED-002",
+      "question": "已确认记录：是否保持 web-only、主线不增加必过手型、无 Game Over 和无成绩锁关？",
+      "why_it_matters": "这些是本次玩法扩展的范围和低挫败底线，防止丰富玩法重新变成识别或失败门槛。",
+      "recommended_decision": "已确认并传播至研究、规格和实现；移动 Web 或新手型必须另开变更审查。",
+      "options": ["已确认（当前边界）", "提出新边界（走 Change Router）"],
+      "source_files": ["01-research.md", "01A-competitor-page-experience.md", "04A-prototype-spec-核心关卡循环.md"],
+      "evidence_refs": ["confirmed Target Surface: web-only", "no required new hand pose", "no Game Over / no score gate"],
+      "downstream_impact": ["Target Surface Gate", "Gesture Lab", "关卡完成条件", "响应式 QA"],
+      "route_hint": "L4"
+    },
+    {
+      "question_id": "Q-CR-MULTI-CONFIRMED-003",
+      "question": "已确认记录：L1 是否采用 150–220px、约 1 秒的完整高跳来替换原先幅度过小的动作？",
+      "why_it_matters": "这是用户在确认多玩法方向时同时提出的明确手感修正，必须与三运行时变更一起传播和留痕。",
+      "recommended_decision": "已确认作为本轮实现基线；后续只依据真实儿童试玩微调高度、停顿和障碍比例。",
+      "options": ["已确认（当前高跳）", "提出新手感变更（走 Change Router）"],
+      "source_files": ["03-feature-核心关卡循环.md", "04A-prototype-spec-核心关卡循环.md", "04B-prototype-手势小狗探险MVP.html"],
+      "evidence_refs": ["jump peak ≥150px PASS", "850–1100ms complete arc", "multi-runtime targeted 10/10"],
+      "downstream_impact": ["L1 首次成功反馈", "障碍尺度", "真实试玩观察项"],
+      "route_hint": "L0"
+    }
+  ],
+  "risks": [
+    "真实 5 岁儿童仍需校准 L1 高跳、L2 连续跟手和 L3 拳掌疲劳",
+    "本轮只覆盖 web-only 笔记本；移动 Web 需要另开端型 Gate",
+    "后续若调整三关方向，必须重新经过 Change Router，而不是只改 HTML"
+  ],
+  "next_actions": [
+    "本 Change Review 已 confirmed，不再等待方向确认",
+    "转到 Phase 4B Review Console 试玩并确认实现基线",
+    "Phase 4B confirmed 后进入家长陪同真实儿童试玩"
+  ]
+}

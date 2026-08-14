@@ -1,0 +1,12 @@
+.DS_Store
+.pid
+.port
+node_modules/
+.playwright-browsers/
+prototype-qa/
+**/prototype-qa/
+*.log
+*.tmp
+*.bak
+.env
+.env.*

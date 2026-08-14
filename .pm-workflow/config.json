@@ -1,0 +1,30 @@
+{
+  "createdBy": "pm-workflow-starter",
+  "createdDate": "2026-08-11",
+  "projectName": "bluey-gesture-game",
+  "projectType": "general",
+  "projectRoot": ".",
+  "starterSkillPath": "~/.agents/skills/pm-workflow-starter",
+  "skillsRoot": "~/.agents/skills",
+  "learningProtocol": {
+    "errorCases": "cases/error-cases.md",
+    "authoritySources": "rules/authority-sources.md",
+    "ruleCandidates": "rules/rule-candidates.md",
+    "activeRules": "rules/active-rules.md",
+    "changeLog": "changes/change-log.md"
+  },
+  "playwright": {
+    "browserName": "chromium",
+    "browsersPath": "~/.cache/pm-workflow/playwright-browsers"
+  },
+  "requiredSkills": {
+    "product-research": "~/.agents/skills/product-research",
+    "product-architecture": "~/.agents/skills/product-architecture",
+    "product-detail": "~/.agents/skills/product-detail",
+    "prototype-spec-writer": "~/.agents/skills/prototype-spec-writer",
+    "html-prototype-builder": "~/.agents/skills/html-prototype-builder",
+    "ai-persona-prototype-review": "~/.agents/skills/ai-persona-prototype-review",
+    "pm-review-gate": "~/.agents/skills/pm-review-gate",
+    "pm-change-router": "~/.agents/skills/pm-change-router"
+  }
+}

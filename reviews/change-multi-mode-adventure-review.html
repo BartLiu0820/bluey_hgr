@@ -1,0 +1,1370 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CR-20260813 多玩法三关变更审查（已确认并传播） Review Console</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --surface-soft: #f0f3f7;
+      --ink: #172033;
+      --muted: #68758a;
+      --line: #d9e0ea;
+      --accent: #2458d3;
+      --accent-soft: #e7eefc;
+      --warn: #9a5a00;
+      --warn-soft: #fff2cf;
+      --ok: #0f766e;
+      --radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.55; }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      padding: 28px clamp(18px, 4vw, 48px);
+    }
+    main {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 24px auto 56px;
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+    }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { font-size: clamp(26px, 4vw, 40px); margin-bottom: 8px; }
+    h2 { font-size: 20px; margin-bottom: 14px; }
+    h3 { font-size: 17px; margin-bottom: 10px; }
+    h4 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+    code {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      color: #24324a;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); margin-top: 12px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      min-width: 0;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .summary-grid > *, .material-card, .visualization, .decision-card { min-width: 0; }
+    .summary-grid li, .material-path { overflow-wrap: anywhere; }
+    ul { padding-left: 20px; margin-bottom: 0; }
+    .muted { color: var(--muted); }
+
+    /* ── Material cards ── */
+    .materials { display: grid; gap: 12px; }
+    .material-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      background: #fbfcfe;
+      transition: border-color 0.15s;
+    }
+    .material-card:hover { border-color: #b5c7e8; }
+    .material-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .material-card-info { display: flex; flex-direction: column; gap: 5px; }
+    .material-card-info h3 { margin: 0; font-size: 16px; }
+    .material-path { font-size: 12px; color: var(--muted); }
+    .material-card-actions { flex-shrink: 0; }
+    .mat-badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .mat-badge-ok { background: var(--accent-soft); color: var(--accent); }
+    .mat-badge-warn { background: var(--warn-soft); color: var(--warn); }
+    .btn-mat {
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      padding: 8px 16px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .btn-mat:hover { background: #d0e0f8; }
+    .btn-mat[disabled] { border-color: var(--line); background: transparent; color: var(--muted); cursor: not-allowed; }
+    .btn-mat-html { border-color: var(--ok); background: #eefaf7; color: var(--ok); }
+    .btn-mat-html:hover { background: #d8f3ed; }
+
+    /* ── Visualizations ── */
+    .visualizations { display: grid; gap: 16px; }
+    .visualization {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: #fbfcfe;
+    }
+    .viz-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .viz-head h3 { margin-bottom: 4px; }
+    .viz-type {
+      align-self: start;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 3px 8px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .flow { display: flex; align-items: stretch; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+    .flow-item {
+      min-width: 170px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #ffffff;
+    }
+    .flow-node { display: grid; gap: 4px; }
+    .flow-node span { font-weight: 800; }
+    .flow-node em { color: var(--muted); font-style: normal; font-size: 12px; }
+    .flow-item.done { border-color: #9fd8c9; background: #f0fbf8; }
+    .flow-item.pending { border-color: #efd18a; background: #fff9e8; }
+    .flow-item.blocked { border-color: #f0a7a7; background: #fff3f3; }
+    .flow-arrow { align-self: center; color: var(--muted); font-weight: 900; }
+    .impact-map {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.7fr) auto minmax(260px, 1.6fr);
+      gap: 14px;
+      align-items: center;
+    }
+    .impact-source, .impact-target {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      background: #ffffff;
+    }
+    .impact-arrow { color: var(--accent); font-size: 24px; font-weight: 900; }
+    .impact-targets { display: grid; gap: 10px; }
+    .matrix-wrap { overflow-x: auto; }
+    table.matrix {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .matrix th, .matrix td {
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      min-width: 120px;
+    }
+    .matrix th { background: var(--surface-soft); color: #2b374b; font-weight: 800; }
+    .risk-list { display: grid; gap: 12px; }
+    .risk-row { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; background: #ffffff; }
+    .risk-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .risk-head span { color: var(--warn); font-weight: 800; }
+    .risk-bar { height: 10px; border-radius: 999px; background: #edf1f6; overflow: hidden; }
+    .risk-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2fbf9f, #f2b84b, #e45757); }
+    .evidence-map { display: grid; gap: 10px; }
+    .evidence-item {
+      display: grid;
+      grid-template-columns: minmax(90px, auto) auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 11px;
+      background: #ffffff;
+    }
+    .evidence-item span, .evidence-item em { color: var(--muted); font-style: normal; font-size: 13px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+    .metric-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #ffffff; }
+    .metric-card span { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .metric-card strong { display: block; margin-top: 6px; font-size: 24px; }
+    .tone-warn { border-color: #efd18a; background: #fff9e8; }
+    .tone-good { border-color: #9fd8c9; background: #f0fbf8; }
+    .tone-bad { border-color: #f0a7a7; background: #fff3f3; }
+
+    /* ── Decision cards ── */
+    .decision-list { display: grid; gap: 16px; }
+    .decision-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; background: #ffffff; }
+    .card-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+    .qid { color: var(--accent); font-weight: 800; font-size: 13px; }
+    .route { color: var(--warn); background: var(--warn-soft); border-radius: 999px; padding: 3px 9px; font-size: 13px; font-weight: 650; }
+    .card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 12px 0; }
+    .meta-block { margin-top: 12px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 7px; }
+    .pill { border: 1px solid var(--line); background: var(--surface-soft); border-radius: 999px; padding: 4px 9px; font-size: 13px; color: #2d3a4f; overflow-wrap: anywhere; }
+    .impact .pill { background: #eefaf7; border-color: #bee8df; color: var(--ok); }
+    .muted-pill { color: var(--muted); background: transparent; }
+    fieldset.feedback { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin: 16px 0 0; background: #fbfcfe; }
+    legend { padding: 0 6px; color: var(--muted); font-weight: 700; font-size: 13px; }
+    label { display: grid; gap: 6px; margin-top: 10px; color: #344156; font-size: 14px; font-weight: 650; }
+    select, textarea { width: 100%; border: 1px solid var(--line); border-radius: 7px; padding: 10px 11px; font: inherit; color: var(--ink); background: #ffffff; }
+    textarea { min-height: 92px; resize: vertical; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    button { border: 0; border-radius: 7px; padding: 10px 14px; background: var(--accent); color: white; font-weight: 750; cursor: pointer; }
+    button.secondary { background: #253044; }
+    .inline-file-link {
+      display: inline-flex;
+      align-items: center;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .inline-file-link code { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .pill-button {
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      color: #2d3a4f;
+      padding: 4px 9px;
+      font-weight: 500;
+      text-align: left;
+    }
+    .pill-button:hover { border-color: #b5c7e8; color: var(--accent); }
+    pre { max-height: 260px; overflow: auto; background: #101827; color: #f8fafc; border-radius: var(--radius); padding: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .notice { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 12px 14px; border-radius: 6px; color: #183b89; }
+
+    /* ── Overlay ── */
+    .overlay-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 18, 36, 0.48);
+      z-index: 200;
+      align-items: stretch;
+      justify-content: flex-end;
+    }
+    .overlay-backdrop.visible { display: flex; }
+    .overlay-panel {
+      width: min(72vw, 920px);
+      height: 100%;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -6px 0 32px rgba(0, 0, 0, 0.18);
+      animation: slideIn 0.18s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(6%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .overlay-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+      flex-shrink: 0;
+    }
+    .overlay-title { flex: 1; min-width: 0; }
+    .overlay-title h2 { margin: 0; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .overlay-title code { font-size: 12px; color: var(--muted); }
+    .overlay-close {
+      flex-shrink: 0;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 12px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .overlay-close:hover { background: #eef1f5; }
+    .overlay-body { flex: 1; overflow-y: auto; padding: 24px 28px; }
+    .overlay-html-notice {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .overlay-html-frame-wrap {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+    }
+    .overlay-html-frame-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfe;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .overlay-html-frame {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+    .overlay-open-btn {
+      border: 1px solid var(--ok);
+      border-radius: 8px;
+      padding: 12px 28px;
+      background: var(--ok);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .overlay-open-btn:hover { background: #0a5f58; }
+
+    /* ── Markdown content ── */
+    .md-content { line-height: 1.72; color: var(--ink); font-size: 15px; }
+    .md-content .md-h { font-weight: 700; margin: 1.4em 0 0.5em; color: #1a2840; }
+    .md-content h2.md-h { font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    .md-content h3.md-h { font-size: 16px; }
+    .md-content h4.md-h { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .md-content h5.md-h, .md-content h6.md-h { font-size: 13px; }
+    .md-content p { margin: 0.65em 0; }
+    .md-content .md-ul, .md-content .md-ol { padding-left: 22px; margin: 0.5em 0; }
+    .md-content .md-ul li, .md-content .md-ol li { margin-bottom: 4px; }
+    .md-content .md-pre { background: #101827; color: #f8fafc; padding: 14px; border-radius: var(--radius); overflow-x: auto; max-height: 380px; margin: 1em 0; font-size: 13px; }
+    .md-content .md-pre code { background: none; color: inherit; padding: 0; font-size: 13px; }
+    .md-content .md-bq { border-left: 3px solid var(--accent); margin: 0.8em 0; padding: 6px 14px; background: var(--accent-soft); border-radius: 0 6px 6px 0; color: #1b3272; }
+    .md-content .md-hr { border: none; border-top: 1px solid var(--line); margin: 1.4em 0; }
+    .md-content .md-table-wrap { overflow-x: auto; margin: 1em 0; }
+    .md-content .md-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    .md-content .md-table th, .md-content .md-table td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .md-content .md-table th { background: var(--surface-soft); font-weight: 700; }
+    .md-content code { font-size: 13px; }
+
+    @media (max-width: 760px) {
+      .summary-grid, .card-grid, .impact-map, .evidence-item { grid-template-columns: 1fr; }
+      .impact-arrow { transform: rotate(90deg); justify-self: start; }
+      .material-card-head { flex-direction: column; }
+      .overlay-panel { width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="badge">PM Review Console</span>
+    <h1>CR-20260813 多玩法三关变更审查（已确认并传播）</h1>
+    <p class="muted">这是阶段审查入口，不是正式阶段产物。PM 反馈在第一版中仅保存在浏览器本地，可复制或下载为 JSON。</p>
+    <div class="meta">
+      <span>产物：<button type="button" class="inline-file-link" data-open-file="01A-competitor-page-experience.md"><code>01A-competitor-page-experience.md</code></button></span>
+      <span>状态：<code>confirmed</code></span>
+      <span>更新：<code>2026-08-13</code></span>
+    </div>
+  </header>
+  <main>
+    <section class="section">
+      <h2>阶段摘要</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>本阶段关键决策</h4>
+          <ul><li>用户已确认用一条三段冒险、三个独立玩法运行时取代三个同构跑酷关</li><li>L1/L3 使用拳掌离散事件，L2 使用掌心 Y 连续位置流；主线不增加必过新手型</li><li>三关固定为 L1 40 秒高跳、L2 45 秒直接跟手、L3 50 秒叠云</li><li>继续保持 web-only、无 Game Over、无成绩锁关，软碰撞不扣已经获得的奖励</li></ul>
+        </div>
+        <div>
+          <h4>被放弃的方案</h4>
+          <ul><li>继续只换障碍和文案、复用同一个跑酷状态机</li><li>沿用三个只换障碍与文案的同构跑酷关</li><li>每关增加必需新手型</li><li>原样复制 Square Bird 或经典 Flappy Bird 的失败循环</li></ul>
+        </div>
+        <div>
+          <h4>进入下一阶段的条件</h4>
+          <ul><li>已满足：用户明确确认多玩法三关、web-only 与低挫败边界</li><li>已完成：结论已传播至 01A、01、02、两份 03、两份 04A、集成 04B 与专项测试</li><li>当前只等待独立的 Phase 4B 实现 Gate 试玩确认</li></ul>
+        </div>
+        <div>
+          <h4>不需要 PM 审查的执行细节</h4>
+          <ul><li>EMA 系数、位置死区、单帧限速、碰撞带与测试注入接口</li><li>关卡目标毫秒值、视觉样式与内部 runtime 分支</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>产出物阅读</h2>
+      <p class="muted" style="margin-bottom:14px;">点击"阅读原文"在右侧浮层阅读完整产物内容；Markdown 会渲染为可读 HTML，HTML 产物会在浮层中预览。</p>
+      <div class="materials">
+        
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>已确认的竞品与玩法 Benchmark</h3>
+            <code class="material-path">01A-competitor-page-experience.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(0)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>当前产品方向</h3>
+            <code class="material-path">01-research.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(1)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>当前三关功能规则</h3>
+            <code class="material-path">03-feature-核心关卡循环.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(2)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>当前三关原型规格</h3>
+            <code class="material-path">04A-prototype-spec-核心关卡循环.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(3)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">HTML</span>
+            <h3>当前可试玩实现</h3>
+            <code class="material-path">04B-prototype-手势小狗探险MVP.html</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat btn-mat-html" onclick="openOverlay(4)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">文本</span>
+            <h3>多玩法专项测试</h3>
+            <code class="material-path">tests/three-level-mvp-targeted.mjs</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(5)">阅读原文</button></div>
+        </div>
+      </article>
+    
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>关键可视化</h2>
+      <div class="visualizations">
+        
+    <article class="visualization matrix">
+      <div class="viz-head">
+        <div>
+          <h3>已确认的三段冒险</h3>
+          
+        </div>
+        <span class="viz-type">matrix</span>
+      </div>
+      
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th>关卡</th><th>输入模型</th><th>玩法循环</th><th>温和恢复</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>L1 溪边跳跳 · 40s</th><td>PoseTransitionEvent</td><td>拳→掌高跳 150–220px / 末段接力</td><td>轻碰继续，不扣奖励</td></tr><tr><th>L2 萤火虫躲躲 · 45s</th><td>HandTrackingFrame.palmCenterY</td><td>EMA/死区/12% 限速后直接跟手</td><td>短丢手保持；弹开 + 护盾</td></tr><tr><th>L3 云朵叠叠 · 50s</th><td>PoseTransitionEvent</td><td>拳→掌叠 1–3 朵云</td><td>少云可见补垫；多云可见星星</td></tr>
+        </tbody>
+      </table>
+    </div>
+  
+    </article>
+  
+    <article class="visualization stage_flow">
+      <div class="viz-head">
+        <div>
+          <h3>L4 → L0 传播状态</h3>
+          <p class="muted">方向已经确认，正式源真相与可试玩实现均已传播。</p>
+        </div>
+        <span class="viz-type">stage_flow</span>
+      </div>
+      
+    <div class="flow">
+      
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>01A / 01</span>
+            <em>done</em>
+          </div>
+          <p>参考机制、核心假设与风险已更新</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>02</span>
+            <em>done</em>
+          </div>
+          <p>三个运行时与双通道边界已更新</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>两份 03</span>
+            <em>done</em>
+          </div>
+          <p>功能规则和输入合同已更新</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>两份 04A</span>
+            <em>done</em>
+          </div>
+          <p>screen、状态与验收已更新</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>04B / QA</span>
+            <em>done</em>
+          </div>
+          <p>三玩法实现与专项测试已完成</p>
+        </div>
+      
+    </div>
+  
+    </article>
+  
+    <article class="visualization metric_cards">
+      <div class="viz-head">
+        <div>
+          <h3>传播后的实现证据</h3>
+          
+        </div>
+        <span class="viz-type">metric_cards</span>
+      </div>
+      
+    <div class="metric-grid">
+      
+        <div class="metric-card ">
+          <span>浏览器回归</span>
+          <strong>25 / 25</strong>
+          <p>主干与恢复路径</p>
+        </div>
+      
+        <div class="metric-card ">
+          <span>多玩法专项</span>
+          <strong>10 / 10</strong>
+          <p>三个运行时 + 五视口</p>
+        </div>
+      
+        <div class="metric-card ">
+          <span>识别运行时</span>
+          <strong>1 / 1</strong>
+          <p>拳掌稳定与噪声拒绝</p>
+        </div>
+      
+        <div class="metric-card ">
+          <span>支持视口</span>
+          <strong>5 / 5</strong>
+          <p>web-only 笔记本范围</p>
+        </div>
+      
+    </div>
+  
+    </article>
+  
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>待确认问题</h2>
+      <div class="decision-list">
+        
+      <article class="decision-card" data-question-id="Q-CR-MULTI-CONFIRMED-001">
+        <div class="card-top">
+          <span class="qid">Q-CR-MULTI-CONFIRMED-001</span>
+          <span class="route">Route hint: L4</span>
+        </div>
+        <h3>已确认记录：是否采用‘高跳动作关 + 掌心直接跟手 + 容错叠云’作为多玩法三关方向？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>这是本 Change 的高层产品决策，已经决定输入层、运行时、教程和关卡内容边界。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>已确认并完成 L4→L0 传播；除非 PM 提出新的变更，不重新打开本方向决策。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="01A-competitor-page-experience.md">01A-competitor-page-experience.md</button><button type="button" class="pill pill-button" data-open-file="03-feature-核心关卡循环.md">03-feature-核心关卡循环.md</button><button type="button" class="pill pill-button" data-open-file="04B-prototype-手势小狗探险MVP.html">04B-prototype-手势小狗探险MVP.html</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill">用户明确确认多玩法三关</span><span class="pill">L4→L0 propagation complete</span><span class="pill">multi-runtime targeted 10/10</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">双通道输入合同</span><span class="pill">三个独立关卡运行时</span><span class="pill">真实儿童试玩脚本</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="0">
+              <option value="">请选择</option>
+              <option value="已确认（当前决策）">已确认（当前决策）</option><option value="提出新变更（走 Change Router）">提出新变更（走 Change Router）</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="0" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      <article class="decision-card" data-question-id="Q-CR-MULTI-CONFIRMED-002">
+        <div class="card-top">
+          <span class="qid">Q-CR-MULTI-CONFIRMED-002</span>
+          <span class="route">Route hint: L4</span>
+        </div>
+        <h3>已确认记录：是否保持 web-only、主线不增加必过手型、无 Game Over 和无成绩锁关？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>这些是本次玩法扩展的范围和低挫败底线，防止丰富玩法重新变成识别或失败门槛。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>已确认并传播至研究、规格和实现；移动 Web 或新手型必须另开变更审查。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="01-research.md">01-research.md</button><button type="button" class="pill pill-button" data-open-file="01A-competitor-page-experience.md">01A-competitor-page-experience.md</button><button type="button" class="pill pill-button" data-open-file="04A-prototype-spec-核心关卡循环.md">04A-prototype-spec-核心关卡循环.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill">confirmed Target Surface: web-only</span><span class="pill">no required new hand pose</span><span class="pill">no Game Over / no score gate</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">Target Surface Gate</span><span class="pill">Gesture Lab</span><span class="pill">关卡完成条件</span><span class="pill">响应式 QA</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="1">
+              <option value="">请选择</option>
+              <option value="已确认（当前边界）">已确认（当前边界）</option><option value="提出新边界（走 Change Router）">提出新边界（走 Change Router）</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="1" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      <article class="decision-card" data-question-id="Q-CR-MULTI-CONFIRMED-003">
+        <div class="card-top">
+          <span class="qid">Q-CR-MULTI-CONFIRMED-003</span>
+          <span class="route">Route hint: L0</span>
+        </div>
+        <h3>已确认记录：L1 是否采用 150–220px、约 1 秒的完整高跳来替换原先幅度过小的动作？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>这是用户在确认多玩法方向时同时提出的明确手感修正，必须与三运行时变更一起传播和留痕。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>已确认作为本轮实现基线；后续只依据真实儿童试玩微调高度、停顿和障碍比例。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="03-feature-核心关卡循环.md">03-feature-核心关卡循环.md</button><button type="button" class="pill pill-button" data-open-file="04A-prototype-spec-核心关卡循环.md">04A-prototype-spec-核心关卡循环.md</button><button type="button" class="pill pill-button" data-open-file="04B-prototype-手势小狗探险MVP.html">04B-prototype-手势小狗探险MVP.html</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill">jump peak ≥150px PASS</span><span class="pill">850–1100ms complete arc</span><span class="pill">multi-runtime targeted 10/10</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">L1 首次成功反馈</span><span class="pill">障碍尺度</span><span class="pill">真实试玩观察项</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="2">
+              <option value="">请选择</option>
+              <option value="已确认（当前高跳）">已确认（当前高跳）</option><option value="提出新手感变更（走 Change Router）">提出新手感变更（走 Change Router）</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="2" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+    
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>风险与下一步</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>风险</h4>
+          <ul><li>真实 5 岁儿童仍需校准 L1 高跳、L2 连续跟手和 L3 拳掌疲劳</li><li>本轮只覆盖 web-only 笔记本；移动 Web 需要另开端型 Gate</li><li>后续若调整三关方向，必须重新经过 Change Router，而不是只改 HTML</li></ul>
+        </div>
+        <div>
+          <h4>下一步</h4>
+          <ul><li>本 Change Review 已 confirmed，不再等待方向确认</li><li>转到 Phase 4B Review Console 试玩并确认实现基线</li><li>Phase 4B confirmed 后进入家长陪同真实儿童试玩</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>直接反馈</h2>
+      <p class="muted">这里用于填写不属于单个决策卡的整体意见、补充背景或下一步指令。</p>
+      <label class="direct-feedback-label">
+        整体反馈
+        <textarea id="directFeedback" class="direct-feedback-textarea" placeholder="例如：整体确认，但第 2 个问题需要补材料；或请回到 Phase 3 修改字段模型。"></textarea>
+      </label>
+    </section>
+
+    <section class="section">
+      <h2>反馈导出</h2>
+      <p class="notice">第一版 Review Console 不会自动写回项目文件。请复制或下载反馈 JSON 后，让 Claude / Codex 继续处理。</p>
+      <div class="actions">
+        <button type="button" id="copyFeedback">复制反馈 JSON</button>
+        <button type="button" id="downloadFeedback" class="secondary">下载反馈 JSON</button>
+        <span class="muted" id="copyStatus" aria-live="polite"></span>
+      </div>
+      <pre id="feedbackPreview"></pre>
+    </section>
+  </main>
+
+  <template id="mat-tpl-0"><div class="md-content"><h2 class="md-h">Phase 1A 竞品页面与交互体验 Benchmark</h2>
+<blockquote class="md-bq"><p>更新日期：2026-08-13 | 研究人：Codex | Target Surface：web-only</p></blockquote>
+<h3 class="md-h">1. Benchmark 目标与证据边界</h3>
+<p>本阶段不是寻找可以照搬的游戏，而是回答三个下游问题：</p>
+<ol class="md-ol"><li>家长如何安全、快速地把设备交给 5 岁儿童？</li><li>儿童如何在不依赖文字的情况下理解“做什么动作—系统有没有看见—动作产生了什么结果”？</li><li>离散指令、直接跟手与叠高三种玩法如何逐关出现，而不增加必过手型？</li><li>角色切换、家长辅助和完成反馈应该以什么页面结构出现？</li></ol>
+<p>参考样本已由 PM 确认：</p>
+<ul class="md-ul"><li><a href="https://www.nexplayground.com/blog/new-bluey-game" target="_blank" rel="noopener">Bluey: Bust-a-Move</a></li><li><a href="https://www.nexplayground.com/how-it-works" target="_blank" rel="noopener">Nex Playground</a></li><li><a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games</a></li><li><a href="https://www.bluey.tv/blog/bluey-lets-play-mobile-app-is-available-now/" target="_blank" rel="noopener">Bluey: Let’s Play</a></li><li><a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird</a></li><li><a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride</a></li><li><a href="https://www.forbes.com/sites/lananhnguyen/2014/02/11/exclusive-flappy-bird-creator-dong-nguyen-says-app-gone-forever-because-it-was-an-addictive-product/" target="_blank" rel="noopener">Flappy Bird 创作者访谈</a></li><li><a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture_recognizer" target="_blank" rel="noopener">MediaPipe Gesture Recognizer</a></li></ul>
+<p>证据来自官方产品页、帮助中心、公开玩法说明、视频文字稿和官方公开截图。本阶段没有购买 Nex 硬件或登录付费 App，因此关于完整应用内页面层级的判断标记为“结构推导”，不冒充真实设备可用性测试。</p>
+<hr class='md-hr'>
+<h3 class="md-h">2. 样本权重与使用方式</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>样本</th><th>主要参考价值</th><th>参考权重</th><th>不作为何种依据</th></tr></thead><tbody><tr><td>Bluey: Bust-a-Move</td><td>情境化动作、亲子辅助、低龄练习模式、单目标游戏画面</td><td>高</td><td>不复制 IP、美术、剧情或小游戏内容</td></tr><tr><td>Nex Playground</td><td>家长设置/儿童游玩分离、摄像头信任、空间提示、输入降级</td><td>高</td><td>不复制专用硬件、账号、订阅和一小时首次安装</td></tr><tr><td>GoNoodle Games</td><td>口令节奏、倒计时、动作重复、幽默鼓励、跑酷指令序列</td><td>中</td><td>不照搬高强度节奏、年长儿童内容或积分成长系统</td></tr><tr><td>Bluey: Let’s Play</td><td>无失败探索、角色/场景选择、低龄自主感</td><td>中低</td><td>不照搬触控沙盒、房间内容和付费解锁结构</td></tr><tr><td>Square Bird</td><td>单输入叠高、障碍高度预读、连续正确奖励</td><td>高</td><td>不照搬提速、精确层数惩罚、敌人和美术</td></tr><tr><td>Jetpack Joyride</td><td>自动前进、纵向控制、收集与躲避组合</td><td>中</td><td>不照搬无尽、高强度、武器或 10+ 内容</td></tr><tr><td>Flappy Bird</td><td>极少输入和清晰纵向通道；用于定义反例边界</td><td>中低</td><td>重力下坠、窄缝、碰撞即死、重复重开明确排除</td></tr><tr><td>MediaPipe / Liberi 研究</td><td>位置与类别解耦、输入平滑、单一动作按情境解释、低失败代价</td><td>高</td><td>不把技术状态暴露给儿童；研究样本不等同于典型 5 岁儿童</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">3. 单产品体验拆解</h3>
+<h4 class="md-h">3.1 Bluey: Bust-a-Move</h4>
+<p><strong>公开体验结构</strong>：选择游戏 → 选择单/多人和难度 → 用与情境一致的身体动作完成单一目标 → 分数/关卡/动画反馈 → 再玩或换小游戏。</p>
+<p><strong>值得继承</strong>：</p>
+<ul class="md-ul"><li>动作与故事目标一致：跳跃是顶气球、姿势是模仿动物、挥动是击球，孩子不需要先理解抽象控制器映射。</li><li>单人模式之外保留家长/第二玩家辅助。Keepy Uppy 允许用遥控器控制 Chattermax 帮忙，说明“辅助但不抢走主角”是亲子游戏的有效角色分工。</li><li>Cricket 提供不结束的练习模式并明确适合幼儿，证明低龄游戏需要“可练习、无淘汰”的入口。</li><li>官方公开截图显示游戏画面采用一个主场景、顶部少量进度信息、角色动作和目标物居中，不依赖高密度菜单。</li></ul>
+<p><strong>不适合照搬</strong>：</p>
+<ul class="md-ul"><li>六个小游戏会分散本项目最重要的手势验证。</li><li>全身跳、舞、挥拍需要更大的活动空间；本项目应先用近景静态手势降低门槛。</li><li>Play Pass、官方角色、剧集音乐和美术均不属于本项目资产范围。</li></ul>
+<p><strong>对本项目的决定</strong>：每个手势必须有情境含义；Gesture Lab 使用同一动作语义，不先教技术名称。家长键盘辅助作为并行控制通道，但不能自动替孩子完成全部关卡。</p>
+<p>来源：<a href="https://www.nexplayground.com/blog/new-bluey-game" target="_blank" rel="noopener">Nex 官方完整玩法说明</a>、<a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey 官方发布说明</a></p>
+<h4 class="md-h">3.2 Nex Playground</h4>
+<p><strong>公开体验结构</strong>：成人连接设备/网络/账号 → 选择游戏 → 摄像头自动跟踪活跃玩家 → 儿童用身体游玩；遥控器只负责导航，游戏本身不需要控制器。</p>
+<p><strong>值得继承</strong>：</p>
+<ul class="md-ul"><li>明确区分“成人导航”和“儿童动作”。这避免孩子在浏览器权限、设置和游戏之间切换心智。</li><li>对摄像头隐私给出可见承诺：本机处理、不存储视频、实体隐私盖。我们的浏览器版没有实体盖，但必须提供同等级的文字说明、摄像头状态和一键关闭。</li><li>明确空间条件和设备摆放。Nex 建议约 6×6 英尺空间，并指出部分高强度游戏可能让 6 岁以下儿童困难；这支持本项目使用手部近景、坐姿可玩和启动前取景检查。</li><li>“简单自然的动作 + 低延迟”是产品承诺，说明识别状态应通过游戏反馈体现，而不是让孩子阅读置信度数字。</li></ul>
+<p><strong>不适合照搬</strong>：</p>
+<ul class="md-ul"><li>官方首次设置可能包含电视、Wi-Fi、账号、下载和遥控器，帮助中心给出的预计时间最长可达一小时；浏览器 MVP 的目标应是家长 60 秒内进入 Gesture Lab。</li><li>游戏目录、订阅和下载状态不是本项目所需信息架构。</li></ul>
+<p><strong>对本项目的决定</strong>：设置层只对家长显示，儿童层全屏；首次流程限定为“隐私说明 → 摄像头授权 → 取景检查 → Gesture Lab”。拒绝权限、识别不稳定或家长主动选择时，立即进入键盘模式。</p>
+<p>来源：<a href="https://www.nexplayground.com/how-it-works" target="_blank" rel="noopener">Nex How It Works</a>、<a href="https://support.nexplayground.com/en/articles/13146476-how-do-i-setup-playground-for-the-first-time" target="_blank" rel="noopener">首次设置帮助</a>、<a href="https://www.nexplayground.com/en-gb/buy/playground" target="_blank" rel="noopener">空间与隐私 FAQ</a></p>
+<h4 class="md-h">3.3 GoNoodle Games</h4>
+<p><strong>公开体验结构</strong>：简短故事目标 → 倒计时 → 连续口头动作指令 → 角色即时幽默反馈 → 分段升级 → 完成鼓励。</p>
+<p>公开的 Fabio's Meatball Run 和 Big Nate's Detention Dash 反复使用 <code>Jump</code>、<code>Duck</code>、<code>Dodge left/right</code> 等单步口令，并在动作之间穿插笑话、角色反应和阶段庆祝。这种结构的价值不在于摄像头技术，而在于“一个时刻只要求一个动作”。</p>
+<p><strong>值得继承</strong>：</p>
+<ul class="md-ul"><li>动作前有明确口令，开始前有倒计时。</li><li>相同动作多次复现，让孩子在真实关卡里练习，而不是只在教程里成功一次。</li><li>错过动作后故事仍然继续，不依赖失败重开。</li><li>成人功能与儿童内容有显式分隔，站点多处提示需要成人帮助进入设置区域。</li></ul>
+<p><strong>不适合照搬</strong>：</p>
+<ul class="md-ul"><li>示例内容标注 3–5 年级，语速、梗密度和动作频率明显高于 5 岁儿童首玩需求。</li><li>连续左右躲避需要全身位置识别，本项目 P0 不做。</li><li>积分、角色升级和内容导航会增加 MVP 噪音。</li></ul>
+<p><strong>对本项目的决定</strong>：每个动作使用“视觉图标 + 一句中文语音 + 角色预演”，口令后预留宽松响应窗口。GoNoodle 式口令序列只用于 L1 <code>command_runner</code>：拳→掌高跳，末段同一张掌按情境完成伙伴接力；L2/L3 改变的是玩法关系，不继续堆叠口令。</p>
+<p>来源：<a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games</a>、<a href="https://www.gonoodle.com/videos/7YjO6X/fabios-meatball-run" target="_blank" rel="noopener">Fabio's Meatball Run</a>、<a href="https://www.gonoodle.com/videos/rwq6MY/big-nates-detention-dash" target="_blank" rel="noopener">Big Nate's Detention Dash</a></p>
+<h4 class="md-h">3.4 Bluey: Let’s Play</h4>
+<p><strong>公开体验结构</strong>：选择房间/角色 → 自由触碰环境和道具 → 重现熟悉情境 → 无固定失败地持续探索。</p>
+<p><strong>值得继承</strong>：</p>
+<ul class="md-ul"><li>Bluey 和 Bingo 作为可选角色，验证了低龄儿童理解“选择谁来玩”比理解复杂属性表更自然。</li><li>房间探索、做饭、玩玩具和音乐等活动没有传统失败压力，适合作为本项目低挫败基调参考。</li><li>免费内容先提供少量角色和地点，说明首次体验应先让孩子成功，而不是先展示大量锁定内容。</li></ul>
+<p><strong>不适合照搬</strong>：</p>
+<ul class="md-ul"><li>触控沙盒没有横版卷轴的节奏和手势反馈要求。</li><li>订阅解锁角色/房间不适合家庭 MVP。</li><li>官方角色、家庭场景和道具不进入本项目资产。</li></ul>
+<p><strong>对本项目的决定</strong>：角色切换只显示两个大头像和能力图形，不展示数值；L1 末段的伙伴接力复用拳→掌，不新增角色切换专用手型。关卡结果强调收集贴纸和角色庆祝，不使用失败评级或成绩锁关。</p>
+<p>来源：<a href="https://www.bluey.tv/blog/bluey-lets-play-mobile-app-is-available-now/" target="_blank" rel="noopener">Bluey: Let’s Play 官方说明</a></p>
+<h4 class="md-h">3.5 多玩法三关 Benchmark</h4>
+<p>本轮用户确认三个短关卡必须形成明显不同的玩法。Benchmark 的结论是“新增能力与空间问题，而不是新增手型”。</p>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>参考机制</th><th>经验证的核心关系</th><th>本项目可复用方式</th><th>5 岁版本必须删除的部分</th></tr></thead><tbody><tr><td>GoNoodle / Bluey 体感</td><td>一个时刻一个动作，动作与故事目标一致</td><td>L1 用拳→掌完成高跳；末段同一动作按伙伴门情境变为接力</td><td>高频连续口令、复杂文本和全身高强度动作</td></tr><tr><td>Nex / Fruit Ninja 体感</td><td>身体动作与画面结果直接、即时对应</td><td>L2 掌心 Y 直接控制角色纵向位置；游戏内同步显示跟手爪印</td><td>以技术置信度取代儿童可理解反馈</td></tr><tr><td>Square Bird</td><td>单一输入叠加高度，以障碍外形表达需要几层</td><td>L3 每次完成拳→掌生成一朵云，明显障碍只需 1–3 朵；多叠无害</td><td>精确层数惩罚、持续提速、敌人和碰撞失败</td></tr><tr><td>Jetpack Joyride / Flappy Bird</td><td>自动前进配合纵向避障，输入少但障碍可组合</td><td>只借鉴 L2 的自动前进和清晰上下通道</td><td>经典 Flappy 重力下坠、窄缝、碰撞即死、无限重开</td></tr></tbody></table></div>
+<p>MediaPipe 会同时输出手势类别和手部关键点，因此 L2 的掌心位置可以在分类为 <code>Unknown</code> 时继续工作。分类只服务 L1/L3 的离散拳掌动作，不成为位置控制的前置门槛。<a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture_recognizer" target="_blank" rel="noopener">MediaPipe 官方说明</a></p>
+<p>儿童 exergame <code>Liberi</code> 使用单一动作键按游戏情境决定动作，对运动输入做平滑，并让失败可见但只需很少重复。这支持本项目复用拳掌、平滑掌心位置和无 Game Over；其样本为 8–12 岁 ASD 儿童，因此只作为设计原则参考，不外推为 5 岁可用性结论。<a href="https://www.frontiersin.org/journals/virtual-reality/articles/10.3389/frvir.2022.817303/full" target="_blank" rel="noopener">Frontiers Liberi 研究</a></p>
+<p><strong>已确认的三关源真相</strong>：</p>
+<ol class="md-ol"><li><strong>L1 <code>command_runner</code>｜40 秒</strong>：自动前进；握拳上膛、张掌高跳；末段伙伴门复用同一拳→掌完成情境接力。</li><li><strong>L2 <code>hand<em>follow</em>dodge</code>｜45 秒</strong>：掌心 Y 直接控制角色在宽通道中上下躲避；检测到手部关键点即可跟随，手势分类为 <code>Unknown</code> 也不能停。</li><li><strong>L3 <code>cloud_stack</code>｜50 秒</strong>：每个稳定的拳→掌边沿触发叠一朵云，以 1、2、3 朵的可读障碍逐步组合；多叠无害，少叠由伙伴补云并安全托底。</li></ol>
+<p>三关均无生命值、无 Game Over、无成绩锁关；完成本关即可继续。<code>Pointing_Up</code> / <code>Victory</code> 不作为主线手势。</p>
+<p>来源：<a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey 官方 Bust-a-Move</a>、<a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games</a>、<a href="https://www.nexplayground.com/en-ie/blog/the-ultimate-nex-playground-game-guide" target="_blank" rel="noopener">Nex 低龄游戏指南</a>、<a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird 官方 Google Play 页面</a>、<a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride 官方 Google Play 页面</a>、<a href="https://www.forbes.com/sites/lananhnguyen/2014/02/11/exclusive-flappy-bird-creator-dong-nguyen-says-app-gone-forever-because-it-was-an-addictive-product/" target="_blank" rel="noopener">Flappy Bird 创作者访谈</a></p>
+<hr class='md-hr'>
+<h3 class="md-h">4. 继承矩阵</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>体验环节</th><th>竞品有效模式</th><th>本项目继承决策</th><th>优先级</th><th>明确不做</th></tr></thead><tbody><tr><td>家长进入</td><td>成人负责设置，儿童负责游玩</td><td>家长欢迎页 + 隐私说明 + 模式选择</td><td>P0</td><td>账号、订阅、内容商店</td></tr><tr><td>摄像头授权</td><td>可见隐私承诺和硬件/空间说明</td><td>授权前说明“只在本机处理”，显示摄像头状态和关闭入口</td><td>P0</td><td>后台录制、上传、隐藏权限状态</td></tr><tr><td>取景检查</td><td>系统确认玩家进入追踪范围</td><td>显示手部轮廓目标区；识别到手后给友好动画</td><td>P0</td><td>要求完整身体或 6×6 英尺空间</td></tr><tr><td>动作教学</td><td>单动作示范、自然语义、练习模式</td><td>Gesture Lab 完成一次拳→掌→拳即可进入，留页可自愿复练</td><td>P0</td><td>一次展示全部能力、强制刷次数</td></tr><tr><td>关卡指令</td><td>少量动作词汇、单步口令、逐关切换空间问题</td><td>L1 拳掌高跳/接力，L2 掌心 Y 跟手，L3 拳掌叠云；每关只显示当前控制图示</td><td>P0</td><td>每关新增一个必需手型、高频连续口令</td></tr><tr><td>即时反馈</td><td>世界反应、音效、进度变化</td><td>L1/L3 触发即动作；L2 关键点存在即持续跟手，并显示游戏内爪印</td><td>P0</td><td>向孩子显示置信度、把 <code>Unknown</code> 当失败</td></tr><tr><td>家长辅助</td><td>第二输入通道帮助但不抢主角</td><td>摄像头失败可完整切换键盘；L1/L3 用 Space，L2 用 ↑/↓</td><td>P0</td><td>自动代玩或家长长期持有主控制</td></tr><tr><td>角色切换</td><td>两个熟悉角色，大图选择</td><td>L1 末段伙伴门复用拳→掌情境接力；2.5 秒后显示大头像兜底</td><td>P0 可降级</td><td>角色属性表、装备、付费解锁、必需 V 手势</td></tr><tr><td>完成反馈</td><td>分段庆祝、奖励动画、再来一次</td><td>贴纸册 + 双角色庆祝 + 再玩一次</td><td>P0</td><td>失败页、排行榜、星级羞辱</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">5. 推荐页面骨架</h3>
+<pre class="md-pre"><code>家长欢迎页
+  ↓
+隐私与模式选择（摄像头 / 键盘）
+  ↓
+摄像头授权与取景检查 ──权限拒绝/识别失败──→ 键盘模式说明
+  ↓                                         ↓
+Gesture Lab：握拳准备 / 张掌行动 ←─────────┘
+  ↓ 完成拳→掌→拳或家长选择按键
+三关地图
+  ↓
+L1 指令跑酷 40s → 单关庆祝 → L2 跟手躲避 45s → 单关庆祝 → L3 云朵叠高 50s
+  ↓
+贴纸庆祝 / 回地图 / 再玩本关</code></pre>
+<p><strong>页面角色分工</strong>：</p>
+<ul class="md-ul"><li>家长层：文字可以较完整，负责隐私、权限、模式和退出。</li><li>儿童层：全屏、极少文字、一个时刻一个目标，以图形、语音、角色动作反馈为主。</li><li>系统层：持续监控摄像头、手是否入镜、识别稳定性和降级状态，但不把技术细节直接暴露给孩子。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">6. 不可丢失点</h3>
+<ol class="md-ol"><li><strong>Gesture Lab 是正式产品页面，不是隐藏调试工具。</strong> 它决定能否进入手势模式，并记录每类手势成功/混淆结果。</li><li><strong>家长控制和儿童控制分层。</strong> 摄像头权限、退出和模式切换必须避免被儿童误触。</li><li><strong>每关只教当前控制关系。</strong> L1 是拳→掌高跳/末段接力，L2 是“手在哪里，小狗就去哪里”，L3 是拳→掌叠云；每关先有安全示范段。</li><li><strong>失败不打断故事。</strong> 碰撞只产生轻微弹开、短暂减速或泡泡护盾，几秒内自动恢复；已经获得的贴纸和收集物全部保留。</li><li><strong>任何摄像头阻塞都有键盘出口。</strong> 权限拒绝、手离开画面、光线不足和持续低置信度都不能形成死路。</li><li><strong>角色切换保留产品价值，但不增加必需手型。</strong> L1 末段伙伴门复用拳→掌并保留大头像，玩法目标优先于坚持某一种手势。</li><li><strong>位置与分类解耦。</strong> L2 只要有可靠关键点就持续跟手，<code>Unknown</code> 不得冻结角色；丢手短时保持，持续丢失才暂停。</li><li><strong>动作反馈与目标结算解耦。</strong> L1/L3 无目标时合法拳掌也必须产生角色动作；目标窗口只负责越障/收集判定。</li><li><strong>不使用经典 Flappy 失败循环。</strong> 不做重力下坠、窄缝、碰撞即死或失败重开；碰撞只弹开、触发护盾或自动托底，不扣除任何已经获得的奖励。</li><li><strong>不使用未经授权的官方素材。</strong> 只继承交互原则，不复制角色、美术、音乐、台词或关卡内容。</li></ol>
+<hr class='md-hr'>
+<h3 class="md-h">7. 下游架构影响</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Phase 1A 结论</th><th>对 Phase 2 的直接影响</th></tr></thead><tbody><tr><td>家长层 / 儿童层分离</td><td>架构需拆为 Parent Setup Shell 与 Child Play Surface</td></tr><tr><td>Gesture Lab 为 P0</td><td>手势校准与可用性数据不能只放在开发工具中</td></tr><tr><td>输入可降级</td><td>需要统一 Input Adapter，让摄像头和键盘都能提供离散拳掌动作与连续上下位置能力；键盘映射固定为 L1/L3 Space、L2 ↑/↓</td></tr><tr><td>三种玩法 + 两种手型/一个位置轴</td><td>关卡系统需要 <code>command<em>runner</code>、<code>hand</em>follow<em>dodge</code>、<code>cloud</em>stack</code> 三种 mechanic；Input Adapter 同时输出离散动作边沿与连续掌心 Y</td></tr><tr><td>失败不打断故事</td><td>不设计生命值与 Game Over，碰撞进入短恢复状态</td></tr><tr><td>角色切换可降级</td><td>L1 末段情境接力复用拳掌，并保留大头像辅助，不能耦合新增手型</td></tr><tr><td>本地隐私承诺</td><td>Camera Service 默认不录制、不上传，并提供可见状态与停止入口</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">8. PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：</li></ul>
+<p>  - 采用“家长分步设置 + Gesture Lab + 三关地图 + 多玩法运行时宿主 + 单关庆祝”的渐进骨架。<br>  - L1 为 40 秒 <code>command<em>runner</code>（拳→掌高跳/末段情境接力），L2 为 45 秒 <code>hand</em>follow<em>dodge</code>（掌心 Y 直接跟手且 <code>Unknown</code> 仍跟手），L3 为 50 秒 <code>cloud</em>stack</code>（拳→掌叠 1–3 朵云）。<br>  - 键盘降级固定为 L1/L3 使用 Space、L2 使用 ↑/↓；软碰撞不扣除任何已经获得的贴纸或收集物。<br>  - 继承 Nex 的直接动作反馈、GoNoodle/Bluey 的情境指令、Square Bird 的叠高越障和 Jetpack 的自动前进纵向躲避；Gesture Lab、统一输入降级、无 Game Over 和无成绩锁关均为 P0。</p>
+<ul class="md-ul"><li>被放弃的方案：</li></ul>
+<p>  - 不做专用硬件式复杂设置、内容目录/订阅、全身高强度动作、每关新增必需手型、排行榜、失败评级和官方 IP 素材复制。<br>  - 经典 Flappy 的重力、窄缝、碰撞即死与反复重开不进入主线；不采用 <code>Pointing_Up</code> / <code>Victory</code> 必过方案。<br>  - 不把摄像头置信度、模型状态等技术细节直接展示给儿童。</p>
+<ul class="md-ul"><li>需要 PM 确认的问题：</li></ul>
+<p>  - 无。本轮用户已明确确认多玩法三关、<code>web-only</code>、不新增必过手型、无 Game Over 和无成绩锁关，本 Review Slice 状态为 <code>confirmed</code>。</p>
+<ul class="md-ul"><li>不需要 PM 审查的执行细节：</li></ul>
+<p>  - 各竞品营销页层级、付费价格、具体视频台词和具体识别参数。</p>
+<ul class="md-ul"><li>进入下一阶段的条件：</li></ul>
+<p>  - 已满足：PM 已确认当前 Benchmark 结论，可继续按相同源真相同步 Phase 2 至 04B。</p></div></template>
+<template id="mat-tpl-1"><div class="md-content"><h2 class="md-h">产品方向研究：5 岁儿童手势控制横版亲子游戏</h2>
+<blockquote class="md-bq"><p>更新日期：2026-08-13 | 研究人：Codex</p></blockquote>
+<h3 class="md-h">核心判断</h3>
+<p><strong>结论</strong>：Careful Go</p>
+<p><strong>一句话理由</strong>：摄像头体感亲子游戏、单输入横版玩法和布鲁伊家庭体感产品都已有真实验证，浏览器也能同时取得手势类别与手部关键点；本项目可用两种手型和掌心位置构成三种不同玩法，不必用新增手型制造丰富度。</p>
+<p><strong>信心程度</strong>：中 — 技术与品类证据较强，目标用户和家庭场景也已明确；但尚无本项目真实儿童试玩数据，最核心的手势可用性假设仍未验证。</p>
+<p><strong>Target Surface</strong>：web-only</p>
+<p><strong>端型选择依据</strong>：PM 已于 2026-08-11 确认首版采用浏览器、优先适配带摄像头的笔记本电脑；移动端不进入本轮 04A/04B 默认范围。</p>
+<hr class='md-hr'>
+<h3 class="md-h">市场机会</h3>
+<p><strong>规模与趋势</strong>：</p>
+<ul class="md-ul"><li>官方 <code>Bluey: Bust-a-Move</code> 已把布鲁伊、家庭共同游玩和体感小游戏结合起来，包含定格舞、Keepy Uppy、模仿动物、烹饪动作与壁球等五类玩法，证明“布鲁伊 × 动作控制 × 家庭娱乐”不是纯概念。<a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey 官方介绍</a></li><li>Nex Playground 将“无需控制器、摄像头体感、5 岁起、家庭多人和隐私安全”作为核心卖点，并提供包括 Bluey 在内的儿童 IP 游戏，说明低龄家庭体感游戏已经形成成熟产品形态。<a href="https://www.nexplayground.com/home-kids" target="_blank" rel="noopener">Nex Playground 官方页面</a></li><li>GoNoodle Games 让儿童通过跳跃、下蹲和躲闪控制移动小游戏，强调无需控制器、数据连接或额外硬件，说明普通智能设备上的动作控制具有明确使用场景。<a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle 官方页面</a></li><li>Square Bird 使用一次点击增加角色脚下堆叠高度，再以不同高度越过障碍，验证了“一个输入、障碍组合逐步变化”的可读横版循环。<a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird 官方 Google Play 页面</a></li><li>Jetpack Joyride 以自动前进、单一纵向控制、收集与躲避构成主循环，验证了低输入词汇也可以产生持续变化；其高强度、无尽和面向 10 岁以上的内容不是本项目目标。<a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride 官方 Google Play 页面</a></li><li>本项目是家庭 MVP，不以商业市场规模为 Go/No-Go 依据；本阶段不引用缺少可靠口径的 TAM 数据。</li></ul>
+<p><strong>切入点判断</strong>：现在适合做“验证型家庭原型”，因为浏览器端 2D 游戏与实时手势识别都已有可直接使用的基础设施。差异化不在于发明体感玩法，而在于：无需专用主机、打开浏览器即可玩、针对单个 5 岁儿童降低手势数量和失败惩罚，并允许家长陪玩或随时切换到键盘降级控制。</p>
+<hr class='md-hr'>
+<h3 class="md-h">竞品格局</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>竞品</th><th>核心定位</th><th>关键优势</th><th>主要局限</th></tr></thead><tbody><tr><td><a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey: Bust-a-Move</a></td><td>官方布鲁伊体感小游戏合集</td><td>IP、家庭共同游玩、动作与剧集情节结合紧密</td><td>依赖 Nex Playground 与 Play Pass；不是浏览器轻量体验</td></tr><tr><td><a href="https://www.nexplayground.com/home-kids" target="_blank" rel="noopener">Nex Playground</a></td><td>面向 5 岁以上家庭的摄像头体感主机</td><td>无控制器、多人、成熟游戏目录、隐私和儿童安全定位清晰</td><td>需要专用硬件；完整身体追踪对空间和动作能力有要求</td></tr><tr><td><a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games</a></td><td>用跳、蹲、躲等动作驱动的儿童移动小游戏</td><td>无额外控制器、动作直观、强调身体活动</td><td>以移动 App/内容生态为主，不提供本项目想要的角色切换横版体验</td></tr><tr><td><a href="https://www.bluey.tv/blog/bluey-lets-play-mobile-app-is-available-now/" target="_blank" rel="noopener">Bluey: Let’s Play</a></td><td>布鲁伊家庭场景中的触控探索与角色扮演</td><td>低龄熟悉角色、可探索房间、可切换角色与情境</td><td>主要是触控沙盒，不验证摄像头手势和横版卷轴机制</td></tr><tr><td><a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird</a></td><td>单输入叠高越障横版游戏</td><td>障碍高度就是动作目标，输入与结果关系清晰</td><td>原作追求精确叠层、提速并包含敌人；对 5 岁儿童需要大幅容错</td></tr><tr><td><a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride</a></td><td>单触纵向飞行的自动卷轴游戏</td><td>自动前进、收集和纵向避障形成清晰闭环</td><td>原作节奏强、无尽且标注 10+；只借鉴抽象控制关系</td></tr><tr><td><a href="https://www.forbes.com/sites/lananhnguyen/2014/02/11/exclusive-flappy-bird-creator-dong-nguyen-says-app-gone-forever-because-it-was-an-addictive-product/" target="_blank" rel="noopener">Flappy Bird 创作者访谈</a></td><td>单输入穿越纵向障碍</td><td>证明极少输入和清晰障碍可形成强反馈</td><td>窄缝、重力下坠、碰撞即死和反复重开明确不进入主线</td></tr></tbody></table></div>
+<p><strong>差异化空间</strong>：本项目不应复制官方布鲁伊小游戏内容，而应验证一个更窄的体验：笔记本浏览器即开即玩、单人优先、三个合计 135 秒的短关卡、两种手型与掌心位置复用为三种玩法、无账号无广告、视频只在本机处理。若未来公开发行，必须切换为原创角色或先取得正式授权。</p>
+<p><strong>Phase 1A 覆盖范围</strong>：<code>01A-competitor-page-experience.md</code> 负责把上述参考收敛为“家长设置 → 儿童校准 → 三种玩法 → 结果”的页面与交互结构，并只继承抽象机制，不复制视觉素材。</p>
+<hr class='md-hr'>
+<h3 class="md-h">用户痛点</h3>
+<p><strong>痛点优先级排序</strong>（按频率 × 强度）：</p>
+<ol class="md-ol"><li><strong>传统控制方式对 5 岁儿童不够自然</strong></li></ol>
+<p>   - 具体表现：“我想直接用身体或手来玩，不想先记住一排按键。”<br>   - 信息来源：PM 一手目标 + 同类产品定位验证；Nex 和 GoNoodle 都把“动作就是控制器”作为核心价值。<br>   - 当前解法：家长代操作、使用触摸屏、简化键盘按键或购买体感主机。<br>   - 解法的不足：家长代操作削弱自主感；触屏不符合横版体感目标；专用主机增加成本和准备门槛。</p>
+<ol class="md-ol"><li><strong>误识别会把动作游戏迅速变成挫败体验</strong></li></ol>
+<p>   - 具体表现：“我明明做了动作，角色为什么没跳？”<br>   - 信息来源：技术文档 + 产品推断，尚待真实试玩验证。MediaPipe Web 能实时输出预设手势与手部关键点，但视频识别调用会同步占用 UI 线程，需要节流或移至 Worker。<a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture<em>recognizer/web</em>js" target="_blank" rel="noopener">MediaPipe Web 指南</a><br>   - 当前解法：提高识别阈值、要求更标准动作、反复教学。<br>   - 解法的不足：阈值过高会漏识别，过低会误触；要求孩子做“机器友好”的标准动作会损害自然性。</p>
+<ol class="md-ol"><li><strong>家长需要放心且低成本地完成摄像头设置</strong></li></ol>
+<p>   - 具体表现：“摄像头拍到什么、会不会上传、拒绝权限后还能不能玩？”<br>   - 信息来源：浏览器权限要求与儿童隐私规则。浏览器摄像头需要安全上下文并由用户授权；儿童照片、视频和生物识别信息可能属于受保护个人信息。<a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia" target="_blank" rel="noopener">MDN <code>getUserMedia</code></a>、<a href="https://consumer.ftc.gov/articles/protecting-your-childs-privacy-online" target="_blank" rel="noopener">FTC 儿童隐私说明</a><br>   - 当前解法：直接弹出浏览器权限框，或用键盘替代。<br>   - 解法的不足：没有家长说明时容易产生不信任；没有降级控制会让拒绝权限等于无法游玩。</p>
+<ol class="md-ol"><li><strong>家长希望屏幕活动是主动且可共同参与的</strong></li></ol>
+<p>   - 具体表现：“可以玩屏幕，但最好不是一直坐着看。”<br>   - 信息来源：外部专业建议与同类产品定位。NAEYC 建议低龄技术体验应主动、动手、赋能儿童并提供适应性支持，且不替代真实世界活动。<a href="https://www.naeyc.org/node/3796" target="_blank" rel="noopener">NAEYC 儿童发展原则</a><br>   - 当前解法：观看运动视频、跟跳、家长陪玩或限制屏幕时长。<br>   - 解法的不足：纯观看缺少因果反馈；复杂游戏又容易让家长成为长期操作员。</p>
+<hr class='md-hr'>
+<h3 class="md-h">核心假设</h3>
+<p>如果以下假设不成立，Careful Go 的判断就不成立：</p>
+<ol class="md-ol"><li><strong>拳掌与位置输入可分开成立</strong>：5 岁儿童能完成 <code>Closed<em>Fist → Open</em>Palm</code> 的离散动作；同时，只要 MediaPipe 仍输出手部关键点，掌心 Y 就可持续驱动角色，即使手势类别是 <code>Unknown</code>。→ 验证方式：Gesture Lab 完成一轮拳→掌→拳；真实儿童样本阶段验证拳掌各至少 8/10，并单独验证掌心从舒适上位移动到下位时角色连续跟随。</li><li><strong>低挫败三关循环</strong>：自动卷轴、宽松碰撞、即时反馈与自然停点能让孩子独立完成 40/45/50 秒三关。→ 验证方式：首次试玩在一次示范后完成，成人干预不超过 2 次，不出现因误识别连续卡住超过 10 秒；收集成绩不影响解锁。</li><li><strong>三种控制语法可以逐关理解</strong>：第 1 关 <code>command<em>runner</code> 用拳→掌高跳并在末段情境接力；第 2 关 <code>hand</em>follow<em>dodge</code> 用掌心 Y 直接跟手躲避；第 3 关 <code>cloud</em>stack</code> 用拳→掌叠 1–3 朵云。→ 验证方式：每关开头提供一段安全练习；孩子能在第一个正式障碍前做出对应控制，不新增第三种必需手型。</li><li><strong>家长设置可接受</strong>：家长能理解本地处理说明，并在 60 秒内完成摄像头授权和校准。→ 验证方式：用全新浏览器配置走一次家长设置流程；拒绝权限时键盘模式仍可通关。</li></ol>
+<hr class='md-hr'>
+<h3 class="md-h">风险点</h3>
+<ol class="md-ol"><li><strong>儿童手势误识别与输入延迟</strong></li></ol>
+<p>   - 影响：高；它直接决定游戏是否有趣，而不是单纯技术指标。<br>   - 应对思路：Gesture Lab 先于游戏；离散拳掌采用连续帧确认、动作冷却和重新握拳上膛；掌心位置独立使用关键点、死区与平滑，不因类别为 <code>Unknown</code> 停止；保留清晰反馈和键盘降级。</p>
+<ol class="md-ol"><li><strong>角色/IP 授权边界</strong></li></ol>
+<p>   - 影响：高；Bluey 官方页面明确标注角色和标识受 Ludo Studio/BBC Studios 授权体系保护。<br>   - 应对思路：当前代码和仓库只使用原创蓝色/橙色小狗占位角色；私人本地替换与公开发行分开管理，未获授权不公开使用官方素材。</p>
+<ol class="md-ol"><li><strong>浏览器权限与部署环境</strong></li></ol>
+<p>   - 影响：中；<code>getUserMedia</code> 需要 HTTPS 或受信任本地环境，权限拒绝会阻断摄像头输入。<br>   - 应对思路：开发用 localhost，预览部署使用 HTTPS；先展示家长说明，再请求权限；提供重新授权指导和键盘模式。</p>
+<ol class="md-ol"><li><strong>身体差异、空间和疲劳</strong></li></ol>
+<p>   - 影响：中；孩子的动作幅度、身高、左右手和活动空间不同。<br>   - 应对思路：优先静态手势而非大幅跳跃；允许坐姿；校准时同时检查手是否进入取景框；单局约 3 分钟并可随时暂停。</p>
+<ol class="md-ol"><li><strong>三种玩法的控制语法切换造成认知负担</strong></li></ol>
+<p>   - 影响：中；即使手型不增加，离散跳跃、连续跟手和离散叠云之间仍可能互相干扰。<br>   - 应对思路：三关顺序固定；每关开场提供 3–5 秒无障碍安全段和唯一图形提示。第 2 关明确写成“手在哪里，小狗就去哪里”，且不要求张掌；第 3 关重新示范拳→掌。全程不增加生命值、Game Over、成绩锁关或组合技。</p>
+<hr class='md-hr'>
+<h3 class="md-h">建议下一步</h3>
+<p><strong>如果 Careful Go</strong>：</p>
+<ul class="md-ul"><li>最需要尽快验证的假设是：5 岁儿童的拳→掌完成率、掌心 Y 跟手稳定性，以及逐关切换控制语法时是否无需成人反复解释。</li><li>建议 MVP 范围：家长说明页、Gesture Lab、三关地图、40 秒 <code>command<em>runner</code>、45 秒 <code>hand</em>follow<em>dodge</code>、50 秒 <code>cloud</em>stack</code>、单关庆祝页、键盘降级、本地摄像头处理。关卡完成即可继续，收集数只用于庆祝反馈，不设置 Game Over 或成绩锁关。</li><li>下游行动：以当前已确认源真相同步 Phase 1A 至 04B；Gesture Lab 继续作为 P0 产品页面，而不是隐藏的开发调试页。</li><li>技术建议：Phaser 负责浏览器 2D 游戏循环；MediaPipe Tasks Vision 负责手势输入；输入层与游戏指令层解耦。Phaser 官方定位即浏览器 2D 游戏并支持 JavaScript/TypeScript。<a href="https://phaser.io/why-phaser" target="_blank" rel="noopener">Phaser 官方说明</a></li></ul>
+<p><strong>本轮不覆盖的端型 / 后续扩展</strong>：</p>
+<ul class="md-ul"><li><code>mobile-only</code> 与 <code>web-mobile-parallel</code> 不在本轮范围。</li><li>手机和平板适配、原生 App、多人、账号、排行榜、超过三关的内容扩展、云端视频分析不进入 04A/04B 默认原型和 QA。</li><li>公开发行和商业化不属于本轮目标；若方向改变，必须重新评估授权、隐私合规和发布渠道。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">用户任务类型与页面形态启发</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>核心任务</th><th>对象规模</th><th>用户需要比较的字段</th><th>推荐页面形态</th><th>依据</th></tr></thead><tbody><tr><td>家长完成权限与环境设置</td><td>1 个设备、1 个摄像头</td><td>权限状态、取景状态、识别状态、降级入口</td><td>低密度分步任务流</td><td>每一步只有一个主决策，需避免儿童误触系统设置</td></tr><tr><td>儿童学习输入</td><td>2 个手型 + 1 个掌心位置轴</td><td>当前示范、关键点反馈、动作是否上膛、跟手位置</td><td>全屏 Gesture Lab / 单卡教学</td><td>需要即时因果反馈，不适合菜单或表格</td></tr><tr><td>儿童选择并完成关卡</td><td>3 个顺序解锁关卡、少量即时对象</td><td>当前关卡、进度、收集数、唯一动作提示</td><td>单屏三关地图 + 全屏横版世界 + 浮动小教练</td><td>关卡提供自然停点；游戏主体不应被固定侧栏压缩</td></tr><tr><td>查看完成结果</td><td>1 次游玩结果</td><td>收集成果、角色庆祝、再玩一次</td><td>单屏庆祝卡</td><td>不使用排行榜或失败评分，强调完成与共同庆祝</td></tr></tbody></table></div>
+<p><strong>认可样本 / 参考原型拆解</strong>：</p>
+<ul class="md-ul"><li>可复用结构：Nex/GoNoodle 的“无需控制器、身体动作直接驱动结果”；Bluey 官方体感游戏的家庭共同参与与情境化；Square Bird 与 Jetpack Joyride 的少输入、多障碍组合。</li><li>可复用交互：动作示范、拳掌边沿触发、掌心位置直接跟手、逐关切换玩法、即时世界反馈、低门槛加入、家长辅助角色。</li><li>可复用字段模型：输入状态、识别置信度、动作冷却、当前角色、收集数、摄像头/键盘模式。</li><li>不可丢失点：本地处理说明、降级入口、校准可见性、低挫败碰撞、短回合。</li><li>不适合照搬点：专用主机前提、完整身体大动作、官方角色素材、订阅与付费门槛、复杂小游戏合集。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">信息来源</h3>
+<p><strong>一手信息</strong>：</p>
+<ul class="md-ul"><li>E-001：PM 原始目标——为 5 岁儿童设计手势控制、收集、避障和角色切换的横版游戏。</li><li>E-002：PM 已确认首版 <code>web-only</code>、笔记本摄像头优先、原创占位素材。</li></ul>
+<p><strong>搜索信息</strong>：</p>
+<ul class="md-ul"><li>E-003：<a href="https://www.bluey.tv/blog/bluey-bust-a-move-bounces-onto-nex-playground/" target="_blank" rel="noopener">Bluey: Bust-a-Move 官方介绍</a>——布鲁伊体感家庭小游戏的直接品类验证与授权标识。</li><li>E-004：<a href="https://www.nexplayground.com/home-kids" target="_blank" rel="noopener">Nex Playground 官方页面</a>——5 岁以上、无控制器、家庭多人、儿童隐私和体感产品定位。</li><li>E-005：<a href="https://www.gonoodle.com/company/games" target="_blank" rel="noopener">GoNoodle Games 官方页面</a>——跳、蹲、躲等动作控制与无需额外硬件的移动游戏形态。</li><li>E-006：<a href="https://www.bluey.tv/blog/bluey-lets-play-mobile-app-is-available-now/" target="_blank" rel="noopener">Bluey: Let’s Play 官方介绍</a>——低龄角色探索、房间互动和角色内容形态。</li><li>E-007：<a href="https://www.naeyc.org/node/3796" target="_blank" rel="noopener">NAEYC 儿童发展原则</a>——主动、动手、赋能和适应性支持的低龄技术体验原则。</li><li>E-008：<a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture<em>recognizer/web</em>js" target="_blank" rel="noopener">MediaPipe Gesture Recognizer for Web</a>——实时预设手势、手部关键点与主线程阻塞风险。</li><li>E-009：<a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia" target="_blank" rel="noopener">MDN <code>getUserMedia</code></a>——摄像头安全上下文和用户授权要求。</li><li>E-010：<a href="https://consumer.ftc.gov/articles/protecting-your-childs-privacy-online" target="_blank" rel="noopener">FTC 儿童隐私说明</a>——儿童照片、视频和生物识别信息的隐私边界。</li><li>E-011：<a href="https://phaser.io/why-phaser" target="_blank" rel="noopener">Phaser 官方说明</a>——浏览器 2D 游戏与 JavaScript/TypeScript 技术适配。</li><li>E-012：<a href="https://developers.google.com/edge/mediapipe/solutions/vision/gesture_recognizer" target="_blank" rel="noopener">MediaPipe Gesture Recognizer</a>——实时返回手势类别、左右手以及图像/世界坐标关键点，支持把位置控制与分类结果解耦。</li><li>E-013：<a href="https://play.google.com/store/apps/details?hl=en_US&amp;id=com.trianglegames.squarebird" target="_blank" rel="noopener">Square Bird 官方 Google Play 页面</a>——点击叠高、越过不同高度障碍与连续正确奖励机制。</li><li>E-014：<a href="https://play.google.com/store/apps/details?id=com.halfbrick.jetpackjoyride" target="_blank" rel="noopener">Jetpack Joyride 官方 Google Play 页面</a>——自动前进、纵向飞行、收集/躲避和单触控制。</li><li>E-015：<a href="https://www.forbes.com/sites/lananhnguyen/2014/02/11/exclusive-flappy-bird-creator-dong-nguyen-says-app-gone-forever-because-it-was-an-addictive-product/" target="_blank" rel="noopener">Flappy Bird 创作者访谈</a>——窄通道、碰撞即死和高失败循环，作为明确负面边界。</li><li>E-016：<a href="https://www.nexplayground.com/en-ie/blog/the-ultimate-nex-playground-game-guide" target="_blank" rel="noopener">Nex Playground 低龄游戏指南</a>——3–5 岁应采用大动作、清楚提示、即时反馈和低压力体验。</li><li>E-017：<a href="https://www.frontiersin.org/journals/virtual-reality/articles/10.3389/frvir.2022.817303/full" target="_blank" rel="noopener">Frontiers Liberi 儿童 exergame 研究</a>——一个动作键按情境解释、输入平滑、失败可见但少重复；研究对象并非典型 5 岁儿童，只作为设计原则参考。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：</li></ul>
+<p>  - <code>Careful Go</code>：推进家庭 MVP，并以三种短玩法验证不同控制关系；Target Surface 继续为已确认的 <code>web-only</code>。<br>  - 三关源真相为：L1 <code>command<em>runner</code> 拳→掌高跳/末段情境接力 40 秒；L2 <code>hand</em>follow<em>dodge</code> 掌心 Y 直接跟手躲避 45 秒，<code>Unknown</code> 仍跟手；L3 <code>cloud</em>stack</code> 拳→掌叠 1–3 朵云 50 秒。<br>  - 主线不新增必过手型；无 Game Over、无生命值、无成绩锁关。完成本关即可继续，收集只服务庆祝。<br>  - 核心任务形态是“家长分步设置 + 儿童全屏动作任务流”，Gesture Lab 必须作为 P0 产品模块。</p>
+<ul class="md-ul"><li>被放弃的方案：</li></ul>
+<p>  - 暂不做移动端并行、专用硬件、全身大动作、超过三关的内容扩展、账号/排行榜和公开发行。<br>  - 经典 Flappy 式重力下坠、窄缝、碰撞即死和失败重开不进入主线；不采用逐关新增 <code>Pointing_Up</code> / <code>Victory</code> 的方案。<br>  - 不复制 <code>Bluey: Bust-a-Move</code> 的官方小游戏、视觉或角色素材。</p>
+<ul class="md-ul"><li>需要 PM 确认的问题：</li></ul>
+<p>  - 无。本轮用户已明确确认上述多玩法三关、<code>web-only</code>、无新增必过手型和低挫败边界，本 Review Slice 状态为 <code>confirmed</code>。</p>
+<ul class="md-ul"><li>不需要 PM 审查的执行细节：</li></ul>
+<p>  - 搜索来源整理、框架安装方式、具体置信度参数与 Worker 实现细节。</p>
+<ul class="md-ul"><li>进入下一阶段的条件：</li></ul>
+<p>  - 已满足：PM 已确认方向，可按当前源真相继续同步 Phase 1A 至 04B。</p></div></template>
+<template id="mat-tpl-2"><div class="md-content"><h2 class="md-h">功能规格：多玩法三关核心循环</h2>
+<blockquote class="md-bq"><p>关联架构模块：冒险会话编排 / 三关地图 / 玩法运行时宿主 / 动作跑酷 / 跟手躲避 / 云朵叠高 / 儿童安全与奖励 | 更新日期：2026-08-13</p></blockquote>
+<h3 class="md-h">功能目标</h3>
+<p><strong>解决的问题</strong>：让 5 岁儿童在一条连贯冒险中感到“我的手真的在控制角色”，同时用三种不同的控制模型制造玩法变化，而不是只更换同一跑酷关的障碍和文案。</p>
+<p><strong>目标用户</strong>：5 岁儿童是主要玩家；家长负责摄像头授权、暂停、键盘接管和退出。</p>
+<p><strong>成功标准</strong>：</p>
+<ul class="md-ul"><li>孩子看到的是三段连续冒险；系统内部使用 <code>command<em>runner</code>、<code>hand</em>follow<em>dodge</code>、<code>cloud</em>stack</code> 三个独立运行时。</li><li>L1 复用已验证的 <code>Closed<em>Fist → Open</em>Palm</code>，首次互动不晚于 6 秒；合法张掌后 300ms 内出现角色反馈。</li><li>L1 跳跃峰值为 <code>clamp(150px, 24vh, 220px)</code>，完整起落约 1000ms，能明显越过宽水洼与软木箱。</li><li>L2 只要手部关键点存在，就按掌心 Y 连续跟手；手势类别为 <code>None/Unknown</code> 也不得阻断移动。</li><li>L3 每次完整拳掌循环只生成一朵云；必须重新握拳才能生成下一朵。</li><li>三关分别 40 / 45 / 50 秒，每关 6 枚收集物；到达终点即解锁下一关。</li><li>不使用生命值、Game Over、成绩锁关或必过新手型；失败只产生短暂、可恢复的世界反馈。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">页面形态决策</h3>
+<ul class="md-ul"><li>页面类型：单屏三关地图任务流 + 全屏横版玩法画布 + 浮动摄像头教练 + 单关庆祝。</li><li>核心用户任务：选择已解锁关卡 → 在安全区理解本关唯一控制 → 持续游玩 → 到达终点 → 继续下一关。</li><li>信息密度：低；同一时刻只显示一个儿童目标。</li><li>默认布局：世界 full-bleed；顶部极简 HUD；目标提示位于角色前进视线；摄像头教练浮动在右上且识别文案位于视频外。</li><li>为什么不是三个同构关卡：离散动作、连续位置和叠高建造的输入频率、反馈、失败恢复都不同，强行共用一个状态机会造成隐性门控和提示冲突。</li><li>Target Surface：<code>web-only</code>，笔记本浏览器优先；所有 screen 单视口无页面滚动。</li><li>参考样本：Nex Playground 的直接体感反馈、Square Bird 的单输入叠高抽象、Jetpack/Flappy 的自动前进与单轴穿越节奏。</li><li>用户确认状态：已确认；用户明确确认多玩法三关、保持 <code>web-only</code> 并继续重推至 04B。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">产品结构与关卡配置</h3>
+<h4 class="md-h">共享冒险外壳</h4>
+<p>三个运行时只共用：<code>Session</code>、地图/解锁、输入档案、摄像头安全、暂停、6 枚收集物、HUD、浮动教练、庆祝和原创角色资产。每个运行时独立拥有自己的状态和判定函数。</p>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>关卡</th><th>运行时</th><th>时长</th><th>新能力</th><th>核心输入</th><th>主要目标</th><th>收集</th></tr></thead><tbody><tr><td>L1 溪边跳跳</td><td><code>command_runner</code></td><td>40s</td><td>高跳与情境接力</td><td><code>PoseTransitionEvent</code></td><td>4 个宽障碍 + 1 个伙伴门</td><td>6</td></tr><tr><td>L2 萤火虫躲躲</td><td><code>hand<em>follow</em>dodge</code></td><td>45s</td><td>角色直接跟手</td><td><code>HandTrackingFrame.palmCenterY</code></td><td>6 个宽间隙</td><td>6</td></tr><tr><td>L3 云朵叠叠</td><td><code>cloud_stack</code></td><td>50s</td><td>叠云抬高</td><td><code>PoseTransitionEvent</code></td><td>1 / 2 / 3 / 1 层软障碍</td><td>6</td></tr></tbody></table></div>
+<h4 class="md-h">输入双通道</h4>
+<ul class="md-ul"><li><code>PoseTransitionEvent</code>：稳定姿态变化边沿；只承载 <code>Closed<em>Fist</code> 和 <code>Open</em>Palm</code>，用于 L1/L3。</li><li><code>HandTrackingFrame</code>：<code>handPresent</code>、<code>palmCenterY</code>、<code>confidence</code>、<code>timestamp</code>；每个有效帧提供，独立于手势分类，用于 L2。</li><li>键盘等价：L1/L3 用空格或 ↑ 执行动作；L2 用 ↑ / ↓ 连续改变目标高度。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">孩子需要知道的三句话</h3>
+<ol class="md-ol"><li>第一关：先握小拳头，再张开手，跳得高高的。</li><li>第二关：手往上，小狗往上；手往下，小狗往下。</li><li>第三关：拳头准备，张掌放一朵云。</li></ol>
+<p>旧能力不重复教学；每关只在安全区演示一次本关新能力。</p>
+<h3 class="md-h">倒计时语义</h3>
+<ul class="md-ul"><li>3、2、1 只表示世界即将开始或从安全暂停恢复。</li><li>实时手势识别、位置跟手、障碍判定和叠云都不使用识别倒计时。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">用户流程</h3>
+<h4 class="md-h">主流程</h4>
+<ol class="md-ol"><li>输入准备完成 → 系统进入 LV-00 地图，初始只解锁 L1。</li><li>儿童选择已解锁关卡 → LV-01 用一句话演示本关控制并显示世界启动倒计时。</li><li>LV-02 根据 <code>ModeDefinition.runtimeType</code> 挂载对应运行时；共用 HUD、安全与奖励服务。</li><li>儿童完成该玩法的控制；角色和世界立即反馈，目标窗口只决定目标结算。</li><li>运行到本关时长 → LV-03 单关庆祝；系统无条件解锁下一关。</li><li>儿童选择下一关、返回地图或重玩；L3 完成后显示三关完成。</li></ol>
+<h4 class="md-h">异常流程</h4>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>异常情况</th><th>系统处理方式</th><th>儿童/家长提示</th></tr></thead><tbody><tr><td>L1/L3 未握拳直接张掌</td><td>不执行离散动作；提示轻抖</td><td>“先做小拳头”</td></tr><tr><td>L2 有关键点但类别为 None/Unknown</td><td>继续根据掌心 Y 跟手，不显示失败</td><td>“小狗正跟着小手”</td></tr><tr><td>L2 短暂丢手 ≤600ms</td><td>保持最后位置，不突跳</td><td>“我还在这里”</td></tr><tr><td>L2 丢手 &gt;600ms；L1/L3 丢手 &gt;1500ms</td><td>安全冻结世界，危险不继续靠近</td><td>“小路停下啦，正在找小手”</td></tr><tr><td>L1 未越过障碍</td><td>软碰撞、约 1 秒减速、短护盾</td><td>“轻轻碰一下，继续走”</td></tr><tr><td>L2 未进入宽间隙</td><td>弹回安全区并获得 1.2 秒护盾</td><td>“泡泡保护住你啦”</td></tr><tr><td>L3 云朵不足</td><td>伙伴补齐缺少层数，记为辅助但照常通过</td><td>“伙伴送来安全云”</td></tr><tr><td>L3 云朵过多</td><td>多余云变成星星奖励</td><td>“多的云变星星啦”</td></tr><tr><td>摄像头/模型失效</td><td>暂停并保留关卡进度，允许键盘接管</td><td>家长区展示原因和继续入口</td></tr><tr><td>页面失焦/家长暂停</td><td>冻结运行时；回来后 3、2、1 恢复</td><td>“准备好再继续”</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">界面状态清单</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>状态名称</th><th>触发条件</th><th>界面主要内容</th><th>可执行操作</th><th>退出条件</th></tr></thead><tbody><tr><td>地图-初始</td><td>新会话</td><td>三张关卡卡；L1 可玩、L2/L3 锁定</td><td>选 L1 / 家长入口</td><td>进入 LV-01</td></tr><tr><td>地图-进度</td><td>已完成至少一关</td><td>已完成、当前、锁定状态</td><td>选已解锁关卡</td><td>进入 LV-01</td></tr><tr><td>玩法加载</td><td>选择关卡</td><td>关名、唯一控制示意、本机输入状态</td><td>等待 / 暂停</td><td>倒计时开始或错误</td></tr><tr><td>世界倒计时</td><td>运行时就绪</td><td>3、2、1 与角色起点</td><td>等待 / 家长暂停</td><td>running</td></tr><tr><td>L1-等待拳头</td><td><code>need_fist</code></td><td>拳头图标、高跳提示</td><td>握拳</td><td><code>armed</code></td></tr><tr><td>L1-已准备</td><td><code>armed</code></td><td>张掌图标、眼前障碍</td><td>张掌</td><td>高跳 / 接力</td></tr><tr><td>L1-高跳成功</td><td>合法张掌</td><td>150–220px 弧线、星光、目标反馈</td><td>等待落地</td><td><code>need_fist</code></td></tr><tr><td>L2-安全教学</td><td>前 5 秒</td><td>手位置光点、弹性连线、上下示意</td><td>上下移动手</td><td>正式间隙出现</td></tr><tr><td>L2-连续跟手</td><td>有手部关键点</td><td>角色与掌心目标持续同步</td><td>上下移动手</td><td>丢手/完成</td></tr><tr><td>L2-护盾</td><td>碰到障碍</td><td>弹开、1.2 秒泡泡护盾</td><td>继续跟手</td><td>护盾结束</td></tr><tr><td>L3-等待拳头</td><td><code>need_fist</code></td><td>拳头图标、所需云层</td><td>握拳</td><td><code>armed</code></td></tr><tr><td>L3-叠云</td><td>合法拳掌</td><td>新云立即出现在脚下并抬高角色</td><td>重新握拳</td><td>下次叠云/目标结算</td></tr><tr><td>无手安全等待</td><td>超过对应 grace</td><td>世界冻结、摄像头缩略图高亮</td><td>手回来 / 切键盘</td><td>恢复倒计时</td></tr><tr><td>输入错误</td><td>摄像头/模型不可用</td><td>可理解原因、重试与键盘出口</td><td>重试 / 切按键</td><td>输入恢复</td></tr><tr><td>温和辅助成功</td><td>软碰撞/自动补垫后</td><td>世界继续、保护反馈</td><td>继续游玩</td><td>短反馈结束</td></tr><tr><td>暂停</td><td>家长/失焦</td><td>冻结画面与家长操作</td><td>恢复/重开/接管/退出</td><td>对应操作</td></tr><tr><td>单关完成</td><td>时长到达</td><td>能力徽章、饼干、角色庆祝</td><td>下一关/地图/重玩</td><td>新 screen</td></tr><tr><td>三关完成</td><td>L3 完成</td><td>三枚能力贴纸、双角色</td><td>地图/重玩/设置</td><td>对应 screen</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">业务规则</h3>
+<h4 class="md-h">会话与解锁</h4>
+<ul class="md-ul"><li>IF 新会话进入地图 THEN <code>unlockedLevelIds=[L1]</code>。</li><li>IF 当前关到达终点 THEN 标记完成并解锁下一关；不得检查收集数、碰撞数或家长辅助数。</li><li>IF 用户选择锁定关卡 THEN 留在地图并说明先完成上一关。</li><li>IF 重玩关卡 THEN 创建新的 <code>levelRunId</code>，保留解锁与历史最佳收集数。</li></ul>
+<h4 class="md-h">共享安全</h4>
+<ul class="md-ul"><li>IF 运行时暂停 THEN <code>activePlayElapsedMs</code>、目标与碰撞物均不得推进。</li><li>IF 家长切换到键盘 THEN 停止摄像头轨道，保留关卡 ID、时间、收集、目标与运行时局部状态。</li><li>IF <code>prefers-reduced-motion</code> THEN 缩短装饰位移，但仍保留高跳姿态、位置目标、云层数量和成功色彩。</li><li>IF 识别结果未知但关键点有效 THEN 只允许离散动作保持未确认；不得把 <code>HandTrackingFrame</code> 变为无手。</li></ul>
+<h4 class="md-h">L1 <code>command_runner</code></h4>
+<ul class="md-ul"><li>IF gate=<code>need<em>fist</code> AND 收到稳定 <code>Closed</em>Fist</code> THEN gate=<code>armed</code>。</li><li>IF gate=<code>armed</code> AND 收到稳定 <code>Open_Palm</code> THEN 立即派发当前情境动作并进入 700ms <code>freeze</code>。</li><li>IF 当前情境是普通障碍或无目标 THEN 动作为 <code>JUMP</code>；无目标时只给自由跳反馈，不结算未来目标。</li><li>IF 当前情境是末段伙伴门 THEN 动作为 <code>SWITCH_CHARACTER</code>；2.5 秒未完成时显示大头像兜底。</li><li>IF <code>JUMP</code> 被接受 THEN 同一帧启动 <code>levelJump</code>，峰值 <code>clamp(150px,24vh,220px)</code>、总时长约 1000ms，并以星光/阴影变化增强离地感。</li><li>IF jump 动画仍在进行 THEN 不重复启动第二段跳跃；动作结束后仍需重新握拳。</li><li>IF 新目标出现时 gate=<code>armed</code> THEN 保留 <code>armed</code>，不得让孩子重复准备。</li><li>IF 障碍到达且目标未解决 THEN 软碰撞、约 1 秒减速；不扣饼干、不回起点、不结束关卡。</li></ul>
+<h4 class="md-h">L2 <code>hand<em>follow</em>dodge</code></h4>
+<ul class="md-ul"><li>IF <code>handPresent=true</code> 且 landmarks 有效 THEN 以关键点 0/5/9/13/17 的平均 Y 计算 <code>palmCenterY</code>。</li><li>IF 手势类别为 <code>None/Unknown</code> 但上述条件成立 THEN 仍派发 <code>HandTrackingFrame</code> 并更新角色位置。</li><li>IF 新帧到达 THEN 先做 <code>EMA(alpha=0.28)</code>，再应用 3.5% 死区与单帧最大 12% 位移，输出 <code>playerY</code>。</li><li>IF <code>palmCenterY</code> 变小 THEN 角色上移；变大 THEN 角色下移；映射范围限制在世界高度 22%–72%。</li><li>IF 前 5 秒安全教学 THEN 显示跟手光点与连线，不生成可碰撞障碍。</li><li>IF 间隙到达且 <code>abs(playerY-safeY) &lt;= 0.24</code> THEN 通过并给收集/星光反馈。</li><li>IF 超出安全带 THEN 角色弹回最近安全带、<code>shieldUntil=now+1200ms</code>，不 Game Over。</li><li>IF 600ms 内无有效手帧 THEN 保持最后位置；超过 600ms THEN 安全暂停。</li><li>IF 键盘模式按 ↑/↓ THEN 每次将目标位置移动 0.18，复用同一平滑与边界规则。</li></ul>
+<h4 class="md-h">L3 <code>cloud_stack</code></h4>
+<ul class="md-ul"><li>IF gate=<code>need<em>fist</code> AND 收到稳定 <code>Closed</em>Fist</code> THEN gate=<code>armed</code>。</li><li>IF gate=<code>armed</code> AND 收到稳定 <code>Open_Palm</code> THEN <code>cloudCount+1</code>、立即渲染一朵云并进入 700ms <code>freeze</code>。</li><li>IF 持续张掌且未重新握拳 THEN 不得增加第二朵云。</li><li>IF <code>cloudCount&lt;4</code> THEN 角色随云层以每层 42–48px 抬高；IF 已达 4 层再执行动作 THEN 直接把该层转为 1 颗星。</li><li>IF 目标到达且 <code>cloudCount&gt;=requiredLayers</code> THEN 通过；多余层数加入 <code>cloudStarCount</code>。</li><li>IF 目标到达且 <code>cloudCount&lt;requiredLayers</code> THEN <code>cloudAutoPadCount += missingLayers</code>，渲染安全云并照常通过。</li><li>IF 目标结算完成 THEN 云层以可见动画消耗/散开，随后 <code>cloudCount=0</code>，下个目标继续。</li><li>IF 任何叠云结果 THEN 不坠落、不扣收集、不 Game Over。</li></ul>
+<h4 class="md-h">奖励与反馈</h4>
+<ul class="md-ul"><li>IF 收集物到达角色位置 THEN 自动收集；每关最多 6 枚。</li><li>IF 动作或位置控制成功 THEN 世界反馈先于侧栏文字，且体感目标为离散动作 ≤300ms、连续跟手 ≤150ms。</li><li>IF 错过目标 THEN 不使用红叉、失败音或能力评价；只展示温和恢复和下一步。</li><li>IF 一关完成 THEN 庆祝页不展示碰撞率、误识别率或排名。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">数据字段</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>字段</th><th>类型</th><th>来源/去向</th><th>必填</th><th>约束</th></tr></thead><tbody><tr><td><code>modeDefinitions</code></td><td>配置</td><td>内容配置 → 地图/宿主</td><td>是</td><td>恰好 L1/L2/L3；40/45/50s</td></tr><tr><td><code>runtimeType</code></td><td>配置</td><td>ModeDefinition → RuntimeHost</td><td>是</td><td>command<em>runner/hand</em>follow<em>dodge/cloud</em>stack</td></tr><tr><td><code>currentLevelId</code></td><td>系统状态</td><td>地图 → 运行时</td><td>是</td><td>L1/L2/L3</td></tr><tr><td><code>unlockedLevelIds</code></td><td>系统状态</td><td>完成 → 地图</td><td>是</td><td>初始含 L1</td></tr><tr><td><code>completedLevelIds</code></td><td>系统状态</td><td>完成 → 地图</td><td>是</td><td>去重集合</td></tr><tr><td><code>levelRunId</code></td><td>系统生成</td><td>本地运行</td><td>是</td><td>每次开局唯一</td></tr><tr><td><code>activePlayElapsedMs</code></td><td>系统计时</td><td>运行时 → HUD</td><td>是</td><td>暂停时不增长</td></tr><tr><td><code>poseTransitionEvent</code></td><td>输入事件</td><td>Input Adapter → L1/L3</td><td>否</td><td>stablePose/timestamp/source</td></tr><tr><td><code>handTrackingFrame</code></td><td>输入帧</td><td>Input Adapter → L2</td><td>否</td><td>handPresent/palmCenterY/confidence/timestamp</td></tr><tr><td><code>controlGate</code></td><td>输入状态</td><td>L1/L3 → UI</td><td>否</td><td>need_fist/armed/freeze</td></tr><tr><td><code>playerY</code></td><td>系统计算</td><td>L2 → 世界</td><td>否</td><td>0.22–0.72</td></tr><tr><td><code>lastTrackingFrameAt</code></td><td>系统计时</td><td>L2 安全</td><td>否</td><td>单调时钟</td></tr><tr><td><code>shieldUntilMs</code></td><td>系统计时</td><td>L2 碰撞</td><td>否</td><td>默认 +1200ms</td></tr><tr><td><code>cloudCount</code></td><td>系统状态</td><td>L3 → 世界</td><td>否</td><td>0–4</td></tr><tr><td><code>requiredLayers</code></td><td>配置/目标</td><td>L3 → 提示</td><td>否</td><td>1–3</td></tr><tr><td><code>cloudAutoPadCount</code></td><td>系统计数</td><td>L3 辅助 → 总结</td><td>是</td><td>非负；不展示为失败</td></tr><tr><td><code>cloudStarCount</code></td><td>系统计数</td><td>L3 奖励 → 总结</td><td>是</td><td>非负</td></tr><tr><td><code>currentCharacterId</code></td><td>系统状态</td><td>L1 接力 → 世界</td><td>是</td><td>blue<em>dog/orange</em>dog</td></tr><tr><td><code>collectedCount</code></td><td>系统计算</td><td>收集 → HUD</td><td>是</td><td>0–6</td></tr><tr><td><code>collisionCount</code></td><td>系统计数</td><td>软碰撞 → 总结</td><td>是</td><td>非负；儿童界面隐藏</td></tr><tr><td><code>inputProfile</code></td><td>上游输入</td><td>输入闭环 → 宿主</td><td>是</td><td>camera<em>full/keyboard</em>full</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">运营配置项</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>配置项</th><th>默认值</th><th>可配置范围</th><th>修改者</th></tr></thead><tbody><tr><td>L1/L2/L3 时长</td><td>40/45/50s</td><td>35–60s</td><td>产品/研发</td></tr><tr><td>L1 跳跃峰值</td><td>clamp(150px,24vh,220px)</td><td>150–220px</td><td>研发/试玩</td></tr><tr><td>L1 跳跃时长</td><td>1000ms</td><td>850–1150ms</td><td>研发/试玩</td></tr><tr><td>离散输入冻结</td><td>700ms</td><td>500–900ms</td><td>研发/试玩</td></tr><tr><td>L2 EMA alpha</td><td>0.28</td><td>0.20–0.40</td><td>研发/试玩</td></tr><tr><td>L2 死区</td><td>3.5%</td><td>2%–6%</td><td>研发/试玩</td></tr><tr><td>L2 无手 grace</td><td>600ms</td><td>400–900ms</td><td>研发/试玩</td></tr><tr><td>L2 护盾</td><td>1200ms</td><td>800–1800ms</td><td>产品/研发</td></tr><tr><td>L3 单障碍层数</td><td>1–3</td><td>不高于 3</td><td>内容配置</td></tr><tr><td>L3 云层上限</td><td>4</td><td>3–5</td><td>研发/试玩</td></tr><tr><td>伙伴头像兜底</td><td>2500ms</td><td>1500–4000ms</td><td>产品/研发</td></tr><tr><td>每关收集物</td><td>6</td><td>4–8</td><td>内容配置</td></tr></tbody></table></div>
+<hr class='md-hr'>
+<h3 class="md-h">边界与排除</h3>
+<p><strong>本期不做</strong>：</p>
+<ul class="md-ul"><li>不把经典 Flappy 的重力下坠、高频拍动、窄缝、碰撞即死或无尽高分放进主线。</li><li>不把 <code>Pointing<em>Up</code>、<code>Victory</code>、<code>Thumb</em>Up</code> 设为必需通关手势。</li><li>不做生命值、攻击、排行榜、复杂连招、超过三关或账号同步。</li><li>不做移动端适配；本轮 Target Surface 继续为 <code>web-only</code>。</li><li>不复制 Square Bird、Flappy Bird 或 Bluey 的角色、美术、音效、命名与具体关卡。</li><li>不把摄像头铺成游戏背景；保留可看见关键点的浮动教练，并把识别文案放在视频外。</li></ul>
+<p><strong>待后续验证</strong>：</p>
+<ul class="md-ul"><li>真实 5 岁儿童是否在 10 秒内理解 L2 上下映射，成人提示是否不超过一次。</li><li>L1 150–220px 高跳是否既清楚又不显得漂浮；L3 6–8 次拳掌循环是否疲劳。</li><li>只有在真实儿童单手型成功率 ≥8/10 且混淆率 &lt;10% 后，才评估实验手型彩蛋。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">验收标准</h3>
+<ul class="md-ul"><li>GI-04/GI-06 可自然进入 LV-00，并按 L1→L2→L3 顺序解锁。</li><li>InputProfile 使用 <code>capabilities.poseTransition=true</code>、<code>capabilities.handTrackingY=true</code> 具名 boolean map；L1/L3 只消费 <code>PoseTransitionEvent</code>，L2 只消费 <code>HandTrackingFrame</code>。</li><li><code>ModeDefinition</code> 明确暴露 <code>runtimeType</code>，三个运行时不通过一个目标动作分支伪装成同一状态机。</li><li>L1 时长 40s、首个目标 ≤6s；无目标拳→掌也立即 JUMP；高跳峰值 ≥150px、总时长约 1000ms。</li><li>L1 末段同一拳掌循环可完成伙伴接力；2.5s 后大头像可兜底。</li><li>L2 时长 45s；<code>handPresent + landmarks</code> 在 label=None/Unknown 时仍更新 <code>playerY</code>；EMA .28、3.5% 死区、单帧最大 12% 限速；上/下移动方向正确。</li><li>L2 前 5s 无碰撞；短丢手保持、长丢手暂停；碰撞只弹开并给护盾。</li><li>L3 时长 50s；每轮拳→掌只增加一朵云；持续张掌不连发；目标层数覆盖 1/2/3。</li><li>L3 云少时在世界内显示安全云并抬升角色、云多时按差额显示星星，所有情况都能继续并到达终点。</li><li>每关 6 枚收集物；完成不检查成绩且不 Game Over。</li><li>1440×900、1280×720、1219×681、1024×700、919×843 下地图、三运行时、暂停与庆祝均单屏无滚动、裁切或关键元素相交。</li><li>游戏摄像头视频、关键点与视频外识别文案同时可见且零覆盖。</li><li>摄像头与键盘两条路径都能完成三关。</li></ul>
+<hr class='md-hr'>
+<h3 class="md-h">PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：</li></ul>
+<p>  - 孩子看到一条三段冒险；内部采用离散动作跑酷、连续跟手躲避、拳掌云朵叠高三个独立运行时。<br>  - 输入拆为 <code>PoseTransitionEvent</code> 与 <code>HandTrackingFrame</code>；L2 不依赖手势类别。<br>  - L1 高跳峰值至少 150px、约 1000ms；三关 40/45/50s，无 Game Over、无成绩锁关。</p>
+<ul class="md-ul"><li>被放弃的方案：继续三个同构跑酷关、每关新增必过手型、经典 Flappy 的重力窄缝即死、只在侧栏反馈动作。</li><li>需要 PM 确认的问题：已确认；用户明确确认多玩法三关、保持 <code>web-only</code>、继续重推 <code>01A→04B</code>，并要求修正 L1 跳跃幅度。</li><li>不需要 PM 审查的执行细节：EMA 系数、死区、测试注入 API、具体目标毫秒值、光点和云朵 CSS。</li><li>进入下一阶段的条件：04A 明确三运行时 screen/state/验收，04B 忠实实现并通过 QA-TARGETED。</li></ul></div></template>
+<template id="mat-tpl-3"><div class="md-content"><h2 class="md-h">原型规格：多玩法三关核心循环</h2>
+<blockquote class="md-bq"><p>来源：<code>03-feature-核心关卡循环.md</code> + <code>04A-prototype-spec-手势输入闭环.md</code> | 更新日期：2026-08-13 | Target Surface：web-only</p></blockquote>
+<h3 class="md-h">1. Product Frame</h3>
+<ul class="md-ul"><li>目标用户：5 岁儿童；家长负责权限、暂停、键盘接管和退出。</li><li>主要场景：笔记本浏览器、单人摄像头体感游玩、家长可在旁辅助。</li><li>原型目的：验证三个不同控制模型是否仍像一条连续冒险，并让孩子清楚感到动作/位置与角色反馈的因果关系。</li><li>Target Surface：<code>web-only</code>；继承 <code>01-research.md</code> 已确认范围，不覆盖移动端。</li><li>输出：<code>04B-prototype-手势小狗探险MVP.html</code>。</li><li>关键约束：原创蓝/橙小狗；本机识别；单视口无滚动；无 Game Over；不按成绩锁关。</li></ul>
+<h3 class="md-h">2. Goals And Non-Goals</h3>
+<h4 class="md-h">Goals</h4>
+<ul class="md-ul"><li>自然走通输入准备 → LV-00 三关地图 → L1/L2/L3 三种运行时 → 单关庆祝 → 下一关。</li><li>L1 <code>command_runner</code>：拳→掌高跳，峰值至少 150px，完整起落约 1000ms；末段情境接力。</li><li>L2 <code>hand<em>follow</em>dodge</code>：掌心 Y 连续控制角色；<code>None/Unknown</code> 只要有关键点也继续跟手。</li><li>L3 <code>cloud_stack</code>：每个完整拳掌循环只增加一朵云，解决 1–3 层障碍。</li><li>三关共享 Session/Safety/Reward/Coach，但玩法状态机独立；世界反馈优先于教练文字。</li><li>游戏摄像头识别文案固定在视频外；关键点仍覆盖在视频上。</li></ul>
+<h4 class="md-h">Non-Goals</h4>
+<ul class="md-ul"><li>不做 Pointing<em>Up/Victory/Thumb</em>Up 必需手势。</li><li>不做经典 Flappy 的重力、高频拍动、窄缝、碰撞即死或无尽高分。</li><li>不做生命值、排行榜、复杂连招、超过三关、移动端或官方 IP 素材。</li></ul>
+<h3 class="md-h">3. Users And Scenarios</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>User</th><th>Need</th><th>Context</th><th>Success Signal</th></tr></thead><tbody><tr><td>5 岁儿童</td><td>马上看懂手和角色之间的关系，并体验三种不同玩法</td><td>家庭笔记本摄像头</td><td>L1 高跳清楚、L2 上下跟手、L3 云朵逐层出现；三关到终点</td></tr><tr><td>家长</td><td>安全启用、暂停、按键接管</td><td>陪同设置与异常恢复</td><td>切换输入不丢关卡进度；不上传/录制画面</td></tr></tbody></table></div>
+<h3 class="md-h">4. Page Archetype And Reference Alignment</h3>
+<h4 class="md-h">Page Archetype</h4>
+<ul class="md-ul"><li>页面类型：三关地图任务流 + full-bleed 横版玩法画布 + 浮动上下文教练 + 单关庆祝卡。</li><li>核心任务：选关、理解唯一控制、实时操控、到终点、继续下一关。</li><li>信息密度：低；每个 screen 只有一个儿童主目标。</li><li>默认布局：世界全屏；顶部 56–72px HUD；目标 cue 位于角色前方；右上 210–276px camera coach。</li><li>为什么不是固定 split pane：固定右栏压缩游戏世界；相机只是辅助确认，不是与游戏等权的第二任务。</li><li>为什么不是一个参数化跑酷：三个运行时分别处理低频动作边沿、高频位置流和建造库存，交互频率与失败恢复不同。</li><li>用户确认状态：已确认；用户明确确认多玩法三关、<code>web-only</code> 和继续重推至 04B。</li></ul>
+<h4 class="md-h">Reference Alignment</h4>
+<ul class="md-ul"><li>参考样本：Nex Playground、Square Bird、Jetpack/Flappy 类自动卷轴、Liberi 儿童体感研究。</li><li>必须继承：持续直接反馈、少量动作词汇、单轴清晰控制、叠高可预判、软失败、按钮降级。</li><li>可以偏离：专用硬件、全身动作、精确物理、无尽模式、商业化结构。</li><li>禁止偏离：不复制竞品/IP 美术与命名；不把新手型数量当难度；不因漏识别 Game Over；不让成功只出现在侧栏。</li></ul>
+<h4 class="md-h">Product Canvas Rules</h4>
+<ul class="md-ul"><li>04B 只展示最终用户 UI；不加入 inspector、screen-nav、QA 文案或可见跳关。</li><li>测试注入 API 不得有可见入口；状态通过真实产品交互自然可达。</li><li>Review Console 与试玩产品文件分离。</li></ul>
+<h3 class="md-h">5. Information Architecture</h3>
+<h4 class="md-h">Web</h4>
+<ul class="md-ul"><li>输入准备：GI-01–GI-06。</li><li>冒险地图：LV-00，三张顺序解锁的大卡。</li><li>运行容器：LV-01 玩法出发、LV-02 运行时宿主、LV-03 单关庆祝。</li><li>共享安全：浮动 camera coach、无手等待、家长抽屉、恢复倒计时、按键接管。</li><li>运行时模块：<code>command<em>runner</code> / <code>hand</em>follow<em>dodge</code> / <code>cloud</em>stack</code>，根据 ModeDefinition 挂载。</li></ul>
+<h3 class="md-h">6. Core Flows</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Flow</th><th>Entry</th><th>Steps</th><th>Success</th><th>Failure / Edge Cases</th></tr></thead><tbody><tr><td>三关主流</td><td>GI-04/GI-06</td><td>LV-00→L1→庆祝→L2→庆祝→L3→庆祝</td><td>三关完成</td><td>锁关不可进；任何软失败不阻断</td></tr><tr><td>L1 高跳</td><td>LV-02/L1</td><td>stable fist→armed→stable palm→高跳→freeze→再握拳</td><td>峰值≥150px，目标解决</td><td>无目标也自由跳；漏掉只软碰</td></tr><tr><td>L1 伙伴接力</td><td>L1 末段</td><td>拳→掌或 2.5s 后点头像</td><td>换伙伴并继续</td><td>等待中仍接受摄像头手势</td></tr><tr><td>L2 直接跟手</td><td>LV-02/L2</td><td>关键点→palmCenterY→平滑→角色位置</td><td>穿过宽间隙</td><td>Unknown 仍工作；短丢手保持，长丢手暂停</td></tr><tr><td>L2 键盘</td><td>LV-02/L2 keyboard</td><td>↑/↓ 改目标高度→同一平滑</td><td>穿过宽间隙</td><td>边界限制在安全区</td></tr><tr><td>L3 叠云</td><td>LV-02/L3</td><td>fist→palm→+1 cloud→重新握拳→重复</td><td>达到 1–3 层并越障</td><td>少云自动补，多云转星</td></tr><tr><td>安全恢复</td><td>任一运行时</td><td>无手/失焦→冻结→恢复 3/2/1</td><td>同一状态继续</td><td>切键盘保留局部状态</td></tr></tbody></table></div>
+<h3 class="md-h">7. Screen Inventory</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>ID</th><th>Screen</th><th>Platform</th><th>Purpose</th><th>Entry Points</th><th>Exit Points</th></tr></thead><tbody><tr><td>GI-01–GI-06</td><td>输入准备</td><td>Web</td><td>隐私、摄像头/键盘、拳掌练习</td><td>起始/降级</td><td>LV-00</td></tr><tr><td>LV-00</td><td>三关地图</td><td>Web</td><td>展示玩法差异和解锁状态</td><td>GI-04/GI-06/LV-03</td><td>LV-01</td></tr><tr><td>LV-01</td><td>玩法出发</td><td>Web</td><td>一句话示范当前新控制并启动世界</td><td>LV-00/LV-03</td><td>LV-02</td></tr><tr><td>LV-02</td><td>运行时宿主</td><td>Web</td><td>挂载三类玩法与共享安全/HUD</td><td>LV-01</td><td>LV-03/LV-00</td></tr><tr><td>LV-03</td><td>单关庆祝</td><td>Web</td><td>展示成果并继续下一关</td><td>LV-02</td><td>LV-01/LV-00/GI-01</td></tr></tbody></table></div>
+<h3 class="md-h">7B. Coverage Plan</h3>
+<h4 class="md-h">Backbone Group <code>integrated-multi-mode-adventure</code></h4>
+<ul class="md-ul"><li>起始 Screen：GI-01</li><li>输出文件：<code>04B-prototype-手势小狗探险MVP.html</code></li></ul>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Screen ID</th><th>进入方式</th><th>产品交互触发点</th><th>跳转目标</th></tr></thead><tbody><tr><td>GI-01–GI-06</td><td>起始/降级</td><td>现有隐私、摄像头、练习和键盘 CTA</td><td>LV-00</td></tr><tr><td>LV-00</td><td>输入完成/庆祝返回</td><td>点击已解锁关卡卡</td><td>LV-01</td></tr><tr><td>LV-01</td><td>选择关卡/下一关</td><td>安全倒计时结束</td><td>LV-02</td></tr><tr><td>LV-02</td><td>倒计时结束</td><td>到达当前 ModeDefinition 终点</td><td>LV-03</td></tr><tr><td>LV-03</td><td>单关完成</td><td>下一关/地图/再玩</td><td>LV-01/LV-00</td></tr></tbody></table></div>
+<h4 class="md-h">Extension States / Screens</h4>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Surface</th><th>Type</th><th>说明</th></tr></thead><tbody><tr><td>模型不可用</td><td>error</td><td>提供重试或完整键盘降级</td></tr><tr><td>locked 关卡</td><td>disabled/focused</td><td>留在地图并解释前置关卡</td></tr><tr><td>无手/暂停</td><td>safe wait</td><td>04B 中作为可恢复产品状态实现</td></tr><tr><td>L2 护盾 / L3 自动补垫</td><td>assist success</td><td>是产品主链路的温和恢复，不是失败页</td></tr></tbody></table></div>
+<h3 class="md-h">8. Screen Specs</h3>
+<h4 class="md-h">LV-00：三关地图</h4>
+<ul class="md-ul"><li>Purpose：展示三个明显不同、但属于同一冒险的玩法节点。</li><li>Layout：顶部品牌/标题/家长入口；中部三张等宽关卡卡；底部输入状态。</li><li>Cards：</li></ul>
+<p>  - L1“溪边跳跳”：拳掌高跳，图示为水洼和跃起角色。<br>  - L2“萤火虫躲躲”：手上下、角色上下，图示为三条宽轨/光点。<br>  - L3“云朵叠叠”：拳掌放云，图示为 1–3 层云台。</p>
+<ul class="md-ul"><li>Primary action：点击已解锁关卡。</li><li>States：unlocked/current/completed/locked/focus。</li><li>Responsive：五个支持视口保持三列；低高度压缩装饰而非滚动。</li><li>Acceptance：三张卡分别清楚表达高跳、跟手和叠云；锁关不可进入；完成即解锁下一张。</li></ul>
+<h4 class="md-h">LV-01：玩法出发</h4>
+<ul class="md-ul"><li>Purpose：只解释当前新控制，并明确 3、2、1 是世界启动倒计时。</li><li>Shared layout：full-bleed 主题世界；中央关名/能力图标/一句动作语义/倒计时；顶部 HUD。</li><li>Per-level copy：</li></ul>
+<p>  - L1：“拳头准备，张掌跳得高高的。”<br>  - L2：“手往上，小狗往上；手往下，小狗往下。”<br>  - L3：“拳头准备，张掌放一朵云。”</p>
+<ul class="md-ul"><li>States：ready/countdown/input-error。</li><li>Acceptance：倒计时期间不采样一次性动作；进入 L2 后前 5 秒仍是无障碍安全教学。</li></ul>
+<h4 class="md-h">LV-02：共享宿主</h4>
+<ul class="md-ul"><li>Shared regions：</li></ul>
+<p>  - full-bleed world；障碍/目标 x 上限约 70–72%，不藏在 coach 下。<br>  - HUD：关卡+饼干 / 进度与玩法名 / 输入连接+暂停。<br>  - target cue：只在有儿童当前目标时显示一张卡；不可与 coach/HUD 相交。<br>  - game coach：camera + landmarks；其下单独两行取景/识别 readout；再下方一张控制状态卡。<br>  - aria-live：只报告关键状态，不逐帧朗读位置。</p>
+<ul class="md-ul"><li>Coach camera：video/canvas 16:10；readout 必须为 <code>#game-coach &gt; .camera-readout</code>，与 camera/video/canvas intersection=0。</li></ul>
+<h5 class="md-h">LV-02 / L1 <code>command_runner</code></h5>
+<ul class="md-ul"><li>World：水洼/软木箱从右向角色接近；目标 cue 显示拳头或张掌的当前一步。</li><li>Character：<code>#level-dog-wrap</code> 使用 CSS 变量 <code>--jump-height:clamp(150px,24vh,220px)</code>；jump animation 850–1100ms，含起跳压缩、峰值停顿、落地回弹和影子收缩。</li><li>First interaction：首目标 ≤6s；无目标时完整拳掌也自由跳。</li><li>Target sequence：4 个 JUMP + 末段 1 个 SWITCH_CHARACTER。</li><li>Keyboard：空格/↑触发当前动作；伙伴门后备头像仍可点。</li><li>States：need<em>fist/armed/jumping/freeze/collision/switch</em>wait/success。</li><li>Acceptance：浏览器 Web Animations keyframe 的最大负 Y 位移绝对值 ≥150px；跳跃肉眼明显越过障碍。</li></ul>
+<h5 class="md-h">LV-02 / L2 <code>hand<em>follow</em>dodge</code></h5>
+<ul class="md-ul"><li>Character：比 L1 略小，横向固定；纵向位置使用 <code>playerYNormalized</code> 映射到世界 22%–72%。</li><li>Tracking affordance：淡色爪印光点位于目标 Y；角色与光点之间有短弹性连线。该反馈位于世界，不依赖侧栏。</li><li>Obstacles：6 个上下交替的宽间隙；目标 cue 只显示“去上面/去下面”，不要求拳掌。</li><li>Camera contract：<code>handPresent=true + landmarks</code> 即移动；gesture label <code>None/Unknown</code> 不改变位置流。</li><li>Smoothing：EMA 0.28、3.5% 死区、单帧最大 12% 位移。</li><li>Safety：前 5s 无碰撞；丢手≤600ms保持；超过 grace 安全暂停；碰撞弹开 + 1.2s 护盾，不扣饼干。</li><li>Keyboard：target cue 下显示两个并列大按钮“向上 / 向下”，键盘 ↑/↓ 等价。</li><li>States：calibrating/tracking/holding/no_hand/shield/success/paused。</li><li>Acceptance：合成关键点在 Y=.22→.78 时，角色位置同向且变化显著；label None 仍通过。</li></ul>
+<h5 class="md-h">LV-02 / L3 <code>cloud_stack</code></h5>
+<ul class="md-ul"><li>World：角色脚下 <code>#cloud-stack</code> 持久渲染 0–4 层，每层 42–48px；角色随层数抬高。</li><li>Target：路牌显示“需要 1/2/3 朵云”和大号云层图；一次只显示当前层数要求。</li><li>Action：完整 fist→palm 立即新增一朵云；持续 palm 不连发；每次必须重新 fist。</li><li>Resolution：少云渲染伙伴安全云并记录 <code>autoPad</code>；多云变星星；结算后云散开并归零。</li><li>Keyboard：空格/↑每次新增一朵，仍经过 700ms freeze。</li><li>States：need<em>fist/armed/cloud</em>added/freeze/ready<em>to</em>cross/auto<em>pad/bonus</em>star/success。</li><li>Acceptance：3 层云与角色全部在 world 内；一个拳掌周期只增加一个 <code>[data-cloud-layer]</code>。</li></ul>
+<h4 class="md-h">LV-03：单关庆祝</h4>
+<ul class="md-ul"><li>Purpose：给自然停点，并无条件解锁下一关。</li><li>Content：当前能力徽章、0–6 枚饼干、角色庆祝；L1高跳、L2跟手、L3叠云的文案分别对应。</li><li>Primary：有下一关时“去下一关”；L3 后“回关卡地图”。</li><li>Secondary：再玩、返回地图、家长设置。</li><li>Acceptance：不展示碰撞/补垫/成人辅助为失败；下一关已解锁。</li></ul>
+<h3 class="md-h">9. Component And State Matrix</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Component</th><th>Used In</th><th>Default</th><th>Loading</th><th>Empty</th><th>Error</th><th>Success</th><th>Disabled / Focused</th></tr></thead><tbody><tr><td>Level card</td><td>LV-00</td><td>unlocked</td><td>N/A</td><td>N/A</td><td>N/A</td><td>completed</td><td>locked/focus</td></tr><tr><td>Runtime host</td><td>LV-02</td><td>mounting</td><td>preparing</td><td>N/A</td><td>safe error</td><td>running/completed</td><td>paused</td></tr><tr><td>Progress HUD</td><td>LV-02</td><td>路程/6 饼干</td><td>ready</td><td>0</td><td>N/A</td><td>finish</td><td>pause frozen</td></tr><tr><td>Target cue</td><td>LV-02</td><td>hidden/current</td><td>telegraph</td><td>no target</td><td>gentle retry</td><td>resolved</td><td>pause hidden</td></tr><tr><td>Camera coach</td><td>LV-02</td><td>need_fist/tracking</td><td>model ready</td><td>no hand</td><td>camera/model</td><td>armed/seen</td><td>keyboard placeholder</td></tr><tr><td>Hand target</td><td>L2</td><td>center</td><td>calibrating</td><td>no hand hold</td><td>N/A</td><td>following</td><td>pause fixed</td></tr><tr><td>Cloud stack</td><td>L3</td><td>0 layer</td><td>N/A</td><td>no cloud</td><td>N/A</td><td>add/pad/star</td><td>pause fixed</td></tr><tr><td>Completion card</td><td>LV-03</td><td>本关成果</td><td>N/A</td><td>0/6 accepted</td><td>N/A</td><td>unlock next</td><td>N/A</td></tr></tbody></table></div>
+<h3 class="md-h">10. Sample Data</h3>
+<ul class="md-ul"><li>L1：<code>creek-command</code>，runtime=<code>command_runner</code>，40s，6 cookies，JUMP at 5/13/21/29s，SWITCH at 36s，telegraph 3200ms。</li><li>L2：<code>firefly-follow</code>，runtime=<code>hand<em>follow</em>dodge</code>，45s，6 cookies，5s safe teaching；safeY .28/.70/.35/.64/.26/.72 at 10/16/23/30/36/42s，tolerance .24。</li><li>L3：<code>cloud-stack</code>，runtime=<code>cloud_stack</code>，50s，6 cookies；requiredLayers 1/2/3/1 at 9/20/33/44s，telegraph 4500ms。</li><li>Shared：discrete freeze 700ms；L1 switch fallback 2500ms；L2 tracking grace 600ms；shield 1200ms；摄像头长无手安全暂停。</li><li>长文案边界：儿童 target title ≤12 个汉字；readout 允许两行但不得覆盖视频。</li></ul>
+<h3 class="md-h">11. Data And Events</h3>
+<ul class="md-ul"><li><code>ModeDefinition</code>：<code>id/index/name/theme/runtimeType/durationMs/collectibleTotal/cookieTimes/targets/runtimeConfig</code>。</li><li>离散通道：<code>PoseTransitionEvent{stablePose,timestamp,source}</code> → L1/L3。</li><li>连续通道：<code>HandTrackingFrame{handPresent,palmCenterY,confidence,timestamp}</code> → L2。</li><li>Runtime state：</li></ul>
+<p>  - shared <code>activePlayElapsedMs/collectedCount/pauseReason/lastAction/actionFeedbackCount/target</code>；<br>  - L1 <code>firstInteractionAtMs/switchCompleted</code>；<br>  - L2 <code>playerYNormalized/lastTrackingFrameAt/shieldUntilMs/shieldHits</code>；<br>  - L3 <code>cloudCount/cloudTargetLayers/cloudAutoPadCount/cloudStarCount/lastCloudResult</code>。</p>
+<ul class="md-ul"><li>Completion summary：保留 runtimeType、收集、角色、碰撞/辅助内部值；儿童完成页不展示负面计数。</li></ul>
+<h3 class="md-h">12. Responsive Rules</h3>
+<ul class="md-ul"><li>Web-only；支持 1440×900、1280×720、1219×681、1024×700、919×843。</li><li><code>html/body/main/screen/game-layout/world</code> 均锁定视口，<code>scrollWidth&lt;=clientWidth</code> 且 <code>scrollHeight&lt;=clientHeight</code>。</li><li>LV-00 保持 3 列；919 宽时缩小 gap、图标与卡片描述，不新增滚动。</li><li>Coach：top 60–88px、right 10–22px、width 210–276px；低高度 camera 116–132px；readout 静态排在 camera 下。</li><li>HUD 44–72px；目标 cue 避让 coach；低高度隐藏装饰性小字而非核心状态。</li><li>L1 最大跳高 220px 仍不得越出 world 顶部；L3 4 层云与角色不得越界。</li></ul>
+<h3 class="md-h">13. Accessibility And Interaction</h3>
+<ul class="md-ul"><li>Keyboard / focus：L1/L3 使用 Space；L2 使用 ↑/↓；P/Esc 家长入口；focus-visible 清晰。</li><li>Labels / aria：关卡卡、目标、输入、完成都有文本；逐帧位置不进入 aria-live。</li><li>Touch target：产品按钮 ≥44px（虽非移动端，也服务家长触控板/触屏笔记本）。</li><li>Reduced motion：压缩跳跃/弹回过渡时长但保留最终状态，不隐藏位置光点与云层。</li><li>Error recovery：无手、权限、模型和轨道结束均有暂停/重试/键盘出口。</li></ul>
+<h3 class="md-h">14. Visual / Content / Interaction Thesis</h3>
+<ul class="md-ul"><li>Product type：低龄家庭体感冒险游戏。</li><li>Visual thesis：明亮、柔软、世界优先；孩子看角色和障碍，家长才需要看技术状态。</li><li>Content tone：短句、具体、正向；不说“识别失败”或“你做错了”。</li><li>Interaction thesis：L1 强调清楚的离地弧线，L2 强调持续跟手光点，L3 强调云朵即时生成与保留。</li><li>Density：低；避免赛博 HUD、霓虹、营销 hero、卡片套卡片。</li></ul>
+<h3 class="md-h">15. Annotation Points</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Screen</th><th>Point</th><th>Why It Matters</th></tr></thead><tbody><tr><td>LV-00</td><td>三卡不同玩法图示</td><td>证明不是换皮同构关卡</td></tr><tr><td>L1</td><td>≥150px 高跳弧线</td><td>证明动作反馈清楚且能越障</td></tr><tr><td>L2</td><td>爪印光点 + Unknown 跟手</td><td>证明位置流与分类解耦</td></tr><tr><td>L3</td><td>持久云层 + 补垫/星星</td><td>证明建造反馈与软失败</td></tr><tr><td>Game coach</td><td>video 外 readout</td><td>证明文案不遮挡取景</td></tr></tbody></table></div>
+<h3 class="md-h">16. Assumptions</h3>
+<ul class="md-ul"><li>当前本地 recognizer 每帧已经提供 21 个 landmarks，可由页面计算 palm center。</li><li>三关完成与解锁只保存在当前页面会话，不做账号持久化。</li><li>L2 位置映射默认以摄像头镜像后的人体直觉为准：手上移，角色上移。</li></ul>
+<h3 class="md-h">17. Open Questions</h3>
+<ul class="md-ul"><li>无阻塞问题。EMA、死区、L1 hang time 与 L3 云层高度留给真实儿童试玩校准。</li></ul>
+<h3 class="md-h">18. Acceptance Criteria For HTML Prototype</h3>
+<ul class="md-ul"><li>[ ] GI-01 起始可通过真实 CTA 到达 LV-00、三关运行时与单关庆祝。</li><li>[ ] 04B 无 prototype shell、screen-nav、QA 文案或可见跳关。</li><li>[ ] ModeDefinition 的 L1/L2/L3 runtimeType 分别为 command<em>runner/hand</em>follow<em>dodge/cloud</em>stack，时长 40/45/50s、每关 6 收集物。</li><li>[ ] L1 首互动≤6s；无目标 fist→palm 立即 JUMP；最大负 Y 位移≥150px，动画时长 850–1100ms 且完整落地；最后目标可 SWITCH。</li><li>[ ] InputProfile 使用 <code>{poseTransition:true, handTrackingY:true}</code> 具名 capability map；L1/L3 只消费 <code>PoseTransitionEvent</code>，L2 只消费 <code>HandTrackingFrame</code>。</li><li>[ ] L2 synthetic hand 在 label None/Unknown、handPresent+landmarks 时仍按 Y 移动；EMA .28、死区 3.5%、单帧最大 12%；600ms 内丢手保持，之后暂停；碰撞只增加护盾次数。</li><li>[ ] L3 每个 fist→palm 只增一云，持续 palm 不连发；1–3 层目标少云显示世界内安全云并抬升角色，多云按差额显示星星；云层不越界。</li><li>[ ] 三关完成即顺序解锁，无 Game Over、无成绩锁关。</li><li>[ ] game coach readout 与 camera/video/canvas 零相交；五视口地图、三玩法、暂停和庆祝无滚动/裁切/关键相交。</li><li>[ ] 摄像头与键盘两条路径完整；file:// 启动保护、本机处理和摄像头释放仍有效。</li></ul>
+<h3 class="md-h">19. QA Strategy For HTML Prototype</h3>
+<ul class="md-ul"><li>Required design search：已执行 <code>npm run workflow:design-search -- &quot;儿童体感游戏 单屏 web 摄像头 直接跟手 低龄&quot; --design-system -f markdown -p &quot;手势小狗多玩法冒险&quot;</code>；采用明亮亲和色板、清晰 CTA、系统中文字体和高对比，明确拒绝结果中不适合低龄的 Cyberpunk/霓虹建议。</li><li>QA Mode：TARGETED；原因是玩法架构、持续输入与 L1 跳跃幅度均变化，且 L2/L3/coach 存在具体几何和状态风险。</li><li>Runtime：拳掌 gate、关键点位置流、三个 runtime 状态、摄像头释放。</li><li>Browser：三关解锁、L1 高跳、L2 Unknown 跟手与无手恢复、L3 叠云/补垫/星星、五视口单屏和 coach 零遮挡。</li><li>Manual UX：首次 L1 高跳是否明显；L2 10 秒内是否理解上下；L3 每层云是否立刻看见；同一时刻是否只有一个儿童指令。</li></ul>
+<h3 class="md-h">20. PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：Coverage Plan 保留一个连续产品文件和 LV-00–LV-03 外壳，但 LV-02 按 ModeDefinition 挂载三个独立运行时；L1 高跳≥150px，L2 使用分类无关位置流，L3 使用逐次拳掌叠云。</li><li>被放弃的方案：复制三套完整 DOM、继续单一跑酷状态机、固定右栏、经典 Flappy 物理、每关新增手型。</li><li>需要 PM 确认的问题：已确认；用户明确确认多玩法三关、保持 web-only、继续重推 01A→04B，并指出 L1 跳跃幅度太小。</li><li>不需要 PM 审查的执行细节：CSS clamp、EMA 系数、测试 seam、障碍毫秒值和光点/云朵造型。</li><li>进入下一阶段的条件：HTML 忠实实现本 Coverage Plan 并通过 QA-TARGETED。</li></ul>
+<h3 class="md-h">21. Spec Self-Check</h3>
+<ul class="md-ul"><li>Screen coverage：PASS（输入准备 + LV-00–LV-03）。</li><li>State coverage：PASS（default/loading/empty/error/success/disabled + 三运行时安全状态）。</li><li>Target surface coverage：PASS（web-only）。</li><li>Page archetype coverage：PASS。</li><li>Reference alignment：PASS。</li><li>Product canvas rules：PASS。</li><li>Responsive coverage：PASS（5 个目标视口）。</li><li>Handoff readiness：PASS。</li><li>PM review gate readiness：PASS（本轮决策已明确确认）。</li></ul></div></template>
+<template id="mat-tpl-4"></template>
+<template id="mat-tpl-5"><div class="md-content"><p>import assert from &quot;node:assert/strict&quot;;<br>import fs from &quot;node:fs&quot;;<br>import http from &quot;node:http&quot;;<br>import path from &quot;node:path&quot;;<br>import { chromium } from &quot;playwright&quot;;</p>
+<p>/*<br> * QA-TARGETED contract for the confirmed three-runtime MVP.<br> *<br> * Invisible test seam expected on window.__mvpTest:<br> *<br> * - startWithMode(&quot;camera<em>full&quot; | &quot;keyboard</em>full&quot;)<br> *     Starts a fresh session on LV-00 with only L1 unlocked.<br> * - selectLevel(&quot;L1&quot; | &quot;L2&quot; | &quot;L3&quot;)<br> *     Opens LV-01 for an unlocked level; a locked selection stays on LV-00.<br> * - advance(ms)<br> *     Deterministically advances launch countdown, level time, input freeze,<br> *     hand-loss timers, and cloud-round timers.<br> * - renderSyntheticHand(label, { handPresent, landmarks })<br> *     Sends one already-stable recognizer frame through handleRecognizerFrame<br> *     (never directly to a level handler). This remains the recognizer bridge<br> *     seam; runtime tests below use the two normalized input contracts.<br> * - emitPoseTransition({ stablePose, timestamp, source })<br> *     Sends a PoseTransitionEvent through the production input adapter used by<br> *     L1/L3. A pose event is edge-triggered, not a held-frame command.<br> * - emitHandTrackingFrame({ handPresent, palmCenterY, confidence, timestamp })<br> *     Sends a HandTrackingFrame through the production input adapter used by<br> *     L2. It intentionally has no gesture label: None/Unknown classification<br> *     must not gate position tracking while landmarks still produce a center.<br> * - emit(action, source), completeLevel(), triggerCollision(),<br> *   resolveCloudRound(), and getState().<br> *     completeLevel/triggerCollision/resolveCloudRound are deterministic,<br> *     test-only entry points into the same production reducers; they must not<br> *     expose UI controls.<br> *<br> * Camera inputProfile contract:<br> *   capabilities: { poseTransition: true, handTrackingY: true }.<br> *<br> * getState() progression contract:<br> *   screen, currentLevelId, unlockedLevelIds, completedLevelIds,<br> *   gameGestureGate, completionSummary, and level.<br> *<br> * level contract shared by all runtimes:<br> *   runtimeType, durationMs, collectibleTotal, activePlayElapsedMs,<br> *   collectedCount, pauseReason, lastAction, actionFeedbackCount, target.<br> *<br> * Runtime-specific level fields:<br> * - command_runner: firstInteractionAtMs, switchCompleted.<br> * - hand<em>follow</em>dodge: playerYNormalized (0 top .. 1 bottom), shieldHits.<br> * - cloud_stack: cloudCount, cloudTargetLayers (1..3),<br> *   cloudAutoPadCount, cloudStarCount, lastCloudResult.<br> *<br> * Stable DOM hooks:<br> *   #level-dog-wrap, #game-world, #game-coach, #game-video,<br> *   #game-landmarks, #game-coach &gt; .camera-readout,<br> *   #game-framing, #game-seen, #game-control-status, and<br> *   #cloud-stack containing [data-cloud-layer] or .cloud-layer nodes.<br> */</p>
+<p>const projectRoot = path.resolve(import.meta.dirname, &quot;..&quot;);<br>const prototypePath = path.join(projectRoot, &quot;04B-prototype-手势小狗探险MVP.html&quot;);</p>
+<p>const LEVELS = Object.freeze([<br>  { id: &quot;L1&quot;, runtimeType: &quot;command<em>runner&quot;, durationMs: 40</em>000, collectibleTotal: 6 },<br>  { id: &quot;L2&quot;, runtimeType: &quot;hand<em>follow</em>dodge&quot;, durationMs: 45_000, collectibleTotal: 6 },<br>  { id: &quot;L3&quot;, runtimeType: &quot;cloud<em>stack&quot;, durationMs: 50</em>000, collectibleTotal: 6 }<br>]);<br>const LEVEL_IDS = LEVELS.map(level =&gt; level.id);<br>const VIEWPORTS = Object.freeze([<br>  { width: 1440, height: 900, label: &quot;1440x900&quot; },<br>  { width: 1280, height: 720, label: &quot;1280x720&quot; },<br>  { width: 1219, height: 681, label: &quot;1219x681&quot; },<br>  { width: 1024, height: 700, label: &quot;1024x700&quot; },<br>  { width: 919, height: 843, label: &quot;919x843&quot; }<br>]);</p>
+<p>const mimeTypes = {<br>  &quot;.html&quot;: &quot;text/html; charset=utf-8&quot;,<br>  &quot;.mjs&quot;: &quot;text/javascript; charset=utf-8&quot;,<br>  &quot;.js&quot;: &quot;text/javascript; charset=utf-8&quot;,<br>  &quot;.wasm&quot;: &quot;application/wasm&quot;,<br>  &quot;.task&quot;: &quot;application/octet-stream&quot;<br>};</p>
+<p>const server = http.createServer((request, response) =&gt; {<br>  const pathname = decodeURIComponent(new URL(request.url, &quot;http://127.0.0.1&quot;).pathname);<br>  const requestedPath = path.resolve(projectRoot, <code>.${pathname}</code>);<br>  const isInsideProject = requestedPath.startsWith(<code>${projectRoot}${path.sep}</code>);<br>  if (!isInsideProject || !fs.existsSync(requestedPath) || !fs.statSync(requestedPath).isFile()) {<br>    response.writeHead(404);<br>    response.end(&quot;not found&quot;);<br>    return;<br>  }<br>  response.writeHead(200, {<br>    &quot;Content-Type&quot;: mimeTypes[path.extname(requestedPath)] || &quot;application/octet-stream&quot;<br>  });<br>  fs.createReadStream(requestedPath).pipe(response);<br>});</p>
+<p>await new Promise(resolve =&gt; server.listen(0, &quot;127.0.0.1&quot;, resolve));<br>const prototypeUrl = <code>http://127.0.0.1:${server.address().port}/${encodeURIComponent(path.basename(prototypePath))}</code>;<br>const browser = await chromium.launch({<br>  headless: true,<br>  args: [&quot;--use-fake-device-for-media-stream&quot;, &quot;--use-fake-ui-for-media-stream&quot;]<br>});</p>
+<p>const browserErrors = [];<br>const passes = [];</p>
+<p>function pass(message) {<br>  passes.push(message);<br>  console.log(<code>PASS ${message}</code>);<br>}</p>
+<p>function sorted(values) {<br>  return [...values].sort();<br>}</p>
+<p>function approx(actual, expected, tolerance, label) {<br>  assert.ok(Math.abs(actual - expected) &lt;= tolerance,<br>    <code>${label}: expected ${expected} ± ${tolerance}, received ${actual}</code>);<br>}</p>
+<p>function palmLandmarks(centerY) {<br>  const base = [<br>    [.50, .83], [.42, .72], [.36, .61], [.31, .50], [.27, .39],<br>    [.44, .55], [.42, .40], [.41, .27], [.40, .15],<br>    [.51, .53], [.51, .36], [.51, .22], [.51, .10],<br>    [.58, .56], [.61, .40], [.63, .28], [.64, .18],<br>    [.64, .62], [.70, .50], [.74, .42], [.77, .35]<br>  ];<br>  const baseCenter = base.reduce((sum, point) =&gt; sum + point[1], 0) / base.length;<br>  const scale = .42;<br>  return base.map(([x, y]) =&gt; ({<br>    x: .5 + (x - .5) * scale,<br>    y: Math.max(.02, Math.min(.98, centerY + (y - baseCenter) * scale)),<br>    z: 0<br>  }));<br>}</p>
+<p>async function makePage(viewport = { width: 1280, height: 720 }) {<br>  const page = await browser.newPage({ viewport });<br>  page.on(&quot;pageerror&quot;, error =&gt; browserErrors.push(<code>pageerror: ${error.message}</code>));<br>  page.on(&quot;console&quot;, message =&gt; {<br>    if (message.type() !== &quot;error&quot;) return;<br>    if (message.text().includes(&quot;Created TensorFlow Lite XNNPACK delegate for CPU&quot;)) return;<br>    browserErrors.push(<code>console: ${message.text()}</code>);<br>  });<br>  await page.goto(prototypeUrl, { waitUntil: &quot;load&quot; });<br>  await page.waitForFunction(() =&gt; {<br>    const api = window.__mvpTest;<br>    const methods = [<br>      &quot;startWithMode&quot;,<br>      &quot;selectLevel&quot;,<br>      &quot;advance&quot;,<br>      &quot;renderSyntheticHand&quot;,<br>      &quot;emitPoseTransition&quot;,<br>      &quot;emitHandTrackingFrame&quot;,<br>      &quot;emit&quot;,<br>      &quot;completeLevel&quot;,<br>      &quot;triggerCollision&quot;,<br>      &quot;resolveCloudRound&quot;,<br>      &quot;getState&quot;<br>    ];<br>    return api &amp;&amp; methods.every(method =&gt; typeof api[method] === &quot;function&quot;);<br>  }, null, { timeout: 5_000 });<br>  return page;<br>}</p>
+<p>async function getState(page) {<br>  return page.evaluate(() =&gt; window.__mvpTest.getState());<br>}</p>
+<p>async function startWithMode(page, mode) {<br>  await page.evaluate(nextMode =&gt; window.__mvpTest.startWithMode(nextMode), mode);<br>  return getState(page);<br>}</p>
+<p>async function selectLevel(page, levelId) {<br>  await page.evaluate(nextLevelId =&gt; window.__mvpTest.selectLevel(nextLevelId), levelId);<br>  return getState(page);<br>}</p>
+<p>async function advance(page, ms) {<br>  await page.evaluate(deltaMs =&gt; window.__mvpTest.advance(deltaMs), ms);<br>  return getState(page);<br>}</p>
+<p>async function renderHand(page, label, options = {}) {<br>  await page.evaluate(({ nextLabel, nextOptions }) =&gt; {<br>    window.__mvpTest.renderSyntheticHand(nextLabel, nextOptions);<br>  }, { nextLabel: label, nextOptions: options });<br>  return getState(page);<br>}</p>
+<p>async function emitPoseTransition(page, stablePose, source = &quot;camera&quot;) {<br>  await page.evaluate(({ nextPose, nextSource }) =&gt; {<br>    const timestamp = Math.max(<br>      Number(window.__qaInputTimestamp || 0),<br>      performance.now()<br>    ) + 80;<br>    window.__qaInputTimestamp = timestamp;<br>    window.__mvpTest.emitPoseTransition({<br>      stablePose: nextPose,<br>      timestamp,<br>      source: nextSource<br>    });<br>  }, { nextPose: stablePose, nextSource: source });<br>  return getState(page);<br>}</p>
+<p>async function emitHandTrackingFrame(page, {<br>  handPresent = true,<br>  palmCenterY = null,<br>  confidence = .98<br>} = {}) {<br>  await page.evaluate(frame =&gt; {<br>    const timestamp = Math.max(<br>      Number(window.__qaInputTimestamp || 0),<br>      performance.now()<br>    ) + 80;<br>    window.__qaInputTimestamp = timestamp;<br>    window.__mvpTest.emitHandTrackingFrame({ ...frame, timestamp });<br>  }, { handPresent, palmCenterY, confidence });<br>  return getState(page);<br>}</p>
+<p>async function emit(page, action, source = &quot;child_keyboard&quot;) {<br>  await page.evaluate(({ nextAction, nextSource }) =&gt; {<br>    window.__mvpTest.emit(nextAction, nextSource);<br>  }, { nextAction: action, nextSource: source });<br>  return getState(page);<br>}</p>
+<p>async function completeLevel(page) {<br>  await page.evaluate(() =&gt; window.__mvpTest.completeLevel());<br>  return getState(page);<br>}</p>
+<p>async function launchSelectedLevel(page) {<br>  let current = await getState(page);<br>  if (current.screen === &quot;LV-01&quot;) current = await advance(page, 3_700);<br>  assert.equal(current.screen, &quot;LV-02&quot;, &quot;launch countdown did not enter LV-02&quot;);<br>  return current;<br>}</p>
+<p>async function unlockThrough(page, lastLevelIndex) {<br>  for (let index = 0; index &lt;= lastLevelIndex; index += 1) {<br>    await selectLevel(page, LEVELS[index].id);<br>    await launchSelectedLevel(page);<br>    await completeLevel(page);<br>  }<br>  return getState(page);<br>}</p>
+<p>function assertProgression(actual, unlocked, completed, label) {<br>  assert.deepEqual(sorted(actual.unlockedLevelIds), sorted(unlocked), <code>${label}: unlocked levels</code>);<br>  assert.deepEqual(sorted(actual.completedLevelIds), sorted(completed), <code>${label}: completed levels</code>);<br>}</p>
+<p>function assertLevelContract(actual, expected) {<br>  assert.equal(actual.currentLevelId, expected.id, <code>${expected.id}: currentLevelId</code>);<br>  assert.ok(actual.level, <code>${expected.id}: level state is missing</code>);<br>  assert.equal(actual.level.runtimeType, expected.runtimeType, <code>${expected.id}: runtimeType</code>);<br>  assert.equal(actual.level.durationMs, expected.durationMs, <code>${expected.id}: durationMs</code>);<br>  assert.equal(actual.level.collectibleTotal, expected.collectibleTotal, <code>${expected.id}: collectibleTotal</code>);<br>}</p>
+<p>async function advanceUntil(page, predicate, timeoutMs, stepMs = 100) {<br>  let elapsed = 0;<br>  let current = await getState(page);<br>  while (!predicate(current) &amp;&amp; elapsed &lt; timeoutMs) {<br>    current = await advance(page, stepMs);<br>    elapsed += stepMs;<br>  }<br>  assert.equal(predicate(current), true,<br>    <code>condition not reached within ${timeoutMs}ms; state=${JSON.stringify(current)}</code>);<br>  return { state: current, elapsed };<br>}</p>
+<p>async function addCloud(page) {<br>  let current = await getState(page);<br>  const before = current.level.cloudCount;<br>  if (current.gameGestureGate !== &quot;need_fist&quot;) {<br>    current = await advance(page, 760);<br>  }<br>  current = await emitPoseTransition(page, &quot;Closed_Fist&quot;);<br>  assert.equal(current.gameGestureGate, &quot;armed&quot;,<br>    <code>cloud round did not arm after fist; before=${before}, elapsed=${current.level.activePlayElapsedMs}, pause=${current.level.pauseReason}, lock=${current.level.discreteLockUntil ?? &quot;hidden&quot;}, screen=${current.screen}</code>);<br>  current = await emitPoseTransition(page, &quot;Open_Palm&quot;);<br>  assert.equal(current.level.cloudCount, before + 1, &quot;one fist→palm cycle must add exactly one cloud&quot;);<br>  return current;<br>}</p>
+<p>function expectedTrackingStep(current, rawTarget) {<br>  const target = Math.max(.22, Math.min(.72, rawTarget));<br>  const delta = target - current;<br>  if (Math.abs(delta) &lt;= .035) return current;<br>  const step = Math.max(-.12, Math.min(.12, delta * .28));<br>  return Math.max(.22, Math.min(.72, current + step));<br>}</p>
+<p>async function checkWorldFeedback(page, tokens, label) {<br>  const result = await page.evaluate(nextTokens =&gt; {<br>    const world = document.querySelector(&quot;#game-world&quot;);<br>    if (!world) return { hasWorld: false, matches: [] };<br>    const visible = element =&gt; {<br>      const style = getComputedStyle(element);<br>      const rect = element.getBoundingClientRect();<br>      return style.display !== &quot;none&quot;<br>        &amp;&amp; style.visibility !== &quot;hidden&quot;<br>        &amp;&amp; Number(style.opacity || 1) &gt; 0<br>        &amp;&amp; rect.width &gt; 0<br>        &amp;&amp; rect.height &gt; 0;<br>    };<br>    const candidates = [<br>      ...world.querySelectorAll(<br>        &quot;#game-message, .cloud-layer.assist, [data-cloud-assist], [data-assist-feedback], [data-star-feedback], .bonus-star&quot;<br>      )<br>    ];<br>    const assistLayers = [...world.querySelectorAll(&quot;.cloud-layer.assist, [data-cloud-assist]&quot;)]<br>      .filter(visible);<br>    const starNodes = [...world.querySelectorAll(&quot;.bonus-star, [data-star-feedback]&quot;)]<br>      .filter(visible);<br>    const starUnits = starNodes.reduce((sum, element) =&gt; {<br>      const declared = Number(<br>        element.getAttribute(&quot;data-star-count&quot;)<br>        || element.getAttribute(&quot;data-count&quot;)<br>      );<br>      if (Number.isFinite(declared) &amp;&amp; declared &gt; 0) return sum + declared;<br>      const glyphs = (element.textContent || &quot;&quot;).match(/★/g)?.length || 0;<br>      return sum + Math.max(1, glyphs);<br>    }, 0);<br>    const cloudRisePx = parseFloat(<br>      getComputedStyle(document.querySelector(&quot;#level-dog-wrap&quot;))<br>        .getPropertyValue(&quot;--cloud-rise&quot;)<br>    ) || 0;<br>    return {<br>      hasWorld: true,<br>      assistLayerCount: assistLayers.length,<br>      starUnits,<br>      cloudRisePx,<br>      matches: candidates.filter(visible).map(element =&gt; ({<br>        signature: [<br>          element.textContent,<br>          element.className,<br>          element.getAttribute(&quot;data-feedback&quot;),<br>          element.getAttribute(&quot;data-cloud-assist&quot;),<br>          element.getAttribute(&quot;data-star-feedback&quot;)<br>        ].filter(Boolean).join(&quot; &quot;),<br>        insideWorld: world.contains(element)<br>      })).filter(item =&gt; nextTokens.some(token =&gt; item.signature.includes(token)))<br>    };<br>  }, tokens);<br>  assert.equal(result.hasWorld, true, <code>${label}: #game-world missing</code>);<br>  assert.ok(result.matches.some(item =&gt; item.insideWorld),<br>    <code>${label}: no visible in-world feedback matching ${tokens.join(&quot; / &quot;)}</code>);<br>  return result;<br>}</p>
+<p>async function jumpAnimationMetrics(page) {<br>  return page.evaluate(() =&gt; {<br>    const actor = document.querySelector(&quot;#level-dog-wrap&quot;);<br>    const computed = getComputedStyle(actor);<br>    const animation = actor.getAnimations().find(item =&gt; {<br>      const name = String(item.animationName || computed.animationName || &quot;&quot;);<br>      return /jump/i.test(name);<br>    });<br>    const keyframes = animation?.effect?.getKeyframes?.() || [];<br>    let height = 0;<br>    for (const frame of keyframes) {<br>      const transform = String(frame.transform || &quot;&quot;);<br>      for (const match of transform.matchAll(/translateY\(\s<em>(-?[\d.]+)px\s</em>\)/g)) {<br>        height = Math.max(height, Math.max(0, -Number(match[1])));<br>      }<br>      for (const match of transform.matchAll(/translate(?:3d)?\([^,]+,\s*(-?[\d.]+)px/g)) {<br>        height = Math.max(height, Math.max(0, -Number(match[1])));<br>      }<br>      const matrix = transform.match(/matrix\([^,]+,[^,]+,[^,]+,[^,]+,[^,]+,\s*(-?[\d.]+)\)/);<br>      if (matrix) height = Math.max(height, Math.max(0, -Number(matrix[1])));<br>    }<br>    const timing = animation?.effect?.getTiming?.() || {};<br>    return {<br>      hasJumpClass: actor.classList.contains(&quot;jump&quot;),<br>      animationName: String(animation?.animationName || computed.animationName || &quot;none&quot;),<br>      durationMs: Number(timing.duration || parseFloat(computed.animationDuration) * 1000 || 0),<br>      jumpHeightPx: height<br>    };<br>  });<br>}</p>
+<p>async function checkCoachDoesNotCoverVideo(page, label) {<br>  const metrics = await page.evaluate(() =&gt; {<br>    const rect = selector =&gt; {<br>      const element = document.querySelector(selector);<br>      if (!element) return null;<br>      const value = element.getBoundingClientRect();<br>      return { left: value.left, right: value.right, top: value.top, bottom: value.bottom };<br>    };<br>    const intersectionArea = (a, b) =&gt; {<br>      if (!a || !b) return Infinity;<br>      return Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left))<br>        * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));<br>    };<br>    const coach = document.querySelector(&quot;#game-coach&quot;);<br>    const camera = rect(&quot;#game-coach .coach-camera&quot;);<br>    const video = rect(&quot;#game-video&quot;);<br>    const canvas = rect(&quot;#game-landmarks&quot;);<br>    const readout = rect(&quot;#game-coach &gt; .camera-readout&quot;);<br>    const framing = rect(&quot;#game-framing&quot;);<br>    const seen = rect(&quot;#game-seen&quot;);<br>    const control = rect(&quot;#game-control-status&quot;);<br>    return {<br>      missing: [camera, video, canvas, readout, framing, seen, control].some(value =&gt; !value),<br>      cameraReadoutIntersection: intersectionArea(camera, readout),<br>      videoReadoutIntersection: intersectionArea(video, readout),<br>      canvasReadoutIntersection: intersectionArea(canvas, readout),<br>      pillIntersection: intersectionArea(framing, seen),<br>      ordered: camera &amp;&amp; readout &amp;&amp; control<br>        ? camera.bottom &lt;= readout.top + 1 &amp;&amp; readout.bottom &lt;= control.top + 1<br>        : false,<br>      coachFits: coach<br>        ? coach.scrollHeight &lt;= coach.clientHeight + 1<br>          &amp;&amp; coach.getBoundingClientRect().bottom &lt;= innerHeight + 1<br>        : false<br>    };<br>  });<br>  assert.equal(metrics.missing, false, <code>${label}: stable coach hooks are missing</code>);<br>  assert.equal(metrics.cameraReadoutIntersection, 0, <code>${label}: readout covers camera</code>);<br>  assert.equal(metrics.videoReadoutIntersection, 0, <code>${label}: readout covers video</code>);<br>  assert.equal(metrics.canvasReadoutIntersection, 0, <code>${label}: readout covers landmark canvas</code>);<br>  assert.equal(metrics.pillIntersection, 0, <code>${label}: readout pills overlap each other</code>);<br>  assert.equal(metrics.ordered, true, <code>${label}: camera/readout/control order collapsed</code>);<br>  assert.equal(metrics.coachFits, true, <code>${label}: coach clips or escapes the viewport</code>);<br>}</p>
+<p>async function checkSingleViewport(page, label) {<br>  const metrics = await page.evaluate(() =&gt; {<br>    const active = document.querySelector(&quot;.screen.active&quot;);<br>    if (!active) return { missingActive: true };<br>    const visible = element =&gt; {<br>      const style = getComputedStyle(element);<br>      const rect = element.getBoundingClientRect();<br>      return !element.hidden<br>        &amp;&amp; element.getAttribute(&quot;aria-hidden&quot;) !== &quot;true&quot;<br>        &amp;&amp; style.display !== &quot;none&quot;<br>        &amp;&amp; style.visibility !== &quot;hidden&quot;<br>        &amp;&amp; Number(style.opacity || 1) &gt; 0<br>        &amp;&amp; rect.width &gt; 0<br>        &amp;&amp; rect.height &gt; 0;<br>    };<br>    const name = element =&gt; element.id || element.dataset.levelId || String(element.className || element.tagName);<br>    const rect = element =&gt; element.getBoundingClientRect();<br>    const surfaces = [<br>      active,<br>      ...active.querySelectorAll(&quot;.level-map-shell, .level-grid, .level-card, .launch-copy, .game-coach, .finish-card, .pause-card&quot;)<br>    ].filter(visible);<br>    const controls = [...active.querySelectorAll(&quot;button, a[href], input&quot;)].filter(visible);<br>    const zones = [...active.querySelectorAll(<br>      &quot;.level-card, .game-hud, .game-coach, .target-cue, .launch-copy &gt; div, .finish-card, .pause-card&quot;<br>    )].filter(visible);<br>    const overlaps = [];<br>    for (let first = 0; first &lt; zones.length; first += 1) {<br>      for (let second = first + 1; second &lt; zones.length; second += 1) {<br>        const a = zones[first];<br>        const b = zones[second];<br>        if (a.contains(b) || b.contains(a)) continue;<br>        const ar = rect(a);<br>        const br = rect(b);<br>        const width = Math.min(ar.right, br.right) - Math.max(ar.left, br.left);<br>        const height = Math.min(ar.bottom, br.bottom) - Math.max(ar.top, br.top);<br>        if (width &gt; 3 &amp;&amp; height &gt; 3) overlaps.push([name(a), name(b)]);<br>      }<br>    }<br>    return {<br>      missingActive: false,<br>      pageFits: document.documentElement.scrollWidth &lt;= innerWidth + 1<br>        &amp;&amp; document.documentElement.scrollHeight &lt;= innerHeight + 1<br>        &amp;&amp; document.body.scrollWidth &lt;= innerWidth + 1<br>        &amp;&amp; document.body.scrollHeight &lt;= innerHeight + 1,<br>      surfaceOverflows: surfaces<br>        .filter(surface =&gt; surface.scrollWidth &gt; surface.clientWidth + 1 || surface.scrollHeight &gt; surface.clientHeight + 1)<br>        .map(name),<br>      controlsOutside: controls.filter(control =&gt; {<br>        const value = rect(control);<br>        return value.left &lt; -1 || value.right &gt; innerWidth + 1 || value.top &lt; -1 || value.bottom &gt; innerHeight + 1;<br>      }).map(name),<br>      smallControls: controls.filter(control =&gt; rect(control).height &lt; 44).map(name),<br>      overlaps<br>    };<br>  });<br>  assert.equal(metrics.missingActive, false, <code>${label}: no active screen</code>);<br>  assert.equal(metrics.pageFits, true, <code>${label}: page scroll detected</code>);<br>  assert.deepEqual(metrics.surfaceOverflows, [], <code>${label}: clipped surface</code>);<br>  assert.deepEqual(metrics.controlsOutside, [], <code>${label}: control outside viewport</code>);<br>  assert.deepEqual(metrics.smallControls, [], <code>${label}: control below 44px</code>);<br>  assert.deepEqual(metrics.overlaps, [], <code>${label}: independent content zones intersect</code>);<br>}</p>
+<p>async function checkCloudBounds(page, label) {<br>  const metrics = await page.evaluate(() =&gt; {<br>    const world = document.querySelector(&quot;#game-world&quot;)?.getBoundingClientRect();<br>    const stack = document.querySelector(&quot;#cloud-stack&quot;)?.getBoundingClientRect();<br>    const layers = [...document.querySelectorAll(&quot;#cloud-stack [data-cloud-layer], #cloud-stack .cloud-layer&quot;)]<br>      .filter(element =&gt; {<br>        const style = getComputedStyle(element);<br>        const value = element.getBoundingClientRect();<br>        return style.display !== &quot;none&quot; &amp;&amp; style.visibility !== &quot;hidden&quot; &amp;&amp; value.width &gt; 0 &amp;&amp; value.height &gt; 0;<br>      })<br>      .map(element =&gt; element.getBoundingClientRect());<br>    const inside = (outer, inner) =&gt; outer &amp;&amp; inner<br>      &amp;&amp; inner.left &gt;= outer.left - 1 &amp;&amp; inner.right &lt;= outer.right + 1<br>      &amp;&amp; inner.top &gt;= outer.top - 1 &amp;&amp; inner.bottom &lt;= outer.bottom + 1;<br>    return {<br>      hasWorld: Boolean(world),<br>      hasStack: Boolean(stack),<br>      layerCount: layers.length,<br>      stackInsideWorld: inside(world, stack),<br>      layersInsideWorld: layers.every(layer =&gt; inside(world, layer)),<br>      layersInsideStack: layers.every(layer =&gt; inside(stack, layer))<br>    };<br>  });<br>  assert.equal(metrics.hasWorld, true, <code>${label}: #game-world missing</code>);<br>  assert.equal(metrics.hasStack, true, <code>${label}: #cloud-stack missing</code>);<br>  assert.ok(metrics.layerCount &gt;= 1, <code>${label}: no rendered cloud layers</code>);<br>  assert.equal(metrics.stackInsideWorld, true, <code>${label}: cloud stack escapes game world</code>);<br>  assert.equal(metrics.layersInsideWorld, true, <code>${label}: cloud layer escapes game world</code>);<br>  assert.equal(metrics.layersInsideStack, true, <code>${label}: cloud layer escapes cloud stack</code>);<br>}</p>
+<p>try {<br>  // Map progression: completion, never score, unlocks the next level.<br>  {<br>    const page = await makePage();<br>    let current = await startWithMode(page, &quot;keyboard_full&quot;);<br>    assert.equal(current.screen, &quot;LV-00&quot;);<br>    assert.equal(current.currentLevelId, null);<br>    assertProgression(current, [&quot;L1&quot;], [], &quot;fresh map&quot;);</p>
+<p>    current = await selectLevel(page, &quot;L2&quot;);<br>    assert.equal(current.screen, &quot;LV-00&quot;, &quot;locked L2 navigated away from map&quot;);<br>    assert.equal(current.currentLevelId, null, &quot;locked L2 became current&quot;);</p>
+<p>    for (let index = 0; index &lt; LEVELS.length; index += 1) {<br>      const definition = LEVELS[index];<br>      current = await selectLevel(page, definition.id);<br>      assert.equal(current.screen, &quot;LV-01&quot;, <code>${definition.id}: unlocked card did not launch</code>);<br>      assertLevelContract(current, definition);<br>      current = await launchSelectedLevel(page);<br>      assertLevelContract(current, definition);<br>      current = await completeLevel(page);<br>      assert.equal(current.screen, &quot;LV-03&quot;, <code>${definition.id}: completion did not show celebration</code>);<br>      assertProgression(<br>        current,<br>        LEVEL<em>IDS.slice(0, Math.min(LEVEL</em>IDS.length, index + 2)),<br>        LEVEL_IDS.slice(0, index + 1),<br>        <code>${definition.id} completion</code><br>      );<br>    }<br>    pass(&quot;map unlocks L1→L2→L3 on completion; runtimes are 40/45/50s with six collectibles each&quot;);<br>    await page.close();<br>  }</p>
+<p>  // L1: command runner, immediate free jump, prominent motion, early target,<br>  // and a final partner switch command.<br>  {<br>    const page = await makePage({ width: 1440, height: 900 });<br>    let current = await startWithMode(page, &quot;camera_full&quot;);<br>    assert.equal(Array.isArray(current.inputProfile.capabilities), false,<br>      &quot;camera capabilities must be a named boolean map, not a positional array&quot;);<br>    assert.deepEqual(current.inputProfile.capabilities, {<br>      poseTransition: true,<br>      handTrackingY: true<br>    }, &quot;camera profile does not advertise the two normalized input channels&quot;);<br>    current = await selectLevel(page, &quot;L1&quot;);<br>    assertLevelContract(current, LEVELS[0]);<br>    current = await launchSelectedLevel(page);<br>    assert.equal(current.level.target, null, &quot;L1 should open with a brief free-control window&quot;);</p>
+<p>    current = await emitPoseTransition(page, &quot;Closed_Fist&quot;);<br>    assert.equal(current.gameGestureGate, &quot;armed&quot;);<br>    const feedbackBefore = current.level.actionFeedbackCount;<br>    current = await emitPoseTransition(page, &quot;Open_Palm&quot;);<br>    assert.equal(current.level.lastAction, &quot;JUMP&quot;);<br>    assert.equal(current.level.actionFeedbackCount, feedbackBefore + 1);<br>    assert.equal(current.level.target, null, &quot;free jump modified a future target&quot;);</p>
+<p>    const animation = await jumpAnimationMetrics(page);<br>    assert.equal(animation.hasJumpClass, true, &quot;JUMP did not apply a visible actor state&quot;);<br>    assert.notEqual(animation.animationName, &quot;none&quot;, &quot;JUMP has no CSS animation&quot;);<br>    assert.ok(animation.durationMs &gt;= 600, <code>JUMP is too brief to read clearly: ${animation.durationMs}ms</code>);<br>    assert.ok(animation.jumpHeightPx &gt;= 150,<br>      <code>JUMP height is below the confirmed 150px minimum: ${animation.jumpHeightPx}px</code>);</p>
+<p>    await advance(page, 760);<br>    await emitPoseTransition(page, &quot;Closed_Fist&quot;);<br>    const firstTarget = await advanceUntil(page, value =&gt; Boolean(value.level?.target), 6_000);<br>    assert.ok(firstTarget.elapsed &lt;= 6_000, <code>first L1 target appeared after ${firstTarget.elapsed}ms</code>);<br>    assert.equal(firstTarget.state.gameGestureGate, &quot;armed&quot;, &quot;first target cleared the prepared fist state&quot;);<br>    assert.ok(Number(firstTarget.state.level.firstInteractionAtMs) &lt;= 6_000,<br>      <code>configured first interaction is too late: ${firstTarget.state.level.firstInteractionAtMs}ms</code>);</p>
+<p>    const observedActions = [];<br>    current = firstTarget.state;<br>    for (let step = 0; step &lt; 450 &amp;&amp; current.screen === &quot;LV-02&quot;; step += 1) {<br>      if (current.level.target &amp;&amp; !current.level.target.resolved) {<br>        observedActions.push(current.level.target.action);<br>        current = await emit(page, current.level.target.action, &quot;parent_keyboard&quot;);<br>      }<br>      if (current.screen === &quot;LV-02&quot;) current = await advance(page, 100);<br>    }<br>    assert.equal(current.screen, &quot;LV-03&quot;, &quot;L1 did not complete at 40 seconds&quot;);<br>    assert.equal(observedActions.at(-1), &quot;SWITCH_CHARACTER&quot;, &quot;L1 final command is not partner switch&quot;);<br>    assert.equal(current.completionSummary.switchCompleted, true, &quot;L1 final switch was not recorded&quot;);<br>    assert.equal((await page.locator(&quot;body&quot;).innerText()).includes(&quot;Game Over&quot;), false);<br>    pass(&quot;camera profile exposes PoseTransitionEvent/HandTrackingFrame capabilities; L1 consumes pose transitions, jumps ≥150px, and ends with SWITCH&quot;);<br>    await page.close();<br>  }</p>
+<p>  // L2: the normalized HandTrackingFrame stream has no gesture label. Every<br>  // frame must apply EMA(.28), a 3.5% dead zone, and a 12% maximum step.<br>  // Repeated missing frames model the real 80ms recognizer cadence rather than<br>  // one test-only toggle followed by a large deterministic clock jump.<br>  {<br>    const page = await makePage({ width: 1280, height: 720 });<br>    await startWithMode(page, &quot;camera_full&quot;);<br>    await unlockThrough(page, 0);<br>    let current = await selectLevel(page, &quot;L2&quot;);<br>    assertLevelContract(current, LEVELS[1]);<br>    current = await launchSelectedLevel(page);</p>
+<p>    // The real recognizer bridge may report None/Unknown while landmarks are<br>    // usable. Both frames must still become HandTrackingFrame updates.<br>    const bridgeStartY = current.level.playerYNormalized;<br>    current = await renderHand(page, &quot;None&quot;, {<br>      handPresent: true,<br>      landmarks: palmLandmarks(.22)<br>    });<br>    const bridgeUpperY = current.level.playerYNormalized;<br>    assert.ok(bridgeUpperY &lt; bridgeStartY,<br>      <code>L2 None-label recognizer frame did not move upward: ${bridgeStartY} -&gt; ${bridgeUpperY}</code>);<br>    current = await renderHand(page, &quot;Unknown&quot;, {<br>      handPresent: true,<br>      landmarks: palmLandmarks(.78)<br>    });<br>    assert.ok(current.level.playerYNormalized &gt; bridgeUpperY,<br>      <code>L2 Unknown-label recognizer frame did not move downward: ${bridgeUpperY} -&gt; ${current.level.playerYNormalized}</code>);</p>
+<p>    let expectedY = current.level.playerYNormalized;<br>    for (let frame = 0; frame &lt; 7; frame += 1) {<br>      const previousY = current.level.playerYNormalized;<br>      expectedY = expectedTrackingStep(expectedY, .22);<br>      current = await emitHandTrackingFrame(page, {<br>        handPresent: true,<br>        palmCenterY: .22,<br>        confidence: .98<br>      });<br>      approx(current.level.playerYNormalized, expectedY, .006,<br>        <code>L2 upper EMA frame ${frame + 1}</code>);<br>      assert.ok(Math.abs(current.level.playerYNormalized - previousY) &lt;= .1201,<br>        <code>L2 upper frame exceeded 12% max step: ${previousY} -&gt; ${current.level.playerYNormalized}</code>);<br>    }<br>    const highPosition = current.level.playerYNormalized;<br>    assert.ok(highPosition &lt; .29,<br>      <code>L2 repeated upper frames did not visibly move the actor: ${highPosition}</code>);</p>
+<p>    for (let frame = 0; frame &lt; 7; frame += 1) {<br>      const previousY = current.level.playerYNormalized;<br>      expectedY = expectedTrackingStep(expectedY, .78);<br>      current = await emitHandTrackingFrame(page, {<br>        handPresent: true,<br>        palmCenterY: .78,<br>        confidence: .98<br>      });<br>      approx(current.level.playerYNormalized, expectedY, .006,<br>        <code>L2 lower EMA frame ${frame + 1}</code>);<br>      assert.ok(Math.abs(current.level.playerYNormalized - previousY) &lt;= .1201,<br>        <code>L2 lower frame exceeded 12% max step: ${previousY} -&gt; ${current.level.playerYNormalized}</code>);<br>    }<br>    const lowPosition = current.level.playerYNormalized;<br>    assert.ok(lowPosition - highPosition &gt;= .32,<br>      <code>L2 actor did not visibly follow the label-free palm-center stream: ${highPosition} -&gt; ${lowPosition}</code>);</p>
+<p>    const beforeLossElapsed = current.level.activePlayElapsedMs;<br>    const heldY = current.level.playerYNormalized;<br>    for (let frame = 0; frame &lt; 5; frame += 1) {<br>      current = await emitHandTrackingFrame(page, {<br>        handPresent: false,<br>        palmCenterY: null,<br>        confidence: 0<br>      });<br>      current = await advance(page, 80);<br>    }<br>    assert.equal(current.level.pauseReason, null, &quot;400ms continuous hand loss paused L2 too early&quot;);<br>    approx(current.level.playerYNormalized, heldY, .003, &quot;short hand loss holds last Y&quot;);<br>    assert.ok(current.level.activePlayElapsedMs &gt; beforeLossElapsed,<br>      &quot;short hand loss stopped the world instead of holding the actor&quot;);</p>
+<p>    for (let frame = 0; frame &lt; 4 &amp;&amp; current.level.pauseReason !== &quot;hand&quot;; frame += 1) {<br>      current = await emitHandTrackingFrame(page, {<br>        handPresent: false,<br>        palmCenterY: null,<br>        confidence: 0<br>      });<br>      current = await advance(page, 80);<br>    }<br>    assert.equal(current.level.pauseReason, &quot;hand&quot;,<br>      &quot;sustained 80ms missing frames did not safely pause L2 after the 600ms grace&quot;);<br>    const pausedElapsed = current.level.activePlayElapsedMs;<br>    current = await advance(page, 1_000);<br>    assert.equal(current.level.activePlayElapsedMs, pausedElapsed, &quot;L2 advanced while hand-paused&quot;);</p>
+<p>    current = await emitHandTrackingFrame(page, {<br>      handPresent: true,<br>      palmCenterY: .50,<br>      confidence: .98<br>    });<br>    assert.equal(current.level.pauseReason, &quot;resume&quot;, &quot;returning tracking frame did not start safe resume&quot;);<br>    current = await advance(page, 1_300);<br>    assert.equal(current.level.pauseReason, null, &quot;L2 did not resume after hand returned&quot;);</p>
+<p>    // Stay low for the first upper gap and let the production target timer make<br>    // the collision decision; do not call the collision reducer directly.<br>    for (let frame = 0; frame &lt; 5; frame += 1) {<br>      current = await emitHandTrackingFrame(page, {<br>        handPresent: true,<br>        palmCenterY: .72,<br>        confidence: .98<br>      });<br>    }<br>    current = await advance(page, Math.max(0, 9_950 - current.level.activePlayElapsedMs));<br>    const shieldBefore = current.level.shieldHits;<br>    const collectedBefore = current.level.collectedCount;<br>    current = await advance(page, 100);<br>    assert.equal(current.level.shieldHits, shieldBefore + 1, &quot;L2 collision did not consume shield feedback&quot;);<br>    assert.equal(current.level.collectedCount, collectedBefore, &quot;L2 shield collision removed a collectible&quot;);<br>    assert.equal(current.screen, &quot;LV-02&quot;, &quot;L2 collision ended the level&quot;);<br>    const collisionSafeY = current.level.playerYNormalized;<br>    await page.keyboard.press(&quot;ArrowUp&quot;);<br>    current = await getState(page);<br>    assert.ok(current.level.playerYNormalized &lt; collisionSafeY,<br>      <code>L2 ArrowUp moved down after shield snap: ${collisionSafeY} -&gt; ${current.level.playerYNormalized}</code>);<br>    assert.equal((await page.locator(&quot;body&quot;).innerText()).includes(&quot;Game Over&quot;), false);<br>    pass(&quot;L2 HandTrackingFrame filters continuous input, pauses sustained loss, naturally resolves a gap with a shield, and keeps keyboard direction coherent after snap-back&quot;);<br>    await page.close();<br>  }</p>
+<p>  // L3: one cloud per armed cycle, under-build auto padding, over-build stars.<br>  {<br>    const page = await makePage({ width: 1280, height: 720 });<br>    await startWithMode(page, &quot;camera_full&quot;);<br>    await unlockThrough(page, 1);<br>    let current = await selectLevel(page, &quot;L3&quot;);<br>    assertLevelContract(current, LEVELS[2]);<br>    current = await launchSelectedLevel(page);<br>    assert.ok(current.level.cloudTargetLayers &gt;= 1 &amp;&amp; current.level.cloudTargetLayers &lt;= 3,<br>      <code>L3 target is outside 1–3 layers: ${current.level.cloudTargetLayers}</code>);</p>
+<p>    const firstTarget = current.level.cloudTargetLayers;<br>    const padBefore = current.level.cloudAutoPadCount;<br>    current = await advance(page, 9_050);<br>    assert.equal(current.level.cloudAutoPadCount, padBefore + firstTarget,<br>      &quot;the naturally timed under-built round did not auto-pad all missing layers&quot;);<br>    assert.equal(current.level.lastCloudResult.autoPadded, firstTarget);<br>    assert.equal(current.screen, &quot;LV-02&quot;);<br>    const assistFeedback = await checkWorldFeedback(page, [&quot;assist&quot;, &quot;安全云&quot;, &quot;补&quot;],<br>      &quot;L3 under-build assist&quot;);<br>    assert.ok(assistFeedback.assistLayerCount &gt;= firstTarget,<br>      <code>L3 rendered ${assistFeedback.assistLayerCount} safety clouds for ${firstTarget} missing layers</code>);<br>    assert.ok(assistFeedback.cloudRisePx &gt;= firstTarget * 40,<br>      <code>L3 safety clouds did not visibly lift the actor: ${assistFeedback.cloudRisePx}px</code>);<br>    current = await advance(page, 950);<br>    assert.equal(current.level.cloudCount, 0,<br>      &quot;L3 resolved stack did not finish its visible reset before the next round&quot;);</p>
+<p>    const secondTarget = current.level.cloudTargetLayers;<br>    assert.ok(secondTarget &gt;= 1 &amp;&amp; secondTarget &lt;= 3,<br>      <code>next L3 target is outside 1–3 layers: ${secondTarget}</code>);<br>    current = await addCloud(page);<br>    const afterOneCloud = current.level.cloudCount;<br>    current = await emitPoseTransition(page, &quot;Open_Palm&quot;);<br>    assert.equal(current.level.cloudCount, afterOneCloud, &quot;held palm added a duplicate cloud&quot;);<br>    current = await advance(page, 760);<br>    current = await emitPoseTransition(page, &quot;Open_Palm&quot;);<br>    assert.equal(current.level.cloudCount, afterOneCloud,<br>      &quot;palm added another cloud without returning to fist&quot;);</p>
+<p>    while (current.level.cloudCount &lt; secondTarget + 2) current = await addCloud(page);<br>    const builtLayers = current.level.cloudCount;<br>    const starsBefore = current.level.cloudStarCount;<br>    current = await advance(page, Math.max(0, 20_050 - current.level.activePlayElapsedMs));<br>    assert.equal(current.level.cloudStarCount, starsBefore + builtLayers - secondTarget,<br>      &quot;the naturally timed over-built round did not convert extra clouds one-for-one into stars&quot;);<br>    assert.equal(current.level.lastCloudResult.starsAwarded, builtLayers - secondTarget);<br>    const starFeedback = await checkWorldFeedback(page, [&quot;star&quot;, &quot;星星&quot;], &quot;L3 over-build bonus&quot;);<br>    assert.ok(starFeedback.starUnits &gt;= builtLayers - secondTarget,<br>      <code>L3 showed ${starFeedback.starUnits} star units for ${builtLayers - secondTarget} extra clouds</code>);<br>    assert.equal((await page.locator(&quot;body&quot;).innerText()).includes(&quot;Game Over&quot;), false);<br>    pass(&quot;L3 consumes PoseTransitionEvent cycles, renders in-world assist/star feedback, auto-pads missing layers, and converts extras to stars&quot;);<br>    await page.close();<br>  }</p>
+<p>  // Keyboard is a complete fallback, but discrete actions still use the same<br>  // 700ms acceptance window so a key bounce/rapid double press cannot produce<br>  // two clouds or restart a jump while it is still in flight.<br>  {<br>    const page = await makePage({ width: 1280, height: 720 });<br>    await startWithMode(page, &quot;keyboard_full&quot;);<br>    let current = await selectLevel(page, &quot;L1&quot;);<br>    current = await launchSelectedLevel(page);<br>    const jumpFeedbackBefore = current.level.actionFeedbackCount;<br>    await page.keyboard.press(&quot;Space&quot;);<br>    await page.keyboard.press(&quot;Space&quot;);<br>    current = await getState(page);<br>    assert.equal(current.level.actionFeedbackCount, jumpFeedbackBefore + 1,<br>      &quot;rapid keyboard presses restarted L1 jump inside the discrete freeze window&quot;);</p>
+<p>    await completeLevel(page);<br>    await selectLevel(page, &quot;L2&quot;);<br>    await launchSelectedLevel(page);<br>    await completeLevel(page);<br>    await selectLevel(page, &quot;L3&quot;);<br>    current = await launchSelectedLevel(page);<br>    await page.keyboard.press(&quot;Space&quot;);<br>    await page.keyboard.press(&quot;Space&quot;);<br>    current = await getState(page);<br>    assert.equal(current.level.cloudCount, 1,<br>      &quot;rapid keyboard presses added two clouds inside the discrete freeze window&quot;);<br>    current = await advance(page, 760);<br>    await page.keyboard.press(&quot;Space&quot;);<br>    current = await getState(page);<br>    assert.equal(current.level.cloudCount, 2,<br>      &quot;keyboard cloud action did not unlock after the 700ms freeze window&quot;);<br>    pass(&quot;keyboard fallback shares the 700ms discrete-action freeze for L1 and L3&quot;);<br>    await page.close();<br>  }</p>
+<p>  // Five supported viewports: all product screens remain single-view, camera<br>  // copy never covers the image, and a three-layer L3 stack stays in-world.<br>  for (const viewport of VIEWPORTS) {<br>    const page = await makePage(viewport);<br>    await startWithMode(page, &quot;camera_full&quot;);<br>    await checkSingleViewport(page, <code>${viewport.label} LV-00 map</code>);</p>
+<p>    await selectLevel(page, &quot;L1&quot;);<br>    await checkSingleViewport(page, <code>${viewport.label} L1 launch</code>);<br>    await launchSelectedLevel(page);<br>    await emitPoseTransition(page, &quot;Closed_Fist&quot;);<br>    await checkSingleViewport(page, <code>${viewport.label} L1 runtime</code>);<br>    await checkCoachDoesNotCoverVideo(page, <code>${viewport.label} L1 coach</code>);<br>    await completeLevel(page);<br>    await checkSingleViewport(page, <code>${viewport.label} L1 celebration</code>);</p>
+<p>    await selectLevel(page, &quot;L2&quot;);<br>    await checkSingleViewport(page, <code>${viewport.label} L2 launch</code>);<br>    await launchSelectedLevel(page);<br>    await emitHandTrackingFrame(page, {<br>      handPresent: true,<br>      palmCenterY: .35,<br>      confidence: .98<br>    });<br>    await checkSingleViewport(page, <code>${viewport.label} L2 runtime</code>);<br>    await checkCoachDoesNotCoverVideo(page, <code>${viewport.label} L2 coach</code>);<br>    await completeLevel(page);</p>
+<p>    await selectLevel(page, &quot;L3&quot;);<br>    await checkSingleViewport(page, <code>${viewport.label} L3 launch</code>);<br>    await launchSelectedLevel(page);<br>    for (let cloud = 0; cloud &lt; 3; cloud += 1) await addCloud(page);<br>    await checkSingleViewport(page, <code>${viewport.label} L3 runtime</code>);<br>    await checkCoachDoesNotCoverVideo(page, <code>${viewport.label} L3 coach</code>);<br>    await checkCloudBounds(page, <code>${viewport.label} L3 clouds</code>);<br>    await completeLevel(page);<br>    await checkSingleViewport(page, <code>${viewport.label} L3 celebration</code>);</p>
+<p>    await page.close();<br>    pass(<code>${viewport.label}: all three runtimes fit one viewport; coach and clouds stay in their bounds</code>);<br>  }</p>
+<p>  assert.deepEqual(browserErrors, [], <code>browser errors:\n${browserErrors.join(&quot;\n&quot;)}</code>);<br>  console.log(<code>DONE ${passes.length} confirmed-runtime targeted checks passed</code>);<br>} finally {<br>  await browser.close();<br>  await new Promise(resolve =&gt; server.close(resolve));<br>}</p></div></template>
+
+  <div class="overlay-backdrop" id="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayHeading">
+    <div class="overlay-panel">
+      <div class="overlay-header">
+        <div class="overlay-title">
+          <h2 id="overlayHeading">产出物原文</h2>
+          <code id="overlayFile"></code>
+        </div>
+        <button class="overlay-close" onclick="closeOverlay()" aria-label="关闭浮层">关闭 ✕</button>
+      </div>
+      <div class="overlay-body" id="overlayBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const cards = [{"question_id":"Q-CR-MULTI-CONFIRMED-001","question":"已确认记录：是否采用‘高跳动作关 + 掌心直接跟手 + 容错叠云’作为多玩法三关方向？","why_it_matters":"这是本 Change 的高层产品决策，已经决定输入层、运行时、教程和关卡内容边界。","recommended_decision":"已确认并完成 L4→L0 传播；除非 PM 提出新的变更，不重新打开本方向决策。","options":["已确认（当前决策）","提出新变更（走 Change Router）"],"source_files":["01A-competitor-page-experience.md","03-feature-核心关卡循环.md","04B-prototype-手势小狗探险MVP.html"],"evidence_refs":["用户明确确认多玩法三关","L4→L0 propagation complete","multi-runtime targeted 10/10"],"downstream_impact":["双通道输入合同","三个独立关卡运行时","真实儿童试玩脚本"],"route_hint":"L4"},{"question_id":"Q-CR-MULTI-CONFIRMED-002","question":"已确认记录：是否保持 web-only、主线不增加必过手型、无 Game Over 和无成绩锁关？","why_it_matters":"这些是本次玩法扩展的范围和低挫败底线，防止丰富玩法重新变成识别或失败门槛。","recommended_decision":"已确认并传播至研究、规格和实现；移动 Web 或新手型必须另开变更审查。","options":["已确认（当前边界）","提出新边界（走 Change Router）"],"source_files":["01-research.md","01A-competitor-page-experience.md","04A-prototype-spec-核心关卡循环.md"],"evidence_refs":["confirmed Target Surface: web-only","no required new hand pose","no Game Over / no score gate"],"downstream_impact":["Target Surface Gate","Gesture Lab","关卡完成条件","响应式 QA"],"route_hint":"L4"},{"question_id":"Q-CR-MULTI-CONFIRMED-003","question":"已确认记录：L1 是否采用 150–220px、约 1 秒的完整高跳来替换原先幅度过小的动作？","why_it_matters":"这是用户在确认多玩法方向时同时提出的明确手感修正，必须与三运行时变更一起传播和留痕。","recommended_decision":"已确认作为本轮实现基线；后续只依据真实儿童试玩微调高度、停顿和障碍比例。","options":["已确认（当前高跳）","提出新手感变更（走 Change Router）"],"source_files":["03-feature-核心关卡循环.md","04A-prototype-spec-核心关卡循环.md","04B-prototype-手势小狗探险MVP.html"],"evidence_refs":["jump peak ≥150px PASS","850–1100ms complete arc","multi-runtime targeted 10/10"],"downstream_impact":["L1 首次成功反馈","障碍尺度","真实试玩观察项"],"route_hint":"L0"}];
+    const storageKey = "pm-review-console:cr-20260813-多玩法三关变更审查-已确认并传播:01a-competitor-page-experience-md";
+    const basePayload = {
+      phase: "CR-20260813 多玩法三关变更审查（已确认并传播）",
+      artifact: "01A-competitor-page-experience.md",
+      source_status: "confirmed"
+    };
+    const materialMeta = [{"file":"01A-competitor-page-experience.md","href":"../01A-competitor-page-experience.md","type":"markdown","missing":false,"title":"已确认的竞品与玩法 Benchmark"},{"file":"01-research.md","href":"../01-research.md","type":"markdown","missing":false,"title":"当前产品方向"},{"file":"03-feature-核心关卡循环.md","href":"../03-feature-核心关卡循环.md","type":"markdown","missing":false,"title":"当前三关功能规则"},{"file":"04A-prototype-spec-核心关卡循环.md","href":"../04A-prototype-spec-核心关卡循环.md","type":"markdown","missing":false,"title":"当前三关原型规格"},{"file":"04B-prototype-手势小狗探险MVP.html","href":"../04B-prototype-手势小狗探险MVP.html","type":"html","missing":false,"title":"当前可试玩实现"},{"file":"tests/three-level-mvp-targeted.mjs","href":"../tests/three-level-mvp-targeted.mjs","type":"text","missing":false,"title":"多玩法专项测试"}];
+
+    const overlay = document.getElementById("overlay");
+    const overlayBody = document.getElementById("overlayBody");
+    const overlayHeading = document.getElementById("overlayHeading");
+    const overlayFile = document.getElementById("overlayFile");
+
+    function esc(s) {
+      return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    function escAttr(s) {
+      return String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function normalizeLocalPath(value) {
+      let raw = String(value || "").trim();
+      if (!raw || raw.startsWith("#") || /^[a-z]+:/i.test(raw)) return "";
+      raw = raw.split("#")[0].split("?")[0].replace(/\\/g, "/");
+      try { raw = decodeURIComponent(raw); } catch (_) {}
+      raw = raw.replace(/^\.\//, "");
+      while (raw.startsWith("../")) raw = raw.slice(3);
+      return raw;
+    }
+
+    function findMaterialIndexByFile(value) {
+      const target = normalizeLocalPath(value);
+      if (!target) return -1;
+      return materialMeta.findIndex((meta) => {
+        const file = normalizeLocalPath(meta.file);
+        const href = normalizeLocalPath(meta.href);
+        return file === target || href === target || file.endsWith("/" + target) || href.endsWith("/" + target);
+      });
+    }
+
+    function openFileReference(file) {
+      const index = findMaterialIndexByFile(file);
+      if (index >= 0) {
+        openOverlay(index);
+        return true;
+      }
+      return false;
+    }
+
+    function openOverlay(index) {
+      const meta = materialMeta[index];
+      if (!meta) return;
+      overlayHeading.textContent = meta.title || "产出物原文";
+      overlayFile.textContent = meta.file || "";
+
+      if (meta.missing) {
+        overlayBody.innerHTML =
+          '<p style="color:var(--warn);padding:20px 0">文件未找到：<code>' +
+          esc(meta.file) + '</code><br>请确认文件路径或重新生成 Review Console。</p>';
+      } else if (meta.type === "html") {
+        const href = meta.href || meta.file || "";
+        overlayBody.innerHTML =
+          '<div class="overlay-html-frame-wrap">' +
+          '<div class="overlay-html-frame-top">' +
+          '<span>HTML 产物正在右侧浮层中预览。若浏览器限制本地 iframe，可使用备用入口。</span>' +
+          '<a class="overlay-open-btn" href="' + escAttr(href) + '" target="_blank" rel="noopener">新窗口打开</a>' +
+          '</div>' +
+          '<iframe class="overlay-html-frame" src="' + escAttr(href) + '" title="' + escAttr(meta.title || "HTML 产物预览") + '"></iframe>' +
+          '</div>';
+      } else {
+        const tpl = document.getElementById("mat-tpl-" + index);
+        if (tpl && tpl.content.childElementCount > 0) {
+          overlayBody.innerHTML = "";
+          overlayBody.appendChild(tpl.content.cloneNode(true));
+        } else {
+          overlayBody.innerHTML = '<p class="muted">内容不可用。</p>';
+        }
+      }
+
+      overlay.classList.add("visible");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeOverlay() {
+      overlay.classList.remove("visible");
+      document.body.style.overflow = "";
+      overlayBody.innerHTML = "";
+    }
+
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("visible")) closeOverlay();
+    });
+    document.addEventListener("click", (e) => {
+      const fileTrigger = e.target.closest("[data-open-file]");
+      if (fileTrigger) {
+        const handled = openFileReference(fileTrigger.getAttribute("data-open-file"));
+        if (handled) e.preventDefault();
+        return;
+      }
+
+      const materialLink = e.target.closest(".md-content a[href]");
+      if (!materialLink) return;
+      const handled = openFileReference(materialLink.getAttribute("href"));
+      if (handled) e.preventDefault();
+    });
+
+    function collectFeedback() {
+      const directFeedback = document.getElementById("directFeedback")?.value || "";
+      const responses = cards.map((card, index) => {
+        const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]')?.value || "";
+        const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]')?.value || "";
+        return { question_id: card.question_id, question: card.question, decision, comment };
+      });
+      return { ...basePayload, exported_at: new Date().toISOString(), direct_feedback: directFeedback, responses };
+    }
+
+    function saveLocal() {
+      const payload = collectFeedback();
+      localStorage.setItem(storageKey, JSON.stringify(payload));
+      document.getElementById("feedbackPreview").textContent = JSON.stringify(payload, null, 2);
+    }
+
+    function restoreLocal() {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) { saveLocal(); return; }
+      try {
+        const payload = JSON.parse(raw);
+        const directFeedback = document.getElementById("directFeedback");
+        if (directFeedback) directFeedback.value = payload.direct_feedback || "";
+        payload.responses?.forEach((response, index) => {
+          const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]');
+          const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]');
+          if (decision) decision.value = response.decision || "";
+          if (comment) comment.value = response.comment || "";
+        });
+      } catch (_) { localStorage.removeItem(storageKey); }
+      saveLocal();
+    }
+
+    document.querySelectorAll("select, textarea").forEach((field) => {
+      field.addEventListener("input", saveLocal);
+      field.addEventListener("change", saveLocal);
+    });
+
+    document.getElementById("copyFeedback").addEventListener("click", async () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const status = document.getElementById("copyStatus");
+      if (navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(text);
+          if (status) status.textContent = "已复制";
+          return;
+        } catch (_) {
+          window.prompt("复制反馈 JSON", text);
+        }
+      } else {
+        window.prompt("复制反馈 JSON", text);
+      }
+      if (status) status.textContent = "请从弹窗复制";
+    });
+
+    document.getElementById("downloadFeedback").addEventListener("click", () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const blob = new Blob([text], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "cr-20260813-多玩法三关变更审查-已确认并传播-feedback.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+
+    restoreLocal();
+  </script>
+</body>
+</html>

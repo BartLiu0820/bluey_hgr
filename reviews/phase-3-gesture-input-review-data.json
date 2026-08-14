@@ -1,0 +1,121 @@
+{
+  "phase": "Phase 3 手势输入闭环功能细节",
+  "artifact": "03-feature-手势输入闭环.md",
+  "status": "confirmed",
+  "updated_at": "2026-08-13",
+  "summary": {
+    "key_decisions": [
+      "Gesture Lab 只教一次 Closed_Fist → Open_Palm → 700ms freeze → Closed_Fist；首轮完成即达标，之后可自愿重复且小狗持续响应",
+      "输入合同拆为离散 PoseTransitionEvent 与逐帧 HandTrackingFrame，运行时只订阅自己需要的通道",
+      "camera_full 与 keyboard_full 都输出具名 boolean capability map：poseTransition=true、handTrackingY=true；L2 的 None/Unknown 不阻断掌心 Y 跟手"
+    ],
+    "discarded_options": [
+      "不再使用旧版多动作计次训练、识别倒计时或强制多轮练习",
+      "不让输入适配器按目标情境预判具体游戏动作；L1/L3 自行解释姿态边沿，L2 只消费位置帧",
+      "不新增跟手校准 screen，不把置信度、未知标签或重复次数表达为儿童成绩"
+    ],
+    "next_stage_conditions": [
+      "已满足：04A 保持 GI-01–GI-06，并完整定义双通道事件合同与 capability 路由",
+      "已满足：集成 04B 实现 Unknown 跟手、键盘上下控制、两轮复练与五视口单屏 QA",
+      "后续只由真实儿童试玩校准拳掌理解、700ms freeze 与成人提示需求"
+    ],
+    "execution_details_not_for_pm": [
+      "连续 3 帧稳定确认、80ms 推理间隔、700ms 初始冻结与虚拟掌心步长",
+      "关键点绘制、模型线程调度、EMA/死区和自动化测试 seam"
+    ]
+  },
+  "materials": [
+    { "title": "Phase 3 手势输入闭环功能规格", "file": "03-feature-手势输入闭环.md" },
+    { "title": "Phase 4A 手势输入闭环原型规格", "file": "04A-prototype-spec-手势输入闭环.md" },
+    { "title": "Phase 2 可交互产品架构图", "file": "02-architecture.html" }
+  ],
+  "visualizations": [
+    {
+      "type": "stage_flow",
+      "title": "低龄拳掌练习闭环",
+      "description": "一次完整循环即可离开；成功状态不锁死练习，孩子可继续让小狗响应。",
+      "steps": [
+        { "label": "握拳准备", "status": "done", "detail": "stable Closed_Fist → gate=armed" },
+        { "label": "张掌执行", "status": "done", "detail": "stable Open_Palm → 立即动作并进入 700ms freeze" },
+        { "label": "握拳复位", "status": "done", "detail": "首次复位即 control_cycle_passed=true，并重新 armed" },
+        { "label": "自愿重复或离开", "status": "done", "detail": "看看结果常驻；后续每轮小狗继续响应" }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "双通道输入与运行时路由",
+      "description": "姿态分类与关键点位置是互不门控的合同；Unknown 只影响离散事件。",
+      "columns": ["通道", "数据", "消费方", "None/Unknown", "键盘等价"],
+      "rows": [
+        { "label": "PoseTransitionEvent", "values": ["姿态变化边沿", "L1 / L3", "不派发新事件", "Space 生成规范拳→掌循环"] },
+        { "label": "HandTrackingFrame", "values": ["handPresent / palmCenterY / confidence / timestamp", "L2 每个处理帧", "关键点有效则继续跟手", "↑/↓ 连续改变虚拟 palmCenterY"] }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "InputProfile capability map",
+      "description": "full 档案都能支撑三关，具体运行时仍只订阅单一所需 capability。",
+      "columns": ["模式", "poseTransition", "handTrackingY", "L1/L3", "L2"],
+      "rows": [
+        { "label": "camera_full", "values": ["true", "true", "拳掌姿态边沿", "逐帧掌心 Y；Unknown 仍工作"] },
+        { "label": "keyboard_full", "values": ["true", "true", "Space", "↑/↓"] }
+      ]
+    },
+    {
+      "type": "impact_map",
+      "title": "已确认合同的下游影响",
+      "description": "功能层固定输入语义，04A/04B 只负责忠实实现和验证。",
+      "source": "拳掌一次循环 + 双通道事件 + boolean capability map",
+      "items": [
+        { "label": "04A Gesture Lab", "detail": "固定六屏，不新增位置练习门槛；GI-03 首轮达标后仍可重复" },
+        { "label": "L1 / L3", "detail": "消费 PoseTransitionEvent，由各自 runtime 解释为高跳/接力或叠云" },
+        { "label": "L2", "detail": "消费 HandTrackingFrame；分类未知但关键点有效时仍连续更新角色" },
+        { "label": "QA", "detail": "验证持续张掌不连发、Unknown 跟手、键盘 ↑/↓、五视口与本机隐私边界" }
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-03-GI-001",
+      "question": "是否确认 Gesture Lab 只要求一次拳→掌→拳循环，首轮达标即可进入结果页，后续练习完全自愿？",
+      "why_it_matters": "这决定儿童记忆负担、练习状态机和进入游戏的门槛；额外手势、倒计时或次数目标会重新增加等待与挫败。",
+      "recommended_decision": "已确认：一次循环达标，看看结果常驻，留页时小狗继续逐轮响应。",
+      "options": ["维持已确认方案", "要求变更", "补真实儿童试玩材料"],
+      "source_files": ["03-feature-手势输入闭环.md"],
+      "evidence_refs": [],
+      "downstream_impact": ["04A-prototype-spec-手势输入闭环.md", "04B-prototype-手势小狗探险MVP.html", "儿童试玩计划"],
+      "route_hint": "L2"
+    },
+    {
+      "question_id": "Q-03-GI-002",
+      "question": "是否确认 PoseTransitionEvent 与 HandTrackingFrame 两个通道互不门控，L2 在 None/Unknown 时仍按有效关键点跟手？",
+      "why_it_matters": "若把位置流绑定到姿态分类，L2 会在模型无法命名手型时无故冻结；若适配器预判目标动作，三个运行时会重新耦合。",
+      "recommended_decision": "已确认：Unknown 不产生离散边沿，但 handPresent=true 与 palmCenterY 继续有效。",
+      "options": ["维持已确认方案", "要求变更", "补运行时证据"],
+      "source_files": ["03-feature-手势输入闭环.md", "03-feature-核心关卡循环.md"],
+      "evidence_refs": [],
+      "downstream_impact": ["Input Adapter", "L1/L2/L3 runtime", "Unknown 跟手 QA"],
+      "route_hint": "L2"
+    },
+    {
+      "question_id": "Q-03-GI-003",
+      "question": "是否确认 camera_full 与 keyboard_full 都使用具名 boolean capability map，并同时提供 poseTransition 与 handTrackingY？",
+      "why_it_matters": "这保证任一 full 输入模式都能走完三关，也避免把某个运行时的具体按键或手势塞进通用帧结构。",
+      "recommended_decision": "已确认：两项 capability 均为 true；Space 服务 L1/L3，↑/↓ 服务 L2。",
+      "options": ["维持已确认方案", "要求变更", "补档案兼容性材料"],
+      "source_files": ["03-feature-手势输入闭环.md"],
+      "evidence_refs": [],
+      "downstream_impact": ["InputProfile", "GI-04/GI-06", "RuntimeHost capability guard"],
+      "route_hint": "L2"
+    }
+  ],
+  "risks": [
+    "拳头是否被 5 岁儿童自然理解为准备键、700ms freeze 是否合适，仍需真实儿童陪同试玩",
+    "None/Unknown 跟手依赖关键点有效；关键点真正丢失时仍必须进入短保持或安全暂停，而不是伪造位置",
+    "自动化只能验证合同与状态机，不能替代真实儿童的动作疲劳、误触和情绪观察"
+  ],
+  "next_actions": [
+    "Phase 3 手势输入闭环已确认并已传播至 04A/04B",
+    "后续试玩重点记录拳掌理解、重复意愿、Unknown 跟手连续性与成人提示次数"
+  ]
+}

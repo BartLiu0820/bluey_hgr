@@ -1,0 +1,108 @@
+{
+  "phase": "Change Review · 成熟平台弹跳玩法",
+  "artifact": "CR-20260814-proven-bounce-mode",
+  "status": "confirmed",
+  "updated_at": "2026-08-14",
+  "summary": {
+    "key_decisions": [
+      "用户已确认第三玩法不要继续自创叠云，改用成熟的自动弹跳 + 左右落平台心智",
+      "L3 正式命名为树梢蹦蹦：角色持续自动弹跳，下降落台立即再弹；到达上方阈值后镜头向上追随，掌心 X 或 ←/→ 只控制横向",
+      "L2 判定生命周期与视觉生命周期解耦：越过角色后仍继续移动到完整离场",
+      "成绩页改为左右双列，在六个目标视口完整展示 Top 5 与全部操作按钮",
+      "保持 web-only、本地识别、设备内匿名 Top 5、低挫败和原创素材边界"
+    ],
+    "discarded_options": [
+      "不保留拳掌叠云这一自创主循环",
+      "不把赛车躲避作为 L3，因为它与 L2 连续躲避过于同质",
+      "不把涂色塞入本轮计分主线；它更适合作为未来无分数、无时限创作模式",
+      "不复制 Doodle Jump 的名称、美术、角色、关卡、平台素材或商业表达"
+    ],
+    "next_stage_conditions": [
+      "已满足：用户明确要求成熟玩法心智并授权调整",
+      "已满足：01A→04B、试玩/验收、QA 与 Phase 4B Review Console 均已同步",
+      "下一步由 PM 实际试玩 L2 完整离场与 L3 连续攀升/镜头追随"
+    ],
+    "execution_details_not_for_pm": [
+      "passedObjects 数组、worldX/worldY 过滤阈值、EMA/死区/限速和测试时间推进",
+      "CSS 双列压缩参数、Playwright 选择器与本地存储 key"
+    ]
+  },
+  "materials": [
+    { "title": "方向判断", "file": "01-research.md" },
+    { "title": "成熟玩法 Benchmark", "file": "01A-competitor-page-experience.md" },
+    { "title": "产品架构", "file": "02-architecture.html" },
+    { "title": "核心玩法规则", "file": "03-feature-核心关卡循环.md" },
+    { "title": "输入规则", "file": "03-feature-手势输入闭环.md" },
+    { "title": "核心玩法原型规格", "file": "04A-prototype-spec-核心关卡循环.md" },
+    { "title": "输入原型规格", "file": "04A-prototype-spec-手势输入闭环.md" },
+    { "title": "可试玩 MVP", "file": "04B-prototype-手势小狗探险MVP.html" },
+    { "title": "定向 QA", "file": "prototype-qa/phase4b-mvp-qa.md" }
+  ],
+  "visualizations": [
+    {
+      "type": "stage_flow",
+      "title": "本轮 L4→L0 传播",
+      "steps": [
+        { "label": "L4 Benchmark", "status": "done", "detail": "选择自动弹跳平台，排除赛车同质化与计分涂色" },
+        { "label": "L3 架构", "status": "done", "detail": "cloud_stack 替换为 auto_bounce_climb" },
+        { "label": "L2 规则", "status": "done", "detail": "掌心 X 落台；L2 判定与离场解耦" },
+        { "label": "L1 规格", "status": "done", "detail": "双列成绩卡与五视口完整露出" },
+        { "label": "L0 实现", "status": "done", "detail": "04B + QA-TARGETED 9/9" }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "三个并列玩法的成熟控制心智",
+      "columns": ["玩法", "孩子只做什么", "世界自己做什么", "温和失败"],
+      "rows": [
+        { "label": "溪边跳跳", "values": ["拳→掌高跳", "地面和障碍同速卷动", "掉坑托回、扣心、短暂无敌"] },
+        { "label": "萤火虫躲躲", "values": ["手掌上下移动", "障碍连续穿屏并完整离场", "泡泡弹回、护盾、丢手暂停"] },
+        { "label": "树梢蹦蹦", "values": ["手掌左右对准更高平台", "下降落台再弹；角色上升触发镜头追随；平台因 cameraY 相对下移", "跌出镜头下沿由安全云托回"] }
+      ]
+    },
+    {
+      "type": "metric_cards",
+      "title": "实现验收",
+      "items": [
+        { "label": "玩法专项", "value": "9 / 9", "note": "含 L2 离场与 L3 落台" },
+        { "label": "识别运行时", "value": "1 / 1", "note": "拳掌融合与稳定回归" },
+        { "label": "成绩页视口", "value": "6 / 6", "note": "Top 5 与全部按钮完整" },
+        { "label": "默认玩法", "value": "3 / 3", "note": "首次进入全部可选" }
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-CR-BOUNCE-001",
+      "question": "是否确认用树梢蹦蹦的自动弹跳 + 左右落宽平台替换云朵叠叠？",
+      "why_it_matters": "这决定第三玩法是否建立在用户熟悉且一眼可懂的规则上，同时避免增加新手型。",
+      "recommended_decision": "已确认方向：保持持续自动弹跳、下降落台再弹、上方阈值镜头追随、横向落台和安全云托底；不复制参考产品的品牌资产。",
+      "options": ["已确认", "调整平台宽度/节奏", "重新选择第三玩法"],
+      "source_files": ["01A-competitor-page-experience.md", "03-feature-核心关卡循环.md", "04B-prototype-手势小狗探险MVP.html"],
+      "evidence_refs": ["用户 2026-08-14 明确请求", "L3 3+ landing QA PASS", "cameraY/platform screen shift QA PASS"],
+      "downstream_impact": ["L3 输入", "运行时边界", "儿童教学", "计分规则"],
+      "route_hint": "L4"
+    },
+    {
+      "question_id": "Q-CR-LAYOUT-002",
+      "question": "是否确认成绩页与 L2 障碍离场已达到当前单屏和空间连续性基线？",
+      "why_it_matters": "结果页不可操作和物体凭空消失都会让一局的因果关系断裂。",
+      "recommended_decision": "建议确认：五视口完整 Top 5/按钮；L2 障碍越线后持续移动到离场。",
+      "options": ["确认当前实现", "调整成绩页密度", "调整障碍离场速度"],
+      "source_files": ["04A-prototype-spec-核心关卡循环.md", "04B-prototype-手势小狗探险MVP.html", "tests/mode-hub-score-loop-targeted.mjs"],
+      "evidence_refs": ["five viewport result PASS", "passed obstacle lifecycle PASS"],
+      "downstream_impact": ["单屏规则", "结果页可操作性", "L2 世界连续性"],
+      "route_hint": "L0–L2"
+    }
+  ],
+  "risks": [
+    "自动化不能替代真实 5 岁儿童对平台速度、宽度和横移灵敏度的判断",
+    "Doodle Jump 只作为通用机制参考；公开发布仍需持续进行原创性检查",
+    "涂色创作模式未进入本轮，未来若做应保持无分数、无时限、无排行榜"
+  ],
+  "next_actions": [
+    "PM 打开最新试玩页，先检查成绩页，再测试 L2 一个完整离场和 L3 连续三次落台及镜头上推",
+    "若手感确认，Phase 4B Gate 可进入 confirmed",
+    "随后安排家长陪同真实儿童试玩"
+  ]
+}

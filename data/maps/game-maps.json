@@ -1,0 +1,179 @@
+{
+  "schemaVersion": "1.0.0",
+  "changeId": "CR-20260814-endless-milestone-ramp",
+  "mapMode": "side_scroll_mode",
+  "visualModel": "parallax_layers",
+  "runtimeObjectModel": [
+    "platform_objects",
+    "interactive_scene_objects",
+    "scene_hooks"
+  ],
+  "collisionModel": "precise_shapes",
+  "engineTarget": "project-native-html-css-js",
+  "stageCanvas": {
+    "width": 1536,
+    "height": 864,
+    "aspectRatio": "16:9"
+  },
+  "renderOrder": [
+    "fallback-color",
+    "far-parallax",
+    "mid-parallax",
+    "structural-ground-and-platforms",
+    "interactive-obstacles-and-pickups",
+    "actors",
+    "feedback",
+    "hud-and-coach"
+  ],
+  "readabilityContract": {
+    "backgroundRole": "scenery-only",
+    "backgroundContrastMax": 0.9,
+    "backgroundSaturationMax": 0.86,
+    "centerLaneDetail": "low",
+    "hudSafeTopNormalized": 0.12,
+    "coachSafeRightNormalized": 0.2,
+    "collisionSource": "runtime geometry; never alpha bounds"
+  },
+  "levels": {
+    "L1": {
+      "theme": "creek",
+      "scrollAxis": "x",
+      "loopPolicy": "mirror-pair-repeat-x",
+      "supportsSignedScrollOffset": true,
+      "layers": [
+        {
+          "id": "creek-far",
+          "image": "assets/maps/creek/far-loop-pair.png",
+          "speedRatio": 0.08,
+          "opacity": 0.78,
+          "repeat": "repeat-x"
+        },
+        {
+          "id": "creek-mid",
+          "image": "assets/maps/creek/mid-loop-pair.png",
+          "speedRatio": 0.22,
+          "opacity": 0.62,
+          "repeat": "repeat-x"
+        },
+        {
+          "id": "creek-ground",
+          "image": "assets/map-objects/creek-ground-strip/loop-pair.png",
+          "speedRatio": 1,
+          "repeat": "repeat-x",
+          "collision": {
+            "type": "ground-baseline",
+            "feetBottomNormalized": 0.13
+          }
+        }
+      ],
+      "objects": {
+        "box": {
+          "image": "assets/map-objects/soft-crate/prop.png",
+          "collision": "runtime target rect"
+        },
+        "pit": {
+          "image": "assets/map-objects/creek-pit/prop.png",
+          "visual": "wide calm creek opening with soft grassy banks; visual width is larger than the collision interval",
+          "collision": "runtime target interval"
+        },
+        "log": {
+          "image": "assets/map-objects/creek-log/prop.png",
+          "unlockTier": 1,
+          "collision": "runtime target rect"
+        },
+        "doubleCrate": {
+          "image": "assets/map-objects/creek-double-crate/prop.png",
+          "unlockTier": 2,
+          "collision": "runtime target rect"
+        }
+      },
+      "qa": {
+        "outerLoopSeamPixelDifference": 0,
+        "stageReference": "assets/maps/creek/stage-reference.png"
+      }
+    },
+    "L2": {
+      "theme": "firefly",
+      "scrollAxis": "x",
+      "loopPolicy": "mirror-pair-repeat-x",
+      "layers": [
+        {
+          "id": "firefly-far",
+          "image": "assets/maps/firefly/far-loop-pair.png",
+          "speedRatio": 0.06,
+          "opacity": 0.8,
+          "repeat": "repeat-x"
+        },
+        {
+          "id": "firefly-mid",
+          "image": "assets/maps/firefly/mid-loop-pair.png",
+          "speedRatio": 0.18,
+          "opacity": 0.58,
+          "repeat": "repeat-x"
+        }
+      ],
+      "objects": {
+        "gapBarrier": {
+          "image": "assets/map-objects/firefly-leaf-barrier/prop.png",
+          "collision": "runtime top and bottom rects derived from safeY plus or minus 0.22",
+          "lifecycle": "continues past player until fully off the left edge"
+        },
+        "gapBarrierVariants": {
+          "images": [
+            "assets/map-objects/firefly-roundleaf-barrier/prop.png",
+            "assets/map-objects/firefly-reed-barrier/prop.png"
+          ],
+          "unlockTiers": [1, 2],
+          "collision": "runtime top and bottom rects derived from safeY plus or minus 0.22"
+        }
+      },
+      "qa": {
+        "outerLoopSeamPixelDifference": 0,
+        "stageReference": "assets/maps/firefly/stage-reference.png"
+      }
+    },
+    "L3": {
+      "theme": "treetop",
+      "scrollAxis": "y",
+      "loopPolicy": "mirror-pair-repeat-y",
+      "layers": [
+        {
+          "id": "treetop-far",
+          "image": "assets/maps/treetop/far-loop-pair.png",
+          "speedRatio": 0.08,
+          "opacity": 0.76,
+          "repeat": "repeat-y"
+        },
+        {
+          "id": "treetop-mid",
+          "image": "assets/maps/treetop/mid-loop-pair.png",
+          "speedRatio": 0.16,
+          "opacity": 0.58,
+          "repeat": "repeat-y"
+        }
+      ],
+      "objects": {
+        "platform": {
+          "image": "assets/map-objects/treetop-branch-platform/prop.png",
+          "collision": "runtime platform rect using xNormalized, worldY and widthNormalized"
+        },
+        "safetyCloud": {
+          "image": "assets/map-objects/safety-cloud/prop.png",
+          "collision": "temporary rescue anchor only"
+        },
+        "platformVariants": {
+          "images": [
+            "assets/map-objects/treetop-narrow-branch/prop.png",
+            "assets/map-objects/treetop-curved-branch/prop.png"
+          ],
+          "unlockTiers": [2, 3],
+          "collision": "runtime platform rect using xNormalized, worldY and widthNormalized"
+        }
+      },
+      "qa": {
+        "outerLoopSeamPixelDifference": 0,
+        "stageReference": "assets/maps/treetop/stage-reference.png"
+      }
+    }
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "phase": "Phase 2 产品架构与页面形态",
+  "artifact": "02-architecture.html",
+  "status": "confirmed",
+  "updated_at": "2026-08-13",
+  "summary": {
+    "key_decisions": [
+      "产品拆为 4 层 17 模块：用户触达与单屏页面形态 5、共享冒险编排与儿童体验 4、独立玩法运行时 3、输入与本地基础能力 5",
+      "共享 Session/Safety/Reward/Coach 编排一条连续冒险，三种玩法分别由 command_runner、hand_follow_dodge、cloud_stack 独立运行时承载",
+      "L1/L2/L3 默认时长为 40/45/50 秒；输入适配同时输出 PoseTransitionEvent 与 HandTrackingFrame",
+      "Target Surface 保持 web-only；页面形态 Gate 为家长任务流、儿童短练习、单屏三关地图、全屏画布/浮动教练和单关庆祝卡"
+    ],
+    "discarded_options": [
+      "不使用单一参数化跑酷运行时承载三种玩法，也不把识别直接耦合到角色动作",
+      "不把经典 Flappy 的重力坠落、窄缝、Game Over 或惩罚性重开加入主路径",
+      "不为玩法差异增加未经儿童验证的必需手型，不建设账号、云同步、排行榜或云端视频"
+    ],
+    "next_stage_conditions": [
+      "已满足：PM 已确认 4 层 17 模块、共享能力、三独立运行时和双通道输入",
+      "已满足：页面形态 Gate 与 web-only 单视口规则已确认",
+      "已按当前架构继续生成并同步 Phase 3、Phase 4A 与 Phase 4B"
+    ],
+    "execution_details_not_for_pm": [
+      "架构图缩放、搜索、角色筛选、风险面板、mini-map、导出按钮与连线绘制",
+      "连续帧、置信阈值、EMA、死区、限速、Worker 调度和实现框架参数"
+    ]
+  },
+  "materials": [
+    {"title": "Phase 2 可交互产品架构图", "file": "02-architecture.html"},
+    {"title": "Phase 2 架构结构化源数据", "file": "architecture_data.json"},
+    {"title": "Phase 1A 竞品页面与交互 Benchmark", "file": "01A-competitor-page-experience.md"},
+    {"title": "Phase 1 产品方向研究", "file": "01-research.md"}
+  ],
+  "visualizations": [
+    {
+      "type": "matrix",
+      "title": "4 层 17 模块责任矩阵",
+      "description": "模块分布与 architecture_data.json 保持一致。",
+      "columns": ["层", "模块数", "核心模块", "主要职责"],
+      "rows": [
+        {"label": "用户触达与单屏页面形态", "values": ["5", "设置 / 练习 / 地图 / 画布 / 庆祝", "家长与儿童分层、单视口主路径"]},
+        {"label": "共享冒险编排与儿童体验", "values": ["4", "Session / Safety / Reward / Coach", "跨玩法状态、安全恢复、解锁与统一提示"]},
+        {"label": "独立玩法运行时", "values": ["3", "动作指令 / 跟手躲避 / 云朵叠高", "分别实现三种控制关系"]},
+        {"label": "输入与本地基础能力", "values": ["5", "双通道适配 / 观测稳定 / 摄像头隐私 / 本地状态 / 内容配置", "输入路由、本机处理与运行时配置"]}
+      ]
+    },
+    {
+      "type": "stage_flow",
+      "title": "家庭 MVP 与三运行时主路径",
+      "description": "共享会话编排装载三个独立运行时，并用庆祝页形成自然停点。",
+      "steps": [
+        {"label": "家长设置", "status": "done", "detail": "隐私、模式、授权、取景与键盘出口"},
+        {"label": "儿童输入练习", "status": "done", "detail": "一次拳→掌→拳；L2 跟手在关内安全段教学"},
+        {"label": "三段冒险地图", "status": "done", "detail": "按完成顺序解锁"},
+        {"label": "L1 40s", "status": "done", "detail": "command_runner 消费 PoseTransitionEvent"},
+        {"label": "L2 45s", "status": "done", "detail": "hand_follow_dodge 消费 HandTrackingFrame"},
+        {"label": "L3 50s", "status": "done", "detail": "cloud_stack 消费 PoseTransitionEvent"},
+        {"label": "单段庆祝", "status": "done", "detail": "完成即解锁，收集只庆祝"}
+      ]
+    },
+    {
+      "type": "impact_map",
+      "title": "架构决策的下游影响",
+      "description": "已确认的模块边界同时约束功能规格、原型规格与 HTML 实现。",
+      "source": "4 层 17 模块 + 双通道输入 + web-only 页面形态 Gate",
+      "items": [
+        {"label": "03-feature-手势输入闭环.md", "detail": "定义 PoseTransitionEvent / HandTrackingFrame、路由、去重和降级"},
+        {"label": "03-feature-核心关卡循环.md", "detail": "定义 40/45/50 秒三运行时与低挫败恢复"},
+        {"label": "04A-prototype-spec-*.md", "detail": "固定单视口 screen inventory、三运行时宿主和输入能力"},
+        {"label": "04B-prototype-*.html", "detail": "实现多玩法三关，并保持摄像头与键盘等价通关路径"}
+      ]
+    },
+    {
+      "type": "risk_bars",
+      "title": "当前架构高风险区",
+      "description": "风险已经有架构责任归属，但仍需真实儿童试玩验证。",
+      "items": [
+        {"label": "三种控制关系的认知迁移", "level": "high", "detail": "Coach 每关只提示当前操作，并由安全段先示范"},
+        {"label": "连续位置抖动与丢手", "level": "high", "detail": "L2 运行时负责平滑、宽限、宽通道和护盾恢复"},
+        {"label": "双通道误路由或争用", "level": "high", "detail": "Input Adapter 按当前 runtime 显式订阅、去重并保留来源"},
+        {"label": "隐私与 IP 授权", "level": "high", "detail": "视频仅本机处理；素材保持原创并可追踪"}
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-02-001",
+      "question": "已确认的 4 层 17 模块边界是否继续作为家庭 MVP 架构基线？",
+      "why_it_matters": "它决定页面、共享服务、玩法运行时和输入基础能力是否完整闭合，也决定下游功能模块的归属。",
+      "recommended_decision": "维持已确认：5 + 4 + 3 + 5 的模块分布，17 个模块均承担家庭 MVP 的 P0 职责。",
+      "options": ["维持已确认", "申请变更", "暂缓，补材料"],
+      "source_files": ["02-architecture.html", "architecture_data.json"],
+      "evidence_refs": ["architecture_data.json layers", "Phase 2 pm_review_slice"],
+      "downstream_impact": ["03-feature-*.md", "04A-prototype-spec-*.md", "04B-prototype-*.html"],
+      "route_hint": "L3"
+    },
+    {
+      "question_id": "Q-02-002",
+      "question": "已确认的共享能力、三独立运行时与双通道输入是否继续保持？",
+      "why_it_matters": "三个玩法需要不同状态机和输入语义，同时必须共享会话、安全、奖励与儿童提示，才能保持一条连续冒险。",
+      "recommended_decision": "维持已确认：Session/Safety/Reward/Coach 共享；L1/L2/L3 独立；PoseTransitionEvent 与 HandTrackingFrame 按 runtime 路由。",
+      "options": ["维持已确认", "申请变更", "暂缓，补材料"],
+      "source_files": ["02-architecture.html", "architecture_data.json", "01A-competitor-page-experience.md"],
+      "evidence_refs": ["Phase 2 pm_review_slice", "MediaPipe 位置与分类解耦", "多玩法三关 Benchmark"],
+      "downstream_impact": ["03-feature-手势输入闭环.md", "03-feature-核心关卡循环.md", "04A-prototype-spec-核心关卡循环.md", "04B-prototype-*.html"],
+      "route_hint": "L3"
+    },
+    {
+      "question_id": "Q-02-003",
+      "question": "已确认的 web-only 页面形态 Gate 和低挫败主路径是否继续保持？",
+      "why_it_matters": "页面形态固定信息密度、主操作和视口范围；恢复与解锁规则决定识别误差是否造成死路。",
+      "recommended_decision": "维持已确认：家长任务流、儿童短练习、单屏地图、全屏画布/浮动教练、单关庆祝；完成即解锁且不新增必需手型。",
+      "options": ["维持已确认", "申请变更", "暂缓，补材料"],
+      "source_files": ["02-architecture.html", "architecture_data.json", "01-research.md"],
+      "evidence_refs": ["page_shape_gate confirmed", "Target Surface web-only", "Phase 1 低挫败边界"],
+      "downstream_impact": ["03-feature-*.md", "04A-prototype-spec-*.md", "04B-prototype-*.html", "QA viewport 范围"],
+      "route_hint": "L3"
+    }
+  ],
+  "risks": [
+    "三运行时切换、暂停、重玩和输入接管需要 Session 作为唯一会话状态源，否则可能留下不一致进度",
+    "手部分类与位置帧同时存在时必须按当前 runtime 路由，避免重复动作或角色控制争用",
+    "三种控制关系的真实儿童理解度仍未得到陪同试玩验证，架构确认不等于可用性已证实",
+    "摄像头视频继续只在本机处理；公开发行前仍需重新评估隐私、授权与原创素材边界"
+  ],
+  "next_actions": [
+    "Phase 2 与页面形态 Gate 保持 confirmed",
+    "4 层 17 模块、三运行时和双通道输入已传播至 Phase 3、Phase 4A 与 Phase 4B",
+    "下一验证重点为 PM 实际试玩 L1 高跳、L2 跟手和 L3 叠云，再进入家长陪同真实儿童试玩"
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "phase": "Change Review · 玩法大厅与计分循环",
+  "artifact": "CR-20260814-mode-hub-scored-loops",
+  "status": "confirmed",
+  "updated_at": "2026-08-14",
+  "summary": {
+    "key_decisions": [
+      "用户已确认三个入口本质是并列玩法，首次进入全部可选；不再使用顺序关卡与完成解锁",
+      "全局只确认输入可用，主 CTA 为“开始游戏”；拳掌、上下跟手、叠云分别在玩法内安全段教学",
+      "玩法内部采用温和无限计分：每 20 秒速度 +0.1×、最高 1.6×，3 颗勇气心用完结束本局",
+      "排行榜收敛为同设备、同玩法的匿名个人 Top 5，不做账号、昵称、联网公开榜或跨设备同步",
+      "L1 世界与目标共享 worldSpeed，1200ms 跳跃匹配 1.05s 预告；掉坑有坠落、托回、扣心与短暂无敌"
+    ],
+    "discarded_options": [
+      "不把三个玩法继续包装成必须依次完成的三关",
+      "不在玩法大厅之前一次教授三套控制",
+      "不做固定时长终点、经典 Flappy 碰撞即死或单次失误重开",
+      "不建立儿童公开排名、全球榜或跨玩法总榜"
+    ],
+    "next_stage_conditions": [
+      "方向、架构、功能与原型规格已由用户明确确认并传播到 04B",
+      "Phase 4B 实现通过专项 QA 后，等待 PM 实际试玩确认手感基线"
+    ],
+    "execution_details_not_for_pm": [
+      "localStorage key、worldX 更新公式、测试 seam 与 Playwright 选择器",
+      "MediaPipe 连续帧、EMA/死区和 CSS 动画细节"
+    ]
+  },
+  "materials": [
+    { "title": "方向判断", "file": "01-research.md" },
+    { "title": "竞品交互继承", "file": "01A-competitor-page-experience.md" },
+    { "title": "产品架构", "file": "02-architecture.html" },
+    { "title": "核心玩法功能", "file": "03-feature-核心关卡循环.md" },
+    { "title": "输入功能", "file": "03-feature-手势输入闭环.md" },
+    { "title": "核心玩法原型规格", "file": "04A-prototype-spec-核心关卡循环.md" },
+    { "title": "输入原型规格", "file": "04A-prototype-spec-手势输入闭环.md" }
+  ],
+  "visualizations": [
+    {
+      "type": "stage_flow",
+      "title": "本轮 L4→L0 传播",
+      "steps": [
+        { "label": "L4 方向", "status": "done", "detail": "顺序闯关改为玩法选择" },
+        { "label": "L3 架构", "status": "done", "detail": "三运行时 + 共享 Safety/Score/Coach" },
+        { "label": "L2 规则", "status": "done", "detail": "无限递进、勇气心、本地 Top 5" },
+        { "label": "L1 规格", "status": "done", "detail": "大厅、玩法内教学、空间碰撞与成绩卡" },
+        { "label": "L0 实现", "status": "done", "detail": "04B + QA-TARGETED" }
+      ]
+    },
+    {
+      "type": "matrix",
+      "title": "并列玩法与成长位置",
+      "description": "差异来自控制内核，递进发生在玩法内部。",
+      "columns": ["玩法", "控制", "玩法内成长", "失败恢复"],
+      "rows": [
+        { "label": "溪边跳跳", "values": ["拳→掌高跳", "世界提速、目标间隔缩短", "掉坑托回、扣心、短暂无敌"] },
+        { "label": "萤火虫躲躲", "values": ["掌心 Y 直接跟手", "通道推进提速", "泡泡弹回、扣心、丢手暂停"] },
+        { "label": "云朵叠叠", "values": ["拳→掌叠一云", "组间隔缩短", "安全垫、扣心、多云转星"] }
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-CR-HUB-001",
+      "question": "是否确认三个入口从顺序关卡改为首次全部可选的玩法大厅？",
+      "why_it_matters": "这决定儿童按兴趣选玩法，还是被迫按固定次序通关。",
+      "recommended_decision": "已确认：用户明确要求默认都解锁，本质是玩法选择。",
+      "options": ["已确认", "需要重新讨论"],
+      "source_files": ["01-research.md", "02-architecture.html", "03-feature-核心关卡循环.md"],
+      "evidence_refs": ["用户 2026-08-14 明确请求", "三玩法卡 3/3 可选 QA"],
+      "downstream_impact": ["页面形态", "导航", "教学位置", "成绩分区"],
+      "route_hint": "L4"
+    },
+    {
+      "question_id": "Q-CR-SCORE-002",
+      "question": "是否确认玩法内温和无限递进与设备内个人 Top 5 的边界？",
+      "why_it_matters": "需要支持重玩与进步感，同时避免低龄公开竞争和账号隐私范围扩张。",
+      "recommended_decision": "已确认推荐边界：3 心、最高 1.6×、同设备同玩法 Top 5；不联网。",
+      "options": ["已确认", "需要调整递进参数", "需要扩大榜单范围"],
+      "source_files": ["01A-competitor-page-experience.md", "03-feature-核心关卡循环.md", "04A-prototype-spec-核心关卡循环.md"],
+      "evidence_refs": ["用户要求玩法内递进/分数/排行榜", "低龄自我比较边界"],
+      "downstream_impact": ["单局时长", "计分模块", "本地数据", "成绩页"],
+      "route_hint": "L2"
+    }
+  ],
+  "risks": [
+    "真实 5 岁儿童是否把三个并列玩法理解为选择而非任务，仍需陪同试玩",
+    "逐渐加速后的 L1 时机、L2 平滑与 L3 拳掌疲劳需要真实试玩校准",
+    "设备内 Top 5 不区分家庭成员；多人档案不在本轮"
+  ],
+  "next_actions": [
+    "PM 实际试玩三个玩法及 L1 成功/失败各一次",
+    "确认 Phase 4B 后进入家长陪同真实儿童试玩",
+    "新发现继续经 Change Router 回到对应源真相层"
+  ]
+}
