@@ -1,0 +1,1 @@
+Create the same blue puppy as the reference in an exact 2x2 side-view gentle obstacle-bump animation: soft contact, small backward recoil, wobble/stand, calm recovery. Preserve identity and standing scale; full body in the central 65% safe area; solid #FF00FF background; no pain, collision object, detached FX, text, borders or UI.

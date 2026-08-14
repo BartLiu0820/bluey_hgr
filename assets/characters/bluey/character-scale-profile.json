@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "name": "bluey",
+  "processing": {
+    "cell_size": 256,
+    "fit_scale": 0.78,
+    "trim_border": 4,
+    "edge_clean_depth": 3,
+    "align": "feet",
+    "shared_scale": false,
+    "scale_strategy": "preserve",
+    "component_mode": "largest",
+    "component_padding": 4,
+    "min_component_area": 1,
+    "edge_touch_margin": 0
+  },
+  "output_origin": [
+    128.0,
+    228
+  ],
+  "reference": {
+    "target": "player",
+    "mode": "idle",
+    "rows": 2,
+    "cols": 2,
+    "body_scale_mean": 0.42380066487972695,
+    "body_scale_cv": 0.014813214208555657,
+    "anchor_y_mean": 0.8336025848142166
+  },
+  "qc": {
+    "max_body_scale_drift": 0.08
+  }
+}
