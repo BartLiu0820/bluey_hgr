@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "id": "menu-adventure-garden",
+  "map_mode": "baked_scene_mode",
+  "visual_model": "baked_raster",
+  "engine_target": "raw_canvas",
+  "purpose": [
+    "title_background",
+    "input_setup_background",
+    "level_lobby_background"
+  ],
+  "file": "adventure-garden.png",
+  "prompt_file": "adventure-garden.prompt.txt",
+  "source_size": {
+    "width": 1680,
+    "height": 945,
+    "aspect_ratio": "16:9"
+  },
+  "collision_model": "none",
+  "runtime_objects": [],
+  "ui_safe_zones": [
+    {
+      "name": "top_navigation",
+      "x": 0.08,
+      "y": 0.03,
+      "width": 0.84,
+      "height": 0.14
+    },
+    {
+      "name": "central_panel",
+      "x": 0.21,
+      "y": 0.18,
+      "width": 0.58,
+      "height": 0.66
+    }
+  ],
+  "notes": "Low-detail storybook garden background. Characters, text, controls and collision objects are intentionally excluded from the raster."
+}

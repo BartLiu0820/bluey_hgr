@@ -1,0 +1,5 @@
+Use the visible creek background immediately above as the exact visual reference.
+Create a sparse in-world side-view stage reference for the same 16:9 preschool runner scene. Preserve the pale morning sky, large soft clouds, distant mint hills, low white fence, quiet creek bank, clear center lane, low contrast, framing, and camera exactly. Do not crop, zoom, rotate, or repaint the background.
+Add only these natural gameplay-object candidates in the lower play lane: one long pale-beige path-and-grass ground strip with a perfectly flat top, one small rounded soft wooden crate, and one shallow dark creek gap edged by the same grass strip. Keep the gap broad and readable, not scary.
+Objects must have clean silhouettes and stronger contrast than the background, while the background stays subdued. Keep the upper HUD area and right-side camera-coach area uncluttered.
+No characters, labels, arrows, numbers, UI, text, watermark, measurements, guide lines, or highlighted zones. This is a natural game-world reference image, not an annotated diagram. Exact 16:9 aspect ratio.

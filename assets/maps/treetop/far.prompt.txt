@@ -1,0 +1,6 @@
+Create one original 16:9 side-view parallax FAR BACKGROUND plate for a preschool vertical auto-bounce platform game.
+Match the attached reference's simplified children's picture-book rendering, adapted to a calm high tree-canopy world: pale sky blue, soft mist, distant desaturated green canopy islands and a few very broad cloud shapes.
+This background will scroll upward, so avoid a fixed ground line, house, horizon landmark, or one-off scene centerpiece. Arrange broad shapes in a gentle vertically repeatable rhythm. Keep left/right and center gameplay lanes readable.
+Scenery only. No characters, animals, platforms, branches used as platforms, safety clouds, pickups, signs, UI, labels, letters, vines crossing the play area, or interactive objects.
+Use low contrast and low detail so moving platforms and the player remain dominant. No busy leaf texture or bright sparkles.
+Straight-on side view, no perspective tilt, no text, no watermark. Fill the entire canvas. Exact target aspect ratio 16:9.

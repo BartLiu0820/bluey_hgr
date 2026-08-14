@@ -1,0 +1,6 @@
+Create one original 16:9 side-view parallax MIDGROUND plate for the same preschool firefly marsh game, matching the attached reference's simplified rounded picture-book style.
+Only sparse non-colliding scenery: two or three low rounded reed and shrub clusters along the lower edge, one soft willow silhouette far to a side, and a few large dim firefly glows placed away from the central player corridor.
+Keep the middle 70% of the scene open. Low contrast, low texture noise, broad shapes only; no sharp twig detail, no bright particle field, no visual clutter.
+Do not include characters, animals, platforms, top/bottom barriers, collision walls, pickups, ground paths, signs, UI, labels, letters, or any interactive object.
+All visible scenery must sit over a perfectly solid flat #FF00FF magenta background for chroma-key extraction. No gradients or texture in the magenta. Nothing may touch the left or right canvas edge; leave generous magenta gutters.
+Straight-on side view, clean HD game asset, no text, no watermark. Exact target aspect ratio 16:9.

@@ -1,0 +1,6 @@
+Create one original 16:9 side-view parallax MIDGROUND plate for the same preschool vertical auto-bounce tree-canopy game, matching the attached reference's simplified rounded picture-book style.
+Only sparse non-colliding scenery: soft partial tree trunks near the far left and far right edges, a few broad muted leaf clusters, and faint mist ribbons. Preserve a wide clear center and clear landing lanes.
+The plate will move vertically and repeat, so use a gentle distributed rhythm without a fixed ground or unique top/bottom landmark. Avoid branches that look walkable.
+Do not include characters, animals, platforms, walkable branches, safety clouds, pickups, obstacles, signs, UI, labels, letters, or collision-bearing objects.
+All visible scenery must sit over a perfectly solid flat #FF00FF magenta background for chroma-key extraction. No gradients or texture in the magenta. Keep every visible object away from all four canvas edges with generous gutters.
+Low contrast, low texture noise, broad shapes only. Straight-on side view, clean HD game asset, no text, no watermark. Exact target aspect ratio 16:9.

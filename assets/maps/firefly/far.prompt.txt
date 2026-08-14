@@ -1,0 +1,6 @@
+Create one original 16:9 side-view parallax FAR BACKGROUND plate for a preschool hand-follow dodging game.
+Match the attached reference's simplified children's picture-book rendering, but shift to a calm early-evening firefly marsh palette: soft turquoise sky, pale aqua atmospheric glow, distant blue-green hills and broad blurred reed silhouettes at the very bottom.
+Scenery only. No characters, animals, platforms, obstacles, barriers, pickups, paths, signs, UI, labels, letters, foreground plants, or interactive objects.
+Keep the entire middle flight corridor low-detail and readable. Use muted values, soft edges, and no high-contrast speckles. At most a few dim distant firefly dots, never close to the player lane or gesture cues.
+Left and right edges must be calm and compatible with a mirrored horizontal repeat. No unique landmark at either edge.
+Straight-on side view, no perspective tilt, no text, no watermark. Fill the entire canvas. Exact target aspect ratio 16:9.

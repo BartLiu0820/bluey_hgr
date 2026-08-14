@@ -1,0 +1,6 @@
+Create one original 16:9 side-view parallax MIDGROUND plate for the same preschool creek-side web game and match the attached backyard reference's simplified picture-book language.
+Only distant non-colliding scenery: a sparse row of low rounded shrubs, two small soft tree silhouettes placed away from the center gameplay lane, a low white fence, and very subtle creek-bank shapes along the lower quarter.
+The scene must remain quiet and low contrast. Avoid tiny flowers, leaves, texture noise, bright highlights, strong outlines, or crowded detail. Keep the middle gameplay area and upper HUD area visually empty.
+Do not include characters, animals, platforms, paths, ground collision surfaces, crates, pits, barriers, pickups, signs, UI, labels, letters, shadows on a floor plane, or any object that would need collision.
+All visible scenery must sit over a perfectly solid flat #FF00FF magenta background for chroma-key extraction. No gradients or texture in the magenta. Nothing may touch the left or right canvas edge; leave broad magenta gutters so the runtime can repeat it safely.
+Straight-on side view, clean HD game asset, no text, no watermark. Exact target aspect ratio 16:9.

@@ -1,0 +1,7 @@
+Create one original 16:9 side-view parallax FAR BACKGROUND plate for a preschool web game.
+Use the attached backyard image only as the visible art-direction reference: simplified bright children's picture-book illustration, smooth rounded shapes, soft painted color transitions, clean readable silhouettes.
+Scene: a quiet creek-side neighborhood on a clear morning, pale blue sky, large soft white clouds, very distant mint and sage hills, a few tiny distant roof silhouettes and a low white fence far below the horizon.
+This is scenery only. No characters, animals, platforms, crates, pits, obstacles, pickups, signs, UI, labels, letters, foreground flowers, large trees, or interactive objects.
+Keep the central 65% of the frame calm and low-detail. Use low contrast and slightly desaturated colors so the blue/orange player characters and gameplay objects stay dominant.
+Make the left and right edges compositionally calm and compatible with a mirrored repeat. No unique landmark at either edge.
+Straight-on side view, no perspective tilt, no text, no watermark. Fill the entire canvas. Exact target aspect ratio 16:9.
