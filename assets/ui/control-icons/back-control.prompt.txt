@@ -1,0 +1,7 @@
+Use case: precise-object-edit / background-extraction
+Asset type: child-friendly web game Back button icon
+Primary request: one unmistakable sky-blue left-turn arrow on a true circular warm cream wooden badge, visually distinct from parent/settings controls and consistent with the round camera/play/keyboard controls
+Style: polished hand-painted children's adventure game UI with chunky golden-brown bark, subtle wood grain, and small moss-green leaf accents
+Composition: centered single circular icon on a square canvas with generous transparent padding, readable at 48–70 px
+Constraints: no person, parent silhouette, gear, camera, text, letters, square or rectangular outer silhouette; clear left/back direction
+Generation: built-in imagegen edit, then flat #ff00ff chroma-key background and local soft-matte removal/despill

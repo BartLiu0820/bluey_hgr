@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 3,
   "source": "built-in imagegen + local chroma-key removal",
   "sheet": "control-icons-sheet.png",
   "grid": { "rows": 2, "columns": 3, "sourceCell": 512, "outputSize": 256 },
@@ -9,6 +9,7 @@
     "open-palm.png": "open raised palm",
     "fist.png": "gentle closed fist",
     "vertical-guide.png": "open palm with up/down arrows",
-    "horizontal-guide.png": "open palm with left/right arrows"
+    "horizontal-guide.png": "open palm with left/right arrows",
+    "back-control.png": "standalone circular wooden back-arrow button generated separately; see back-control.prompt.txt"
   }
 }

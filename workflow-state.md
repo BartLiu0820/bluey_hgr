@@ -12,7 +12,7 @@
 
 - 阶段：Phase 4B 游戏体验精修审查
 - 状态：pending_pm
-- 当前目标：请 PM 试玩确认新队伍标识/三关独立图标、角色落地、碰撞后障碍完整离场、L3 踏板素材，以及本轮新增的 LV-01 倒计时安全区、距离/高度单指标 HUD、`0–9 + m` 风格化字形、独立升级庆祝动效、宽松提醒板和键盘模式纯净舞台；实现与 QA-TARGETED 已完成，确认后可进入真实儿童陪同试玩或 05A AI 仿真用研。
+- 当前目标：关卡 1 已完成地面纵深接触带、人工内缩 swept hitbox 与 1.0×–1.6× 速度耦合跳跃；GI-02 直达大厅、六枚状态化指示图、16–22px 进度槽和低龄化双字体保持完成。等待 PM 试玩确认 L1 落地纵深、碰撞时机与提速后的跳跃节奏，并一并确认整体视觉语气。
 
 ## Phase Checklist
 
@@ -23,11 +23,11 @@
 | Phase 2 产品架构 | `02-architecture.html` | CONFIRMED | 4 层 17 模块、共享服务 + 三独立 runtime + 拳掌/掌心 XY 输入已确认 |
 | Gate 页面形态决策 | 写入 `02` 或 `03` | CONFIRMED | 输入准备 → 三玩法大厅 → 玩法内教学 → 全屏游戏画布 → 单玩法成绩卡已确认 |
 | Phase 3 功能细节 | `03-feature-手势输入闭环.md` | CONFIRMED | Gesture Lab 拳掌循环 + PoseTransitionEvent/HandTrackingFrame 双通道已确认 |
-| Phase 4A 原型规格 | `04A-prototype-spec-手势输入闭环.md` | CONFIRMED | 6 screens、双通道 InputProfile、web-only 五视口与 QA 策略已确认 |
+| Phase 4A 原型规格 | `04A-prototype-spec-手势输入闭环.md` | CONFIRMED | 摄像头 GI-02 直达大厅、键盘完整路径、双通道 InputProfile、web-only 五视口与 QA 策略已同步 |
 | Phase 4B HTML 主干 Demo | `04B-prototype-手势输入闭环.html` | CONFIRMED | 历史 6 屏输入 Demo；当前可试玩源真相已由集成式 MVP 的真实识别实现取代 |
 | Phase 3 核心关卡循环 | `03-feature-核心关卡循环.md` | CONFIRMED | 三玩法默认可选、玩法内安全教学、温和无限递进、3 颗勇气心、设备内分数/Top 5 已同步 |
 | Phase 4A 核心关卡循环 | `04A-prototype-spec-核心关卡循环.md` | CONFIRMED | 玩法大厅、三种独立教学/运行态、L1 空间碰撞与本地成绩页已同步 |
-| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | PENDING_PM | 新队伍标识/三关图标、双角色碰撞状态、菜单背景/按钮、4 条新 BGM、当局留念与竖向榜单已接入；LV-01 倒计时安全层、HUD 距离单指标/满宽进度、`0–9 + m` 图集、独立升级庆祝、提醒板宽松排版和键盘纯净舞台已完成；QA-TARGETED PASS，等待 PM 试玩确认 |
+| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | PENDING_PM | L1 地面/碰撞/跳跃物理已优化；GI-02 直达、六枚指示图、16–22px 进度与双字体保持完成；L1 物理 4/4、键盘/出生三视口、scored loop 9/9 PASS，等待 PM 试玩确认 |
 | Phase 4C HTML 状态扩展 | `04C-prototype-[名称].html` | OPTIONAL | PM 确认 04B 后按需触发；默认 `QA-LIGHT` |
 | Phase 05A AI 仿真用研 | `05A-ai-persona-prototype-review-[名称].md` + `05A-ai-persona-findings-[名称].json` | TODO | 04B 后按多个 persona 心智收集候选问题 |
 | Phase 05B PM 仿真问题裁决 | `05B-pm-simulation-decision-[名称].md` | TODO | PM accept 的 finding 才进入 Change Router |
@@ -47,7 +47,7 @@
 | Phase 4B HTML 主干 Demo | `04B-prototype-手势输入闭环.html` | confirmed | `reviews/phase-4b-gesture-input-review.html` | 历史 6 屏输入 Demo；其演示适配器不再代表当前集成式实现 | 当前实现以集成式 MVP 为准 |
 | Phase 3 核心关卡循环 | `03-feature-核心关卡循环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 三玩法默认可选、L2 完整离场、L3 自动弹跳落台、温和递进与本地分数已确认 | 已传播至 04A |
 | Phase 4A 核心关卡循环 | `04A-prototype-spec-核心关卡循环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 玩法大厅、三类运行态、双列成绩卡与成熟平台玩法已确认 | 已传播至 04B |
-| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | pending_pm | `reviews/phase-4b-mvp-review.html` | 新队伍标识/三关独立图标、角色落地、碰撞离场、L3 踏板素材、单帧留念/竖向榜单、菜单美术与四段新 BGM，以及 LV-01 倒计时安全层、HUD 距离单指标/满宽进度、`0–9 + m` 字形、独立升级庆祝、提醒板排版和键盘纯净舞台已完成并通过定向检查 | PM 试玩确认儿童理解、升级反馈强度、数字可读性、视觉/音乐舒适度与内存单帧边界后进入儿童陪同试玩/05A |
+| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | pending_pm | `reviews/phase-4b-mvp-review.html` | L1 纵深接触带、swept hitbox 与速度耦合弹道完成；既有指示图、HUD 与双字体保持；L1 4/4 + scored loop 9/9 PASS | PM 试玩确认 L1 地面纵深、碰撞时机、基础/高速跳跃节奏，并一并确认既有视觉语气后确认 Phase 4B |
 | Phase 4C HTML 状态扩展（可选）| `04C-prototype-[名称].html` | missing | missing | 待确认 extension states 是否完整、inspector 是否与 04B 一致 | Phase 4B gate confirmed 后按需触发 |
 | Phase 05A AI 仿真用研 | `05A-ai-persona-prototype-review-[名称].md` | missing | missing | 待确认 persona 来源、候选问题、严重度、信心和 route hint | Phase 4B gate confirmed 后推进 |
 | Phase 05B PM 仿真问题裁决 | `05B-pm-simulation-decision-[名称].md` | missing | missing | 待确认 accept / reject / defer / needs_more_context 裁决 | accept finding 进入 Change Router |
@@ -70,6 +70,13 @@
 
 | Change ID | 用户请求 | 路由层级 | 最早修正点 | PM 确认状态 | 执行状态 |
 |---|---|---|---|---|---|
+| CR-20260815-l1-ground-collision-jump-physics | L1 角色/障碍进入纵深地面；修复提前/漏碰；参考小恐龙优化滚动速度与跳跃关联 | L2 功能层（下游含 L1/L0/QA） | `03-feature-核心关卡循环.md` | confirmed（用户逐项明确要求） | verified：03→04A→04B→L1 QA-TARGETED；物理 4/4、键盘/出生三视口、scored loop 9/9 PASS |
+| CR-20260815-keyboard-single-page-xy-control | 键盘入口合并/换肤；摄像头手图更新；L2 增加四向移动；修复 L2 提示重叠与 L1 障碍凭空出现 | L2 功能层（下游含 L1/L0/资产） | `03-feature-核心关卡循环.md` | confirmed（用户逐项明确要求） | verified：03→两份04A→04B→四向指示图→QA-TARGETED 已同步；3 视口新专项、4 视口图标专项与 scored loop 9/9 PASS |
+| CR-20260815-child-friendly-font-research | 调研并替换当前系统 UI 字体为低龄化、免费商用中文字体 | L0 实现层 | `04B-prototype-手势小狗探险MVP.html` + 本地字体资产/许可证 | confirmed（用户回复“可以更新”，并要求其他人下载后可正常查看） | verified：双字族以本地 WOFF2 子集随仓库分发；OFL、字形覆盖与四视口 QA-TARGETED 通过 |
+| CR-20260815-direct-hub-instruction-icons | 摄像头验证后直接进关卡选择；为入口/运行/找手状态分别生成正确指示图；校正并增高 HUD 进度槽 | L1 原型规格层（下游含 L0/资产） | 两份 `04A-prototype-spec-*.md` | confirmed（用户逐项明确要求；不改变输入能力/玩法规则/计分） | verified：GI-03/GI-04 移除；6 枚独立透明生图接入；进度 16–22px 对齐轨道；四视口专项 PASS，scored loop 9/9 PASS |
+| CR-20260815-round-back-button | 摄像头准备页返回按钮由方形木牌统一为与其他入口一致的圆形木框 | L0 实现层 | `assets/ui/control-icons/back-control.png`（集成 04B 直接消费） | not_required（screen/state/文案/交互不变） | verified：透明 PNG 与四视口定向检查 PASS；两档截图人工复核圆形轮廓/对齐正常 |
+| CR-20260815-camera-preview-left-safe-area | 初始视频验证的左侧视频压到木框/枝叶装饰区 | L0 实现层 | `04B-prototype-手势小狗探险MVP.html` | not_required（既有 screen/state/交互与视频比例不变） | verified：视频左侧按底板宽度保留 ≥9.2% 装饰安全区；四视口定向检查 PASS |
+| CR-20260815-layout-icon-obstacle-polish | 修复 GI-02 视频/按钮/icon 层级、移除抽屉可见标签、修正 Top 5 数字与 L2 障碍右侧入场 | L0 实现层 | `04B-prototype-手势小狗探险MVP.html` | not_required（既有 screen/state/家长能力/Top 5/玩法规则不变） | verified：四视口 GI-02/指引/结算/L2 轨迹 PASS；scored loop 9/9 PASS |
 | CR-20260815-initial-panel-height | 首屏手绘底板收短高度，减少上方空白并保持内容居中 | L0 实现层 | `04B-prototype-手势小狗探险MVP.html` | not_required（不改变 screen/state/隐私与玩法规则） | verified：大屏高度封顶 680px、低高度视口自动收缩；六视口居中/装饰安全区/无滚动检查 PASS |
 | CR-20260815-generated-control-icons | 修复拍摄按钮右缘裁切；生成摄像头准备底板与统一控制图标；替换家长、准备、运行和暂停中的主要旧图标 | L0 实现层 | `04B-prototype-手势小狗探险MVP.html` | not_required（不改变 screen/state/隐私、输入映射与玩法规则） | verified：6 枚透明控制图标 + 1 张 3:2 面板接入；四视口边界/加载/动态图标映射/无滚动检查 PASS；仅保留隐私区 3 枚低优先级语义线性图标 |
 | CR-20260815-hud-milestone-input-clarity | 修复倒计时安全区；HUD 改为距离/高度单指标并去重升级文案；独立升级庆祝层与增强动效；优化提醒板；键盘模式移除教练/手势标记；生成 `0–9 + m` 字形 | L1 原型规格层（下游含 L0/资产） | `04A-prototype-spec-核心关卡循环.md` | confirmed（用户逐项明确要求；不改变计分/Top 5/阈值/玩法规则） | verified：04A→数字资产→04B→定向 QA 已同步；3 视口新检查、3 视口旧 HUD/弹窗回归与 scored-loop 9/9 PASS |
@@ -112,6 +119,10 @@
 
 | 日期 | 决策 | 依据 | 影响 |
 |---|---|---|---|
+| 2026-08-15 | L1 统一地面纵深接触带、连续 swept hitbox 与速度耦合弹道 | 用户指出角色/障碍悬浮、提前/漏碰，并要求参考 Google 小恐龙思考滚动速度与跳跃关系 | 03/04A/04B 同步；1.0×–1.6× 起跳速度与重力成对调整，首次真实主体接触才判定，跨帧不漏碰；L1 物理 4/4 与 scored loop 9/9 PASS |
+| 2026-08-15 | 键盘与摄像头输入均收敛为单页就绪；L2 从单轴上下升级为双轴四向控制 | 用户明确指出键盘第二层确认冗余、键盘 UI 与摄像头风格不一致，并要求孩子可上下左右自由移动；同时指出 L2 提示相交和 L1 障碍凭空出现 | 03/两份 04A/04B 同步；GI-06 移除，GI-05 五键灯同页直达大厅；L2 消费 X/Y 并新增四向生图；里程碑避让动作卡；L1 按视觉宽度从屏外右侧生成；定向 QA 通过 |
+| 2026-08-15 | 摄像头输入就绪收敛在 GI-02 并直达玩法大厅；动作/找手提示按语义分别生图 | 用户明确认为第二张 ready 页无意义，并指出入口、运行、等待复用简单手掌图导致 logo/语义错误；同时要求进度槽增高并匹配底板 | 两份 04A 与集成 04B 同步；新增六枚透明指示图，L1 waiting/armed 动态切换；HUD 进度槽 16–22px 对齐图片轨道；定向 QA 通过 |
+| 2026-08-15 | 低龄化中文字体采用“标题 Xiaolai + 正文/UI Resource Han Rounded CN”并随仓库自托管 | PM 授权更新且要求其他人下载项目后无需安装字体即可正常查看；两字族均为 OFL 1.1 | 04B 使用本地 `@font-face` 和 WOFF2 子集，不依赖 CDN/系统字体；新增字体许可证、维护说明与四视口字体专项 QA |
 | 2026-08-15 | 运行态 HUD 收敛为距离/高度单指标，并用独立庆祝层表达升级 | 用户截图指出星形分数概念不成立、顶部/下方“新挑战”重复、键盘模式仍残留摄像头/手势 UI、数字与边距不统一 | 04A/04B 改用 `0–9 + m` 图集、满宽进度、独立升级文案/动效、键盘纯净舞台与倒计时安全层；计分和 Top 5 规则不变 |
 | 2026-08-15 | 完成 11 项游戏体验精修并进入 PM 审查 | 用户截图逐项指出角色悬浮、障碍消失、HUD/榜单/结果页与视觉音频问题 | 双角色碰撞动作、障碍离场、统一 HUD、当局单帧、竖向 Top 5、菜单美术与 4 条 BGM 生效；Phase 4B 保持 `pending_pm` |
 | 2026-08-11 | 创建标准 PM 工作流项目 | 用户确认新建项目 | 从 Phase 1 开始推进 |
@@ -159,9 +170,10 @@
 
 ## Pending PM Review Slice — Phase 4B 游戏体验精修
 
-- 本阶段关键决策：首屏以原创双尾巴/指南针标识与风格化居中“小尾巴探险队”建立游戏身份；手势/键盘圆形图标直接作为大按钮，短文案旁置，隐私区内收弱化；摄像头准备页改用 3:2 暖纸木框生成底板，拍摄/继续/按键/家长入口与准备、运行、暂停中的主要控制图标统一为木质圆徽章；三关使用溪流跳木、萤火虫穿叶、树枝弹跳独立生图图标。顶部完整图片面板收拢唯一分数、距离/高度、阶段和进度；普通碰撞播放双角色新 `bump`，L1/L2 已判定障碍继续左移至完整离场；成绩页左侧为当前局单帧/地图回退，右侧 Top 5 竖向降序；初始背景与 4 条 18 秒 BGM 统一为欢快手绘冒险风。
-- 被放弃的方案：首屏旧爪印方形徽章、输入按钮下的双卡底板、强调边框的隐私卡；首屏左上品牌 + 右上“家长设置”的工具栏式布局；碰撞帧销毁障碍；左侧重复分数；进度叠在图片底板装饰上；横向分数按钮；保存/上传儿童画面；继续使用旧首屏底图和短促单一 BGM。
-- 需要 PM 确认的问题：新队伍标识、三关图标、摄像头准备页及统一控制图标是否足够直观、轻松；角色脚部是否自然贴路面；顶部信息是否一眼可读；碰撞动作和障碍离场是否形成清楚因果；结果页留念/榜单、新背景与音乐是否适合 5 岁儿童。
+- 本阶段关键决策：L1 角色/障碍统一落入地面纵深接触带；人工内缩主体 hitbox 通过 swept interval 在首次真实接触边沿判定，避免中心点提前/漏碰；地面速度从 1.0× 提升到 1.6× 时，起跳速度与重力成对温和调整并冻结单跳参数。摄像头准备收敛在 GI-02 并直达大厅；六枚指示图、16–22px 进度槽、双角色动作、本地双字体和手绘冒险视觉保持不变。
+- 被放弃的方案：摄像头成功后的重复 ready 页；用同一个简单手掌 SVG 代表拳→掌、握拳和找手；圆形按钮式动作徽章；进度槽漂离图片预留轨道；首屏旧爪印方形徽章、碰撞帧销毁障碍、左侧重复分数、横向分数按钮、保存/上传儿童画面、旧首屏底图和短促单一 BGM。
+- 需要 PM 确认的问题：请重点试玩 L1，确认角色/障碍确实位于地面纵深中、肉眼接触与扣心一致、基础速度与最高速度下跳跃都可预测；再一并确认动作图、进度、字体和整体手绘语气适合 5 岁儿童。
+- 追加待确认：已实现“标题/关卡名/庆祝语使用 Xiaolai，正文/UI/按钮使用 Resource Han Rounded CN”；两字族均由项目内本地 WOFF2 加载。PM 只需试玩确认低龄化语气、标题辨识度与正文可读性。
 - 不需要 PM 审查的执行细节：CSS inset、JPEG 质量、sprite 拆帧参数、测试 seam、音频冷却毫秒与 localStorage key。
 - 进入下一阶段的条件：PM 完成三关各一次试玩并确认本轮精修；随后进入真实儿童陪同试玩或 05A AI 仿真用研。
 
@@ -215,4 +227,5 @@
 
 1. 打开最新试玩页，从玩法大厅依次进入三个出发封面，确认地图/UI 连贯，并试听大厅与三玩法主题是否易区分但不抢操作。
 2. 在溪边试听跳跃/越障/碰撞/救援，在湿地试听穿越/碰撞，在树梢试听自动落台；确认无惊吓音和连续噪声。
-3. 打开家长入口切换“声音：开/关”，再切后台返回，确认音乐正确暂停/恢复；若视觉、手感与声音均通过，确认 Phase 4B。
+3. 重点查看首屏游戏名、三关名称、关卡短提示和家长区正文，确认标题足够低龄但不潦草、正文易读；其他人通过仓库文件直接启动时无需安装字体。
+4. 打开家长入口切换“声音：开/关”，再切后台返回，确认音乐正确暂停/恢复；若视觉、字体、手感与声音均通过，确认 Phase 4B。

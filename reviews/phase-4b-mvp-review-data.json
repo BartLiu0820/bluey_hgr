@@ -1,5 +1,5 @@
 {
-  "phase": "Phase 4B 三玩法分层地图 MVP",
+  "phase": "Phase 4B 游戏体验精修",
   "artifact": "04B-prototype-手势小狗探险MVP.html",
   "status": "pending_pm",
   "updated_at": "2026-08-15",
@@ -10,6 +10,7 @@
       "溪边跳跳、萤火虫躲躲、树梢蹦蹦首次进入即全部可选，不再采用完成上一关后解锁的顺序关卡",
       "三个玩法均进入温和无限计分：每 20 秒速度 +0.1×、最高 1.6×，3 颗勇气心用完结束本局",
       "成绩按玩法保存当前设备个人最好与竖向降序 Top 5；左侧当局单帧只在当前页面内存中短暂存在，本轮不引入账号、昵称、联网榜、画面保存/上传或跨设备同步",
+      "L1 角色脚底与障碍底边进入同一地面纵深带；速度提升时起跳速度/重力成对温和调整；人工内缩 hitbox 与 previous/current swept interval 让肉眼接触、成功和扣心一致",
       "L1/L2 障碍判定后进入离场队列并继续向左完整离场；普通命中播放双角色新 bump 状态；L3 采用真实世界高度/重力、下降落台再弹、上方阈值镜头追随与掌心 X 横向控制",
       "三关使用低干扰远景/中景分层地图；L1 额外提供可正反向无缝横向循环的地面，障碍、树篱、踏板与安全云均为独立结构物件",
       "玩法大厅预览、玩法出发封面和成绩页复用当前玩法地图；地图外界面统一为暖纸张冒险手册风格；L1 水坑使用独立透明物件且碰撞仍来自运行时几何",
@@ -37,7 +38,7 @@
     "execution_details_not_for_pm": [
       "LevelDefinition 目标毫秒值、测试注入接口与确定性时间推进",
       "MediaPipe 模型加载、连续帧稳定、关键点计算与内部事件字段",
-      "CSS clamp、碰撞体、视差、动画曲线、音频冷却毫秒与 Playwright 选择器"
+      "CSS clamp、hitbox 内缩像素、物理积分子步、视差、动画曲线、音频冷却毫秒与 Playwright 选择器"
     ]
   },
   "materials": [
@@ -55,6 +56,7 @@
     { "title": "游戏音频静态检查", "file": "scripts/check-game-audio.mjs" },
     { "title": "双通道输入功能规则", "file": "03-feature-手势输入闭环.md" },
     { "title": "玩法大厅、离场与平台弹跳专项测试", "file": "tests/mode-hub-score-loop-targeted.mjs" },
+    { "title": "L1 地面、碰撞与跳跃物理专项测试", "file": "tests/l1-ground-collision-jump-physics-targeted.mjs" },
     { "title": "试玩说明", "file": "试玩说明.md" }
   ],
   "visualizations": [
@@ -65,6 +67,7 @@
       "items": [
         { "label": "儿童少文字层级", "value": "QA-LIGHT", "note": "GI-01→LV-03 常显文字已精简；完整家长/错误/无障碍信息保留" },
         { "label": "玩法循环专项", "value": "9 / 9", "note": "入口、大厅、L1、L2 离场、L3 落台、成绩与布局" },
+        { "label": "L1 物理专项", "value": "4 / 4", "note": "三视口地面纵深、提前判碰、跨帧漏碰与 1.0×–1.6× 跳跃耦合" },
         { "label": "地图一致性 UI", "value": "7 / 7", "note": "三档生成按钮本体、菜单背景、大厅预览、三主题封面、新水坑、成绩页与紧凑视口" },
         { "label": "分层地图专项", "value": "6 / 6", "note": "12 资源加载、L1 正反循环、L2 树篱、L3 踏板/安全云" },
         { "label": "本地音频资产", "value": "18 / 18", "note": "4 条 18 秒新 BGM、14 SFX、MP3/HTML 映射/JS 语法/secret 检查" },
@@ -80,7 +83,7 @@
       "description": "玩法并列可选，成长发生在每个玩法内部。",
       "columns": ["玩法", "输入", "内部递进", "温和恢复"],
       "rows": [
-        { "label": "L1 溪边跳跳", "values": ["PoseTransitionEvent · 拳→掌", "同 worldSpeed；1200ms 高跳；每20s加速", "掉坑扣心、伙伴托回、短暂无敌"] },
+        { "label": "L1 溪边跳跳", "values": ["PoseTransitionEvent · 拳→掌", "同 worldSpeed；速度耦合弹道；swept hitbox", "掉坑扣心、伙伴托回、短暂无敌"] },
         { "label": "L2 萤火虫躲躲", "values": ["HandTrackingFrame.palmCenterY", "EMA/死区/限速；障碍完整穿屏", "短丢手保持；碰撞弹开并显示护盾"] },
         { "label": "L3 树梢蹦蹦", "values": ["HandTrackingFrame.palmCenterX", "下降落台再弹；上方阈值镜头追随；动态高处平台", "跌出镜头下沿由安全云托回；失误扣心"] }
       ]
@@ -142,12 +145,12 @@
     },
     {
       "question_id": "Q-04B-L1-003",
-      "question": "L1 现在是否做到“看到提示就跳得过去；不跳会明确掉坑并被救回”？",
-      "why_it_matters": "此前障碍移动与跳跃时序不一致，且落坑没有反馈，孩子无法理解成功或失败来自什么。",
-      "recommended_decision": "建议确认当前基线：角色脚部贴近道路；目标和世界共享速度；普通碰撞播放 bump，障碍判定后继续左移完整离场；专项测试验证成功得分和失败扣心/救援。",
-      "options": ["确认当前手感", "调整预告时机", "调整跳跃弧线或救援反馈"],
-      "source_files": ["04B-prototype-手势小狗探险MVP.html", "04A-prototype-spec-核心关卡循环.md", "tests/mode-hub-score-loop-targeted.mjs"],
-      "evidence_refs": ["spatial jump success PASS", "pit miss rescue PASS", "courage decrement PASS"],
+      "question": "L1 的角色/障碍落地纵深、肉眼接触与判定时机、提速后跳跃节奏是否都符合直觉？",
+      "why_it_matters": "这是 5 岁儿童建立“我何时跳、为什么成功或扣心”的核心因果；悬浮、提前判碰、漏碰或地面单方面加速都会直接破坏信任。",
+      "recommended_decision": "建议确认当前基线：角色和障碍底边位于同一纵深接触带；碰撞在人工内缩主体 hitbox 首次真实接触时发生，swept interval 防止跨帧漏碰；1.0×–1.6× 速度档成对调整起跳速度与重力，腾空和提示窗口保持稳定。",
+      "options": ["确认当前手感", "调整地面纵深位置", "调整 hitbox 或速度—跳跃曲线"],
+      "source_files": ["04B-prototype-手势小狗探险MVP.html", "04A-prototype-spec-核心关卡循环.md", "tests/l1-ground-collision-jump-physics-targeted.mjs", "tests/mode-hub-score-loop-targeted.mjs"],
+      "evidence_refs": ["L1 physics targeted 4/4 PASS", "three viewport ground anchor PASS", "pre-contact/swept collision PASS", "scored loop 9/9 PASS"],
       "downstream_impact": ["L1 因果可理解性", "逐渐加速参数", "真实试玩手感"],
       "route_hint": "L0"
     },
@@ -189,13 +192,13 @@
     "少文字不能变成无提示：当前动作、实时米数/里程碑、错误恢复和无障碍名称必须继续保留；真实儿童理解仍需陪同试玩确认",
     "自动化不能替代真实 5 岁儿童在家庭环境中的准确率、理解和疲劳验证",
     "生成式背景、地图一致性 UI 与新水坑已完成静态降噪和多视口截图审阅，但真实儿童是否被局部装饰分散注意力仍需陪同试玩观察",
-    "L1 加速后的跳跃时机、L2 跟手参数与 L3 平台宽度/横移灵敏度仍需根据真实试玩校准",
+    "L1 自动化已覆盖地面锚点、碰撞边沿和速度耦合曲线，但 hitbox 宽容度与手势反应延迟仍需真实儿童试玩校准；L2 跟手参数与 L3 平台宽度/横移灵敏度同样需要观察",
     "生成音频已完成格式与映射检查，但音量舒适度、循环接缝和儿童惊吓反应仍需人工试听与真实儿童陪同观察",
     "设备内 Top 5 不区分家庭成员；多人档案、清榜入口和跨设备同步不在本轮",
     "本轮 Target Surface 仍是 web-only 笔记本；移动 Web 不在本 Gate 范围"
   ],
   "next_actions": [
-    "等待 PM 试玩确认顶部唯一信息面板不会重新造成信息过载，且碰撞动作/离场因果适合 5 岁儿童",
+    "等待 PM 试玩确认 L1 地面纵深、肉眼接触与判定一致，且基础/最高速度的跳跃节奏适合 5 岁儿童",
     "等待 PM 确认初始背景/按钮、结果页当局留念/竖向榜单，以及大厅/三玩法新 BGM 与家长声音开关",
     "确认后进行一次家长陪同真实儿童试玩",
     "新问题继续经 Change Router 回到对应 L0–L4"

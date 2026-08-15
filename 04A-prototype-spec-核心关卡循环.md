@@ -1,5 +1,5 @@
 # 原型规格：三玩法无尽距离与高度里程碑
-> 更新日期：2026-08-14 | 来源：`03-feature-核心关卡循环.md` | Target Surface：web-only
+> 更新日期：2026-08-15 | 来源：`03-feature-核心关卡循环.md` | Target Surface：web-only
 
 ## 1. Product Frame
 
@@ -13,7 +13,7 @@
 
 ### Goals
 
-- 从输入就绪页的“开始游戏”自然进入三玩法大厅。
+- 摄像头在 GI-02 点击“继续”、键盘在 GI-05 完成一次按键测试后点击“开始游戏”，都直接进入三玩法大厅；两条路径都不经过重复 ready 页。
 - 三张玩法卡同权重、默认可点，并显示各自控制图形和本机个人最好。
 - 每种玩法有自己的入场说明和 3–5 秒安全教学；大厅上方不展示拳掌三步指引。
 - 三种运行时均不设时长终点；L1/L2 以行进米数、L3 以爬升米数驱动渐进速度、障碍组合、里程碑反馈、3 颗勇气心和单局成绩。
@@ -49,8 +49,9 @@
 
 ### Reference Alignment
 
-- 参考样本：Nex/GoNoodle 的直接世界反馈、Doodle Jump 的自动弹跳 + 左右对准平台、Jetpack Joyride 的渐进卷轴与个人成绩循环。
-- 必须继承：少输入、即时反馈、以实际位移表达进程、逐渐提速、障碍组合进阶、个人进步、碰撞后快速恢复。
+- 参考样本：Nex/GoNoodle 的直接世界反馈、Chromium 小恐龙的速度—起跳速度耦合与连续空间碰撞、Doodle Jump 的自动弹跳 + 左右对准平台、Jetpack Joyride 的渐进卷轴与个人成绩循环。
+- 必须继承：少输入、即时反馈、以实际位移表达进程、逐渐提速、跳跃随速度温和补偿、障碍组合进阶、个人进步、碰撞后快速恢复。
+- 禁止复制：参考游戏的品牌名、角色、美术、声音、具体障碍造型和精确难度曲线；只继承运动变量间的通用关系。
 - 可以偏离：采用 3 颗勇气心形成自然停点；排行榜只在设备内匿名保存。
 - 禁止偏离：除用户明确提供的本地主角参考图外，不得复制其他官方角色、美术、音效或关卡布局；不得引入窄缝即死、武器、广告或公开社交竞争。
 
@@ -89,16 +90,25 @@
 ### Endless Milestone Visual Asset Contract
 
 - UI 图片：生成 `creek/firefly/treetop` 三张无文字透明完整里程碑面板；面板分别使用溪流路牌+饼干印章、叶片+萤火虫光点、树枝+云朵高度标识，轮廓与现有地图结构物件一致。顶部 HUD 中央原容器由完整图片直接替代，图片不是容器旁的 icon，也不叠加第二层 CSS 白底。
-- 升级反馈：不复用顶部完整里程碑面板，改为独立的太阳黄纸带/光芒与叶片粒子层；在世界顶部中轴偏下的安全区出现，使用与 HUD 不重复的短标题（如“节奏升级！”“树梢高手！”）和一行实时里程碑“来到 100 米”。显示约 1800ms，含弹入、轻微过冲、粒子散开和淡出；图层低于当前动作提示与摄像头教练，不遮角色和危险物。
+- 升级反馈：不复用顶部完整里程碑面板，改为独立的太阳黄纸带/光芒与叶片粒子层；L1/L3 默认在世界顶部中轴偏下安全区出现，L2 因四向动作卡与按键簇占据中轴，庆祝层固定在左侧 HUD 下方安全区。使用与 HUD 不重复的短标题（如“节奏升级！”“树梢高手！”）和一行实时里程碑“来到 100 米”。显示约 1800ms，含弹入、轻微过冲、粒子散开和淡出；图层低于当前动作提示与摄像头教练，不遮 HUD、角色和危险物。
 - 数字字形：生成一组无多余装饰的 `0–9 + m` 手绘字形，统一深河蓝主体、奶油高光和暖棕轻描边；小写 `m` 必须与数字同高、同描边、同纹理，不允许继续混用系统字体。运行态距离/高度的数字与单位 `m`、LV-03 本次分数/最好/Top 5 优先使用该图集；加载失败时回退到 `tabular-nums` 系统文本，动态值仍保留可读文本与无障碍语义。
 - 障碍图片：L1 生成原木路障和双层软木箱视觉；L2 生成圆叶篱与芦苇叶篱两种轮廓；L3 生成窄枝与弯枝平台皮肤。宽/长、碰撞承载对象逐个生成，不放入普通方形 prop pack。
 - 透明处理：内置图片生成先输出单色洋红背景，再本地去底；最终 PNG 必须有 alpha、四角透明、主体不触边、无洋红溢边，并记录 prompt/manifest/目标显示尺寸。
 - 运行边界：图片不携带文字、数字、碰撞、里程碑逻辑或对象生命周期；CSS 只负责响应式排版和实时数据叠加，不重新绘制图片主体。
 
+### Generated Instruction Icon Contract
+
+- 目的：关卡入口、运行动作卡与安全等待必须显示“当前要做什么”，不能把一个通用手掌线框复用为“拳→掌”“握拳”“上下/左右移动”和“正在找手”等不同语义。
+- 资产：每一项均单独生成、单独去底、单独存档，不从一张图集切片：`pose-transition.png`（闭拳→张掌，带一条清晰转换箭头）、`fist-hold.png`（闭拳准备）、`open-palm-jump.png`（张掌向上触发）、`hand-move-vertical.png`（保留历史上下语义）、`hand-move-horizontal.png`（手掌左右带路）、`hand-move-free.png`（手掌四周有上/下/左/右四个清晰箭头）、`find-hand.png`（手位于友好取景/定位环中，表达重新找到小手）。
+- 画风：与暖纸/木框/河蓝/苔绿/太阳黄的探险手册一致，圆润、轻厚描边、柔和高光、5 岁儿童可在 64–112px 显示尺寸下辨认；无文字、无角色、无品牌标识、无大面积圆形按钮底板，避免让指示图看起来可点击。
+- 状态映射：LV-01 L1=`pose-transition`、L2=`hand-move-free`、L3=`hand-move-horizontal`；LV-02 L1 `need_fist/armed`=`fist-hold`，`jump/need_reset`=`open-palm-jump`，L2=`hand-move-free`，L3=`hand-move-horizontal`；GI-02 未开启/找手与 no-hand/camera-wait 暂停层=`find-hand`。键盘模式沿用等价方向/空格提示，但不得显示摄像头找手图。
+- 透明处理：生成时使用单色洋红背景，本地 chroma-key 去底；最终 PNG 必须为 RGBA、四角 alpha=0、主体不触边、无洋红溢边。每个文件保留独立 prompt 与 manifest 记录。
+- 加载失败：保留同义短文案与 `aria-label`，可回退为低对比 CSS 边框占位，但不得回退成语义错误的通用手掌 SVG；图片只传达动作，不承载点击行为或运行逻辑。
+
 ### Audio Feedback Contract
 
 - 资源：`assets/audio/audio-manifest.json` 定义 4 条 18 秒循环 BGM 与 14 个短音效；新 BGM 使用更丰富、欢快且彼此可区分的配器，04B 只读取项目内 MP3，不依赖 CDN、后端或运行时 ElevenLabs 请求。
-- Screen 映射：GI-01–GI-06、LV-00、LV-01 使用 `bgm_menu`；LV-02 按 L1/L2/L3 使用 `bgm_creek` / `bgm_firefly` / `bgm_treetop`；LV-03 停止 BGM 并播放一次 `sfx_round_complete`。
+- Screen 映射：GI-01、GI-02、GI-05、LV-00、LV-01 使用 `bgm_menu`；LV-02 按 L1/L2/L3 使用 `bgm_creek` / `bgm_firefly` / `bgm_treetop`；LV-03 停止 BGM 并播放一次 `sfx_round_complete`。
 - 事件映射：玩法选择、输入就绪、倒计时 tick/go、L1 jump、collect、pass、soft collision、rescue、L3 platform land、character switch、pause 与 UI confirm 使用各自 cue；位置跟手和每秒生存分不得发声。
 - 控制：家长抽屉新增一个真实产品按钮“声音：开/关”，`aria-pressed` 与本机偏好同步；不新增 screen、不占儿童 HUD、不提供复杂滑杆。
 - 生命周期：首次可信用户交互后才允许播放；家长抽屉、`document.hidden` 与安全暂停会暂停 BGM；恢复时继续当前主题；任何 `play()` 失败都静默降级且不得产生未处理异常。
@@ -130,7 +140,7 @@
 | 玩法内教学 | LV-01 | 开始 → 3/2/1 → 无危险教学 | 完成一次对应控制 | 8s 后家长可直接开始；不扣心 |
 | 距离/高度无尽计分 | LV-02 tutorial done | 实际位移累计米数 → 跨里程碑 → 速度/障碍升级 → 失误救援 | 刷新个人最好与最高里程碑 | 第3次失误或主动结束进入成绩 |
 | L1 跳坑 | LV-02 L1 | 拳→掌 → 空间跳跃 → 跨坑 | 越坑 + 分 | 未跳/高度不足 → 掉落托回 |
-| L2 跟手 | LV-02 L2 | 掌心Y → 平滑 → 穿宽通道 | 过门 + 分 | Unknown 仍跟手；丢手暂停 |
+| L2 跟手 | LV-02 L2 | 掌心X/Y → 双轴平滑 → 四向移动穿宽通道 | 过门 + 分 | Unknown 仍跟手；丢手暂停 |
 | L3 平台弹跳 | LV-02 L3 | 自动弹跳 + 掌心X左右对准 → 落台 | 高度/落台 + 分 | 落空安全云托回扣心 |
 | 成绩与重玩 | LV-03 | 显示本次/最好/Top5 | 再玩或换玩法 | localStorage 不可用则只显示本次 |
 
@@ -138,7 +148,7 @@
 
 | ID | Screen | Purpose | Entry | Exit |
 |---|---|---|---|---|
-| GI-01/GI-02/GI-03/GI-05/GI-06 | 输入设置/就绪 | 输出 InputProfile | 起始/降级 | LV-00 |
+| GI-01/GI-02/GI-05 | 输入设置/就绪 | 输出 InputProfile；摄像头 GI-02、键盘 GI-05 都单页直接继续 | 起始/降级 | LV-00 |
 | LV-00 | 三玩法大厅 | 默认开放的玩法选择 | 输入就绪/LV-03 | LV-01 |
 | LV-01 | 玩法入场 | 只说明当前玩法控制 | LV-00/LV-03 | LV-02 |
 | LV-02 | 运行时宿主 | 教学、计分、救援、暂停 | LV-01 | LV-03/LV-00 |
@@ -153,7 +163,7 @@
 
 | Screen | 进入方式 | 真实交互 | 目标 |
 |---|---|---|---|
-| GI 输入流程 | 起始 | 输入就绪后点击“开始游戏” | LV-00 |
+| GI 输入流程 | 起始 | 摄像头 GI-02“继续”或键盘 GI-05“开始游戏” | LV-00 |
 | LV-00 | 输入完成/成绩返回 | 点击任一玩法卡 | LV-01 |
 | LV-01 | 已选玩法 | 点击“开始玩” | LV-02 |
 | LV-02 | 倒计时后 | 第3次失误/家长结束 | LV-03 |
@@ -192,15 +202,15 @@
 - Purpose：只教当前玩法的控制，不承担三玩法比较。
 - Layout regions：所选玩法远/中景铺满封面；中央暖纸标题签直接包含角色/玩法名、个人最高分、一张大控制示意和一个动作短句；底部开始/返回。标题签使用明确的四向内容安全边距，所有文字/数字必须位于纸张装饰内缘。倒计时作为绝对定位的独立中层，不参与原内容流排版；进入 3/2/1 时隐藏最高分、控制图、角色和按钮，只保留安全区内的玩法名、中央数字与下方“准备”。最高分不得再单独占用顶部 HUD。封面地图与 LV-02 当前玩法保持同一主题。
 - Primary content：
-  - L1：拳/掌图形 + “握拳 → 张手”。
-  - L2：上下箭头 + “上下带路”。
-  - L3：左右箭头 + “左右带路”。
+  - L1：独立生成的闭拳→张掌转换图 + “握拳 → 张手”。
+  - L2：独立生成的手掌四向带路图 + “上下左右带路”。
+  - L3：独立生成的手掌左右带路图 + “左右带路”。
 - Primary action：“开始玩”。
 - Secondary actions：“换个玩法”；已看过教学时可勾选“再看一次”。
 - Navigation：开始 → LV-02 3/2/1；返回 → LV-00。
 - Data needed：`modeId`、`inputProfile`、`tutorialSeenByMode`。
 - States：camera/keyboard 文案适配；missing capability；focused；countdown-safe。
-- Acceptance：三个 mode 的动作图形/短句严格对应，页面不同时展示其他玩法步骤、输入技术名或准备状态长句；倒计时 3/2/1 不推动玩法名或“准备”越出纸张内容安全区，标题上下至少保留 20px 视觉余量；L1/L2/L3 封面分别使用 creek/firefly/treetop 新地图，不实例化旧 CSS 山丘、太阳、花线或土路。
+- Acceptance：三个 mode 的生成式动作图/短句严格对应，页面不同时展示其他玩法步骤、输入技术名或准备状态长句；动作图是非交互透明图片，不是通用线框 SVG 或圆形按钮；倒计时 3/2/1 不推动玩法名或“准备”越出纸张内容安全区，标题上下至少保留 20px 视觉余量；L1/L2/L3 封面分别使用 creek/firefly/treetop 新地图，不实例化旧 CSS 山丘、太阳、花线或土路。
 
 ### LV-02：共享运行时宿主
 
@@ -223,31 +233,33 @@
 #### LV-02 / 共享里程碑 HUD
 
 - Persistent HUD：当前玩法图片牌作为顶部唯一信息底板，内部只显示整数 `progressMeters` + 单位 `m` 与进度槽；没有星形、分数、阶段标签或“新挑战来了”。距离/高度数字四周使用显式安全边距，最长 4 位数 + `m` 不得触碰装饰。
-- Progress：进度槽横向覆盖图片牌底部内容安全区，指向下一基础里程碑；Tier 5 后仍按无尽段推进，但段名只保留在无障碍语义与结算文案中，不常显于顶部牌。
+- Progress：进度槽必须落在图片牌为水面/枝条预留的底部轨道槽中，横向覆盖该内容安全区并与槽位中心线对齐；标准高度为 `clamp(16px,1.45vw,22px)`，不得低于 16px，不得压到左侧饼干/叶片或下方装饰枝条。它指向下一基础里程碑；Tier 5 后仍按无尽段推进，但段名只保留在无障碍语义与结算文案中，不常显于顶部牌。
 - Milestone-up：使用与顶部图片牌不同的独立庆祝层，标题和副文案各一行；禁止出现“新挑战来了/新的挑战出现啦”，禁止复用、放大或再次显示 HUD 底板。标题按档位选择“越走越远！”“节奏升级！”“连续闯关！”“超级探险家！”“无限旅程！”；L3 第一档用“越跳越高！”。副文案仅为“来到 N 米”。
 - Responsive：1440×900 至 919×843 均需保持 HUD 贴近上沿；数字与进度不隐藏，空间不足时只缩小装饰。摄像头模式给教练留安全区，键盘模式不预留教练宽度。
-- Acceptance：同一阈值每局只出现一次；庆祝层收起后顶部面板与障碍皮肤已切换到新 Tier；顶部没有星级/分数概念和重复阶段文案；独立庆祝层与 HUD、角色、动作提示无重叠。
+- Acceptance：同一阈值每局只出现一次；庆祝层收起后顶部面板与障碍皮肤已切换到新 Tier；顶部没有星级/分数概念和重复阶段文案；进度槽高度 ≥16px、四边位于图片牌内容安全区、视觉中心与预留轨道中心偏差 ≤4px；独立庆祝层与 HUD、角色、动作提示无重叠。
 
 #### LV-02 / L1 溪边跳跳
 
 - Tutorial：4 秒无坑宽路；完成 1 次拳→掌高跳。
-- World：角色固定约 26% X；背景/地面/道具/木箱/坑洞共用 `worldSpeed`。
-- Map：远景、中景和地面条为三个独立可循环层；用镜像循环对保证正/负偏移均首尾连续，地面碰撞不读取背景像素。
-- Jump：1200ms，`clamp(180px,28vh,260px)`；目标从可见提示到碰撞中心约 1.05s，同一帧启动角色位移与状态。
-- Collision：溪水坑/木箱依据当前空间重叠 + `jumpY`，无独立目标计时窗；溪水坑贴图只负责视觉，透明边界不参与碰撞。
+- World：角色固定约 26% X；背景/地面/道具/木箱/坑洞共用 `worldSpeed`。角色脚底与障碍底边锚定在地面贴图内部同一条纵深接触带，草边轻微覆盖底部，不能悬浮在地面上沿。
+- Map：远景、中景和地面条为三个独立可循环层；用镜像循环对保证正/负偏移均首尾连续，地面碰撞不读取背景像素；纵深接触带是运行时几何，不从贴图 alpha 反推。
+- Jump：使用逐帧竖直速度/重力积分；基础起跳 `690px/s`、重力 `1220px/s²`，速度每增加 1.0× 额外提供约 `95px/s` 起跳辅助并增加约 `110px/s²` 重力。1.0×–1.6× 腾空约 1.13–1.17s、峰值约 195–217px；单次跳跃在起跳帧冻结参数，途中升级不改轨迹。
+- Cue：依据当前速度和目标宽度计算提示距离，使提示到危险区保持约 0.92–1.12s；速度提升只把提示前移，不压缩儿童反应时间。
+- Collision：角色、箱/原木/双层箱与坑洞水面开口均使用人工内缩碰撞体；每帧用 `previousWorldX→worldX` swept interval 求交。实心障碍按脚底与障碍顶边判断，坑洞在水面开口重叠且 `jumpY<38px` 时命中；透明留白和两侧草岸不参与碰撞。首次真实水平接触时，竖直重叠则碰撞、竖直安全错开则成功，两者都只判定一次。
 - Lifecycle：坑/箱/原木无论成功越过还是碰撞，判定后均进入 `passedObjects`，继续按当前 `worldSpeed` 向左穿过角色位置，完全离开屏幕后才回收；`judged=true` 保证不重复扣心。
 - Success：跨坑/越箱 +20 与 streak 奖励。
 - Distance/Difficulty：`worldSpeed*delta/48` 累计整数米数；100/250/450/700m 依次解锁原木路障、箱→安全地面→坑、坑→安全地面→箱和安全高级轮换；任意危险判定区仍间隔至少 1.8s。
 - Rescue：掉落 220ms → 伙伴托回 420ms → 落地 180ms；勇气减一，1.2s 无敌。
-- Acceptance：推荐起跳点可越 96–118px 坑；未跳必触发完整救援；同一对象不得连续扣心。
+- Acceptance：角色脚底、箱/原木底边和坑洞近岸位于地面纵深带内；推荐起跳可越 96–118px 坑；目标未与可见主体重叠前不提前扣心，高速单帧跨越仍能命中；跳过后只记一次成功，未跳触发完整救援，同一对象不得连续扣心。
 
 #### LV-02 / L2 萤火虫躲躲
 
-- Tutorial：5 秒无障碍，上/下各跟随一次。
-- World：角色 X 固定；掌心 Y 映射世界 22%–72%。
-- Processing：EMA .28、3.5% deadzone、单帧≤12%；Unknown 有关键点时继续。
+- Tutorial：5 秒无障碍，横向和纵向各跟随一次。
+- World：掌心 X/Y 分别映射世界 X=16%–68%、Y=22%–72%，角色可上下左右自由移动但不进入右侧教练安全区。
+- Processing：X/Y 两轴各自使用 EMA .28、3.5% deadzone、单帧≤12%；Unknown 有关键点时继续。
 - Success：进入宽安全带 +20；碰撞勇气减一并泡泡弹回，1.2s 护盾。
 - Lifecycle：通道越过角色判定线后进入 passedObjects，仍继续向左穿过角色位置，直到完全离开画面才销毁；下一通道可以同时生成。
+- Collision timing：通道矩形与角色当前 X 碰撞体水平穿越时只判定一次；左右移动改变相遇时机，Y 是否位于安全带决定通过/碰撞。
 - Map：青绿色低对比远/中景保持中心通道空旷；上下树篱为独立透明皮肤，视觉皮肤与 `safeY` 碰撞矩形生命周期分离。
 - Distance/Difficulty：`worldSpeed*delta/48` 累计整数米数；100/250/450/700m 依次进入偏移单门、高低交替、双门回正区和安全高级轮换，并切换圆叶/芦苇叶篱皮肤；安全带半高始终 ≥0.24。
 - No hand：≤600ms 保持；>600ms 冻结世界，不扣心。
@@ -289,6 +301,7 @@
 | Milestone image panel | 玩法完整图片面板 + 0m + 满宽进度 | N/A | 图片失败回退文字边框 | 米数增长；无阶段标签 | pause frozen；focus N/A |
 | Milestone celebration | hidden | N/A | 仍显示实时文字 | 独立纸带 + 光芒/叶片粒子单次出现 | reduced motion fade only |
 | Camera coach | current control | no hand | camera/model | seen/armed | keyboard mode hidden |
+| Instruction icon | mode/state 对应独立透明 PNG | no-hand 使用 find-hand | 同义短文案 + 非误导占位 | 当前动作图清晰加载 | 非交互；focus N/A |
 | Pause/reminder board | 图标 + eyebrow + 标题 + 1–2 行正文 | N/A | 可恢复短文案 | 安全恢复倒计时 | 正文行高约 1.6；区块间距 12–16px |
 | Result Top 5 | ordered scores | 第一次成绩 | storage unavailable | new best | focusable actions |
 | Run memory frame | 当前摄像头单帧 | 玩法地图回退 | 捕获失败回退地图 | 当前局画面 + 主题点缀 | 非交互；不持久化 |
@@ -314,12 +327,13 @@ Loading 只发生在选择玩法后的 runtime mount；LV-01 保持可见并显�
 - `ScoreEvent{type,points,modeId,timestamp}`。
 - `MistakeEvent{type,modeId,worldObjectId,timestamp}`。
 - `RunResult{modeId,score,bestScore,topScores,isNewBest,endedBy,snapshotCaptured}`；`runSnapshotDataUrl` 仅在 LV-03 内存态，不进入持久化结果。
-- L1 `WorldObject{objectId,type,worldX,width,height,resolved}` 与 `JumpState{phase,elapsedMs,jumpY}`。
-- L2 `PassedObject{objectId,type,worldX,width,judged,outcome}`，完成判定后仍更新位置直到完全离场。
+- L1 `WorldObject{objectId,type,worldX,previousWorldX,visualWidth,collisionWidth,collisionHeight,collisionInset,resolved,judged}`、`PlayerHitbox{x,width,height,footInset}` 与 `JumpState{phase,elapsedMs,jumpY,verticalVelocity,gravity}`；新对象初始左边缘必须位于世界右边界之外。
+- L2 `PassedObject{objectId,type,worldX,width,judged,outcome}` 与 `playerX/playerY`，完成判定后仍更新位置直到完全离场。
 - L3 `HandTrackingFrame{palmCenterX,...}`、`BounceState{phase,elapsedMs,playerX}`、`Platform{id,x,y,width,judged,starCollected}`。
 - `AudioPreference{enabled}` 使用独立 localStorage key `gesture-pup-audio-v1`；`AudioRuntime{unlocked,currentBgmId,lastSfxAt}` 仅在内存中存在。
 - `AudioCue{id,kind,file,usage,loop,durationSeconds}` 来自 `assets/audio/audio-manifest.json`；04B 以冻结映射接入，不在浏览器里携带生成 API key。
 - `MilestoneAsset{modeId,panelImage,obstacleVariantImages,prompt,displaySize,collisionRole}` 来自本地 manifest；图片不定义碰撞。
+- `InstructionIconAsset{id,file,usageStates,prompt,displaySize,ariaLabel}` 来自 `assets/ui/instruction-icons/instruction-icons-manifest.json`；图片不定义输入判定或交互。
 
 ## 12. Responsive Rules
 
@@ -328,6 +342,7 @@ Loading 只发生在选择玩法后的 runtime mount；LV-01 保持可见并显�
 - LV-00 始终三列；低高度减少卡内空白、角色插画与描述行数，按钮 ≥44px。
 - LV-01 暖纸标题签采用固定安全区栅格而非按父宽度放大的百分比 padding；倒计时不参与普通内容流，所有支持视口都不得裁切玩法名、倒计时数字或“准备”。
 - LV-02 摄像头模式 coach 宽 `clamp(190px,18vw,270px)`；摄像头 `max-height:26vh`；readout 静态位于视频下方。键盘模式 coach 使用 `hidden` 从布局和无障碍树移除，不显示替代占位卡。
+- LV-02 里程碑进度槽高度使用 `clamp(16px,1.45vw,22px)`；在五个支持视口中均以图片牌预留轨道为锚，不通过 viewport 百分比独立漂移。
 - 目标/坑洞不得生成在 coach 遮挡区域内；游戏核心对象位于世界左侧 72% 可见区。
 - LV-03 使用横向双栏，左侧为 16:9 当局单帧画框，右侧 Top 5 固定为从高到低的 5 行；卡片与页面均不滚动，低高度优先缩小画框和装饰角色。
 
@@ -355,6 +370,7 @@ Loading 只发生在选择玩法后的 runtime mount；LV-01 保持可见并显�
 |---|---|---|
 | LV-00 | 三卡全部可点 | 证明是玩法大厅而非顺序关卡 |
 | LV-01 | 单一控制图 | 证明教学下沉到玩法 |
+| LV-01/LV-02/no-hand | 独立生成式指示图 | 证明复合动作、当前动作和重新找手没有复用错误通用图标 |
 | LV-02/L1 | 坑洞、jumpY、救援 | 证明视觉与判定共享物理 |
 | LV-02/L2 | 已判定通道继续离场 | 证明判定与视觉生命周期解耦 |
 | LV-02/L3 | 自动弹跳、掌心X与宽平台 | 证明采用成熟平台循环且只有一个儿童控制任务 |
@@ -373,18 +389,23 @@ Loading 只发生在选择玩法后的 runtime mount；LV-01 保持可见并显�
 
 ## 18. Acceptance Criteria For HTML Prototype
 
-- [ ] 从 GI 输入就绪点击“开始游戏”直接到 LV-00。
+- [ ] 摄像头 GI-02 点击“继续”直接到 LV-00，键盘 GI-05 任意有效键点亮后点击“开始游戏”直接到 LV-00；不存在可达 GI-03/GI-04/GI-06。
 - [ ] LV-00 三玩法默认全可点，无锁态/编号/完成上一关文案。
 - [ ] LV-01 与 LV-02 tutorial 对三个玩法分别显示唯一正确控制。
+- [ ] `pose-transition`、`fist-hold`、`open-palm-jump`、`hand-move-vertical`、`hand-move-horizontal`、`hand-move-free`、`find-hand` 七枚指示图分别生成并从透明 PNG 加载；GI-02、LV-01、LV-02 动作卡和 no-hand/camera-wait 按状态正确映射，不再显示大尺寸通用内联手掌 SVG。
 - [ ] LV-01 开始后的 3/2/1 倒计时不挤压普通内容；玩法名、数字和“准备”均位于暖纸标题签四向安全区，5 个支持视口无裁切、越界或边缘重叠。
 - [ ] LV-02 三 runtime 均实现 score/courage/progressMeters/milestone/obstacle-tier/rescue/result。
 - [ ] L1/L2 米数只由有效水平世界位移累计；L3 米数只由历史最大真实世界高度累计；暂停、救援和原地等待至少 5 秒均不改变米数。
 - [ ] L1/L2 在 100/250/450/700m、L3 在 20/50/90/140m 同步更新速度档、障碍档、HUD 完整图片面板并单次显示独立庆祝层；庆祝层不复用 HUD 图片牌、不出现“新挑战来了”。
+- [ ] HUD 进度槽在 5 个支持视口均位于完整图片牌预留轨道内，高度 16–22px，和轨道中心偏差 ≤4px，不与饼干、叶片或底部枝条装饰相交。
 - [ ] Tier 5 后继续运行并按 300m/60m 增加“无限旅程 N”；速度保持软上限，障碍在安全模式池轮换。
-- [ ] L1 worldSpeed 同时驱动背景、地面、坑洞和障碍；碰撞读取 jumpY；L1/L2 判定后障碍继续向左离场并只判定一次。
+- [ ] L1 worldSpeed 同时驱动背景、地面、坑洞和障碍；角色脚底与障碍底边位于地面贴图纵深接触带内；每个 L1 障碍初始左边缘在画面最右边界之外并逐帧左移进入，不得凭空出现在可见区。
+- [ ] L1 碰撞使用人工内缩 hitbox 和 `previousWorldX→worldX` swept interval；未发生可见主体水平/竖直重叠时不提前扣心，50ms 子步与最高 1.6× 下不漏碰；坑洞草岸/透明留白不算危险，成功/碰撞各只判定一次，判定后继续离场。
+- [ ] L1 在 1.0×–1.6× 下起跳速度随 `worldSpeed` 温和增加、重力同步调整；腾空约 1.13–1.17s，提示到危险区约 0.92–1.12s，跨档时半空轨迹不突变。
 - [ ] L1 三层在前进/反向至少 2 个画布宽后仍完全覆盖视口，循环对无空白、闪缝或首尾跳变；外缘像素差为 0。
-- [ ] L1 推荐起跳可越坑；不跳会掉落、托回、扣心并短暂无敌。
+- [ ] L1 推荐起跳可越坑；过早落地、未跳或身体真实碰到障碍会掉落/受挫、托回、扣心并短暂无敌。
 - [ ] L2 通道完成判定后仍继续穿过角色位置并自然离场；同屏允许下一目标生成。
+- [ ] L2 摄像头掌心与键盘四方向均可同时改变 X/Y；角色 X 保持在 16%–68%，Y 保持在 22%–72%，300ms 内有对应移动反馈。
 - [ ] L2 树篱贴图不改变 `safeY` 安全带，不与远/中景合并，也不因完成判定提前移除。
 - [ ] L1 原木/双层箱、L2 圆叶/芦苇叶篱、L3 窄枝/弯枝为独立生成透明图片；加载失败不改变运行时几何或阻断本局。
 - [ ] L3 角色自动弹跳，摄像头掌心 X 与键盘 ←/→ 均能左右对准宽平台；Unknown 不阻断位置流。
@@ -404,6 +425,7 @@ Loading 只发生在选择玩法后的 runtime mount；LV-01 保持可见并显�
 - [ ] jump/collect/pass/collision/rescue/platform-land/character-switch/pause cue 在对应状态边沿单次触发；tracking/render/每秒得分不触发 cue。
 - [ ] 家长抽屉声音按钮可聚焦，`aria-pressed`/文案/本地偏好一致；关闭、后台与暂停会停止或暂停声音，恢复后继续；播放失败不阻断玩法。
 - [ ] 无原型脚手架；5 个视口均单屏、零重叠、按钮可用。
+- [ ] L2 顶部动作提示与里程碑庆祝层在所有支持视口边界矩形不相交；二者出现时均不遮 HUD、角色或危险物。
 - [ ] 从 GI-01 到 LV-03，儿童常显区不出现介绍段、步骤清单、玩法长描述、设备存储脚注、输入技术名或重复状态说明；家长/错误/无障碍信息仍完整可达。
 - [ ] LV-00 卡片只常显玩法名、地图/角色、图形和最好成绩；LV-01 只显示一个动作短句；LV-02 HUD 只常显距离/高度、满宽进度与勇气心，不显示星形、分数或阶段标签；LV-03 显示简短鼓励、风格化分数、最高里程碑、最好、Top 5 与两枚儿童操作。
 - [ ] `0–9 + m` 风格化字形在运行态米数及 LV-03 分数/最好/Top 5 生效；距离单位不得混用系统 `m`，长到 4 位数字 + `m` 仍不碰底板装饰，素材失败时回退到等值 `tabular-nums` 文本。
@@ -412,16 +434,16 @@ Loading 只发生在选择玩法后的 runtime mount；LV-01 保持可见并显�
 ## 19. QA Strategy For HTML Prototype
 
 - QA Mode：`QA-TARGETED`；触发原因是 LV-01 倒计时、HUD 四向安全边距、键盘模式条件隐藏和升级庆祝层均存在纯文本检查无法可靠确认的局部溢出/遮挡风险。
-- Static checks：数字资产路径/alpha/prompt、同一阈值单次触发、键盘教练/定位标记状态、JS 语法、现有计分/碰撞源真相不变。
-- Browser checks：定向检查 1440×900、1219×681、919×843 的 LV-01 普通/3/2/1 与 LV-02 三玩法 Tier 0/Tier 2；摄像头模式检查教练留位，键盘模式检查教练与定位标记不存在；不进行无关全量验收。
-- 人工 UX：确认顶部只读到距离/高度，升级标题与顶部不重复；庆祝效果明显但不抢夺操作；暂停提醒正文有舒适行距；reduced motion 仍能感知升级。
+- Static checks：数字与七枚指示图资产路径/alpha/prompt/manifest、状态映射、同一阈值单次触发、键盘教练/定位标记状态、JS 语法、L1 速度—跳跃参数和 hitbox 字段完整。
+- Browser checks：定向检查 1440×900、1219×681、919×843 的 L1 地面纵深锚点、未接触不误判、50ms 子步最高速度不漏判、推荐时机起跳成功与全速度档腾空/提示时间；保留三玩法 scored loop 回归，不进行无关全量验收。
+- 人工 UX：确认 L1 角色/障碍确实落在地面中，肉眼接触与扣心一致；从基础到最高速度，跳跃依然有稳定节奏且不会像地面突然从脚下加速滑走。
 
 ## 20. PM Review Slice
 
-- 本阶段关键决策：三玩法均为无时长终点的无尽局；L1/L2 只按真实行进米数、L3 只按真实爬升米数推进，速度与障碍组合在里程碑同步升级；顶部图片牌只显示距离/高度与满宽进度，不显示星形、分数或阶段文案，分数仍在运行时累计并于结算/Top 5 呈现；升级使用独立庆祝层和一套不重复短文案；键盘模式不显示摄像头教练与黄色手势定位标记；LV-01 倒计时进入独立安全层；运行数字和单位使用同风格 `0–9 + m` 字形并保留文本回退。
+- 本阶段关键决策：摄像头与键盘都在单一准备页直达玩法大厅；三玩法均为无时长终点的无尽局；L1 使用地面纵深接触带、速度耦合弹道和连续 swept hitbox，L1/L2 只按真实行进米数、L3 只按真实爬升米数推进；L2 同时消费掌心 X/Y 与键盘四方向；入口、运行动作和重新找手使用七枚分别生成的同风格透明指示图；顶部图片牌只显示距离/高度与对齐预留轨道的 16–22px 进度槽，不显示星形、分数或阶段文案；分数仍在运行时累计并于结算/Top 5 呈现；键盘模式不显示摄像头教练与黄色手势定位标记。
 - Target Surface：继续 `web-only`，单视口无滚动。
-- 被放弃的方案：顺序锁关、固定关长、全局动作教程、自创叠云、无反馈穿模、经典 Flappy 即死、把涂色塞进计分玩法、公开排行榜。
-- 需要 PM 确认的问题：请重点确认距离单指标 HUD、独立升级庆祝强度、键盘模式的清爽布局、倒计时安全区、提醒看板行距和风格化数字是否适合 5 岁儿童；当局留念只在当前页面内存中存在，不保存、不上传。
+- 被放弃的方案：摄像头成功后的重复 ready 页、以同一个简单手掌 SVG 代表所有指令、进度槽脱离图片牌预留轨道、顺序锁关、固定关长、全局动作教程、自创叠云、经典 Flappy 即死、公开排行榜。
+- 需要 PM 确认的问题：用户已明确要求本轮 L1 三项优化；后续试玩需确认地面纵深落点、碰撞时机和基础/高速跳跃手感是否符合直觉，同时确认 64–112px 下动作图与进度槽可读性。
 - 不需要 PM 审查的执行细节：CSS 数值、对象生成随机种子、测试 seam、音频冷却毫秒与 localStorage key。
 - 进入下一阶段的条件：HTML builder 按该 screen/state 契约实现并通过 QA-TARGETED。
 

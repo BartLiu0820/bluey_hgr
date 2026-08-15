@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-15",
+  "style": "warm hand-painted children adventure manual; orange hand, river-blue cues, warm brown outline, sun-yellow highlights, minimal moss-green accents; no button background",
+  "pipeline": {
+    "generator": "built-in imagegen",
+    "sourceBackground": "#FF00FF",
+    "postprocess": "remove_chroma_key.py --auto-key border --soft-matte --transparent-threshold 12 --opaque-threshold 220 --despill; max 512px; trim alpha bounds with 8% safety padding",
+    "finalFormat": "trimmed RGBA PNG, longest edge 512px"
+  },
+  "assets": [
+    {"id":"pose-transition","file":"pose-transition.png","prompt":"pose-transition.prompt.txt","usageStates":["LV-01 creek_jump"],"displaySize":"112px","ariaLabel":"握拳后张开手掌"},
+    {"id":"fist-hold","file":"fist-hold.png","prompt":"fist-hold.prompt.txt","usageStates":["LV-02 creek_jump need_fist","LV-02 creek_jump armed"],"displaySize":"72px","ariaLabel":"握紧拳头"},
+    {"id":"open-palm-jump","file":"open-palm-jump.png","prompt":"open-palm-jump.prompt.txt","usageStates":["LV-02 creek_jump jump","LV-02 creek_jump need_reset"],"displaySize":"72px","ariaLabel":"张开手掌向上跳"},
+    {"id":"hand-move-vertical","file":"hand-move-vertical.png","prompt":"hand-move-vertical.prompt.txt","usageStates":["historical vertical-only reference"],"displaySize":"88px","ariaLabel":"手掌上下移动"},
+    {"id":"hand-move-horizontal","file":"hand-move-horizontal.png","prompt":"hand-move-horizontal.prompt.txt","usageStates":["LV-01 treetop_bounce","LV-02 treetop_bounce"],"displaySize":"88px","ariaLabel":"手掌左右移动"},
+    {"id":"hand-move-free","file":"hand-move-free.png","prompt":"hand-move-free.prompt.txt","usageStates":["LV-01 firefly_dodge","LV-02 firefly_dodge"],"displaySize":"96px","ariaLabel":"手掌上下左右移动"},
+    {"id":"find-hand","file":"find-hand.png","prompt":"find-hand.prompt.txt","usageStates":["GI-02 camera-wait","LV-02 no-hand","LV-02 camera-wait"],"displaySize":"96px","ariaLabel":"把小手放回摄像头画面"}
+  ]
+}

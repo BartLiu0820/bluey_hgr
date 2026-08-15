@@ -3,6 +3,7 @@
     "audio:check": "node scripts/check-game-audio.mjs",
     "audio:generate": "node scripts/generate-game-audio.mjs",
     "qa:endless-milestones": "node scripts/check-endless-milestones.mjs",
+    "qa:fonts": "node tests/font-typography-targeted.mjs",
     "workflow:check-env": "node .pm-workflow/check-env.mjs",
     "workflow:validate-gates": "node .pm-workflow/validate-gates.mjs",
     "workflow:design-search": "node .pm-workflow/run-tool.mjs design-search",

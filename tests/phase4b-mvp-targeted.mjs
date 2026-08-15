@@ -82,7 +82,7 @@ async function checkLayout(page, label) {
 
 async function checkAllScreensSingleViewport(viewport, label) {
   const page = await makePage(viewport);
-  for (const screenId of ["GI-01", "GI-02", "GI-03", "GI-04", "GI-05", "GI-06", "LV-00", "LV-01", "LV-02", "LV-03"]) {
+  for (const screenId of ["GI-01", "GI-02", "GI-05", "LV-00", "LV-01", "LV-02", "LV-03"]) {
     await page.evaluate(id => window.__mvpTest.showScreen(id), screenId);
     if (viewport.width === 1024 && viewport.height === 700) {
       await page.screenshot({ path: path.join(qaDir, `mvp-single-viewport-${screenId.toLowerCase()}-1024.png`), fullPage: true });
@@ -186,8 +186,9 @@ try {
   const keyboard = await makePage({ width: 1440, height: 900 });
   await keyboard.evaluate(() => { window.__inputReadyCount = 0; window.addEventListener("input-ready", () => { window.__inputReadyCount += 1; }); });
   await keyboard.click("#keyboard-choice");
-  await keyboard.keyboard.press("Space"); await keyboard.waitForTimeout(850);
-  assert.equal((await state(keyboard)).screen, "GI-06");
+  await keyboard.keyboard.press("Space"); await keyboard.waitForTimeout(250);
+  assert.equal((await state(keyboard)).screen, "GI-05");
+  assert.equal(await keyboard.locator('[data-screen-id="GI-06"]').count(), 0);
   await keyboard.click("#start-keyboard-game");
   assert.equal(await keyboard.evaluate(() => window.__inputReadyCount), 1);
   assert.equal((await state(keyboard)).screen, "LV-00");

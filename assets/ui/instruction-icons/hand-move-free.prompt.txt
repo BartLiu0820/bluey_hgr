@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: children's game UI instruction icon
+Primary request: create one standalone four-direction hand movement instruction icon matching the existing vertical and horizontal hand-motion icons.
+Input images: hand-move-vertical.png and hand-move-horizontal.png are style references.
+Subject: one centered friendly orange open palm with four separate chunky river-blue arrows pointing up, down, left, and right; all directions equally clear at 72–112px.
+Style/medium: polished hand-painted children's game UI icon; rounded inflated shapes; warm brown outline; cream highlights; restrained green leaves and water/spark accents.
+Composition/framing: centered balanced square, generous padding, arrows separated from the palm and one another.
+Scene/backdrop: perfectly flat solid #ff00ff chroma-key background for local removal.
+Constraints: no text, character, logo, badge/button plate, circular background, extra directions, shadows or watermark; do not use #ff00ff in the subject.

@@ -74,9 +74,13 @@ function pass(copy) { console.log(`PASS ${copy}`); }
 try {
   const page = await pageAt();
 
-  assert.equal(await page.locator("#next-gesture").textContent(), "开始游戏");
+  assert.equal(await page.locator('[data-screen-id="GI-03"],[data-screen-id="GI-04"]').count(), 0);
   assert.equal((await page.locator("body").innerText()).includes("去看看结果"), false);
-  pass("输入准备页主按钮直接开始游戏");
+  await page.evaluate(() => { window.__qaInputReadyCount = 0; window.addEventListener("input-ready", () => { window.__qaInputReadyCount += 1; }); window.__mvpTest.showScreen("GI-02"); window.__gesturePrototype.forceCameraReady(); });
+  await page.locator("#start-practice").click();
+  assert.equal((await state(page)).screen, "LV-00");
+  assert.equal(await page.evaluate(() => window.__qaInputReadyCount), 1);
+  pass("摄像头准备页继续按钮单次派发并直达玩法大厅");
 
   let current = await startMode(page);
   assert.equal(current.screen, "LV-00");
@@ -88,7 +92,7 @@ try {
 
   const instructions = {
     L1: "空格跳",
-    L2: "↑ ↓ 带路",
+    L2: "↑ ↓ ← → 带路",
     L3: "← → 带路"
   };
   for (const id of ["L1", "L2", "L3"]) {
@@ -114,9 +118,18 @@ try {
   await advance(page, 1_800);
   current = await state(page);
   assert.ok(current.level.target, "L1 did not spawn its first spatial target");
+  for (let elapsed = 0; elapsed < 6_000; elapsed += 200) {
+    const ready = await page.evaluate(() => {
+      const level=window.__mvpTest.getState().level;
+      const worldWidth=document.querySelector("#game-world").clientWidth;
+      return level.target && level.target.worldX - worldWidth * .26 <= level.worldSpeedPxPerSec * .75;
+    });
+    if (ready) break;
+    await advance(page, 200);
+  }
   const beforeSuccess = current.level.score;
   await emit(page, "JUMP");
-  await advance(page, 1_050);
+  await advance(page, 1_000);
   current = await state(page);
   assert.equal(current.level.courage, 3);
   assert.equal(current.level.target, null);
@@ -124,10 +137,17 @@ try {
   assert.ok(current.level.jumpY >= 54, `jump was too low at obstacle: ${current.level.jumpY}px`);
   pass("L1 使用同一世界速度做空间碰撞，及时起跳可以越过障碍");
 
-  await advance(page, 3_600);
+  for (let elapsed = 0; elapsed < 7_000; elapsed += 200) {
+    await advance(page, 200);
+    current = await state(page);
+    if (current.level.target) break;
+  }
   current = await state(page);
   assert.ok(current.level.target, "L1 did not spawn a target for miss testing");
-  await advance(page, 1_050);
+  for (let elapsed = 0; elapsed < 7_000 && current.level.target; elapsed += 200) {
+    await advance(page, 200);
+    current = await state(page);
+  }
   current = await state(page);
   assert.equal(current.level.courage, 2);
   assert.equal(current.level.phase, "rescue");
@@ -167,8 +187,8 @@ try {
   await select(followPage, "L2");
   await followPage.locator("#launch-start").click();
   await advance(followPage, 3_000);
-  await track(followPage, { handPresent:true, palmCenterY:.28, palmCenterX:.5, timestamp:100 });
-  await track(followPage, { handPresent:true, palmCenterY:.68, palmCenterX:.5, timestamp:200 });
+  await track(followPage, { handPresent:true, palmCenterY:.28, palmCenterX:.26, timestamp:100 });
+  await track(followPage, { handPresent:true, palmCenterY:.68, palmCenterX:.62, timestamp:200 });
   await advance(followPage, 5_000);
   await advance(followPage, 1_800);
   current = await state(followPage);
@@ -176,8 +196,11 @@ try {
   for (let index = 0; index < 8; index += 1) {
     await track(followPage, { handPresent:true, palmCenterY:current.level.target.safeY, palmCenterX:.5, timestamp:300 + index * 20 });
   }
-  await advance(followPage, 1_550);
-  current = await state(followPage);
+  for (let elapsed = 0; elapsed < 7_000; elapsed += 200) {
+    await advance(followPage, 200);
+    current = await state(followPage);
+    if (current.level.passedObjects.length > 0) break;
+  }
   assert.ok(current.level.passedObjects.length > 0, "L2 obstacle vanished at the player collision line");
   const passedBefore = current.level.passedObjects[0].worldX;
   assert.ok(await followPage.locator("#passed-object-layer [data-passed-object]").count() > 0,

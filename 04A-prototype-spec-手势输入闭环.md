@@ -1,5 +1,5 @@
 # 原型规格：输入就绪与玩法内控制
-> 更新日期：2026-08-14 | 来源：`03-feature-手势输入闭环.md` | Target Surface：web-only
+> 更新日期：2026-08-15 | 来源：`03-feature-手势输入闭环.md` | Target Surface：web-only
 
 ## 1. Product Frame
 
@@ -14,20 +14,20 @@
 ### Goals
 
 - 摄像头连续 3 帧有可靠关键点即可 ready，不要求拳掌动作。
-- ready 后唯一主 CTA 为“开始游戏”，直接进入三玩法大厅。
+- 摄像头与键盘都在各自单一准备页完成就绪并直接进入玩法大厅：GI-02“继续”→LV-00，GI-05“开始游戏”→LV-00；两条路径都不保留第二张重复确认页。
 - 摄像头与键盘都输出具名双 capability。
-- 三种玩法在自己的安全场景中教学；L1 走姿态边沿，L2/L3 分别走连续掌心 Y/X。
+- 三种玩法在自己的安全场景中教学；L1 走姿态边沿，L2 走连续掌心 X/Y，L3 走连续掌心 X。
 
 ### Non-Goals
 
 - 不保留“去看看结果/看看结果”、拳掌练习轮次或全局动作结果页。
-- 不新增第三种必需手型、左右控制、全身追踪或移动端。
+- 不新增第三种必需手型、全身追踪或移动端。
 
 ## 3. Page Archetype And Reference Alignment
 
 ### Page Archetype
 
-- 页面类型：家长设置任务流 + 儿童输入就绪确认 + 玩法内小教练。
+- 页面类型：家长设置任务流 + 单页儿童输入就绪确认 + 玩法内小教练。
 - 核心任务：确认系统看见手 → 开始游戏；进入玩法后只学当前控制。
 - 信息密度：极低；全局页只显示摄像头/手/ready，玩法页只显示一个控制目标。同一儿童视区最多同时出现 1 个短标题、1 个短提示和 1 个主 CTA。
 - 默认布局：设置页分步；输入页左大视频/骨架、右 ready；游戏右上浮动小教练且 readout 在视频外。
@@ -49,20 +49,20 @@
 
 ## 4. Information Architecture
 
-- 家长层：GI-01 隐私/模式；GI-02 摄像头授权与模型准备；家长抽屉。
-- 儿童就绪：GI-03 摄像头 ready；GI-05/GI-06 键盘说明与 ready。
+- 家长层：GI-01 隐私/模式；GI-02 摄像头授权、模型准备与摄像头 ready；家长抽屉。
+- 儿童就绪：GI-02 摄像头 ready；GI-05 键盘测试与 ready。
 - 儿童玩法：LV-01 控制摘要；LV-02 安全教学与正式输入。
-- 主路径：`GI-01 → GI-02 → GI-03 → LV-00`；降级：`GI-01/GI-02/GI-03 → GI-05 → GI-06 → LV-00`。
+- 主路径：`GI-01 → GI-02 → LV-00`；降级：`GI-01/GI-02 → GI-05 → LV-00`。
 
 ## 5. Core Flows
 
 | Flow | Entry | Steps | Success | Edge |
 |---|---|---|---|---|
-| 摄像头就绪 | GI-01 | 隐私→授权→3帧见手 | GI-03“开始游戏” | 拒绝/模型失败→键盘 |
-| 键盘就绪 | GI-05 | 显示 Space、↑↓、←→能力 | GI-06“开始游戏” | 无需强制按键练习 |
+| 摄像头就绪 | GI-01 | 隐私→授权→3帧见手 | GI-02“继续”→LV-00 | 拒绝/模型失败→键盘 |
+| 键盘就绪 | GI-05 | 任意按一次 Space/方向键，当前键灯即时点亮 | GI-05“开始游戏”→LV-00 | 无需逐键完成或进入第二页 |
 | L1 教学 | LV-02 tutorial | fist→palm→世界动作 | 一次高跳 | 持掌不连发 |
-| L2/L3 教学 | LV-02 tutorial | 掌心上下/左右→角色跟手 | 两个方向各一次 | Unknown 仍跟手 |
-| L2 教学 | LV-02 tutorial | 手上/下各一次 | 跟手成功 | Unknown 不阻断 |
+| L2 教学 | LV-02 tutorial | 掌心上下左右→角色四向跟手 | 横向、纵向各移动一次 | Unknown 仍跟手 |
+| L3 教学 | LV-02 tutorial | 掌心左右→角色对准平台 | 左右各一次 | Unknown 不阻断 |
 | 无手恢复 | LV-02 | grace→冻结→手回来→3/2/1 | 本轮继续 | 不扣勇气 |
 
 ## 6. Screen Inventory
@@ -70,17 +70,15 @@
 | ID | Screen | Purpose | Entry | Exit |
 |---|---|---|---|---|
 | GI-01 | 家长输入设置 | 隐私与模式 | 起始 | GI-02/GI-05 |
-| GI-02 | 摄像头准备 | 授权、模型、找手 | GI-01 | GI-03/GI-05 |
-| GI-03 | 摄像头已就绪 | 确认看见手并开始游戏 | GI-02 | LV-00/GI-05 |
-| GI-05 | 按键说明 | 说明两类等价控制 | 降级入口 | GI-06 |
-| GI-06 | 按键已就绪 | 开始游戏 | GI-05 | LV-00/GI-01 |
+| GI-02 | 摄像头准备与就绪 | 授权、模型、找手；ready 后直接继续 | GI-01 | LV-00/GI-05 |
+| GI-05 | 按键准备与就绪 | 同页测试按键、点亮反馈并开始游戏 | 降级入口 | LV-00/GI-01 |
 | LV-01/LV-02 | 玩法内控制 | 当前玩法摘要与安全教学 | LV-00 | 正式计分 |
 
 ## 7. Coverage Plan
 
 - Backbone：与核心规格同一 `04B-prototype-手势小狗探险MVP.html`。
-- GI-04 旧“动作结果”不再是 backbone，也不应存在可达入口。
-- GI-03/06 的“开始游戏”都真实进入 LV-00。
+- GI-03 旧“摄像头已就绪”和 GI-04 旧“动作结果”都不再是 backbone，也不应存在 DOM screen 或可达入口。
+- GI-02 的“继续”与 GI-05 的“开始游戏”都真实进入 LV-00；GI-06 不应存在 DOM screen 或可达入口。
 - Extension：permission-denied、model-error、no-hand、keyboard takeover 均保留恢复路径。
 
 ## 8. Screen Specs
@@ -98,34 +96,27 @@
 
 - Purpose：请求权限、加载模型、找到一只完整小手。
 - Layout：大镜像视频+canvas 为主；侧栏只显示“举起一只手”、当前状态和主操作；三步技术流程不作为儿童常显文字。
-- Primary：开启摄像头/重试；Secondary：改用按键。
+- Primary：未 ready 时“开启摄像头/重试”，ready 时“继续”；Secondary：改用按键。
 - States：requesting/loading/finding-hand/ready/error。
 - Data：cameraStatus、modelStatus、handPresence、landmarks。
-- Navigation：连续 3 帧见手 → GI-03；错误/主动降级 → GI-05。
-- Acceptance：关键点与视频对齐；提示不覆盖视频主体；同一时刻只显示一个取景提示，模型/摄像头/手部三项详细状态只供家长按需查看。
+- Navigation：连续 3 帧见手后保持在 GI-02 ready 状态；点击“继续”立即派发 camera InputProfile 并进入 LV-00；错误/主动降级 → GI-05。不得进入 GI-03/GI-04。
+- Acceptance：关键点与视频对齐；提示不覆盖视频主体；同一时刻只显示一个取景提示，模型/摄像头/手部三项详细状态只供家长按需查看；ready 结论、角色反馈与“继续”都在本页完成，不再复制到第二张准备页。
+- Visual asset：摄像头尚未开启/正在找手时使用独立生成的 `find-hand.png`，不得回退到大尺寸通用内联手掌 SVG。
 
-### GI-03 摄像头已就绪
-
-- Purpose：只告诉孩子“系统看见手，可以开始”。
-- Layout：左侧视频/骨架；右侧绿色勾、角色挥手与“准备好啦”；底部唯一主 CTA。
-- Primary：“开始游戏”；Secondary：“改用按键”。
-- States：ready；若摄像头中断则可重试/降级。
-- Navigation：主 CTA → LV-00；不得经过 GI-04。
-- Acceptance：无拳掌三步、无练习轮数、无“去看看结果/看看结果”、无后续玩法说明段、无重复 ready 状态；CTA 精确为“开始游戏”。
-
-### GI-05/GI-06 按键就绪
+### GI-05 按键就绪
 
 - Purpose：说明等价能力并直接进入玩法大厅。
-- Content：常显只保留键盘图标、“按键准备好”和主 CTA；具体 Space / ↑↓ / ←→ 只在所选玩法内出现。
-- Primary：GI-05“按键准备好了”→GI-06；GI-06“开始游戏”→LV-00。
+- Layout：复用 GI-02 的手绘木框暖纸底板与左右栏比例；左侧深河蓝测试舞台显示四向键簇与 Space，右侧只保留“按一下试试”、开始和返回。
+- Content：每个键为暖纸/木边按键灯；默认安静，按下时以河蓝/太阳黄高亮、柔和外发光和下压反馈点亮，松开后回到已验证状态。禁止使用旧白底板、单个灰色键帽或第二张 ready 卡。
+- Primary：任意有效键被测试后，同页显示 ready 并启用“开始游戏”→LV-00。
 - Secondary：返回摄像头。
-- States：default/focus；不要求完成次数。
-- Acceptance：InputProfile 同时声明 poseTransition/handTrackingY/handTrackingX；不在进入大厅前展示三组操作说明、进度点或玩法介绍。
+- States：default/key-active/ready/focus；不要求逐键完成，不自动跳转第二页。
+- Acceptance：InputProfile 同时声明 poseTransition/handTrackingY/handTrackingX；Space 与四个方向键都能点亮，任意一个即可 ready；GI-06 不存在；不在进入大厅前展示玩法介绍或多步进度。
 
 ### LV-01/LV-02 玩法内小教练
 
 - Purpose：只在当前玩法内教授当前控制。
-- Content：L1 用拳/掌图形 + “握拳 → 张手”；L2 用上下箭头；L3 用左右箭头。标题与辅助句不重复同一动作。
+- Content：L1 用拳/掌图形 + “握拳 → 张手”；L2 用四向箭头；L3 用左右箭头。标题与辅助句不重复同一动作。
 - Camera：缩略视频 + 骨架；readout 是 coach 的静态子区，位于视频之后。
 - States：tutorial/need_fist/armed/tracking/success/no-hand/keyboard。
 - Acceptance：一个时刻一个目标；L2 label Unknown 时只保留角色跟手视觉，不提示“动作不清楚”；常显文字不超过一个动作短句。
@@ -136,7 +127,7 @@
 |---|---|---|---|---|---|
 | Setup choice | camera/keyboard | N/A | N/A | permission help | selected |
 | Camera surface | preview | model loading | finding hand | retry/keyboard | landmarks visible |
-| Input ready CTA | hidden | hidden | hidden | keyboard exit | “开始游戏” |
+| Input ready CTA | hidden | hidden | hidden | keyboard exit | 摄像头“继续” / 键盘 GI-05“开始游戏” |
 | Game coach | current control | model ready | no hand | camera/model | seen/armed/tracking |
 
 ## 10. Sample Data
@@ -158,7 +149,7 @@
 
 - 视口：1440×900、1280×720、1219×681、1024×700、919×843。
 - 所有 screen `100dvh;overflow:hidden;min-height:0`。
-- GI-02/GI-03 默认左右两列；低高度减少视频高度与说明，不改成纵向滚动。
+- GI-02 默认左右两列；低高度减少视频高度与说明，不改成纵向滚动。
 - game coach 宽 `clamp(190px,18vw,270px)`；readout 静态置于 video/canvas 之后，不使用视频内 absolute overlay。
 - 文案允许两行但不覆盖按钮；所有主按钮 ≥44px。
 - 低高度不是把多个说明压小，而是直接隐藏次级文案；儿童主标题、当前动作和主 CTA 不被隐藏。
@@ -181,8 +172,8 @@
 
 | Screen | Point | Why |
 |---|---|---|
-| GI-03 | “开始游戏”直达大厅 | 修复多余结果层 |
-| GI-03 | 无动作教程 | 修复层级职责 |
+| GI-02 | ready 后“继续”直达大厅 | 删除重复确认页 |
+| GI-02 | 无动作教程 | 保持输入就绪与玩法教学分层 |
 | LV-02 coach | readout 在视频外 | 防止遮脸 |
 | L2 | Unknown 仍有位置流 | 防止跟手假死 |
 
@@ -197,30 +188,30 @@
 
 ## 18. Acceptance Criteria For HTML Prototype
 
-- [ ] GI-03 无拳掌教程/倒计时/练习次数/动作结果，主 CTA 为“开始游戏”并直达 LV-00。
-- [ ] GI-04 旧结果页不在可达主链路。
+- [ ] GI-02 连续 3 帧见手后显示“继续”；点击后只派发一次 camera InputProfile 并直达 LV-00。
+- [ ] GI-03 旧 ready 页与 GI-04 旧结果页均不作为 DOM screen 存在，也不在任何可达主链路、错误回退或家长抽屉恢复路径中出现。
 - [ ] camera_full/keyboard_full 精确提供三项 capability。
 - [ ] 三玩法各自教学，不在大厅上方展示跨玩法步骤。
 - [ ] L1 未握拳张掌不触发、持掌不连发、切玩法重置姿态去重。
-- [ ] L2/L3 在 label=None/Unknown 且关键点有效时分别持续更新 Y/X；键盘方向键支持按住。
-- [ ] L2 None/Unknown + landmarks 继续输出位置。
+- [ ] L2 在 label=None/Unknown 且关键点有效时持续更新 X/Y，键盘四方向支持按住；L3 持续更新 X。
 - [ ] 视频/canvas/readout 零相交，5 视口单屏无重叠。
-- [ ] GI-01 常显区没有介绍段和模式长说明；GI-02 不常显三步技术清单；GI-03/GI-05/GI-06 每屏只保留一个准备结论和一个主 CTA。
+- [ ] GI-01 常显区没有介绍段和模式长说明；GI-02 不常显三步技术清单，ready 时只保留一个准备结论和一个主 CTA；GI-05 单页只保留测试舞台、一个准备结论和一个主 CTA。
+- [ ] GI-02 未开启/找手占位从 `find-hand.png` 加载，不实例化大尺寸通用手掌 SVG；GI-05 与 GI-02 使用同一手绘底板家族，五枚按键灯有按下/已验证反馈。
 - [ ] 儿童可见层同一视区最多 1 个短标题、1 个短提示、1 个主 CTA；详细隐私/错误说明仍可在家长层、折叠区或错误态访问。
 - [ ] 精简可见文字后，所有 icon-only 操作和动态状态仍有 `aria-label`、`aria-live` 或 `sr-only` 名称。
 
 ## 19. QA Strategy For HTML Prototype
 
-- QA Mode：本轮文字精简采用 `QA-LIGHT`；既有输入/视口 QA-TARGETED 套件保留但不重复执行。
-- 变更点检查：GI-01→GI-06 常显文字预算、动态文案回写、详细信息的家长层/无障碍保留。
-- Browser checks：N/A by QA-LIGHT policy。
-- 人工 UX：从初始界面走摄像头与按键两条路径，确认孩子只需识别图形、一个短提示和一个主按钮。
+- QA Mode：`QA-TARGETED`；触发原因是 screen inventory 与摄像头主路径发生变化，需要浏览器验证没有残留可达页或错误恢复跳转。
+- 变更点检查：GI-02 ready CTA 单次派发 camera InputProfile、直接进入 LV-00；GI-03/GI-04/GI-06 不存在；键盘 GI-05 任意有效键点亮后同页进入 LV-00。
+- Browser checks：定向检查 1440×900、1219×681、919×843；不进行无关全量验收。
+- 人工 UX：从初始界面走摄像头与按键两条路径，确认摄像头不再多点一次，孩子只需识别图形、一个短提示和一个主按钮。
 
 ## 20. PM Review Slice
 
-- 本阶段关键决策：全局动作训练改为输入就绪；GI-03 主 CTA“开始游戏”直达玩法大厅；三种控制教学下沉到玩法；从初始界面起儿童层采用“图形优先、一个短提示、一个主 CTA”，完整隐私/错误信息留在家长层与无障碍语义中；双通道合同与本机隐私不变。
+- 本阶段关键决策：全局动作训练改为输入就绪；摄像头授权、见手与 ready 收敛在 GI-02，点击“继续”直接进入玩法大厅，不保留重复 GI-03；三种控制教学下沉到玩法；从初始界面起儿童层采用“图形优先、一个短提示、一个主 CTA”，完整隐私/错误信息留在家长层与无障碍语义中；双通道合同与本机隐私不变。
 - Target Surface：`web-only`。
-- 被放弃的方案：全局拳掌练习/结果页、识别倒计时、第三必需手型、视频内文字覆盖。
+- 被放弃的方案：摄像头成功后的第二张 ready 页、全局拳掌练习/结果页、识别倒计时、第三必需手型、视频内文字覆盖。
 - 需要 PM 确认的问题：无；用户已明确要求 CTA 与教学层级调整。
 - 不需要 PM 审查的执行细节：连续帧数、推理间隔、测试注入 API。
 - 进入下一阶段的条件：04B 实现并通过 QA-TARGETED。

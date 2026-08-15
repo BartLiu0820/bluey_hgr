@@ -79,13 +79,11 @@ try {
   assert.match(await levelDogSource(), /\/bingo\/jump\/jump-[1-4]\.png$/);
   pass("伙伴角色在 L3 自动弹跳玩法使用自己的跳跃动作帧");
 
-  await page.evaluate(() => window.__mvpTest.showScreen("GI-06"));
-  await page.waitForTimeout(240);
-  assert.match(await page.locator("#gi06 .celebration-dog").getAttribute("src"), /\/celebrate\/celebrate-[1-4]\.png$/);
+  assert.equal(await page.locator('[data-screen-id="GI-06"]').count(), 0);
   assert.match(await page.locator(".launch-dogs .partner-dog").getAttribute("src"), /\/bingo\/idle\/idle-[1-4]\.png$/);
   assert.match(await page.locator(".run-memory-dogs .partner-dog").getAttribute("src"), /\/bingo\/celebrate\/celebrate-[1-4]\.png$/);
   assert.deepEqual(errors, []);
-  pass("开局与成绩页面显示真实伙伴待机/庆祝素材，且无脚本或资源错误");
+  pass("已移除冗余按键确认层；开局与成绩页面显示真实伙伴待机/庆祝素材，且无脚本或资源错误");
 } finally {
   await browser.close();
   await new Promise(resolve => server.close(resolve));
