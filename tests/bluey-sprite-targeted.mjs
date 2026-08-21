@@ -7,12 +7,13 @@ import { chromium } from "playwright";
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const prototypeName = "04B-prototype-手势小狗探险MVP.html";
 const actions = ["idle", "run", "jump", "hover", "hurt", "bump", "celebrate"];
-const characters = ["bluey", "bingo"];
+const characters = ["bluey", "bingo", "grey-puppy", "blue-heeler-dad", "garden-girl"];
 const spritePaths = characters.flatMap(character => actions.flatMap(action => Array.from({ length: 4 }, (_, index) => `assets/characters/${character}/${action}/${action}-${index + 1}.png`)));
 const mimeTypes = { ".html":"text/html; charset=utf-8", ".mjs":"text/javascript; charset=utf-8", ".js":"text/javascript; charset=utf-8", ".png":"image/png", ".wasm":"application/wasm", ".task":"application/octet-stream" };
 
 const server = http.createServer((request, response) => {
   const pathname = decodeURIComponent(new URL(request.url, "http://127.0.0.1").pathname);
+  if (pathname === "/favicon.ico") { response.writeHead(204); response.end(); return; }
   const requested = path.resolve(projectRoot, `.${pathname}`);
   if (!requested.startsWith(`${projectRoot}${path.sep}`) || !fs.existsSync(requested) || !fs.statSync(requested).isFile()) {
     response.writeHead(404); response.end("not found"); return;
@@ -23,7 +24,7 @@ const server = http.createServer((request, response) => {
 
 await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
 const url = `http://127.0.0.1:${server.address().port}/${encodeURIComponent(prototypeName)}`;
-const browser = await chromium.launch({ headless:true });
+const browser = await chromium.launch({ headless:true, executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" });
 const page = await browser.newPage({ viewport:{ width:1440, height:900 } });
 const errors = [];
 page.on("pageerror", error => errors.push(`pageerror: ${error.message}`));
@@ -39,7 +40,7 @@ try {
     const image = new Image(); image.onload = () => resolve({ src, ok:image.naturalWidth > 0 && image.naturalHeight > 0 }); image.onerror = () => resolve({ src, ok:false }); image.src = src;
   }))), spritePaths);
   assert.deepEqual(loaded.filter(item => !item.ok), []);
-  pass("双角色十四组 56 张透明动作帧全部可加载");
+  pass("五角色 35 组 140 张透明动作帧全部可加载");
 
   assert.equal(await page.locator('use[href="#dog"]').count(), 0);
   assert.equal(await page.locator(".dog-art").evaluateAll(nodes => nodes.every(node => node instanceof HTMLImageElement && node.naturalWidth > 0)), true);
@@ -80,8 +81,9 @@ try {
   pass("伙伴角色在 L3 自动弹跳玩法使用自己的跳跃动作帧");
 
   assert.equal(await page.locator('[data-screen-id="GI-06"]').count(), 0);
-  assert.match(await page.locator(".launch-dogs .partner-dog").getAttribute("src"), /\/bingo\/idle\/idle-[1-4]\.png$/);
-  assert.match(await page.locator(".run-memory-dogs .partner-dog").getAttribute("src"), /\/bingo\/celebrate\/celebrate-[1-4]\.png$/);
+  assert.match(await page.locator(".launch-dogs .dog-art").first().getAttribute("src"), /\/bingo\/celebrate\/celebrate-[1-4]\.png$/);
+  assert.match(await page.locator(".launch-dogs .partner-dog").getAttribute("src"), /\/grey-puppy\/idle\/idle-[1-4]\.png$/);
+  assert.match(await page.locator(".run-memory-dogs .partner-dog").getAttribute("src"), /\/grey-puppy\/celebrate\/celebrate-[1-4]\.png$/);
   assert.deepEqual(errors, []);
   pass("已移除冗余按键确认层；开局与成绩页面显示真实伙伴待机/庆祝素材，且无脚本或资源错误");
 } finally {
@@ -89,4 +91,4 @@ try {
   await new Promise(resolve => server.close(resolve));
 }
 
-console.log("Two-character sprite targeted QA complete: 6/6 PASS");
+console.log("Five-character sprite targeted QA complete: 6/6 PASS");

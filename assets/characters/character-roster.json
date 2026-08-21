@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "runtimeActionContract": [
+    "idle",
+    "run",
+    "jump",
+    "hover",
+    "hurt",
+    "bump",
+    "celebrate"
+  ],
+  "framesPerAction": 4,
+  "sheet": {
+    "rows": 2,
+    "cols": 2,
+    "cellSize": 256,
+    "facing": "right",
+    "anchor": "feet",
+    "transparent": true
+  },
+  "characters": [
+    {
+      "id": "bluey",
+      "displayName": "布鲁伊",
+      "thumbnail": "bluey/idle/idle-1.png",
+      "assetRoot": "bluey",
+      "selectionReady": true,
+      "rightsStatus": "private-reference-only"
+    },
+    {
+      "id": "bingo",
+      "displayName": "宾果",
+      "thumbnail": "bingo/idle/idle-1.png",
+      "assetRoot": "bingo",
+      "selectionReady": true,
+      "rightsStatus": "private-reference-only"
+    },
+    {
+      "id": "grey-puppy",
+      "displayName": "麦麦",
+      "thumbnail": "grey-puppy/idle/idle-1.png",
+      "assetRoot": "grey-puppy",
+      "selectionReady": true,
+      "rightsStatus": "reference-derived-review-required"
+    },
+    {
+      "id": "blue-heeler-dad",
+      "displayName": "班底特",
+      "thumbnail": "blue-heeler-dad/idle/idle-1.png",
+      "assetRoot": "blue-heeler-dad",
+      "selectionReady": true,
+      "rightsStatus": "reference-derived-review-required"
+    },
+    {
+      "id": "garden-girl",
+      "displayName": "悠悠",
+      "thumbnail": "garden-girl/idle/idle-1.png",
+      "assetRoot": "garden-girl",
+      "selectionReady": true,
+      "rightsStatus": "reference-derived-review-required"
+    }
+  ]
+}
