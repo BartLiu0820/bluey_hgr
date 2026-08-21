@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "name": "blue-heeler-dad",
+  "processing": {
+    "cell_size": 256,
+    "fit_scale": 0.78,
+    "trim_border": 4,
+    "edge_clean_depth": 3,
+    "align": "feet",
+    "shared_scale": false,
+    "scale_strategy": "preserve",
+    "component_mode": "largest",
+    "component_padding": 0,
+    "min_component_area": 1,
+    "edge_touch_margin": 0
+  },
+  "output_origin": [
+    128.0,
+    228
+  ],
+  "reference": {
+    "target": "player",
+    "mode": "idle",
+    "rows": 2,
+    "cols": 2,
+    "body_scale_mean": 0.4979340857415423,
+    "body_scale_cv": 0.011212024895088863,
+    "anchor_y_mean": 0.9091276252019387
+  },
+  "qc": {
+    "max_body_scale_drift": 0.08
+  }
+}

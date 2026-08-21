@@ -34,7 +34,10 @@ async function pageAt(viewport = { width: 1280, height: 720 }) {
 
 async function state(page) { return page.evaluate(() => window.__mvpTest.getState()); }
 async function advance(page, ms) { return page.evaluate(value => window.__mvpTest.advance(value), ms); }
-async function startMode(page, mode = "keyboard_full") { return page.evaluate(value => window.__mvpTest.startWithMode(value), mode); }
+async function startMode(page, mode = "keyboard_full") {
+  await page.evaluate(value => window.__mvpTest.startWithMode(value), mode);
+  return page.evaluate(() => window.__mvpTest.chooseCharacter("bluey", true));
+}
 async function select(page, id) { return page.evaluate(value => window.__mvpTest.selectLevel(value), id); }
 async function emit(page, action) { return page.evaluate(value => window.__mvpTest.emit(value, "child_keyboard"), action); }
 async function track(page, frame) { return page.evaluate(value => window.__mvpTest.emitHandTrackingFrame(value), frame); }
@@ -78,9 +81,11 @@ try {
   assert.equal((await page.locator("body").innerText()).includes("去看看结果"), false);
   await page.evaluate(() => { window.__qaInputReadyCount = 0; window.addEventListener("input-ready", () => { window.__qaInputReadyCount += 1; }); window.__mvpTest.showScreen("GI-02"); window.__gesturePrototype.forceCameraReady(); });
   await page.locator("#start-practice").click();
-  assert.equal((await state(page)).screen, "LV-00");
+  assert.equal((await state(page)).screen, "CH-01");
   assert.equal(await page.evaluate(() => window.__qaInputReadyCount), 1);
-  pass("摄像头准备页继续按钮单次派发并直达玩法大厅");
+  await page.locator("#character-confirm").click();
+  assert.equal((await state(page)).screen, "LV-00");
+  pass("摄像头准备页继续按钮单次派发，人物确认后进入玩法大厅");
 
   let current = await startMode(page);
   assert.equal(current.screen, "LV-00");

@@ -1,0 +1,373 @@
+{
+  "target": "player",
+  "mode": "hurt",
+  "prompt": "",
+  "role": "",
+  "input": "assets/characters/garden-girl/hurt/raw-sheet.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 170,
+  "rows": 2,
+  "cols": 2,
+  "cell_size": 256,
+  "fit_scale": 0.78,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": false,
+  "scale_strategy": "preserve",
+  "component_mode": "largest",
+  "component_padding": 0,
+  "min_component_area": 1,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "hurt-1",
+    "hurt-2",
+    "hurt-3",
+    "hurt-4"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 75122,
+      "selected_component_bbox": [
+        173,
+        100,
+        514,
+        558
+      ],
+      "crop_bbox": [
+        173,
+        100,
+        514,
+        558
+      ],
+      "source_frame_size": [
+        619,
+        619
+      ],
+      "is_empty": false,
+      "subject_area": 75122,
+      "body_core_area": 71168,
+      "body_area_fraction": 0.1857391540370758,
+      "anchor_source": [
+        421.0,
+        530.0
+      ],
+      "source_edge_touch": false,
+      "output_edge_touch": false,
+      "edge_touch": false,
+      "output_size": [
+        110,
+        148
+      ],
+      "preserved_subject_size": [
+        110,
+        148
+      ],
+      "paste_position": [
+        48,
+        89
+      ],
+      "unclamped_paste_position": [
+        48,
+        89
+      ],
+      "paste_clamped": false,
+      "aligned_bbox": [
+        48,
+        89,
+        158,
+        237
+      ],
+      "scale_adjustment": 1.0,
+      "source_to_output_scale": 0.3225848142164782,
+      "bbox_scale_applied": false,
+      "scale_changed": false,
+      "anchor_target": [
+        128.0,
+        228
+      ],
+      "scale_strategy": "preserve",
+      "shared_center_x": 128.0,
+      "shared_feet_y": 228
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        627,
+        0,
+        1254,
+        627
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 60497,
+      "selected_component_bbox": [
+        181,
+        171,
+        395,
+        542
+      ],
+      "crop_bbox": [
+        181,
+        171,
+        395,
+        542
+      ],
+      "source_frame_size": [
+        619,
+        619
+      ],
+      "is_empty": false,
+      "subject_area": 60497,
+      "body_core_area": 60497,
+      "body_area_fraction": 0.15788924238114005,
+      "anchor_source": [
+        280.0,
+        524.0
+      ],
+      "source_edge_touch": false,
+      "output_edge_touch": false,
+      "edge_touch": false,
+      "output_size": [
+        69,
+        120
+      ],
+      "preserved_subject_size": [
+        69,
+        120
+      ],
+      "paste_position": [
+        96,
+        114
+      ],
+      "unclamped_paste_position": [
+        96,
+        114
+      ],
+      "paste_clamped": false,
+      "aligned_bbox": [
+        96,
+        114,
+        165,
+        234
+      ],
+      "scale_adjustment": 1.0,
+      "source_to_output_scale": 0.3225848142164782,
+      "bbox_scale_applied": false,
+      "scale_changed": false,
+      "anchor_target": [
+        128.0,
+        228
+      ],
+      "scale_strategy": "preserve",
+      "shared_center_x": 128.0,
+      "shared_feet_y": 228
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        627,
+        627,
+        1254
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 63084,
+      "selected_component_bbox": [
+        204,
+        171,
+        482,
+        529
+      ],
+      "crop_bbox": [
+        204,
+        171,
+        482,
+        529
+      ],
+      "source_frame_size": [
+        619,
+        619
+      ],
+      "is_empty": false,
+      "subject_area": 63084,
+      "body_core_area": 62597,
+      "body_area_fraction": 0.1633699671939472,
+      "anchor_source": [
+        372.0,
+        511.0
+      ],
+      "source_edge_touch": false,
+      "output_edge_touch": false,
+      "edge_touch": false,
+      "output_size": [
+        90,
+        115
+      ],
+      "preserved_subject_size": [
+        90,
+        115
+      ],
+      "paste_position": [
+        74,
+        118
+      ],
+      "unclamped_paste_position": [
+        74,
+        118
+      ],
+      "paste_clamped": false,
+      "aligned_bbox": [
+        74,
+        118,
+        164,
+        233
+      ],
+      "scale_adjustment": 1.0,
+      "source_to_output_scale": 0.3225848142164782,
+      "bbox_scale_applied": false,
+      "scale_changed": false,
+      "anchor_target": [
+        128.0,
+        228
+      ],
+      "scale_strategy": "preserve",
+      "shared_center_x": 128.0,
+      "shared_feet_y": 228
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        627,
+        627,
+        1254,
+        1254
+      ],
+      "component_mode": "largest",
+      "component_count": 2,
+      "selected_component_area": 62454,
+      "selected_component_bbox": [
+        169,
+        46,
+        364,
+        528
+      ],
+      "crop_bbox": [
+        169,
+        46,
+        364,
+        528
+      ],
+      "source_frame_size": [
+        619,
+        619
+      ],
+      "is_empty": false,
+      "subject_area": 62454,
+      "body_core_area": 62462,
+      "body_area_fraction": 0.16301763488455245,
+      "anchor_source": [
+        290.0,
+        510.0
+      ],
+      "source_edge_touch": false,
+      "output_edge_touch": false,
+      "edge_touch": false,
+      "output_size": [
+        63,
+        155
+      ],
+      "preserved_subject_size": [
+        63,
+        155
+      ],
+      "paste_position": [
+        89,
+        78
+      ],
+      "unclamped_paste_position": [
+        89,
+        78
+      ],
+      "paste_clamped": false,
+      "aligned_bbox": [
+        89,
+        78,
+        152,
+        233
+      ],
+      "scale_adjustment": 1.0,
+      "source_to_output_scale": 0.3225848142164782,
+      "bbox_scale_applied": false,
+      "scale_changed": false,
+      "anchor_target": [
+        128.0,
+        228
+      ],
+      "scale_strategy": "preserve",
+      "shared_center_x": 128.0,
+      "shared_feet_y": 228
+    }
+  ],
+  "edge_touch_frames": [],
+  "source_edge_touch_frames": [],
+  "output_edge_touch_frames": [],
+  "empty_frames": [],
+  "paste_clamped_frames": [],
+  "qc_summary": {
+    "frame_count": 4,
+    "valid_frame_count": 4,
+    "empty_count": 0,
+    "edge_touch_count": 0,
+    "paste_clamped_count": 0,
+    "body_scale_mean": 0.4090680954448847,
+    "output_subject_height_mean": 134.5,
+    "body_scale_cv": 0.03161863835631095,
+    "anchor_x_std": 0.09448569268894191,
+    "anchor_y_std": 0.013773338372358583,
+    "anchor_y_mean": 0.8380452342487884,
+    "profile_body_scale_drift": 0.05532870130924783
+  },
+  "output_origin": [
+    128.0,
+    228
+  ],
+  "scale_profile": {
+    "path": "assets/characters/garden-girl/character-scale-profile.json",
+    "version": 1,
+    "name": "garden-girl",
+    "reference_mode": "idle",
+    "processing_contract_applied": true
+  },
+  "qc_config": {
+    "strict_qc": true,
+    "reject_edge_touch": false,
+    "allow_source_edge_touch": false,
+    "max_body_scale_cv": null,
+    "max_anchor_y_std": null,
+    "max_profile_scale_drift": 0.3
+  }
+}

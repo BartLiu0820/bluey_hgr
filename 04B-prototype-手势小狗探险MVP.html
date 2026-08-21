@@ -377,6 +377,22 @@
         linear-gradient(180deg,rgba(228,247,249,.82),rgba(239,244,206,.9)),
         url('assets/maps/creek/far-loop-pair.png') center / auto 100% repeat-x;
     }
+    .character-select-shell { position:absolute; inset:0; display:grid; grid-template-rows:auto minmax(0,1fr) auto; gap:clamp(10px,2vh,22px); padding:clamp(16px,3vh,32px) clamp(18px,4vw,60px); overflow:hidden; }
+    .character-select-head { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:16px; padding:8px 14px; border:2px solid rgba(94,60,36,.18); border-bottom-width:5px; border-radius:20px; background:rgba(255,249,232,.88); }
+    .character-select-head h1 { margin:0; text-align:center; font-size:clamp(32px,4vw,54px); line-height:1; }
+    .character-select-head .parent-trigger { justify-self:end; }
+    .character-back { justify-self:start; width:clamp(52px,5vw,66px); aspect-ratio:1; padding:5px; border:0; background:transparent; cursor:pointer; }
+    .character-back img { width:100%; height:100%; object-fit:contain; }
+    .character-grid { min-height:0; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:clamp(8px,1.4vw,20px); align-items:stretch; }
+    .character-card { position:relative; min-width:0; min-height:0; display:grid; grid-template-rows:minmax(0,1fr) auto; place-items:center; gap:5px; padding:clamp(8px,1.2vw,16px) clamp(7px,1vw,13px) clamp(10px,1.5vh,16px); border:3px solid rgba(94,60,36,.24); border-bottom-width:7px; border-radius:clamp(20px,2.3vw,30px); background:rgba(255,249,232,.96); color:var(--ink); box-shadow:0 13px 28px rgba(23,58,82,.12); cursor:pointer; overflow:hidden; transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease; }
+    .character-card:hover, .character-card:focus-visible { transform:translateY(-3px); border-color:var(--blue); }
+    .character-card[aria-checked="true"] { transform:translateY(-5px); border-color:var(--blue); box-shadow:0 0 0 5px rgba(242,189,85,.72),0 15px 30px rgba(23,58,82,.18); }
+    .character-card[aria-checked="true"]::after { content:"✓"; position:absolute; top:8px; right:8px; width:clamp(28px,2.5vw,36px); aspect-ratio:1; display:grid; place-items:center; border:3px solid #fff9e8; border-radius:50%; background:var(--sun); color:var(--river-dark); font-size:clamp(18px,2vw,25px); font-weight:950; box-shadow:0 3px 0 var(--sun-dark); }
+    .character-card img { width:176%; max-width:none; height:100%; min-height:0; object-fit:contain; object-position:center; transform:translateY(-6%); filter:drop-shadow(0 10px 7px rgba(71,73,33,.16)); pointer-events:none; }
+    .character-card strong { position:relative; z-index:1; font-family:var(--font-display); font-size:clamp(21px,2.2vw,32px); line-height:1; white-space:nowrap; }
+    .character-select-actions { display:flex; justify-content:center; align-items:center; min-height:clamp(54px,7vh,76px); }
+    .character-confirm { min-width:clamp(180px,22vw,280px); min-height:clamp(52px,6.5vh,68px); padding:10px 28px; border:3px solid #fff1bd; border-bottom:8px solid var(--blue-dark); border-radius:24px; background:var(--blue); color:white; font-family:var(--font-display); font-size:clamp(24px,2.6vw,34px); font-weight:950; box-shadow:0 10px 20px rgba(23,58,82,.17); cursor:pointer; }
+    .character-confirm:hover, .character-confirm:focus-visible { transform:translateY(-3px); }
     .level-map-shell { position: absolute; inset: 0; display: grid; grid-template-rows: auto minmax(0,1fr) auto; gap: clamp(10px,2vh,22px); padding: clamp(16px,3vh,32px) clamp(18px,4vw,60px); overflow: hidden; }
     .level-map-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; }
     .level-map-title { text-align: center; }
@@ -434,7 +450,7 @@
     .cookie-icon::before, .cookie-icon::after { content:""; position:absolute; width:5px; height:5px; border-radius:50%; background:#a96100; }
     .cookie-icon::before { left:7px; top:7px; box-shadow:10px 2px #a96100,4px 11px #a96100; }
     .cookie-icon::after { display:none; }
-    .character-dot { width:32px; height:32px; border-radius:50%; background:#3c93d5; border:3px solid white; box-shadow:0 0 0 2px var(--blue-dark); }
+    .character-dot { width:32px; height:32px; border-radius:50%; background:#d9f1ff center 58% / 145% auto no-repeat; border:3px solid white; box-shadow:0 0 0 2px var(--blue-dark); }
     .character-dot.orange { background:#ee8b37; box-shadow:0 0 0 2px #8f4213; }
     #lv01 .game-hud { right:16px; }
     #lv01 .game-hud .hud-actions { grid-column:2; }
@@ -738,6 +754,12 @@
       .drawer-actions .btn { min-height: 46px; padding-block: 9px; }
       .confirm-box { margin-top: 8px; padding: 12px; }
       .confirm-box p { margin-bottom: 8px; }
+      .character-select-shell { padding-block:10px; gap:8px; }
+      .character-select-head { padding-block:5px; }
+      .character-card { padding:6px 7px 9px; border-radius:19px; }
+      .character-card strong { font-size:clamp(19px,2.1vw,27px); }
+      .character-select-actions { min-height:48px; }
+      .character-confirm { min-height:48px; border-bottom-width:6px; }
     }
 
     @media (max-width:760px) {
@@ -1505,6 +1527,24 @@
       </div>
     </section>
 
+    <section class="screen level-map-screen character-select-screen" id="ch01" data-screen-id="CH-01" aria-labelledby="ch01-title">
+      <div class="character-select-shell">
+        <header class="character-select-head">
+          <button class="character-back" id="character-back" aria-label="返回输入准备" title="返回输入准备"><img src="assets/ui/control-icons/back-control.png" alt="" aria-hidden="true"></button>
+          <h1 id="ch01-title">选一个伙伴</h1>
+          <button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口，也可按 P"><img src="assets/ui/control-icons/parent-control.png" alt="" aria-hidden="true"></button>
+        </header>
+        <div class="character-grid" id="character-grid" role="radiogroup" aria-label="选择人物">
+          <button class="character-card" type="button" role="radio" aria-checked="true" data-character-id="bluey"><img src="assets/characters/bluey/idle/idle-1.png" alt=""><strong>布鲁伊</strong></button>
+          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="bingo"><img src="assets/characters/bingo/idle/idle-1.png" alt=""><strong>宾果</strong></button>
+          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="grey-puppy"><img src="assets/characters/grey-puppy/idle/idle-1.png" alt=""><strong>麦麦</strong></button>
+          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="blue-heeler-dad"><img src="assets/characters/blue-heeler-dad/idle/idle-1.png" alt=""><strong>班底特</strong></button>
+          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="garden-girl"><img src="assets/characters/garden-girl/idle/idle-1.png" alt=""><strong>悠悠</strong></button>
+        </div>
+        <div class="character-select-actions"><button class="character-confirm" id="character-confirm" type="button">选好啦</button></div>
+      </div>
+    </section>
+
     <section class="screen level-map-screen" id="lv00" data-screen-id="LV-00" aria-labelledby="lv00-title">
       <div class="level-map-shell">
         <header class="level-map-head">
@@ -1750,6 +1790,9 @@
         keyDone: [false],
         inputReadyDispatched: false,
         inputProfile: null,
+        characterSelectionSource: 'GI-02',
+        pendingCharacterId: 'bluey',
+        selectedCharacterId: 'bluey',
         lastCommand: null,
         launchRemainingMs: 0,
         launchSource: null,
@@ -1894,25 +1937,23 @@
 
       loadAudioPreference();
       prepareAudio();
-      const BLUEY_SPRITES = Object.freeze({
-        idle: ['idle-1.png','idle-2.png','idle-3.png','idle-4.png'].map(file => `assets/characters/bluey/idle/${file}`),
-        run: ['run-1.png','run-2.png','run-3.png','run-4.png'].map(file => `assets/characters/bluey/run/${file}`),
-        jump: ['jump-1.png','jump-2.png','jump-3.png','jump-4.png'].map(file => `assets/characters/bluey/jump/${file}`),
-        hover: ['hover-1.png','hover-2.png','hover-3.png','hover-4.png'].map(file => `assets/characters/bluey/hover/${file}`),
-        bump: ['bump-1.png','bump-2.png','bump-3.png','bump-4.png'].map(file => `assets/characters/bluey/bump/${file}`),
-        hurt: ['hurt-1.png','hurt-2.png','hurt-3.png','hurt-4.png'].map(file => `assets/characters/bluey/hurt/${file}`),
-        celebrate: ['celebrate-1.png','celebrate-2.png','celebrate-3.png','celebrate-4.png'].map(file => `assets/characters/bluey/celebrate/${file}`)
-      });
-      const BINGO_SPRITES = Object.freeze({
-        idle: ['idle-1.png','idle-2.png','idle-3.png','idle-4.png'].map(file => `assets/characters/bingo/idle/${file}`),
-        run: ['run-1.png','run-2.png','run-3.png','run-4.png'].map(file => `assets/characters/bingo/run/${file}`),
-        jump: ['jump-1.png','jump-2.png','jump-3.png','jump-4.png'].map(file => `assets/characters/bingo/jump/${file}`),
-        hover: ['hover-1.png','hover-2.png','hover-3.png','hover-4.png'].map(file => `assets/characters/bingo/hover/${file}`),
-        bump: ['bump-1.png','bump-2.png','bump-3.png','bump-4.png'].map(file => `assets/characters/bingo/bump/${file}`),
-        hurt: ['hurt-1.png','hurt-2.png','hurt-3.png','hurt-4.png'].map(file => `assets/characters/bingo/hurt/${file}`),
-        celebrate: ['celebrate-1.png','celebrate-2.png','celebrate-3.png','celebrate-4.png'].map(file => `assets/characters/bingo/celebrate/${file}`)
-      });
-      const CHARACTER_SPRITES = Object.freeze({ bluey:BLUEY_SPRITES, bingo:BINGO_SPRITES });
+      const CHARACTER_DEFINITIONS = Object.freeze([
+        { id:'bluey', displayName:'布鲁伊', assetRoot:'bluey' },
+        { id:'bingo', displayName:'宾果', assetRoot:'bingo' },
+        { id:'grey-puppy', displayName:'麦麦', assetRoot:'grey-puppy' },
+        { id:'blue-heeler-dad', displayName:'班底特', assetRoot:'blue-heeler-dad' },
+        { id:'garden-girl', displayName:'悠悠', assetRoot:'garden-girl' }
+      ]);
+      const CHARACTER_BY_ID = Object.freeze(Object.fromEntries(CHARACTER_DEFINITIONS.map(character => [character.id, character])));
+      const CHARACTER_ACTIONS = Object.freeze(['idle','run','jump','hover','bump','hurt','celebrate']);
+      function buildCharacterSprites(character) {
+        return Object.freeze(Object.fromEntries(CHARACTER_ACTIONS.map(action => [
+          action,
+          Object.freeze([1,2,3,4].map(frame => `assets/characters/${character.assetRoot}/${action}/${action}-${frame}.png`))
+        ])));
+      }
+      const CHARACTER_SPRITES = Object.freeze(Object.fromEntries(CHARACTER_DEFINITIONS.map(character => [character.id, buildCharacterSprites(character)])));
+      const BLUEY_SPRITES = CHARACTER_SPRITES.bluey;
       const MAP_ASSETS = Object.freeze([
         'assets/maps/creek/far-loop-pair.png','assets/maps/creek/mid-loop-pair.png','assets/map-objects/creek-ground-strip/loop-pair.png','assets/map-objects/soft-crate/prop.png','assets/map-objects/creek-pit/prop.png','assets/map-objects/creek-log/prop.png','assets/map-objects/creek-double-crate/prop.png','assets/ui/milestones/creek/badge.png',
         'assets/maps/firefly/far-loop-pair.png','assets/maps/firefly/mid-loop-pair.png','assets/map-objects/firefly-leaf-barrier/prop.png','assets/map-objects/firefly-roundleaf-barrier/prop.png','assets/map-objects/firefly-reed-barrier/prop.png','assets/ui/milestones/firefly/badge.png',
@@ -2117,6 +2158,7 @@
       function announce(message) { $('#live-region').textContent = message; }
 
       function showScreen(screenId) {
+        const previousScreenId = state.screen;
         screens.forEach(screen => screen.classList.toggle('active', screen.dataset.screenId === screenId));
         state.screen = screenId;
         document.title = `${screenId}｜小尾巴探险队`;
@@ -2124,9 +2166,10 @@
         announce(`已进入 ${screenId}`);
         if (screenId === 'GI-05') {
           stopCamera();
-          resetKeyboardPractice();
+          if (previousScreenId !== 'CH-01') resetKeyboardPractice();
           requestAnimationFrame(() => $('#keyboard-panel').focus());
         }
+        if (screenId === 'CH-01') requestAnimationFrame(() => $(`.character-card[data-character-id="${state.pendingCharacterId}"]`)?.focus());
         syncBgm();
       }
       const goTo = showScreen;
@@ -2469,11 +2512,15 @@
       }
 
       function dispatchInputReady(profile) {
-        if (state.inputReadyDispatched || !profile) return;
+        if (!profile) return;
+        if (state.inputReadyDispatched) {
+          enterCharacterSelection(profile, state.screen);
+          return;
+        }
         state.inputReadyDispatched = true;
         state.inputProfile = profile;
         window.dispatchEvent(new CustomEvent('input-ready', { detail: profile }));
-        enterLevelMap(profile);
+        enterCharacterSelection(profile, state.screen);
       }
 
       function validProfile(profile) {
@@ -2482,7 +2529,98 @@
         return !(profile.mode === 'keyboard_full' && (profile.cameraStreamActive || state.cameraStream));
       }
 
+      function validCharacterId(characterId) {
+        return CHARACTER_BY_ID[characterId] ? characterId : 'bluey';
+      }
+
+      function partnerCharacterId(characterId = state.selectedCharacterId) {
+        const currentIndex = CHARACTER_DEFINITIONS.findIndex(character => character.id === validCharacterId(characterId));
+        return CHARACTER_DEFINITIONS[(Math.max(0, currentIndex) + 1) % CHARACTER_DEFINITIONS.length].id;
+      }
+
+      function renderCharacterSelection() {
+        state.pendingCharacterId = validCharacterId(state.pendingCharacterId);
+        $$('.character-card').forEach(card => {
+          const selected = card.dataset.characterId === state.pendingCharacterId;
+          const definition = CHARACTER_BY_ID[card.dataset.characterId];
+          card.setAttribute('aria-checked', selected ? 'true' : 'false');
+          card.tabIndex = selected ? 0 : -1;
+          card.setAttribute('aria-label', `${definition?.displayName || '人物'}${selected ? '，已选中' : ''}`);
+        });
+        const selectedName = CHARACTER_BY_ID[state.pendingCharacterId]?.displayName || '布鲁伊';
+        $('#character-confirm').setAttribute('aria-label', `选好啦，和${selectedName}出发`);
+      }
+
+      function selectCharacter(characterId, { focus = false, announceSelection = true } = {}) {
+        state.pendingCharacterId = validCharacterId(characterId);
+        renderCharacterSelection();
+        const card = $(`.character-card[data-character-id="${state.pendingCharacterId}"]`);
+        if (focus) card?.focus();
+        if (announceSelection) {
+          playSfx('sfx_character_switch');
+          announce(`已选择${CHARACTER_BY_ID[state.pendingCharacterId].displayName}`);
+        }
+        return state.pendingCharacterId;
+      }
+
+      function enterCharacterSelection(profile = state.inputProfile, sourceScreen = state.screen) {
+        if (!validProfile(profile)) {
+          announce('输入准备不完整，请重新准备');
+          showScreen(profile?.mode?.startsWith('camera_') ? 'GI-02' : 'GI-05');
+          return false;
+        }
+        state.inputProfile = profile;
+        state.characterSelectionSource = ['GI-02','GI-05'].includes(sourceScreen)
+          ? sourceScreen
+          : profile.mode.startsWith('camera_') ? 'GI-02' : 'GI-05';
+        state.pendingCharacterId = validCharacterId(state.selectedCharacterId || 'bluey');
+        renderCharacterSelection();
+        showScreen('CH-01');
+        announce('请选择一个伙伴');
+        return true;
+      }
+
+      function syncCharacterSurfaces(primaryCharacterId = state.selectedCharacterId) {
+        const primary = validCharacterId(primaryCharacterId);
+        const partner = partnerCharacterId(primary);
+        const levelPreviews = [
+          ['#level-card-L1 .dog-art','jump',2],
+          ['#level-card-L2 .dog-art','hover',1],
+          ['#level-card-L3 .dog-art','jump',1]
+        ];
+        levelPreviews.forEach(([selector, action, frame]) => {
+          const image = $(selector);
+          if (!image) return;
+          image.dataset.character = primary;
+          setSpriteFrame(image, action, frame);
+        });
+        const launchDogs = $$('.launch-dogs .dog-art');
+        if (launchDogs[0]) { launchDogs[0].dataset.character = primary; setSpriteFrame(launchDogs[0], 'celebrate', 0); }
+        if (launchDogs[1]) { launchDogs[1].dataset.character = partner; setSpriteFrame(launchDogs[1], 'idle', 0); }
+        const resultDogs = $$('.run-memory-dogs .dog-art');
+        if (resultDogs[0]) { resultDogs[0].dataset.character = primary; setSpriteFrame(resultDogs[0], 'celebrate', 0); }
+        if (resultDogs[1]) { resultDogs[1].dataset.character = partner; setSpriteFrame(resultDogs[1], 'celebrate', 2); }
+        const activeDog = $('#level-dog');
+        if (activeDog && !state.level) { activeDog.dataset.character = primary; setSpriteFrame(activeDog, 'idle', 0); }
+        const dot = $('#character-dot');
+        if (dot) {
+          dot.style.backgroundImage = `url('assets/characters/${primary}/idle/idle-1.png')`;
+          dot.setAttribute('aria-label', CHARACTER_BY_ID[primary].displayName);
+        }
+      }
+
+      function confirmCharacterSelection() {
+        if (state.screen !== 'CH-01') return false;
+        state.selectedCharacterId = validCharacterId(state.pendingCharacterId);
+        syncCharacterSurfaces(state.selectedCharacterId);
+        playSfx('sfx_mode_select');
+        window.dispatchEvent(new CustomEvent('character-selected', { detail: { characterId:state.selectedCharacterId, source:state.characterSelectionSource, timestamp:Date.now() } }));
+        announce(`和${CHARACTER_BY_ID[state.selectedCharacterId].displayName}一起出发`);
+        return enterLevelMap(state.inputProfile);
+      }
+
       function renderLevelMap() {
+        syncCharacterSurfaces(state.selectedCharacterId);
         LEVELS.forEach(level => {
           const card = $(`#level-card-${level.id}`);
           if (!card) return;
@@ -2526,7 +2664,7 @@
         const runtimeState = RUNTIMES[definition.runtimeType].createState(definition);
         return {
           levelRunId: `run-local-${Date.now()}-${Math.random().toString(16).slice(2, 7)}`,
-          levelId: definition.id, definition, state: 'ready', phase: 'intro', activePlayElapsedMs: 0, scoredElapsedMs: 0, tutorialElapsedMs: 0, currentSegment: 'S0', currentCharacterId: 'blue_dog',
+          levelId: definition.id, definition, state: 'ready', phase: 'intro', activePlayElapsedMs: 0, scoredElapsedMs: 0, tutorialElapsedMs: 0, currentSegment: 'S0', currentCharacterId: validCharacterId(state.selectedCharacterId),
           runtimeType: definition.runtimeType, firstInteractionAtMs: 0, score: 0, courage: 3, streak: 0, speedMultiplier: 1, bounceTempoMultiplier:1, worldSpeedPxPerSec: definition.baseWorldSpeed, distancePx: 0,
           progressMeters:0, milestoneTier:0, obstacleTier:0, endlessSegment:0, milestoneOverlayUntilMs:0, milestoneSpawnGuardUntilMs:0, lastMilestoneKey:'0:0',
           switchCompleted: false, collectedCount: 0, collisionCount: 0, mistakeCount: 0, parentAssistCount: 0,
@@ -2554,6 +2692,7 @@
         state.lastGameStablePose = null;
         state.currentLevelId = LEVEL_BY_ID[levelId] ? levelId : 'L1';
         state.level = createLevelRun(state.currentLevelId);
+        syncCharacterSurfaces(state.level.currentCharacterId);
         state.completionSummary = null;
         state.launchRemainingMs = -1;
         state.launchCountdownNumber = 0;
@@ -2564,7 +2703,7 @@
         $('#lv01-title').textContent = definition.name;
         const launchWorld = $('#launch-world');
         launchWorld.dataset.theme = definition.theme;
-        launchWorld.setAttribute('aria-label', `${definition.name}地图起点，蓝色小狗和伙伴正在等待出发`);
+        launchWorld.setAttribute('aria-label', `${definition.name}地图起点，${CHARACTER_BY_ID[state.level.currentCharacterId].displayName}和伙伴正在等待出发`);
         $('#launch-map-far').style.backgroundPosition = definition.runtimeType === 'auto_bounce_climb' ? '0 22%' : 'center 0';
         $('#launch-map-mid').style.backgroundPosition = definition.runtimeType === 'auto_bounce_climb' ? '0 18%' : 'center 0';
         $('#launch-map-ground').style.backgroundPosition = 'center bottom';
@@ -2842,7 +2981,7 @@
         if (command.action === 'SWITCH_CHARACTER') {
           playSfx('sfx_character_switch');
           run.switchCompleted = true;
-          run.currentCharacterId = run.currentCharacterId === 'blue_dog' ? 'orange_dog' : 'blue_dog';
+          run.currentCharacterId = partnerCharacterId(run.currentCharacterId);
           if (target) run.handledObstacles.add(target.id);
           run.target = null;
           state.gameGestureTargetId = null;
@@ -3483,9 +3622,13 @@
         const cameraMode = state.inputProfile?.mode?.startsWith('camera_');
         applyGameInputChrome(cameraMode);
         $('#input-chip').textContent = state.inputProfile?.mode?.startsWith('camera_') ? '摄像头 · 本机识别' : '按键';
-        const partnerActive = run.currentCharacterId === 'orange_dog';
-        $('#character-dot').classList.toggle('orange', partnerActive);
-        $('#level-dog').dataset.character = partnerActive ? 'bingo' : 'bluey';
+        const activeCharacterId = validCharacterId(run.currentCharacterId);
+        const activeCharacter = CHARACTER_BY_ID[activeCharacterId];
+        const characterDot = $('#character-dot');
+        characterDot.classList.remove('orange');
+        characterDot.style.backgroundImage = `url('assets/characters/${activeCharacterId}/idle/idle-1.png')`;
+        characterDot.setAttribute('aria-label', activeCharacter.displayName);
+        $('#level-dog').dataset.character = activeCharacterId;
         renderLevelDogSprite(run);
         dogWrap.classList.toggle('follow-mode', definition.runtimeType === 'hand_follow_dodge');
         dogWrap.classList.toggle('bounce-mode', definition.runtimeType === 'auto_bounce_climb');
@@ -3647,6 +3790,7 @@
         if (!state.completedLevelIds.includes(definition.id)) state.completedLevelIds.push(definition.id);
         saveLocalScores();
         const runSnapshotDataUrl = captureCurrentRunFrame(definition);
+        syncCharacterSurfaces(run.currentCharacterId);
         state.completionSummary = {
           levelRunId: run.levelRunId, levelId: definition.id, completed: true,
           activePlayElapsedMs: Math.round(run.activePlayElapsedMs), finalCharacterId: run.currentCharacterId,
@@ -3710,9 +3854,9 @@
         $('#switch-confirm').classList.remove('show');
         $('#drawer-stop').hidden = !state.cameraStream;
         $('#drawer-restart').hidden = !['LV-01', 'LV-02'].includes(state.screen);
-        $('#drawer-switch').hidden = state.inputProfile?.mode === 'keyboard_full' && ['LV-00', 'LV-01', 'LV-02', 'LV-03'].includes(state.screen);
+        $('#drawer-switch').hidden = state.inputProfile?.mode === 'keyboard_full' && ['CH-01', 'LV-00', 'LV-01', 'LV-02', 'LV-03'].includes(state.screen);
         $('#drawer-exit').textContent = ['LV-01', 'LV-02'].includes(state.screen) ? '结束本局' : '退出到家长设置';
-        $('#drawer-summary').textContent = state.screen === 'GI-02' ? '摄像头准备已暂停。关闭入口后继续确认小手位置。' : state.screen === 'GI-05' ? '按键准备已暂停。关闭入口后可以继续。' : state.screen === 'LV-02' && state.level ? `${state.level.definition.name}已安全暂停：当前 ${Math.round(state.level.score)} 分，还有 ${state.level.courage} 颗勇气心。` : state.screen === 'LV-01' ? '玩法说明已暂停，关闭入口后可以继续。' : state.screen === 'LV-00' ? '正在玩法大厅，三个玩法都可以直接选择。' : '当前流程已暂停。关闭入口后可以继续。';
+        $('#drawer-summary').textContent = state.screen === 'GI-02' ? '摄像头准备已暂停。关闭入口后继续确认小手位置。' : state.screen === 'GI-05' ? '按键准备已暂停。关闭入口后可以继续。' : state.screen === 'CH-01' ? '正在选择人物，关闭入口后可以继续。' : state.screen === 'LV-02' && state.level ? `${state.level.definition.name}已安全暂停：当前 ${Math.round(state.level.score)} 分，还有 ${state.level.courage} 颗勇气心。` : state.screen === 'LV-01' ? '玩法说明已暂停，关闭入口后可以继续。' : state.screen === 'LV-00' ? '正在玩法大厅，三个玩法都可以直接选择。' : '当前流程已暂停。关闭入口后可以继续。';
         $('#drawer-close').focus();
       }
 
@@ -3746,6 +3890,11 @@
         state.completionSummary = null;
         resetCameraSetup();
         state.inputReadyDispatched = false;
+        state.pendingCharacterId = 'bluey';
+        state.selectedCharacterId = 'bluey';
+        state.characterSelectionSource = 'GI-02';
+        renderCharacterSelection();
+        syncCharacterSurfaces('bluey');
         goTo('GI-01');
       }
 
@@ -3790,6 +3939,9 @@
       $$('.key-lamp').forEach(button => button.addEventListener('click', () => handleKeyAction('child_button', button.dataset.setupKey)));
       $('#start-keyboard-game').addEventListener('click', () => dispatchInputReady(state.inputProfile || buildKeyboardProfile()));
       $('#back-to-camera').addEventListener('click', () => goTo('GI-02'));
+      $$('.character-card').forEach(card => card.addEventListener('click', () => selectCharacter(card.dataset.characterId)));
+      $('#character-confirm').addEventListener('click', confirmCharacterSelection);
+      $('#character-back').addEventListener('click', () => showScreen(state.characterSelectionSource));
       $('#child-action').addEventListener('click', () => {
         const action = $('#child-action').dataset.action;
         if (action) emitStandardCommand(action, 'child_button');
@@ -3825,21 +3977,32 @@
 
       document.addEventListener('click', event => {
         const control = event.target.closest('button, a.btn');
-        if (!control || control.matches('.level-card,#child-action,.tracking-buttons button,#orange-avatar,#launch-start,#drawer-audio')) return;
+        if (!control || control.matches('.character-card,#character-confirm,.level-card,#child-action,.tracking-buttons button,#orange-avatar,#launch-start,#drawer-audio')) return;
         playSfx('sfx_ui_tap', .78);
       });
 
       document.addEventListener('keydown', event => {
         if (event.key === 'p' || event.key === 'P') {
-          if (!drawer.classList.contains('open') && ['GI-02', 'GI-05', 'LV-00', 'LV-01', 'LV-02', 'LV-03'].includes(state.screen)) { event.preventDefault(); openDrawer(document.activeElement); }
+          if (!drawer.classList.contains('open') && ['GI-02', 'GI-05', 'CH-01', 'LV-00', 'LV-01', 'LV-02', 'LV-03'].includes(state.screen)) { event.preventDefault(); openDrawer(document.activeElement); }
           return;
         }
         if (event.key === 'Escape') {
           if (drawer.classList.contains('open')) closeDrawer(true);
-          else if (['GI-02', 'GI-05', 'LV-00', 'LV-01', 'LV-02', 'LV-03'].includes(state.screen)) openDrawer(document.activeElement);
+          else if (['GI-02', 'GI-05', 'CH-01', 'LV-00', 'LV-01', 'LV-02', 'LV-03'].includes(state.screen)) openDrawer(document.activeElement);
           return;
         }
         if (drawer.classList.contains('open')) return;
+        if (state.screen === 'CH-01') {
+          if (event.key === 'Enter' && document.activeElement === $('#character-confirm')) return;
+          if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)) {
+            event.preventDefault();
+            const currentIndex = CHARACTER_DEFINITIONS.findIndex(character => character.id === state.pendingCharacterId);
+            const delta = event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1 : 1;
+            const nextIndex = (currentIndex + delta + CHARACTER_DEFINITIONS.length) % CHARACTER_DEFINITIONS.length;
+            selectCharacter(CHARACTER_DEFINITIONS[nextIndex].id, { focus:true });
+          }
+          return;
+        }
         if (state.screen === 'LV-02') {
           if (state.level?.definition?.runtimeType === 'hand_follow_dodge') {
             if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.key)) {
@@ -3918,6 +4081,9 @@
           keyDone: [...state.keyDone],
           inputReadyDispatched: state.inputReadyDispatched,
           inputProfile: state.inputProfile,
+          pendingCharacterId: state.pendingCharacterId,
+          selectedCharacterId: state.selectedCharacterId,
+          characterSelectionSource: state.characterSelectionSource,
           lastCommand: state.lastCommand,
           currentLevelId: state.currentLevelId,
           unlockedLevelIds: [...state.unlockedLevelIds],
@@ -4126,11 +4292,22 @@
           return window.__mvpTest.setProgressMeters(meters);
         },
         levels: () => LEVELS.map(level => ({ id: level.id, runtimeType: level.runtimeType, progressMetric:level.progressMetric, pixelsPerMeter:level.pixelsPerMeter, milestoneThresholds:[...level.milestoneThresholds], endlessStepMeters:level.endlessStepMeters, speedByTier:level.speedByTier ? [...level.speedByTier] : null, bounceTempoByTier:level.bounceTempoByTier ? [...level.bounceTempoByTier] : null, tutorialMs: level.tutorialMs, baseWorldSpeed: level.baseWorldSpeed, targetSpacingMs: level.targetSpacingMs, targetTemplates: level.targetTemplates.map(target => ({ ...target })) })),
-        setCharacter(characterId = 'blue_dog') {
+        chooseCharacter(characterId = 'bluey', confirm = false) {
+          selectCharacter(validCharacterId(characterId), { announceSelection:false });
+          if (confirm) confirmCharacterSelection();
+          return window.__gesturePrototype.getState();
+        },
+        characters: () => CHARACTER_DEFINITIONS.map(character => ({ ...character })),
+        setCharacter(characterId = 'bluey') {
+          const normalized = characterId === 'blue_dog' ? 'bluey' : characterId === 'orange_dog' ? 'bingo' : validCharacterId(characterId);
+          state.selectedCharacterId = normalized;
+          state.pendingCharacterId = normalized;
           if (state.level) {
-            state.level.currentCharacterId = characterId === 'orange_dog' ? 'orange_dog' : 'blue_dog';
+            state.level.currentCharacterId = normalized;
             renderLevel();
           }
+          renderCharacterSelection();
+          syncCharacterSurfaces(normalized);
           return window.__gesturePrototype.getState();
         },
         triggerCollision() { if (state.level) collide(state.level.target || { safeY: .5 }); return window.__gesturePrototype.getState(); },
