@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "updatedAt": "2026-08-21",
+  "policies": {
+    "runtime-required": {
+      "description": "Required by the playable HTML, runtime manifests, local fonts, audio, or gesture model.",
+      "patterns": [
+        "characters/character-roster.json",
+        "characters/*/*/*-[1-4].png",
+        "audio/**/*.mp3",
+        "fonts/**/*.woff2",
+        "models/*.task",
+        "maps/**/*-loop-pair.png",
+        "maps/*/background-preview.png",
+        "map-objects/*/prop.png",
+        "map-objects/*/loop-pair.png",
+        "ui/brand/little-tail-team-mark.png",
+        "ui/buttons/icon-[1-6].png",
+        "ui/buttons/medium/button-[1-6].png",
+        "ui/control-icons/*-control.png",
+        "ui/instruction-icons/*.png",
+        "ui/level-icons/*.png",
+        "ui/milestones/*/badge.png",
+        "ui/numbers/adventure-*.png",
+        "ui/panels/camera-prep-panel.png",
+        "ui/panels/paper-branch-panel.png"
+      ]
+    },
+    "authoring-source-keep": {
+      "description": "Not loaded by the game. Retained by user decision for regeneration, QC, provenance, or style continuity; exclude from production bundles.",
+      "patterns": [
+        "characters/*/*/raw-sheet*.png",
+        "characters/*/*/sheet-transparent.png",
+        "characters/*/*/animation.gif",
+        "characters/*/*/prompt-used.txt",
+        "characters/*/*/pipeline-meta.json",
+        "characters/*/character-scale-profile.json",
+        "characters/*/references/**",
+        "**/raw/**",
+        "**/*-magenta.png",
+        "**/*raw-sheet*.png",
+        "**/sheet-transparent.png",
+        "**/*.prompt.txt",
+        "**/pipeline-meta.json",
+        "maps/*/stage-reference.png"
+      ]
+    },
+    "license-review": {
+      "description": "Reference-derived character material. Public or commercial release requires rights review or replacement with original assets.",
+      "patterns": [
+        "characters/**"
+      ]
+    },
+    "generated-qa-ignore": {
+      "description": "Regenerable browser screenshots and local review captures; intentionally excluded from Git.",
+      "patterns": [
+        "../qa/**",
+        "../prototype-qa/**"
+      ]
+    }
+  }
+}

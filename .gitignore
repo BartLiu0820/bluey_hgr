@@ -5,6 +5,7 @@ node_modules/
 .playwright-browsers/
 prototype-qa/
 **/prototype-qa/
+qa/
 *.log
 *.tmp
 *.bak

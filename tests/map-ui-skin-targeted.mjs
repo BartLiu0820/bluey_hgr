@@ -158,7 +158,7 @@ try {
   pass("入口封面在三个紧凑目标视口保持单屏、按钮完整可见");
 
   assert.deepEqual(errors, []);
-  console.log("Map UI skin targeted QA complete: 7/7 PASS");
+  console.log("Map UI skin targeted QA complete: 6/6 PASS");
 } finally {
   await browser.close();
   await new Promise(resolve => server.close(resolve));

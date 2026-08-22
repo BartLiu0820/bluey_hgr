@@ -1,5 +1,7 @@
 # Character asset contract
 
+> 资产标识：整个角色目录同时受 `runtime-required`、`authoring-source-keep` 与 `license-review` 三类策略约束，机器可读规则见 `../asset-retention.json`。
+
 角色选择功能可以直接读取 `character-roster.json`。每个角色遵循同一目录和动作契约：
 
 ```text
@@ -7,6 +9,10 @@
 ```
 
 动作固定为 `idle`、`run`、`jump`、`hover`、`hurt`、`bump`、`celebrate`。每组同时保留 2×2 原始洋红底图、透明合图、四张 256×256 透明帧、GIF、生成提示与 QC 元数据。
+
+- `runtime-required`：`<action>-1.png` 至 `<action>-4.png` 和 `character-roster.json`，由游戏直接加载，不得作为冗余删除。
+- `authoring-source-keep`：`raw-sheet*.png`、`sheet-transparent.png`、`animation.gif`、`prompt-used.txt`、`pipeline-meta.json`、`character-scale-profile.json` 与 `references/`；当前不参与游戏运行，但按用户确认暂时保留，用于重新拆帧、质量追溯和动作再生成。
+- `license-review`：全部参考衍生角色文件；保留不代表取得公开发行或商业使用授权。
 
 - 角色卡缩略图：使用清单中的 `thumbnail`。
 - 游戏内动作：按 `runtimeActionContract` 拼接路径，加载失败时回退到同角色 `idle/idle-1.png`。

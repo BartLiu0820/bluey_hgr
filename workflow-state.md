@@ -1,6 +1,6 @@
 # Workflow State
 
-> 更新日期：2026-08-17
+> 更新日期：2026-08-21
 
 ## Project
 
@@ -20,14 +20,14 @@
 |---|---|---|---|
 | Phase 1 产品调研判断 | `01-research.md` | CONFIRMED | `Careful Go`；三运行时、双输入通道、web-only 与低挫败边界已确认 |
 | Phase 1A 竞品页面体验 | `01A-competitor-page-experience.md` | CONFIRMED | Nex 直接跟手、Doodle Jump 自动弹跳落台与 Flappy/涂色边界已确认 |
-| Phase 2 产品架构 | `02-architecture.html` | CONFIRMED | 4 层 17 模块、共享服务 + 三独立 runtime + 拳掌/掌心 XY 输入已确认 |
-| Gate 页面形态决策 | 写入 `02` 或 `03` | CONFIRMED | 输入准备 → 三玩法大厅 → 玩法内教学 → 全屏游戏画布 → 单玩法成绩卡已确认 |
-| Phase 3 功能细节 | `03-feature-手势输入闭环.md` | CONFIRMED | Gesture Lab 拳掌循环 + PoseTransitionEvent/HandTrackingFrame 双通道已确认 |
+| Phase 2 产品架构 | `02-architecture.html` | CONFIRMED | 4 层 18 模块（含 CH-01）、共享服务 + 三独立 runtime + 拳掌/掌心 XY 输入已确认 |
+| Gate 页面形态决策 | 写入 `02` 或 `03` | CONFIRMED | 输入准备 → CH-01 五角色选择 → 三玩法大厅 → 玩法内教学 → 全屏游戏画布 → 单玩法成绩卡已确认 |
+| Phase 3 功能细节 | `03-feature-手势输入闭环.md` | CONFIRMED | 输入就绪与 CH-01 衔接 + PoseTransitionEvent/HandTrackingFrame 双通道已确认 |
 | Phase 4A 原型规格 | `04A-prototype-spec-手势输入闭环.md` | CONFIRMED | 摄像头/键盘就绪后统一进入 CH-01 五角色选择、双通道 InputProfile、web-only 五视口与 QA 策略已同步 |
 | Phase 4B HTML 主干 Demo | `04B-prototype-手势输入闭环.html` | CONFIRMED | 历史 6 屏输入 Demo；当前可试玩源真相已由集成式 MVP 的真实识别实现取代 |
 | Phase 3 核心关卡循环 | `03-feature-核心关卡循环.md` | CONFIRMED | 三玩法默认可选、玩法内安全教学、温和无限递进、3 颗勇气心、设备内分数/Top 5 已同步 |
 | Phase 4A 核心关卡循环 | `04A-prototype-spec-核心关卡循环.md` | CONFIRMED | CH-01 五角色状态、玩法大厅、三种独立教学/运行态、L1 空间碰撞与本地成绩页已同步 |
-| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | PENDING_PM | CH-01 五角色选择与跨玩法状态已接入；L1 地面/碰撞/跳跃精修保持。角色选择 6/6、五角色动作 6/6、L1 物理 4/4、scored loop 9/9 PASS，等待 PM 试玩确认 |
+| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | PENDING_PM | CH-01 五角色选择与跨玩法状态已接入；角色选择 6/6、五角色动作 6/6、scored loop 9/9 PASS。L1 独立 swept 专项历史记录为 4/4，但 2026-08-21 复跑存在跨视口不稳定，等待修复测试可靠性并由 PM 试玩确认 |
 | Phase 4C HTML 状态扩展 | `04C-prototype-[名称].html` | OPTIONAL | PM 确认 04B 后按需触发；默认 `QA-LIGHT` |
 | Phase 05A AI 仿真用研 | `05A-ai-persona-prototype-review-[名称].md` + `05A-ai-persona-findings-[名称].json` | TODO | 04B 后按多个 persona 心智收集候选问题 |
 | Phase 05B PM 仿真问题裁决 | `05B-pm-simulation-decision-[名称].md` | TODO | PM accept 的 finding 才进入 Change Router |
@@ -41,13 +41,13 @@
 | Phase 1 产品调研判断 | `01-research.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 用户确认并列玩法、web-only、本地 Top 5 与成熟平台弹跳方向 | 已传播至 01A→04B |
 | Phase 1A 竞品页面体验 | `01A-competitor-page-experience.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | Doodle Jump 弹跳落台心智、Nex 直接跟手与低挫败边界已确认 | 已传播至 02 |
 | Phase 2 产品架构 | `02-architecture.html` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 共享 Session/Safety/Score/Coach + 三独立 runtime 已确认 | 已传播至 03 |
-| Gate 页面形态决策 | 写入 `02` 或 `03` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 输入准备、三玩法大厅、玩法内安全教学、全屏横版画布与双列成绩卡已确认 | 已传播至 03/04A/04B |
+| Gate 页面形态决策 | 写入 `02` 或 `03` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 输入准备、CH-01 五角色选择、三玩法大厅、玩法内安全教学、全屏横版画布与双列成绩卡已确认 | 已传播至 03/04A/04B |
 | Phase 3 手势输入闭环 | `03-feature-手势输入闭环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 全局只确认输入；拳掌边沿与分类无关的掌心 X/Y 位置流在玩法内消费 | 已传播至 04A/04B |
 | Phase 4A 手势输入闭环 | `04A-prototype-spec-手势输入闭环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 输入准备 CTA、CH-01 五角色衔接、三 capability InputProfile 与玩法内教学边界已确认 | 已传播至 04B |
 | Phase 4B HTML 主干 Demo | `04B-prototype-手势输入闭环.html` | confirmed | `reviews/phase-4b-gesture-input-review.html` | 历史 6 屏输入 Demo；其演示适配器不再代表当前集成式实现 | 当前实现以集成式 MVP 为准 |
 | Phase 3 核心关卡循环 | `03-feature-核心关卡循环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 三玩法默认可选、L2 完整离场、L3 自动弹跳落台、温和递进与本地分数已确认 | 已传播至 04A |
 | Phase 4A 核心关卡循环 | `04A-prototype-spec-核心关卡循环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | CH-01 五角色会话状态、玩法大厅、三类运行态、双列成绩卡与成熟平台玩法已确认 | 已传播至 04B |
-| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | pending_pm | `reviews/phase-4b-mvp-review.html` | 五角色选择与跨玩法状态完成；L1 纵深接触带、swept hitbox、速度耦合弹道、指示图、HUD 与双字体保持；角色 6/6 + 动作 6/6 + L1 4/4 + scored loop 9/9 PASS | PM 试玩确认五角色选择直观性、角色在三玩法中的一致性，以及既有 L1 手感后确认 Phase 4B |
+| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | pending_pm | `reviews/phase-4b-mvp-review.html` | 五角色选择与跨玩法状态完成；角色 6/6 + 动作 6/6 + scored loop 9/9 PASS；L1 独立 swept 专项复跑存在跨视口不稳定 | 先修复/稳定 L1 专项，再由 PM 试玩确认五角色选择直观性、角色跨玩法一致性和既有 L1 手感 |
 | Phase 4C HTML 状态扩展（可选）| `04C-prototype-[名称].html` | missing | missing | 待确认 extension states 是否完整、inspector 是否与 04B 一致 | Phase 4B gate confirmed 后按需触发 |
 | Phase 05A AI 仿真用研 | `05A-ai-persona-prototype-review-[名称].md` | missing | missing | 待确认 persona 来源、候选问题、严重度、信心和 route hint | Phase 4B gate confirmed 后推进 |
 | Phase 05B PM 仿真问题裁决 | `05B-pm-simulation-decision-[名称].md` | missing | missing | 待确认 accept / reject / defer / needs_more_context 裁决 | accept finding 进入 Change Router |
@@ -70,6 +70,8 @@
 
 | Change ID | 用户请求 | 路由层级 | 最早修正点 | PM 确认状态 | 执行状态 |
 |---|---|---|---|---|---|
+| CR-20260821-current-doc-sync | 将当前文档中滞后的直达大厅、双角色、L2 单轴按键、按时加速和旧 QA 表述同步到五角色集成式 MVP | L4 调研文档一致性修复（下游含 L3/L2/L0 审查与交付文档） | `01-research.md` / `01A-competitor-page-experience.md` | confirmed（用户明确要求先更新全部滞后文档部分） | verified：01/01A→02→03 与当前交付/Phase 4B Review 已同步；架构 4 层 18 模块、Review 8 决策/20 材料，JSON、旧口径扫描、diff、workflow gates 与环境检查通过；历史记录保持原貌 |
+| CR-20260821-repository-redundancy-cleanup | 清理本地缓存、可再生成 QA 截图与 L1 旧版参考图；保留生成源并增加用途标识 | L0 仓库维护层 | `.gitignore`、`qa/`、`prototype-qa/`、`reviews/l1-reference-*`、`assets/` 资产说明 | confirmed（用户逐项同意 1/2，要求 3 暂时保留并标识） | verified：约释放 94 MiB；生成源保留并标识，旧图引用、JSON、Git diff 与 workflow gates 校验通过 |
 | CR-20260817-l1-obstacle-depth-anchor | L1 障碍物位置偏低；逐组件审查软木箱、原木、双层箱与坑洞参考图 | L0 实现层（先 Review 图，确认后再改 HTML/QA） | `04B-prototype-手势小狗探险MVP.html` 各障碍可见底座/近岸接缝 | pending（等待确认 04-v2 至 07-v2） | routed：四张上移参考图已生成；未改原型 |
 | CR-20260817-l1-visible-foot-depth-anchor | L1 人物鞋底与绿色草边轻微交叠，完整脚型可见；先审参考图 | L0 实现层（先 Review 图，确认后再改 HTML/QA） | `04B-prototype-手势小狗探险MVP.html` 可见 sprite 锚点/草边遮挡 | pending（等待确认 02-v3 / 03-v4） | routed：已将遮挡从 14–20px 收回至 4–6px；未改原型 |
 | CR-20260817-initial-character-selection | 输入确认后新增人物选择环节，可选布鲁伊、宾果、麦麦、班底特、悠悠 | L2 功能层（下游含 L1/L0/角色资产） | `03-feature-核心关卡循环.md` | confirmed（用户明确指定入口与五名角色） | verified：03→两份04A→roster→04B→QA-TARGETED；角色选择 6/6、动作 6/6、L1 4/4、scored loop 9/9 PASS |

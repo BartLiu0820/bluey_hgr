@@ -2,16 +2,17 @@
   "phase": "Phase 4B 游戏体验精修",
   "artifact": "04B-prototype-手势小狗探险MVP.html",
   "status": "pending_pm",
-  "updated_at": "2026-08-15",
+  "updated_at": "2026-08-21",
   "summary": {
     "key_decisions": [
       "从初始界面到成绩页，儿童常显层只保留一个短标题、一个当前动作短句和一个主 CTA；完整隐私、错误恢复与技术信息保留在家长/折叠/无障碍层",
-      "输入准备只确认摄像头或按键可用，主 CTA 为“开始游戏”；三个玩法的操作教学分别位于各自安全段",
+      "输入准备只确认摄像头或按键可用；摄像头“继续”和按键“开始游戏”统一进入 CH-01；三个玩法的操作教学分别位于各自安全段",
+      "CH-01 提供布鲁伊、宾果、麦麦、班底特、悠悠五张同权重角色卡；“选好啦”提交 selectedCharacterId，并贯穿大厅、三玩法、救援、重玩与成绩页",
       "溪边跳跳、萤火虫躲躲、树梢蹦蹦首次进入即全部可选，不再采用完成上一关后解锁的顺序关卡",
-      "三个玩法均进入温和无限计分：每 20 秒速度 +0.1×、最高 1.6×，3 颗勇气心用完结束本局",
+      "三个玩法均进入温和无限计分：L1/L2 按行进米数、L3 按爬升米数跨里程碑升档；L1/L2 最高 1.6×、L3 弹跳节奏最高 1.35×，3 颗勇气心用完结束本局",
       "成绩按玩法保存当前设备个人最好与竖向降序 Top 5；左侧当局单帧只在当前页面内存中短暂存在，本轮不引入账号、昵称、联网榜、画面保存/上传或跨设备同步",
       "L1 角色脚底与障碍底边进入同一地面纵深带；速度提升时起跳速度/重力成对温和调整；人工内缩 hitbox 与 previous/current swept interval 让肉眼接触、成功和扣心一致",
-      "L1/L2 障碍判定后进入离场队列并继续向左完整离场；普通命中播放双角色新 bump 状态；L3 采用真实世界高度/重力、下降落台再弹、上方阈值镜头追随与掌心 X 横向控制",
+      "L1/L2 障碍判定后进入离场队列并继续向左完整离场；普通命中播放当前角色的 bump 状态；L3 采用真实世界高度/重力、下降落台再弹、上方阈值镜头追随与掌心 X 横向控制",
       "三关使用低干扰远景/中景分层地图；L1 额外提供可正反向无缝横向循环的地面，障碍、树篱、踏板与安全云均为独立结构物件",
       "玩法大厅预览、玩法出发封面和成绩页复用当前玩法地图；地图外界面统一为暖纸张冒险手册风格；L1 水坑使用独立透明物件且碰撞仍来自运行时几何",
       "输入/大厅与三玩法使用 4 条 18 秒丰富欢快循环 BGM；14 个状态边沿音效覆盖关键反馈，家长总开关、后台/暂停停播与静默降级控制儿童声音环境",
@@ -27,8 +28,9 @@
       "不把设备内 Top 5 扩张为儿童账号、昵称、公开或全球排行榜"
     ],
     "next_stage_conditions": [
-      "从初始界面走摄像头与按键两条路径，确认新菜单背景/按钮、顶部唯一信息面板和当局留念没有突破儿童文字预算或隐私边界",
-      "PM 试玩并确认输入准备 → 玩法大厅 → 玩法内教学 → 重复挑战的产品心智成立",
+      "从初始界面走摄像头与按键两条路径，确认都进入同一 CH-01，五卡在低高度视口仍易点且选中反馈清楚",
+      "PM 试玩并确认输入准备 → 五角色选择 → 玩法大厅 → 玩法内教学 → 重复挑战的产品心智成立",
+      "任选一名非默认角色进入 L1/L2/L3，确认大厅预览、当前角色动作、救援和成绩页保持一致",
       "PM 试玩 L1/L2 碰撞动作与障碍完整离场、L3 连续攀升/镜头追随，确认空间连续性和成熟玩法心智成为基线",
       "PM 确认三关地图可区分、L1 长时间循环无明显接缝，且背景不会压过角色和可交互物件",
       "PM 确认玩法大厅 → 出发封面 → 运行态 → 成绩页的地图/UI 连贯，且 L1 新水坑清晰可读",
@@ -50,7 +52,11 @@
     { "title": "分层地图专项测试", "file": "tests/layered-maps-targeted.mjs" },
     { "title": "地图一致性 UI 专项测试", "file": "tests/map-ui-skin-targeted.mjs" },
     { "title": "菜单背景资产清单", "file": "assets/maps/menu/menu-map-manifest.json" },
-    { "title": "双角色碰撞动作", "file": "assets/characters/bluey/bump/pipeline-meta.json" },
+    { "title": "五角色资产清单", "file": "assets/characters/character-roster.json" },
+    { "title": "五角色选择专项", "file": "tests/character-selection-targeted.mjs" },
+    { "title": "五角色动作专项", "file": "tests/bluey-sprite-targeted.mjs" },
+    { "title": "测试适用范围与历史标识", "file": "tests/README.md" },
+    { "title": "角色碰撞动作 QC 示例", "file": "assets/characters/bluey/bump/pipeline-meta.json" },
     { "title": "三档按钮资产清单", "file": "assets/ui/buttons/button-family-manifest.json" },
     { "title": "游戏音频资产清单", "file": "assets/audio/audio-manifest.json" },
     { "title": "游戏音频静态检查", "file": "scripts/check-game-audio.mjs" },
@@ -66,9 +72,11 @@
       "description": "玩法大厅、三种运行时、障碍离场、本地成绩与五个关键视口均有独立检查。",
       "items": [
         { "label": "儿童少文字层级", "value": "QA-LIGHT", "note": "GI-01→LV-03 常显文字已精简；完整家长/错误/无障碍信息保留" },
+        { "label": "五角色选择", "value": "6 / 6", "note": "五卡单屏、方向键单选、双输入入口与跨玩法 selectedCharacterId 保持" },
+        { "label": "五角色动作", "value": "6 / 6", "note": "35 组/140 帧加载，L1/L2/L3、受挫、开局与成绩状态映射" },
         { "label": "玩法循环专项", "value": "9 / 9", "note": "入口、大厅、L1、L2 离场、L3 落台、成绩与布局" },
-        { "label": "L1 物理专项", "value": "4 / 4", "note": "三视口地面纵深、提前判碰、跨帧漏碰与 1.0×–1.6× 跳跃耦合" },
-        { "label": "地图一致性 UI", "value": "7 / 7", "note": "三档生成按钮本体、菜单背景、大厅预览、三主题封面、新水坑、成绩页与紧凑视口" },
+        { "label": "L1 物理专项", "value": "待稳定", "note": "历史 4/4；2026-08-21 独立复跑在不同视口出现 swept 用例不稳定，完整 scored loop 仍为 9/9" },
+        { "label": "地图一致性 UI", "value": "6 / 6", "note": "三档生成按钮本体、菜单背景与大厅预览、三主题封面、新水坑、成绩页及紧凑视口" },
         { "label": "分层地图专项", "value": "6 / 6", "note": "12 资源加载、L1 正反循环、L2 树篱、L3 踏板/安全云" },
         { "label": "本地音频资产", "value": "18 / 18", "note": "4 条 18 秒新 BGM、14 SFX、MP3/HTML 映射/JS 语法/secret 检查" },
         { "label": "体验精修", "value": "11 / 11", "note": "落地、离场、HUD、文案、榜单、留念、首屏、美术、BGM 与 L2/L3 回归" },
@@ -84,7 +92,7 @@
       "columns": ["玩法", "输入", "内部递进", "温和恢复"],
       "rows": [
         { "label": "L1 溪边跳跳", "values": ["PoseTransitionEvent · 拳→掌", "同 worldSpeed；速度耦合弹道；swept hitbox", "掉坑扣心、伙伴托回、短暂无敌"] },
-        { "label": "L2 萤火虫躲躲", "values": ["HandTrackingFrame.palmCenterY", "EMA/死区/限速；障碍完整穿屏", "短丢手保持；碰撞弹开并显示护盾"] },
+        { "label": "L2 萤火虫躲躲", "values": ["HandTrackingFrame.palmCenterX/Y", "双轴 EMA/死区/限速；障碍完整穿屏", "短丢手保持；碰撞弹开并显示护盾"] },
         { "label": "L3 树梢蹦蹦", "values": ["HandTrackingFrame.palmCenterX", "下降落台再弹；上方阈值镜头追随；动态高处平台", "跌出镜头下沿由安全云托回；失误扣心"] }
       ]
     },
@@ -93,7 +101,8 @@
       "title": "自然产品主干",
       "steps": [
         { "label": "家长设置", "status": "done", "detail": "隐私、摄像头或按键" },
-        { "label": "输入准备", "status": "done", "detail": "看见小手后直接开始游戏" },
+        { "label": "输入准备", "status": "done", "detail": "摄像头“继续”或按键“开始游戏”" },
+        { "label": "人物选择", "status": "done", "detail": "CH-01 五选一并提交本次会话角色" },
         { "label": "玩法大厅", "status": "done", "detail": "三个玩法首次全部可选" },
         { "label": "玩法内挑战", "status": "done", "detail": "安全教学、逐渐加速、勇气心与分数" },
         { "label": "Phase 4B Gate", "status": "pending_pm", "detail": "11 项精修与 QA-TARGETED 已完成，等待 PM 三关试玩确认" }
@@ -123,14 +132,25 @@
     },
     {
       "question_id": "Q-04B-HUB-001",
-      "question": "是否确认“输入准备 → 三玩法大厅 → 玩法内教学 → 重复挑战”的新主链路？",
+      "question": "是否确认“输入准备 → 五角色选择 → 三玩法大厅 → 玩法内教学 → 重复挑战”的新主链路？",
       "why_it_matters": "这决定产品是顺序闯关，还是先按兴趣选择玩法并在玩法内部成长；本轮用户已经明确选择后者。",
-      "recommended_decision": "建议确认：三个玩法首次均可点击，输入准备不再提前教授某一玩法，独立启动层会展示对应操作。",
-      "options": ["确认新主链路", "调整玩法大厅信息", "调整玩法内教学"],
-      "source_files": ["04B-prototype-手势小狗探险MVP.html", "03-feature-核心关卡循环.md", "tests/mode-hub-score-loop-targeted.mjs"],
-      "evidence_refs": ["mode hub selectable 3/3", "per-mode instruction PASS", "CTA semantic PASS"],
-      "downstream_impact": ["真实儿童首选玩法观察", "后续玩法扩展", "教学时机"],
+      "recommended_decision": "建议确认：摄像头与按键都先进入同一 CH-01，确认角色后三个玩法首次均可点击，独立启动层再展示对应操作。",
+      "options": ["确认新主链路", "调整人物选择", "调整玩法大厅或玩法内教学"],
+      "source_files": ["04B-prototype-手势小狗探险MVP.html", "03-feature-核心关卡循环.md", "tests/character-selection-targeted.mjs", "tests/mode-hub-score-loop-targeted.mjs"],
+      "evidence_refs": ["character selection 6/6 PASS", "mode hub selectable 3/3", "per-mode instruction PASS", "CTA semantic PASS"],
+      "downstream_impact": ["角色首次理解", "真实儿童首选玩法观察", "后续玩法扩展", "教学时机"],
       "route_hint": "L0–L3"
+    },
+    {
+      "question_id": "Q-04B-CHARACTER-001A",
+      "question": "五名角色是否容易选择，并能在大厅、三玩法、救援和成绩页中保持一致？",
+      "why_it_matters": "角色是孩子进入游戏的第一项自主选择；选中反馈不清或跨页面换回默认角色会立即破坏控制感和角色认同。",
+      "recommended_decision": "建议确认当前基线：五卡同权重、默认聚焦但不自动提交；“选好啦”后 selectedCharacterId 在本次会话持续，刷新或新会话才回到布鲁伊候选。",
+      "options": ["确认五角色基线", "调整卡片辨识度或选中反馈", "调整角色跨页面表现"],
+      "source_files": ["04B-prototype-手势小狗探险MVP.html", "assets/characters/character-roster.json", "tests/character-selection-targeted.mjs", "tests/bluey-sprite-targeted.mjs"],
+      "evidence_refs": ["character selection 6/6 PASS", "five-character sprite 6/6 PASS", "35 groups / 140 frames loaded"],
+      "downstream_impact": ["CH-01 首次理解", "角色跨玩法一致性", "真实儿童偏好观察", "公开发布授权审查"],
+      "route_hint": "L0–L2"
     },
     {
       "question_id": "Q-04B-SCORE-002",
@@ -150,7 +170,7 @@
       "recommended_decision": "建议确认当前基线：角色和障碍底边位于同一纵深接触带；碰撞在人工内缩主体 hitbox 首次真实接触时发生，swept interval 防止跨帧漏碰；1.0×–1.6× 速度档成对调整起跳速度与重力，腾空和提示窗口保持稳定。",
       "options": ["确认当前手感", "调整地面纵深位置", "调整 hitbox 或速度—跳跃曲线"],
       "source_files": ["04B-prototype-手势小狗探险MVP.html", "04A-prototype-spec-核心关卡循环.md", "tests/l1-ground-collision-jump-physics-targeted.mjs", "tests/mode-hub-score-loop-targeted.mjs"],
-      "evidence_refs": ["L1 physics targeted 4/4 PASS", "three viewport ground anchor PASS", "pre-contact/swept collision PASS", "scored loop 9/9 PASS"],
+      "evidence_refs": ["historical L1 physics targeted 4/4", "2026-08-21 standalone swept rerun unstable across viewports", "scored loop 9/9 PASS"],
       "downstream_impact": ["L1 因果可理解性", "逐渐加速参数", "真实试玩手感"],
       "route_hint": "L0"
     },
@@ -191,14 +211,16 @@
   "risks": [
     "少文字不能变成无提示：当前动作、实时米数/里程碑、错误恢复和无障碍名称必须继续保留；真实儿童理解仍需陪同试玩确认",
     "自动化不能替代真实 5 岁儿童在家庭环境中的准确率、理解和疲劳验证",
+    "五角色选择与 35 组/140 帧动作已通过自动化，但五卡辨识度、偏好和跨玩法角色认同仍需真实儿童观察；全部参考衍生角色在公开/商业发布前必须完成授权审查或替换",
     "生成式背景、地图一致性 UI 与新水坑已完成静态降噪和多视口截图审阅，但真实儿童是否被局部装饰分散注意力仍需陪同试玩观察",
-    "L1 自动化已覆盖地面锚点、碰撞边沿和速度耦合曲线，但 hitbox 宽容度与手势反应延迟仍需真实儿童试玩校准；L2 跟手参数与 L3 平台宽度/横移灵敏度同样需要观察",
+    "L1 完整 scored loop 仍为 9/9，但独立 swept 专项在 2026-08-21 复跑时跨视口不稳定；需要先区分测试时序问题与实际碰撞回归，再继续把 hitbox 宽容度作为 PM 手感基线",
     "生成音频已完成格式与映射检查，但音量舒适度、循环接缝和儿童惊吓反应仍需人工试听与真实儿童陪同观察",
     "设备内 Top 5 不区分家庭成员；多人档案、清榜入口和跨设备同步不在本轮",
     "本轮 Target Surface 仍是 web-only 笔记本；移动 Web 不在本 Gate 范围"
   ],
   "next_actions": [
-    "等待 PM 试玩确认 L1 地面纵深、肉眼接触与判定一致，且基础/最高速度的跳跃节奏适合 5 岁儿童",
+    "先稳定 L1 独立 swept 专项，确认测试时序或实现原因，再由 PM 试玩确认地面纵深、肉眼接触与判定一致",
+    "从摄像头和按键两条路径进入 CH-01，依次选择五名角色；任选非默认角色进入三玩法并检查救援与成绩页一致性",
     "等待 PM 确认初始背景/按钮、结果页当局留念/竖向榜单，以及大厅/三玩法新 BGM 与家长声音开关",
     "确认后进行一次家长陪同真实儿童试玩",
     "新问题继续经 Change Router 回到对应 L0–L4"

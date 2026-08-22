@@ -19,6 +19,40 @@
 
 ## Change Records
 
+## CR-20260821-current-doc-sync
+
+- 日期：2026-08-21
+- 用户请求：把当前项目中所有滞后的文档部分先更新到最新实现。
+- 路由层级：L4 调研文档一致性修复（下游含 L3/L2/L0 审查与交付文档）。
+- 最早修正点：`01-research.md` / `01A-competitor-page-experience.md`；正式调研产物仍缺 CH-01，并保留 L2 仅纵向、每 20 秒升档、双角色/旧角色授权边界，早于 02 架构、输入闭环 03 和受其影响的 Review Console。
+- 判断依据：五角色 CH-01、双输入统一衔接、L2 四向跟手、距离/高度里程碑和五角色动作已经在核心关卡 03→两份 04A→04B 实现，但 01/01A→02→输入闭环 03 与当前交付文档仍有旧表述。
+- 为什么不是更高层：L4 已是最早源真相层；本次不改变已确认的研究判断、目标用户、Target Surface、产品边界、页面形态或 PM Gate，只把既有结论对齐到下游已确认实现并向下同步当前说明。
+- 必须修改的源真相文件：`01-research.md` / `01A-competitor-page-experience.md`、`architecture_data.json` / `02-architecture.html`、`03-feature-手势输入闭环.md`；同步更新 `README.md`、`试玩说明.md`、`MVP-完成验收.md`、`reviews/phase-4b-mvp-review-data.json` 并重建对应 HTML Review Console。
+- 需要重新生成 / 复核的下游文件：`reviews/phase-4b-mvp-review.html`、当前文档滞后词扫描、JSON 解析、Review Console smoke、workflow gates。
+- 是否需要 PM 确认：是；用户已明确要求执行，因此按 confirmed 处理。
+- 本次禁止直接修改：不改变两份已对齐的 04A 或 04B 产品决策/实现；不事后改写早期 Review Console、其他 Change Record 或 Error Case 中的历史决策和当时事实。
+- 影响文件：`01-research.md` / `01A-competitor-page-experience.md`、`architecture_data.json` / `02-architecture.html`、`03-feature-手势输入闭环.md`、当前交付说明、当前 Phase 4B 审查材料、`workflow-state.md`、`tests/README.md`、地图 UI 测试结果计数文案与本变更记录。
+- PM 确认状态：confirmed。
+- 执行状态：verified。
+- 备注：已同步 CH-01 五角色入口、35 组/140 帧动作、L2 掌心 X/Y 与四方向键盘、按米数里程碑而非按 20 秒升档、18 秒 BGM、随机本地端口、QA 输出按需生成，以及最新 L1 独立专项的跨视口不稳定风险披露；地图 UI 专项实际执行 6 个检查，其末尾误报的 7/7 已更正为 6/6，不改变测试逻辑。02 架构已通过 `product-architecture` 生成脚本重建为 4 层 18 模块/32 连接/18 风险，当前 Phase 4B Review Console 为 8 个决策/20 份材料。JSON 解析、生成 HTML 内容、当前文档旧口径扫描、`git diff --check`、workflow gates 与环境检查均通过；浏览器 QA 未重跑，因为已按前序确认清理 `node_modules`，且本次未改 04B 实现。
+
+## CR-20260821-repository-redundancy-cleanup
+
+- 日期：2026-08-21
+- 用户请求：同意清理本地可恢复缓存、已跟踪的可再生成 QA 截图与 L1 旧版参考图；生成源暂时保留，但需要明确标识；历史原型与 Review Console 保留。
+- 路由层级：L0 仓库维护层。
+- 最早修正点：`.gitignore`、`qa/`、`prototype-qa/`、`reviews/l1-reference-*` 与 `assets/` 资产用途说明。
+- 判断依据：本次只改变仓库体积、生成物保留策略和证据文件组织，不改变 screen、state、interaction、玩法规则、用户范围、Target Surface 或 PM Gate。
+- 为什么不是更高层：03/04A/04B 的产品源真相均保持不变；历史原型和 Review Console 继续保留。
+- 必须修改的源真相文件：`.gitignore`、资产保留策略说明、引用已删除 L1 旧图的错误案例记录。
+- 需要重新生成 / 复核的下游文件：Git 状态、被删除路径引用、工作区与仓库体积、workflow gate；QA 截图后续由对应测试按需重新生成且保持忽略。
+- 是否需要 PM 确认：是；用户已逐项明确确认，因此按 confirmed 执行。
+- 本次禁止直接修改：不修改 01/01A/02/03/04A/04B，不删除当前待审 L1 参考图、历史原型、Review Console、运行时资产或生成源。
+- 影响文件：本地 `node_modules/`、`prototype-qa/`、系统/服务残留；已跟踪 `qa/`、9 张 L1 旧版参考图；`.gitignore`、`assets/README.md`、资产保留清单、`cases/error-cases.md`、`workflow-state.md`。
+- PM 确认状态：confirmed。
+- 执行状态：verified。
+- 备注：已删除约 67 MiB 本地可恢复缓存、约 21 MiB 已跟踪 QA 截图和约 6.29 MiB L1 旧版参考图，合计约释放 94 MiB；生成源约 112 MiB 按用户决定保留，并通过 `assets/README.md` 与 `assets/asset-retention.json` 标记为 `authoring-source-keep`，与 `runtime-required`、`license-review` 分开管理。当前待审 `standing-v3`、`jump-v4` 和四张障碍 `v2` 均保留；旧图引用、JSON 解析、`git diff --check`、workflow gates 与环境检查通过。浏览器 QA 因 `node_modules` 已按确认清理，后续需先执行 `npm install`。
+
 ## CR-20260817-l1-obstacle-depth-anchor
 
 - 日期：2026-08-17

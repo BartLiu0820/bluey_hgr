@@ -59,7 +59,7 @@
 
 - 日期：2026-08-17
 - 发生阶段：Phase 4B L1 障碍视觉落点审查。
-- 相关产物：`reviews/l1-reference-04-soft-crate.png` 至 `reviews/l1-reference-07-pit.png`、`04B-prototype-手势小狗探险MVP.html`。
+- 相关产物：`reviews/l1-reference-04-soft-crate-v2.png`、`reviews/l1-reference-05-log-v2.png`、`reviews/l1-reference-06-double-crate-v2.png`、`reviews/l1-reference-07-pit-v2.png`、`04B-prototype-手势小狗探险MVP.html`。早期无版本号参考图已按 `CR-20260821-repository-redundancy-cleanup` 清理。
 - 触发方式：用户审查人物修正版后指出人物位置基本合适，但障碍物位置仍偏低。
 - 期望行为：软木箱、原木与双层木箱的刚性底座只与草边交叠约 2–4px，不埋住底座、嫩芽或最下层箱体；坑洞左右近岸的黄色路面接缝与地图路面接缝齐平。
 - 实际错误：此前参考按统一纵深量处理不同轮廓，原木建议下移 16px、双层箱下移 7px，坑洞按整图底边而非近岸接缝定位，导致视觉重心偏低。
@@ -76,7 +76,7 @@
 
 - 日期：2026-08-17
 - 发生阶段：Phase 4B L1 地面纵深参考图与定向 QA。
-- 相关产物：`reviews/l1-reference-02-characters-standing.png`、`reviews/l1-reference-03-character-jump-v2.png`、`04B-prototype-手势小狗探险MVP.html`、`tests/l1-ground-collision-jump-physics-targeted.mjs`。
+- 相关产物：`reviews/l1-reference-02-characters-standing-v3.png`、`reviews/l1-reference-03-character-jump-v4.png`、`04B-prototype-手势小狗探险MVP.html`、`tests/l1-ground-collision-jump-physics-targeted.mjs`。早期参考图已按 `CR-20260821-repository-redundancy-cleanup` 清理。
 - 触发方式：用户审查参考图时指出人物脚应在地面内，而不是浮在地面上。
 - 期望行为：角色完整脚型与小腿保持可见，仅鞋底最下缘与绿色草边交叠约 4–6px；站立、起跳零点与落地终点共享该可见锚点。
 - 实际错误：参考图把接触线画在黄色路面上沿，角色可见脚底只贴线；自动测试只检查角色外层 DOM 盒子的 bottom 是否落在地面 DOM 盒内，未检查透明 PNG 的可见 alpha 脚底或草边遮挡。
