@@ -1,0 +1,23 @@
+{
+  "method": "interior crop at native scale; horizontal and vertical mirror pair, no painted or procedural replacement",
+  "sourceCrop": [
+    510,
+    478,
+    1022,
+    542
+  ],
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "targetSize": [
+    1024,
+    128
+  ],
+  "wrapS": "repeat",
+  "wrapT": "repeat",
+  "colorSpace": "sRGB",
+  "edgeMaxDifferenceX": 0,
+  "edgeMaxDifferenceY": 0,
+  "geometryIntegration": "pending; no render/collision claim"
+}

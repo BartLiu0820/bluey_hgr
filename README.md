@@ -32,6 +32,10 @@ npm run workflow:ensure-browsers
 
 Chromium 会安装到共享缓存 `~/.cache/pm-workflow/playwright-browsers`，同一台机器上的 PM 工作流项目会复用这一份浏览器，不会每个项目重复下载。需要改共享位置时，可设置 `PM_WORKFLOW_PLAYWRIGHT_BROWSERS_PATH`。
 
+## 火线冲击首版
+
+第四玩法已接入，详细进度、操作、测试与未验证边界见 [开发日志与交接](火线冲击-开发日志与交接.md)。
+
 ## 试玩当前 MVP
 
 ```bash

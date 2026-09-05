@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>棉棉 · 角色动作预览</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f6f3ee;color:#3a3044;font:16px/1.6 system-ui,sans-serif}main{max-width:1160px;margin:auto;padding:28px}header{display:flex;align-items:center;justify-content:space-between;gap:20px}h1{font-size:32px;margin:0}p{margin:6px 0;color:#756b7d}.tag{border-radius:30px;padding:8px 16px;background:#e7dbea;color:#6f4679;white-space:nowrap}.viewer{margin-top:24px;display:grid;grid-template-columns:1.2fr 1fr;gap:24px}.stage{position:relative;border:1px solid #dad5dd;border-radius:24px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:390px;background:repeating-conic-gradient(#edf0ee 0% 25%,#e3e7e4 0% 50%) 0 0/24px 24px}.stage[data-bg="dark"]{background:#293446}.stage[data-bg="light"]{background:#fff}.stage:after{content:"";position:absolute;left:8%;right:8%;bottom:calc(50% - 136px);border-top:1px dashed #c4b8c9;pointer-events:none}.stage img{width:340px;height:340px;object-fit:contain}.info{background:#fff;border:1px solid #e2dbe6;border-radius:24px;padding:26px}h2{margin:0 0 6px}button,select{font:inherit;color:inherit;border:1px solid #dcd2e0;border-radius:12px;background:white;padding:8px 14px;cursor:pointer}button:hover{background:#f5edf7}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #a56cb6;outline-offset:3px}button[aria-pressed="true"]{background:#8e609c;color:white;border-color:#8e609c}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.frames{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.frames button{padding:0;overflow:hidden;font-size:12px}.frames img{display:block;width:100%;background:#edf0ee}.details{font-size:14px}.cards{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;margin:24px 0}.card{padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:5px}.card img{width:100%;max-width:140px;background:#eef0ed;border-radius:10px}.card small{font-size:11px}.links{display:flex;flex-wrap:wrap;gap:20px}a{color:#81558f}footer{margin-top:20px;color:#7a7080;font-size:13px}@media(max-width:850px){.viewer{grid-template-columns:1fr}.cards{grid-template-columns:repeat(4,1fr)}header{align-items:flex-start;flex-direction:column}main{padding:18px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+<main>
+<header><div><h1>棉棉</h1><p>参考悠悠的大眼睛画风，保留棉棉的笑脸。</p></div><span class="tag">7 组动作 · 28 帧 · 透明 PNG</span></header>
+<section class="viewer">
+<div class="stage" id="stage" data-bg="checker"><img id="hero" src="idle/idle-1.png" alt="待机动作预览"></div>
+<div class="info"><h2 id="action-name">待机</h2><p id="usage">等待与准备状态</p>
+<div class="controls"><button id="play">暂停</button><button id="step">下一帧</button><button id="flip" aria-pressed="false">向左预览</button></div>
+<div class="controls"><label>速度 <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option></select></label><label>背景 <select id="background"><option value="checker">透明棋盘</option><option value="light">白色</option><option value="dark">深色</option></select></label></div>
+<p class="details" id="readout">第 1 / 4 帧</p><div class="frames" id="frames"></div><p class="details">点击小图可暂停并查看单帧。预览重复播放全部动作，跳跃／救援的世界位移由游戏控制。</p>
+</div></section>
+<nav class="cards" id="actions" aria-label="选择动作"></nav>
+<div class="links"><a href="all-actions-preview.png">全部动作总览</a><a href="character-manifest.json">动作配置</a><a href="qc-report.json">素材检查报告</a><a href="README.md">素材说明</a></div>
+<footer>棉棉已加入游戏，可在角色选择页选中；此页用于独立检查动作。原始图片由内置 image_gen 生成，generate2dsprite 负责透明处理与切帧。</footer>
+</main>
+<script>
+const actions=[['idle','待机',240,'等待与准备状态'],['run','跑步',120,'溪边跳跳 · 前进'],['jump','跳跃',170,'溪边跳跳／树梢蹦蹦'],['hover','悬浮',180,'萤火虫躲躲 · 跟手移动'],['hurt','受惊／救援',190,'坠落与安全救援'],['bump','碰撞',170,'普通障碍 · 轻微碰撞反馈'],['celebrate','庆祝',190,'准备与成绩页 · 双手比耶']];
+const $=id=>document.getElementById(id),hero=$('hero');
+let selected=0,frame=0,playing=!matchMedia('(prefers-reduced-motion: reduce)').matches,flipped=false,speed=1,last=0;
+const path=(a,f)=>`${a}/${a}-${f+1}.png`;
+const loaded=actions.flatMap(([a])=>[0,1,2,3].map(f=>{const im=new Image();im.src=path(a,f);return im}));
+actions.forEach(([a,n,ms],i)=>{const b=document.createElement('button');b.className='card';b.setAttribute('aria-pressed',String(i===0));const im=document.createElement('img');im.src=path(a,0);im.alt='';im.dataset.action=a;const label=document.createElement('strong');label.textContent=n;const sub=document.createElement('small');sub.textContent=`${a} · ${ms}ms`;b.append(im,label,sub);b.onclick=()=>{selected=i;frame=0;last=0;render(true)};$('actions').append(b)});
+function render(rebuild=false){const[a,n,ms,usage]=actions[selected];const src=path(a,frame);if(hero.getAttribute('src')!==src)hero.src=src;hero.alt=`${n} 第 ${frame+1} 帧`;hero.style.transform=flipped?'scaleX(-1)':'none';$('action-name').textContent=n;$('usage').textContent=usage;$('readout').textContent=`第 ${frame+1} / 4 帧 · 256 × 256 · ${ms}ms / 帧`;$('play').textContent=playing?'暂停':'播放';if(rebuild){$('frames').replaceChildren();for(let f=0;f<4;f++){const b=document.createElement('button');b.setAttribute('aria-label',`查看第 ${f+1} 帧`);const im=document.createElement('img');im.src=path(a,f);im.alt='';b.append(im,document.createTextNode(String(f+1)));b.onclick=()=>{frame=f;playing=false;render()};$('frames').append(b)}}[...$('actions').children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===selected)));[...$('frames').children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===frame)))}
+$('play').onclick=()=>{playing=!playing;last=0;render()};$('step').onclick=()=>{playing=false;frame=(frame+1)%4;render()};$('flip').onclick=()=>{flipped=!flipped;$('flip').setAttribute('aria-pressed',String(flipped));render()};$('speed').onchange=e=>{speed=Number(e.target.value)};$('background').onchange=e=>{$('stage').dataset.bg=e.target.value};
+function tick(t){if(playing){if(!last)last=t;if(t-last>=actions[selected][2]/speed){frame=(frame+1)%4;last=t;render()}document.querySelectorAll('.card img').forEach((im,i)=>{const a=actions[i];const s=path(a[0],Math.floor(t*speed/a[2])%4);if(im.getAttribute('src')!==s)im.src=s})}requestAnimationFrame(tick)}
+render(true);requestAnimationFrame(tick);
+</script>
+</html>

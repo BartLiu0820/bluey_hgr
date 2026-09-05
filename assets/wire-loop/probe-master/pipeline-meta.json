@@ -1,0 +1,74 @@
+{
+  "id": "WL-A01",
+  "slug": "probe-master",
+  "generatedAt": "2026-08-31",
+  "generator": "built-in image_gen",
+  "sourceSize": [
+    1024,
+    1536
+  ],
+  "sourceSha256": "18289a990abcfafd190c90a65c50ed3bff11b05af6046498b67efc515e3cb72b",
+  "processing": {
+    "method": "aspect-preserving crop and pad",
+    "sourceSize": [
+      1024,
+      1536
+    ],
+    "targetSize": [
+      512,
+      768
+    ],
+    "transform": {
+      "crop": [
+        213,
+        163,
+        818,
+        1378
+      ],
+      "scale": 0.5688888888888889,
+      "paste": [
+        84,
+        38
+      ]
+    }
+  },
+  "exports": [
+    {
+      "size": [
+        512,
+        768
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        84,
+        38,
+        428,
+        729
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/probe-master/appearance.png",
+      "bytes": 131307,
+      "sha256": "ecdf00da64df0f1f20b1a6369b473920eb422fe835ba1ab8f756c1788b6fbead"
+    }
+  ],
+  "pixelQc": "pass",
+  "visualReview": {
+    "status": "reviewed",
+    "evidence": [
+      "contact-sheet.png",
+      "small-size-review.png",
+      "frames-review.png"
+    ],
+    "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+  },
+  "geometryIntegration": "not_started",
+  "runtimeIntegration": "not_started"
+}

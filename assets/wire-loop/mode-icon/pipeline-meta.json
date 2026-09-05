@@ -1,0 +1,74 @@
+{
+  "id": "WL-A08",
+  "slug": "mode-icon",
+  "generatedAt": "2026-08-31",
+  "generator": "built-in image_gen",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "sourceSha256": "775d08743ea88cf76bd429a22d13fc23c5b63286bfe8f363e9a194ec0ffd6b6b",
+  "processing": {
+    "method": "aspect-preserving crop and pad",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "targetSize": [
+      512,
+      512
+    ],
+    "transform": {
+      "crop": [
+        240,
+        189,
+        1038,
+        1172
+      ],
+      "scale": 0.46876907426246184,
+      "paste": [
+        69,
+        25
+      ]
+    }
+  },
+  "exports": [
+    {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        69,
+        25,
+        443,
+        486
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/mode-icon/mode-icon.png",
+      "bytes": 132527,
+      "sha256": "cc5a1d0896ce85fc33c6017524055da787d44e83b1c5dcfff886d852681c38b3"
+    }
+  ],
+  "pixelQc": "pass",
+  "visualReview": {
+    "status": "reviewed",
+    "evidence": [
+      "contact-sheet.png",
+      "small-size-review.png",
+      "frames-review.png"
+    ],
+    "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+  },
+  "geometryIntegration": "not_started",
+  "runtimeIntegration": "not_started"
+}

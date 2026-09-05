@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 
 const root = path.resolve(import.meta.dirname, "..");
 const file = "04B-prototype-手势小狗探险MVP.html";
-const mime = { ".html": "text/html; charset=utf-8", ".mjs": "text/javascript", ".js": "text/javascript", ".wasm": "application/wasm", ".task": "application/octet-stream" };
+const mime = { ".css":"text/css", ".html": "text/html; charset=utf-8", ".mjs": "text/javascript", ".js": "text/javascript", ".wasm": "application/wasm", ".task": "application/octet-stream" };
 const server = http.createServer((request, response) => {
   const pathname = decodeURIComponent(new URL(request.url, "http://127.0.0.1").pathname);
   const requested = path.resolve(root, `.${pathname}`);
@@ -89,7 +89,7 @@ try {
 
   let current = await startMode(page);
   assert.equal(current.screen, "LV-00");
-  assert.deepEqual([...current.unlockedLevelIds].sort(), ["L1", "L2", "L3"]);
+  assert.deepEqual([...current.unlockedLevelIds].sort(), ["L1", "L2", "L3", "L4"]);
   assert.deepEqual(current.inputProfile.capabilities, { poseTransition: true, handTrackingY: true, handTrackingX: true });
   const disabled = await page.locator(".level-card:disabled").count();
   assert.equal(disabled, 0);

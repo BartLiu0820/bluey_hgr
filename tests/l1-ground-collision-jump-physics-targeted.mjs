@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 
 const root = path.resolve(import.meta.dirname, "..");
 const file = "04B-prototype-手势小狗探险MVP.html";
-const mime = { ".html":"text/html; charset=utf-8", ".png":"image/png", ".woff2":"font/woff2", ".mp3":"audio/mpeg", ".js":"text/javascript", ".mjs":"text/javascript", ".wasm":"application/wasm", ".task":"application/octet-stream" };
+const mime = { ".css":"text/css", ".html":"text/html; charset=utf-8", ".png":"image/png", ".woff2":"font/woff2", ".mp3":"audio/mpeg", ".js":"text/javascript", ".mjs":"text/javascript", ".wasm":"application/wasm", ".task":"application/octet-stream" };
 const server = http.createServer((request, response) => {
   const pathname = decodeURIComponent(new URL(request.url, "http://127.0.0.1").pathname);
   const requested = path.resolve(root, `.${pathname}`);
@@ -41,17 +41,20 @@ async function launchScoredL1(page) {
 }
 
 async function sampleJump(page, progressMeters) {
-  await page.evaluate(value => window.__mvpTest.setProgressMeters(value), progressMeters);
-  await page.evaluate(() => window.__mvpTest.emit("JUMP", "child_keyboard"));
-  const launch = await page.evaluate(() => window.__mvpTest.getState().level);
-  let peak = 0;
-  let elapsed = 0;
-  for (; elapsed < 1500; elapsed += 16) {
-    const level = await page.evaluate(() => window.__mvpTest.advance(16).level);
-    peak = Math.max(peak, level.jumpY);
-    if (elapsed > 100 && level.jumpY === 0) break;
-  }
-  return { launch, peak, elapsed };
+  // Keep physics samples in one browser task so real animation frames cannot add time between samples.
+  return page.evaluate(value => {
+    window.__mvpTest.setProgressMeters(value);
+    window.__mvpTest.emit("JUMP", "child_keyboard");
+    const launch = window.__mvpTest.getState().level;
+    let peak = 0;
+    let elapsed = 0;
+    for (; elapsed < 1500; elapsed += 16) {
+      const level = window.__mvpTest.advance(16).level;
+      peak = Math.max(peak, level.jumpY);
+      if (elapsed > 100 && level.jumpY === 0) break;
+    }
+    return { launch, peak, elapsed };
+  }, progressMeters);
 }
 
 function pass(copy) { console.log(`PASS ${copy}`); }
@@ -61,13 +64,19 @@ try {
     const page = await pageAt(viewport);
     await launchScoredL1(page);
     const playerX = await page.evaluate(() => document.querySelector("#game-world").clientWidth * .26);
-    await page.evaluate(value => window.__mvpTest.setL1Target({ type:"box", worldX:value + 140, previousWorldX:value + 170 }), playerX);
-    let state = await page.evaluate(() => window.__mvpTest.evaluateL1Target());
+    let state = await page.evaluate(value => {
+      // Inject and evaluate the same swept sample before requestAnimationFrame updates previousWorldX.
+      window.__mvpTest.setL1Target({ type:"box", worldX:value + 140, previousWorldX:value + 170 });
+      return window.__mvpTest.evaluateL1Target();
+    }, playerX);
     assert.equal(state.level.courage, 3, `${viewport.width} collision fired before swept hitboxes touched`);
     assert.ok(state.level.target, `${viewport.width} pre-contact target was resolved early`);
 
-    await page.evaluate(value => window.__mvpTest.setL1Target({ type:"box", worldX:value - 100, previousWorldX:value + 100 }), playerX);
-    state = await page.evaluate(() => window.__mvpTest.evaluateL1Target());
+    state = await page.evaluate(value => {
+      // Inject and evaluate the same swept sample before requestAnimationFrame updates previousWorldX.
+      window.__mvpTest.setL1Target({ type:"box", worldX:value - 100, previousWorldX:value + 100 });
+      return window.__mvpTest.evaluateL1Target();
+    }, playerX);
     assert.equal(state.level.courage, 2, `${viewport.width} swept collision missed a target crossing the player in one sample`);
     assert.equal(state.level.collisionCount, 1, `${viewport.width} swept collision was not unique`);
 
@@ -76,8 +85,11 @@ try {
     await page.evaluate(() => window.__mvpTest.advance(380));
     const beforeSuccess = await page.evaluate(() => window.__mvpTest.getState().level);
     assert.ok(beforeSuccess.jumpY > 100, `${viewport.width} jump did not reach visible clearance`);
-    await page.evaluate(value => window.__mvpTest.setL1Target({ type:"box", worldX:value + 30, previousWorldX:value + 75 }), playerX);
-    state = await page.evaluate(() => window.__mvpTest.evaluateL1Target());
+    state = await page.evaluate(value => {
+      // Inject and evaluate the same swept sample before requestAnimationFrame updates previousWorldX.
+      window.__mvpTest.setL1Target({ type:"box", worldX:value + 30, previousWorldX:value + 75 });
+      return window.__mvpTest.evaluateL1Target();
+    }, playerX);
     assert.equal(state.level.courage, 2, `${viewport.width} vertically separated target incorrectly collided`);
     assert.equal(state.level.target, null, `${viewport.width} safe spatial overlap did not resolve`);
     assert.ok(state.level.score >= beforeSuccess.score + 20, `${viewport.width} safe spatial overlap did not score`);

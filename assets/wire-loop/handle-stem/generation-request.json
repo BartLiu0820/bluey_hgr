@@ -1,0 +1,9 @@
+{
+  "generator": "built-in image_gen",
+  "prompt": "Derive the separate GRIP AND STEM COMPONENT from the supplied gold-loop probe, matching its exact rounded blue handle silhouette and painted finish. One front orthographic upright view. Same river-blue chunky insulated grip with cream rounded inset near bottom, softly flared top and two gentle grip rings. A straight slim silver-blue stem extends upward from the handle, exposed end centered and smoothly capped at top for attachment to a separately rendered loop. DO NOT INCLUDE ANY GOLD CIRCULAR LOOP, collar disk, hand, cable, sparks, floor, shadow, or additional object. Handle must preserve the reference identity. Keep object slender and long, vertical with no perspective tilt; full component within central 65% height of a portrait 1024x1536 canvas, generous padding all around. Background flat solid #FF00FF everywhere, no magenta reflecting onto object, no text or labels. Clean HD preschool hand-painted asset, not photorealistic or pixel art.",
+  "references": [
+    "/Users/sansanaixuexi/Desktop/bluey_hgr/assets/wire-loop/probe-master/raw-sheet.png"
+  ],
+  "sourcePath": "/Users/sansanaixuexi/.codex/generated_images/01a05797-1499-7fb1-89f4-e89f9cd54add/exec-32e1d410-5501-4b5c-92f8-fe60794022a9.png",
+  "generatedAt": "2026-08-31"
+}

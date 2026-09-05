@@ -7,7 +7,7 @@ import { chromium } from "playwright";
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const prototypeName = "04B-prototype-手势小狗探险MVP.html";
 const actions = ["idle", "run", "jump", "hover", "hurt", "bump", "celebrate"];
-const characters = ["bluey", "bingo", "grey-puppy", "blue-heeler-dad", "garden-girl"];
+const characters = ["bluey", "bingo", "grey-puppy", "blue-heeler-dad", "garden-girl", "lilac-girl"];
 const spritePaths = characters.flatMap(character => actions.flatMap(action => Array.from({ length: 4 }, (_, index) => `assets/characters/${character}/${action}/${action}-${index + 1}.png`)));
 const mimeTypes = { ".html":"text/html; charset=utf-8", ".mjs":"text/javascript; charset=utf-8", ".js":"text/javascript; charset=utf-8", ".png":"image/png", ".wasm":"application/wasm", ".task":"application/octet-stream" };
 
@@ -40,7 +40,7 @@ try {
     const image = new Image(); image.onload = () => resolve({ src, ok:image.naturalWidth > 0 && image.naturalHeight > 0 }); image.onerror = () => resolve({ src, ok:false }); image.src = src;
   }))), spritePaths);
   assert.deepEqual(loaded.filter(item => !item.ok), []);
-  pass("五角色 35 组 140 张透明动作帧全部可加载");
+  pass("六角色 42 组 168 张透明动作帧全部可加载");
 
   assert.equal(await page.locator('use[href="#dog"]').count(), 0);
   assert.equal(await page.locator(".dog-art").evaluateAll(nodes => nodes.every(node => node instanceof HTMLImageElement && node.naturalWidth > 0)), true);
@@ -91,4 +91,4 @@ try {
   await new Promise(resolve => server.close(resolve));
 }
 
-console.log("Five-character sprite targeted QA complete: 6/6 PASS");
+console.log("Six-character sprite targeted QA complete: 6/6 PASS");

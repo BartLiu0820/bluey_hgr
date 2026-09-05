@@ -1,6 +1,6 @@
 # Workflow State
 
-> 更新日期：2026-08-17
+> 更新日期：2026-09-05
 
 ## Project
 
@@ -12,7 +12,8 @@
 
 - 阶段：Phase 4B 游戏体验精修审查
 - 状态：pending_pm
-- 当前目标：在输入确认与玩法大厅之间新增 CH-01 五角色选择，角色选择状态贯穿三种玩法；同时保持关卡 1 地面纵深、碰撞与跳跃精修基线。完成 03→04A→04B→QA-TARGETED 传播后，等待 PM 一并试玩确认。
+- 当前目标：已将棉棉加入 CH-01 六角色选择，并按悠悠参考统一七动作的大眼睛画风，角色选择状态贯穿三种玩法、结算与重玩；同时保持关卡 1 地面纵深、碰撞与跳跃精修基线。完成 03→04A→04B→QA-TARGETED 传播后，等待 PM 一并试玩确认。
+- 新增方向：第四玩法“火线冲击”首版已接入；W0手动路由/规格已授权完成，W1/W2/W3/W5代码及合成验证完成。图片已集成、专属蜂鸣暂复用旧音效。核心14/14、新浏览器14/14与旧玩法回归通过；W6实摄/儿童试玩及PM体验待审。
 
 ## Phase Checklist
 
@@ -23,14 +24,18 @@
 | Phase 2 产品架构 | `02-architecture.html` | CONFIRMED | 4 层 17 模块、共享服务 + 三独立 runtime + 拳掌/掌心 XY 输入已确认 |
 | Gate 页面形态决策 | 写入 `02` 或 `03` | CONFIRMED | 输入准备 → 三玩法大厅 → 玩法内教学 → 全屏游戏画布 → 单玩法成绩卡已确认 |
 | Phase 3 功能细节 | `03-feature-手势输入闭环.md` | CONFIRMED | Gesture Lab 拳掌循环 + PoseTransitionEvent/HandTrackingFrame 双通道已确认 |
-| Phase 4A 原型规格 | `04A-prototype-spec-手势输入闭环.md` | CONFIRMED | 摄像头/键盘就绪后统一进入 CH-01 五角色选择、双通道 InputProfile、web-only 五视口与 QA 策略已同步 |
+| Phase 4A 原型规格 | `04A-prototype-spec-手势输入闭环.md` | CONFIRMED | 摄像头/键盘就绪后统一进入 CH-01 六角色选择、双通道 InputProfile、web-only 五视口与 QA 策略已同步 |
 | Phase 4B HTML 主干 Demo | `04B-prototype-手势输入闭环.html` | CONFIRMED | 历史 6 屏输入 Demo；当前可试玩源真相已由集成式 MVP 的真实识别实现取代 |
 | Phase 3 核心关卡循环 | `03-feature-核心关卡循环.md` | CONFIRMED | 三玩法默认可选、玩法内安全教学、温和无限递进、3 颗勇气心、设备内分数/Top 5 已同步 |
-| Phase 4A 核心关卡循环 | `04A-prototype-spec-核心关卡循环.md` | CONFIRMED | CH-01 五角色状态、玩法大厅、三种独立教学/运行态、L1 空间碰撞与本地成绩页已同步 |
-| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | PENDING_PM | CH-01 五角色选择与跨玩法状态已接入；L1 地面/碰撞/跳跃精修保持。角色选择 6/6、五角色动作 6/6、L1 物理 4/4、scored loop 9/9 PASS，等待 PM 试玩确认 |
+| Phase 4A 核心关卡循环 | `04A-prototype-spec-核心关卡循环.md` | CONFIRMED | CH-01 六角色状态、玩法大厅、三种独立教学/运行态、L1 空间碰撞与本地成绩页已同步 |
+| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | PENDING_PM | CH-01 六角色选择与跨玩法状态已接入；L1 地面/碰撞/跳跃精修保持。角色选择 11/11、六角色动作 6/6、L1 物理 4/4、scored loop 9/9 PASS，等待 PM 试玩确认 |
 | Phase 4C HTML 状态扩展 | `04C-prototype-[名称].html` | OPTIONAL | PM 确认 04B 后按需触发；默认 `QA-LIGHT` |
 | Phase 05A AI 仿真用研 | `05A-ai-persona-prototype-review-[名称].md` + `05A-ai-persona-findings-[名称].json` | TODO | 04B 后按多个 persona 心智收集候选问题 |
 | Phase 05B PM 仿真问题裁决 | `05B-pm-simulation-decision-[名称].md` | TODO | PM accept 的 finding 才进入 Change Router |
+
+## 火线冲击实施授权
+
+2026-09-05 用户明确允许手动路由、规格同步后编码测试。CR-20260905-wire-loop-implementation：W0及首版代码完成，自动验收通过；计划内实现授权confirmed，实际体验待审。缺失阶段skills未恢复，采用本轮明确手动授权。
 
 ## Review Gates
 
@@ -38,16 +43,23 @@
 
 | 阶段 | 产物 | Review Slice | Review Console | PM 结论 | 下一步 |
 |---|---|---|---|---|---|
+| 火线冲击试玩修复 | `wire-loop-*`、03/04A火线与集成04B | pending_pm | `changes/CR-20260905-wire-loop-playtest-fixes.md` | 去柄/1.6倍转腕/分类与失联分离/稳握恢复已完成；核心17/17与浏览器17/17通过 | 刷新原页面，真实摄像头复测 |
+| 火线冲击首版实现 | `04B-prototype-手势小狗探险MVP.html`、wire-loop模块 | pending_pm | `reviews/wire-loop-implementation-review.md` | 首版已实现；核心14/14、新浏览器14/14、旧角色11/11、计分9/9、物理4/4、字体4/4通过 | 实摄手感/儿童试玩、专属蜂鸣待补 |
+| 火线冲击W0规格 | `03-feature-火线冲击.md`、`04A-prototype-spec-火线冲击.md` | confirmed | `changes/CR-20260905-wire-loop-implementation.md` | 用户要求开发并允许手动路由/同步后编码测试 | W1→W6；体验待审 |
+| 火线冲击素材生产（图片已接入） | `assets/wire-loop/asset-manifest.json`、`reviews/wire-loop-assets-review.md` | pending_pm | `assets/wire-loop/preview.html`（素材画廊） | 素材先行已明确授权；13项图片成品待审，音效缺凭证待补 | 舞台图片已接入；审看实际外观/三种指示/短反馈，专属蜂鸣待补 |
+| 火线冲击开发计划 | `火线冲击-开发计划.md` | confirmed | `火线冲击-开发日志与交接.md` | 2026-09-05用户要求开工并允许手动路由/同步后编码测试 | 首版已实现，体验待审；旧Phase 4B不自动确认 |
 | Phase 1 产品调研判断 | `01-research.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 用户确认并列玩法、web-only、本地 Top 5 与成熟平台弹跳方向 | 已传播至 01A→04B |
 | Phase 1A 竞品页面体验 | `01A-competitor-page-experience.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | Doodle Jump 弹跳落台心智、Nex 直接跟手与低挫败边界已确认 | 已传播至 02 |
 | Phase 2 产品架构 | `02-architecture.html` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 共享 Session/Safety/Score/Coach + 三独立 runtime 已确认 | 已传播至 03 |
 | Gate 页面形态决策 | 写入 `02` 或 `03` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 输入准备、三玩法大厅、玩法内安全教学、全屏横版画布与双列成绩卡已确认 | 已传播至 03/04A/04B |
 | Phase 3 手势输入闭环 | `03-feature-手势输入闭环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 全局只确认输入；拳掌边沿与分类无关的掌心 X/Y 位置流在玩法内消费 | 已传播至 04A/04B |
-| Phase 4A 手势输入闭环 | `04A-prototype-spec-手势输入闭环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 输入准备 CTA、CH-01 五角色衔接、三 capability InputProfile 与玩法内教学边界已确认 | 已传播至 04B |
+| Phase 4A 手势输入闭环 | `04A-prototype-spec-手势输入闭环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 输入准备 CTA、CH-01 六角色衔接、三 capability InputProfile 与玩法内教学边界已确认 | 已传播至 04B |
 | Phase 4B HTML 主干 Demo | `04B-prototype-手势输入闭环.html` | confirmed | `reviews/phase-4b-gesture-input-review.html` | 历史 6 屏输入 Demo；其演示适配器不再代表当前集成式实现 | 当前实现以集成式 MVP 为准 |
 | Phase 3 核心关卡循环 | `03-feature-核心关卡循环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | 三玩法默认可选、L2 完整离场、L3 自动弹跳落台、温和递进与本地分数已确认 | 已传播至 04A |
-| Phase 4A 核心关卡循环 | `04A-prototype-spec-核心关卡循环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | CH-01 五角色会话状态、玩法大厅、三类运行态、双列成绩卡与成熟平台玩法已确认 | 已传播至 04B |
-| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | pending_pm | `reviews/phase-4b-mvp-review.html` | 五角色选择与跨玩法状态完成；L1 纵深接触带、swept hitbox、速度耦合弹道、指示图、HUD 与双字体保持；角色 6/6 + 动作 6/6 + L1 4/4 + scored loop 9/9 PASS | PM 试玩确认五角色选择直观性、角色在三玩法中的一致性，以及既有 L1 手感后确认 Phase 4B |
+| Phase 4A 核心关卡循环 | `04A-prototype-spec-核心关卡循环.md` | confirmed | `reviews/change-proven-bounce-mode-review.html` | CH-01 六角色会话状态、玩法大厅、三类运行态、双列成绩卡与成熟平台玩法已确认 | 已传播至 04B |
+| Phase 4B 集成式可试玩 MVP | `04B-prototype-手势小狗探险MVP.html` | pending_pm | `reviews/phase-4b-mvp-review.html` | 六角色选择（含棉棉）与跨玩法状态完成；L1 纵深接触带、swept hitbox、速度耦合弹道、指示图、HUD 与双字体保持；角色 11/11 + 动作 6/6 + L1 4/4 + scored loop 9/9 + 字体 4/4 PASS | PM 试玩确认六角色选择直观性、角色在三玩法中的一致性，以及既有 L1 手感后确认 Phase 4B |
+| 棉棉大眼睛画风校正 | `assets/characters/lilac-girl` | confirmed | `reviews/mianmian-big-eyes-review.md` | 用户查看对比后回复“好的”，确认 youyou-eyes-v2；七动作和游戏验证完成 | 本版定稿；其他待审项与整体 Phase 4B 门禁保持不变 |
+| 棉棉角色扩展（03→04A→04B） | `assets/characters/lilac-girl` + 集成式 MVP | confirmed | `reviews/mianmian-integration-review.md` | 用户已确认角色、命名与手动路由；专项 11/11、动作 6/6、玩法 9/9、物理 4/4、字体 4/4 PASS | 本次接入完成；不代替整体 Phase 4B 试玩确认 |
 | Phase 4C HTML 状态扩展（可选）| `04C-prototype-[名称].html` | missing | missing | 待确认 extension states 是否完整、inspector 是否与 04B 一致 | Phase 4B gate confirmed 后按需触发 |
 | Phase 05A AI 仿真用研 | `05A-ai-persona-prototype-review-[名称].md` | missing | missing | 待确认 persona 来源、候选问题、严重度、信心和 route hint | Phase 4B gate confirmed 后推进 |
 | Phase 05B PM 仿真问题裁决 | `05B-pm-simulation-decision-[名称].md` | missing | missing | 待确认 accept / reject / defer / needs_more_context 裁决 | accept finding 进入 Change Router |
@@ -70,6 +82,12 @@
 
 | Change ID | 用户请求 | 路由层级 | 最早修正点 | PM 确认状态 | 执行状态 |
 |---|---|---|---|---|---|
+| CR-20260905-wire-loop-playtest-fixes | 去手柄、增大转腕、修复频繁休息弹窗 | L2→L1→L0；去柄L0 | 03/04A火线→输入/runtime/UI/renderer→集成04B | confirmed（修复授权；体验pending_pm） | verified：核心17/17、浏览器17/17（含未知/失联/恢复），五视口审图通过；实摄待复测 |
+| CR-20260905-wire-loop-implementation | 开始火线冲击开发；允许手动路由与规格同步后编码测试 | L4→L3→L2→L1→L0 | 01/01A→02→03/04A火线→集成04B | confirmed（开发授权；体验pending_pm） | 首版代码及自动验证完成；实摄/儿童与专属蜂鸣待补 |
+| CR-20260831-wire-loop-assets | 火线冲击先生成游戏所需素材 | 既有范围规划的独立美术生产分支；无03/04A/04B变更 | `assets/wire-loop/` | confirmed（素材先行授权；成品Review pending_pm） | 13图片/19PNG本地QC完成；蜂鸣缺凭证待补；游戏未接入 |
+| CR-20260831-wire-loop-plan | 规划第四玩法“火线冲击”、新增素材与generate2dsprite生成方案 | L4范围增量（下游L3→L0；本条为规划） | `01-research.md` / `01A-competitor-page-experience.md`（尚未修改） | pending（规划授权已明确，实施计划待审） | 规划已交付；后续素材由CR-20260831-wire-loop-assets生产，游戏未实现 |
+| CR-20260831-mianmian-big-eyes | 棉棉参考悠悠画风，放大眼睛 | L0 视觉素材 | `assets/characters/lilac-girl` | confirmed（用户明确要求改图） | verified：七动作/28帧统一大眼睛，素材QC和角色选择/三玩法11/11通过，预览及ZIP已同步 |
+| CR-20260831-mianmian-character | 新增已制作的小女孩角色，命名「棉棉」 | L2 角色集合（下游 L1/L0） | `03-feature-核心关卡循环.md` | confirmed（用户指定接入/名称并允许手动路由） | verified：03→两份 04A→素材清单/ZIP→04B 已同步；角色 11/11、动作 6/6、玩法 9/9、物理 4/4、字体 4/4 PASS |
 | CR-20260817-l1-obstacle-depth-anchor | L1 障碍物位置偏低；逐组件审查软木箱、原木、双层箱与坑洞参考图 | L0 实现层（先 Review 图，确认后再改 HTML/QA） | `04B-prototype-手势小狗探险MVP.html` 各障碍可见底座/近岸接缝 | pending（等待确认 04-v2 至 07-v2） | routed：四张上移参考图已生成；未改原型 |
 | CR-20260817-l1-visible-foot-depth-anchor | L1 人物鞋底与绿色草边轻微交叠，完整脚型可见；先审参考图 | L0 实现层（先 Review 图，确认后再改 HTML/QA） | `04B-prototype-手势小狗探险MVP.html` 可见 sprite 锚点/草边遮挡 | pending（等待确认 02-v3 / 03-v4） | routed：已将遮挡从 14–20px 收回至 4–6px；未改原型 |
 | CR-20260817-initial-character-selection | 输入确认后新增人物选择环节，可选布鲁伊、宾果、麦麦、班底特、悠悠 | L2 功能层（下游含 L1/L0/角色资产） | `03-feature-核心关卡循环.md` | confirmed（用户明确指定入口与五名角色） | verified：03→两份04A→roster→04B→QA-TARGETED；角色选择 6/6、动作 6/6、L1 4/4、scored loop 9/9 PASS |
@@ -173,9 +191,9 @@
 
 ## Pending PM Review Slice — Phase 4B 游戏体验精修
 
-- 本阶段关键决策：输入确认后统一进入 CH-01，儿童从布鲁伊、宾果、麦麦、班底特、悠悠中五选一，所选角色贯穿大厅、三玩法与成绩页；L1 角色/障碍纵深接触带、swept hitbox 与速度耦合跳跃保持；指示图、16–22px 进度槽、本地双字体和手绘冒险视觉保持不变。
+- 本阶段关键决策：输入确认后统一进入 CH-01，儿童从布鲁伊、宾果、麦麦、班底特、悠悠、棉棉中六选一，所选角色贯穿大厅、三玩法与成绩页；L1 角色/障碍纵深接触带、swept hitbox 与速度耦合跳跃保持；指示图、16–22px 进度槽、本地双字体和手绘冒险视觉保持不变。
 - 被放弃的方案：摄像头成功后直接跳过人物选择、仅摄像头路径可选人物、角色属性/稀有度/锁态比较；重复 ready 页；通用手掌 SVG；进度槽漂离图片轨道；保存/上传儿童画面。
-- 需要 PM 确认的问题：从摄像头确认进入人物选择，依次尝试五名角色，确认五卡在低高度窗口仍易点、选中反馈清楚、角色进入大厅和玩法后保持一致；再重点试玩 L1 手感与整体手绘语气。
+- 需要 PM 确认的问题：从摄像头确认进入人物选择，依次尝试六名角色，确认六卡在低高度窗口仍易点、选中反馈清楚、角色进入大厅和玩法后保持一致；再重点试玩 L1 手感与整体手绘语气。
 - 追加待确认：已实现“标题/关卡名/庆祝语使用 Xiaolai，正文/UI/按钮使用 Resource Han Rounded CN”；两字族均由项目内本地 WOFF2 加载。PM 只需试玩确认低龄化语气、标题辨识度与正文可读性。
 - 不需要 PM 审查的执行细节：CSS inset、JPEG 质量、sprite 拆帧参数、测试 seam、音频冷却毫秒与 localStorage key。
 - 进入下一阶段的条件：PM 完成三关各一次试玩并确认本轮精修；随后进入真实儿童陪同试玩或 05A AI 仿真用研。
@@ -228,6 +246,7 @@
 
 ## Next Action
 
-1. 从摄像头准备完成后进入人物选择，依次点选布鲁伊、宾果、麦麦、班底特、悠悠，确认选中反馈和“选好啦”路径直观。
+0. 火线冲击试玩修复已完成：去手柄、1.6倍转腕、1.2秒持续失联才暂停、等待稳握恢复；核心与浏览器各17/17通过。刷新原页面复测转腕与暂停频率。阅读`火线冲击-开发日志与交接.md`，运行原start.sh并进入第四卡；先键盘试玩，再在真实设备检查握持/校准/转腕/重握/失联。自动测试不替代实摄和儿童试玩；专属蜂鸣待补。
+1. 从摄像头准备完成后进入人物选择，依次点选布鲁伊、宾果、麦麦、班底特、悠悠、棉棉，确认选中反馈和“选好啦”路径直观。
 2. 任选一名非默认角色进入三个玩法，确认大厅预览、关卡角色、碰撞/救援动作和成绩页保持一致。
 3. 复查 L1 地面纵深、碰撞时机与基础/最高速度跳跃；若角色选择与既有手感均通过，确认 Phase 4B。

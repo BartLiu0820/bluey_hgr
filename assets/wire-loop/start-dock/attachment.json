@@ -1,0 +1,34 @@
+{
+  "image": "start-dock.png",
+  "baseContactPx": [
+    127.35,
+    242.543
+  ],
+  "saddleRestPx": [
+    127.35,
+    66.674
+  ],
+  "sourceBaseContact": [
+    627,
+    1065
+  ],
+  "sourceSaddleRest": [
+    627,
+    449
+  ],
+  "sharedTransform": {
+    "crop": [
+      258,
+      261,
+      996,
+      1068
+    ],
+    "scale": 0.2855018587360595,
+    "paste": [
+      22,
+      13
+    ]
+  },
+  "collisionRole": "visual_only",
+  "geometryIntegration": "pending"
+}

@@ -1,0 +1,74 @@
+{
+  "id": "WL-A09",
+  "slug": "fist-move",
+  "generatedAt": "2026-08-31",
+  "generator": "built-in image_gen",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "sourceSha256": "17f7eea4c878f997d1b9c3df1d02783289a2f12c2c8014711ca276f7ed22ecf3",
+  "processing": {
+    "method": "aspect-preserving crop and pad",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "targetSize": [
+      512,
+      512
+    ],
+    "transform": {
+      "crop": [
+        67,
+        75,
+        1189,
+        1185
+      ],
+      "scale": 0.4106951871657754,
+      "paste": [
+        25,
+        28
+      ]
+    }
+  },
+  "exports": [
+    {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        25,
+        28,
+        486,
+        484
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/fist-move/fist-move.png",
+      "bytes": 115915,
+      "sha256": "3db21cb6d245f480dabd439a655a239c98496b79b7e121eb858b71f919a66aa4"
+    }
+  ],
+  "pixelQc": "pass",
+  "visualReview": {
+    "status": "reviewed",
+    "evidence": [
+      "contact-sheet.png",
+      "small-size-review.png",
+      "frames-review.png"
+    ],
+    "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+  },
+  "geometryIntegration": "not_started",
+  "runtimeIntegration": "not_started"
+}
