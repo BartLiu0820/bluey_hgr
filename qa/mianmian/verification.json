@@ -1,0 +1,84 @@
+{
+  "date": "2026-08-31",
+  "character": {
+    "id": "lilac-girl",
+    "displayName": "棉棉"
+  },
+  "status": "PASS",
+  "qaMode": "QA-TARGETED",
+  "checks": [
+    {
+      "command": "node tests/character-selection-targeted.mjs",
+      "passed": 11
+    },
+    {
+      "command": "node tests/bluey-sprite-targeted.mjs",
+      "passed": 6
+    },
+    {
+      "command": "node tests/mode-hub-score-loop-targeted.mjs",
+      "passed": 9
+    },
+    {
+      "command": "node tests/l1-ground-collision-jump-physics-targeted.mjs",
+      "passed": 4
+    },
+    {
+      "command": "node tests/font-typography-targeted.mjs",
+      "passed": 4
+    },
+    {
+      "command": "python3 assets/characters/lilac-girl/build-preview.py",
+      "actions": 7,
+      "frames": 28,
+      "status": "PASS"
+    },
+    {
+      "command": "npm run workflow:validate-gates",
+      "status": "PASS"
+    }
+  ],
+  "selectionViewports": [
+    [
+      1440,
+      900
+    ],
+    [
+      1280,
+      720
+    ],
+    [
+      1219,
+      681
+    ],
+    [
+      1024,
+      700
+    ],
+    [
+      919,
+      843
+    ]
+  ],
+  "visualReview": [
+    "六列和三列两行选中态、姓名、确认按钮",
+    "棉棉 L1/L2/L3 游戏截图",
+    "实际键盘准备→棉棉→L1→成绩页"
+  ],
+  "screenshots": [
+    "mianmian-L1.png",
+    "mianmian-L2.png",
+    "mianmian-L3.png",
+    "selection-1024x700.png",
+    "selection-1219x681.png",
+    "selection-1280x720.png",
+    "selection-1440x900.png",
+    "selection-919x843.png"
+  ],
+  "limits": [
+    "摄像头路径使用模拟就绪，不等于真实摄像头/手势验收",
+    "原有 L1 角色/障碍纵深参考图等待确认，本次未改动",
+    "整体 Phase 4B 保持 pending_pm；棉棉新增范围已获用户授权"
+  ],
+  "testMaintenance": "L1 注入/判断及采样改为单次 evaluate，排除真实 requestAnimationFrame 干扰；保留全部原断言。"
+}

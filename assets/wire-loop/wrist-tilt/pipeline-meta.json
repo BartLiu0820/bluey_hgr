@@ -1,0 +1,74 @@
+{
+  "id": "WL-A10",
+  "slug": "wrist-tilt",
+  "generatedAt": "2026-08-31",
+  "generator": "built-in image_gen",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "sourceSha256": "b6000a185e345652294d1d0d75053d6d5a650c6ec701f3f146dd9099f9aa305e",
+  "processing": {
+    "method": "aspect-preserving crop and pad",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "targetSize": [
+      512,
+      512
+    ],
+    "transform": {
+      "crop": [
+        334,
+        184,
+        967,
+        1065
+      ],
+      "scale": 0.5230419977298525,
+      "paste": [
+        90,
+        25
+      ]
+    }
+  },
+  "exports": [
+    {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        90,
+        25,
+        421,
+        486
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/wrist-tilt/wrist-tilt.png",
+      "bytes": 164952,
+      "sha256": "c5eafd86b2a6d09b853bad01f437c6d75ce66a25365c120950c4a06235732005"
+    }
+  ],
+  "pixelQc": "pass",
+  "visualReview": {
+    "status": "reviewed",
+    "evidence": [
+      "contact-sheet.png",
+      "small-size-review.png",
+      "frames-review.png"
+    ],
+    "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+  },
+  "geometryIntegration": "not_started",
+  "runtimeIntegration": "not_started"
+}

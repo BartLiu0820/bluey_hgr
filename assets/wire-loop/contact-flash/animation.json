@@ -1,0 +1,25 @@
+{
+  "frames": [
+    "processed/contact-1.png",
+    "processed/contact-2.png",
+    "processed/contact-3.png",
+    "processed/contact-4.png"
+  ],
+  "frameSize": [
+    256,
+    256
+  ],
+  "frameDurationsMs": [
+    70,
+    70,
+    70,
+    70
+  ],
+  "loop": false,
+  "originPx": [
+    128,
+    128
+  ],
+  "onComplete": "hide",
+  "gifIsLoopingReviewOnly": true
+}

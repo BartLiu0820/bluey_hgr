@@ -13,12 +13,16 @@
     "workflow:render-review-console": "node .pm-workflow/run-tool.mjs render-review-console",
     "workflow:architecture": "node .pm-workflow/run-tool.mjs architecture",
     "workflow:ensure-browsers": "node .pm-workflow/run-tool.mjs ensure-browsers",
-    "workflow:playwright-install": "node .pm-workflow/run-tool.mjs playwright-install"
+    "workflow:playwright-install": "node .pm-workflow/run-tool.mjs playwright-install",
+    "qa:wire-core": "node tests/wire-loop-core.mjs",
+    "qa:wire-browser": "node tests/wire-loop-targeted.mjs",
+    "qa:wire-regression": "node tests/wire-loop-regression.mjs"
   },
   "devDependencies": {
     "playwright": "^1.59.1"
   },
   "dependencies": {
-    "@mediapipe/tasks-vision": "^1.0.1"
+    "@mediapipe/tasks-vision": "^1.0.1",
+    "three": "0.180.0"
   }
 }

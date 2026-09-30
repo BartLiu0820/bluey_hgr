@@ -7,7 +7,7 @@ import { chromium } from "playwright";
 const root = path.resolve(import.meta.dirname, "..");
 const file = "04B-prototype-手势小狗探险MVP.html";
 const mime = {
-  ".html":"text/html; charset=utf-8",
+  ".css":"text/css", ".html":"text/html; charset=utf-8",
   ".png":"image/png",
   ".jpg":"image/jpeg",
   ".mp3":"audio/mpeg",
@@ -99,6 +99,11 @@ try {
     assert.ok(firstScreen.scrollHeight <= viewport.height, `${viewport.height} vertical overflow`);
 
     await page.evaluate(() => window.__mvpTest.startWithMode("keyboard_full"));
+    await page.evaluate(() => document.fonts.ready);
+    assert.equal(await page.locator("#ch01.screen.active").count(), 1);
+    assert.equal(await page.evaluate(() => [...document.fonts].some(font => font.family === "Little Tail Xiaolai" && font.unicodeRange.toUpperCase() === "U+68C9" && font.status === "loaded")), true);
+    await page.getByRole("radio", { name:"棉棉", exact:true }).click();
+    await page.click("#character-confirm");
     const hub = await page.evaluate(() => ({
       active:document.querySelector(".screen.active")?.id,
       headings:[...document.querySelectorAll("#lv00 h1, #lv00 h2")].map(node => ({
@@ -118,12 +123,12 @@ try {
 
     assert.deepEqual(errors, [], `${viewport.width} page errors: ${errors.join(" | ")}`);
     assert.deepEqual(missing, [], `${viewport.width} missing resources: ${missing.join(" | ")}`);
-    assert.equal(fontResponses.length, 2, `${viewport.width} expected two local font responses`);
+    assert.equal(fontResponses.length, 3, `${viewport.width} expected two base fonts plus the Mianmian glyph supplement`);
     assert.ok(fontResponses.every(item => item.status === 200 && item.type === "font/woff2"), `${viewport.width} invalid font response`);
     assert.ok(fontResponses.every(item => new URL(item.url).host.startsWith("127.0.0.1:")), `${viewport.width} font loaded from external host`);
 
     await page.close();
-    console.log(`PASS ${viewport.width}x${viewport.height} local fonts, GI-01 and LV-00 typography`);
+    console.log(`PASS ${viewport.width}x${viewport.height} local fonts, 棉字补充, GI-01 → CH-01 → LV-00 typography`);
   }
 } finally {
   await browser.close();

@@ -1,0 +1,9 @@
+{
+  "generator": "built-in image_gen",
+  "prompt": "Use reference only for clean painted honey-gold/cream and moss-green preschool game art. Create EXACTLY FOUR FRAMES of ONE success-sparkles animation in a 2x2 equal-cell grid, square 1024x1024 composition, no drawn grid. All frames have a small central golden star centered exactly at 50% width and 50% height OF EACH CELL, one stable emission origin. Frame 1 compact gathering: central honey-gold star with two tiny nearby stars. Frame 2 gentle outward opening: central star with four smaller gold stars and two tiny moss-green leaf confetti nearby. Frame 3 widest restrained bloom: the same central star with surrounding little stars and two leaves spreading outward, entirely inside central 65% of cell. Frame 4 very small residual central star and two small fading stars; fading conveyed by smaller softly lit shapes, NOT magenta tint or pink glow. Do not zoom or individually resize to fill cells. Same painted identity, color and camera scale in all frames. Every cell contains visible artwork. Background and all gaps PERFECTLY FLAT #FF00FF, no background gradients, grid lines, numbers, labels or borders. No trophy, character, ring, wire, giant rays, circle plate, ground, shadow or white screen flash. Smooth clean HD art not pixel art. Warm patient celebration, not explosive.",
+  "references": [
+    "/Users/sansanaixuexi/Desktop/bluey_hgr/assets/ui/level-icons/creek-jump.png"
+  ],
+  "sourcePath": "/Users/sansanaixuexi/.codex/generated_images/01a05797-1499-7fb1-89f4-e89f9cd54add/exec-5f4b3991-3c92-45fa-b909-6e9711d7fa5f.png",
+  "generatedAt": "2026-08-31"
+}

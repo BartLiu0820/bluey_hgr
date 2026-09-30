@@ -1,0 +1,73 @@
+{
+  "id": "WL-A03",
+  "slug": "probe-metal-strip",
+  "generatedAt": "2026-08-31",
+  "generator": "built-in image_gen",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceSha256": "a1ceeb74dffd5a4a8d629b0b6376aac43f13b2d0590a481d4d597f9ec84dccbf",
+  "processing": {
+    "method": "interior crop at native scale; horizontal and vertical mirror pair, no painted or procedural replacement",
+    "sourceCrop": [
+      512,
+      479,
+      1024,
+      543
+    ],
+    "sourceSize": [
+      1536,
+      1024
+    ],
+    "targetSize": [
+      1024,
+      128
+    ],
+    "wrapS": "repeat",
+    "wrapT": "repeat",
+    "colorSpace": "sRGB",
+    "edgeMaxDifferenceX": 0,
+    "edgeMaxDifferenceY": 0,
+    "geometryIntegration": "pending; no render/collision claim"
+  },
+  "exports": [
+    {
+      "size": [
+        1024,
+        128
+      ],
+      "mode": "RGB",
+      "bbox": [
+        0,
+        0,
+        1024,
+        128
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "edgeAlphaPixels": 2304,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/probe-metal-strip/material.png",
+      "bytes": 81393,
+      "sha256": "d15809766f8841246e7836a5b63bf6ee97c85d43719054908cec996471c28ecb"
+    }
+  ],
+  "pixelQc": "pass",
+  "visualReview": {
+    "status": "reviewed",
+    "evidence": [
+      "contact-sheet.png",
+      "small-size-review.png",
+      "frames-review.png"
+    ],
+    "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+  },
+  "geometryIntegration": "not_started",
+  "runtimeIntegration": "not_started"
+}

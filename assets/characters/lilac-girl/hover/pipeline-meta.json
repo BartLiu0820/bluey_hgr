@@ -1,0 +1,374 @@
+{
+  "target": "player",
+  "mode": "hover",
+  "prompt": "",
+  "role": "",
+  "input": "assets/characters/lilac-girl/hover/raw-sheet.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 180,
+  "rows": 2,
+  "cols": 2,
+  "cell_size": 256,
+  "fit_scale": 0.8,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": false,
+  "scale_strategy": "preserve",
+  "component_mode": "largest",
+  "component_padding": 0,
+  "min_component_area": 1,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "hover-1",
+    "hover-2",
+    "hover-3",
+    "hover-4"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 72288,
+      "selected_component_bbox": [
+        206,
+        72,
+        448,
+        570
+      ],
+      "crop_bbox": [
+        206,
+        72,
+        448,
+        570
+      ],
+      "source_frame_size": [
+        619,
+        619
+      ],
+      "is_empty": false,
+      "subject_area": 72288,
+      "body_core_area": 72288,
+      "body_area_fraction": 0.18866220727057295,
+      "anchor_source": [
+        272.0,
+        544.0
+      ],
+      "source_edge_touch": false,
+      "output_edge_touch": false,
+      "edge_touch": false,
+      "output_size": [
+        80,
+        165
+      ],
+      "preserved_subject_size": [
+        80,
+        165
+      ],
+      "paste_position": [
+        106,
+        75
+      ],
+      "unclamped_paste_position": [
+        106,
+        75
+      ],
+      "paste_clamped": false,
+      "aligned_bbox": [
+        106,
+        75,
+        186,
+        240
+      ],
+      "scale_adjustment": 1.0,
+      "source_to_output_scale": 0.3308562197092084,
+      "bbox_scale_applied": false,
+      "scale_changed": false,
+      "anchor_target": [
+        128.0,
+        231
+      ],
+      "scale_strategy": "preserve",
+      "shared_center_x": 128.0,
+      "shared_feet_y": 231
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        627,
+        0,
+        1254,
+        627
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 72890,
+      "selected_component_bbox": [
+        119,
+        72,
+        366,
+        563
+      ],
+      "crop_bbox": [
+        119,
+        72,
+        366,
+        563
+      ],
+      "source_frame_size": [
+        619,
+        619
+      ],
+      "is_empty": false,
+      "subject_area": 72890,
+      "body_core_area": 70374,
+      "body_area_fraction": 0.183666918084043,
+      "anchor_source": [
+        191.0,
+        538.0
+      ],
+      "source_edge_touch": false,
+      "output_edge_touch": false,
+      "edge_touch": false,
+      "output_size": [
+        82,
+        162
+      ],
+      "preserved_subject_size": [
+        82,
+        162
+      ],
+      "paste_position": [
+        104,
+        77
+      ],
+      "unclamped_paste_position": [
+        104,
+        77
+      ],
+      "paste_clamped": false,
+      "aligned_bbox": [
+        104,
+        77,
+        186,
+        239
+      ],
+      "scale_adjustment": 1.0,
+      "source_to_output_scale": 0.3308562197092084,
+      "bbox_scale_applied": false,
+      "scale_changed": false,
+      "anchor_target": [
+        128.0,
+        231
+      ],
+      "scale_strategy": "preserve",
+      "shared_center_x": 128.0,
+      "shared_feet_y": 231
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        627,
+        627,
+        1254
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 65320,
+      "selected_component_bbox": [
+        210,
+        84,
+        442,
+        525
+      ],
+      "crop_bbox": [
+        210,
+        84,
+        442,
+        525
+      ],
+      "source_frame_size": [
+        619,
+        619
+      ],
+      "is_empty": false,
+      "subject_area": 65320,
+      "body_core_area": 65320,
+      "body_area_fraction": 0.17047664036788712,
+      "anchor_source": [
+        286.0,
+        502.0
+      ],
+      "source_edge_touch": false,
+      "output_edge_touch": false,
+      "edge_touch": false,
+      "output_size": [
+        77,
+        146
+      ],
+      "preserved_subject_size": [
+        77,
+        146
+      ],
+      "paste_position": [
+        103,
+        93
+      ],
+      "unclamped_paste_position": [
+        103,
+        93
+      ],
+      "paste_clamped": false,
+      "aligned_bbox": [
+        103,
+        93,
+        180,
+        239
+      ],
+      "scale_adjustment": 1.0,
+      "source_to_output_scale": 0.3308562197092084,
+      "bbox_scale_applied": false,
+      "scale_changed": false,
+      "anchor_target": [
+        128.0,
+        231
+      ],
+      "scale_strategy": "preserve",
+      "shared_center_x": 128.0,
+      "shared_feet_y": 231
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        627,
+        627,
+        1254,
+        1254
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 71435,
+      "selected_component_bbox": [
+        124,
+        60,
+        364,
+        556
+      ],
+      "crop_bbox": [
+        124,
+        60,
+        364,
+        556
+      ],
+      "source_frame_size": [
+        619,
+        619
+      ],
+      "is_empty": false,
+      "subject_area": 71435,
+      "body_core_area": 68974,
+      "body_area_fraction": 0.18001310154217157,
+      "anchor_source": [
+        188.0,
+        531.0
+      ],
+      "source_edge_touch": false,
+      "output_edge_touch": false,
+      "edge_touch": false,
+      "output_size": [
+        79,
+        164
+      ],
+      "preserved_subject_size": [
+        79,
+        164
+      ],
+      "paste_position": [
+        107,
+        75
+      ],
+      "unclamped_paste_position": [
+        107,
+        75
+      ],
+      "paste_clamped": false,
+      "aligned_bbox": [
+        107,
+        75,
+        186,
+        239
+      ],
+      "scale_adjustment": 1.0,
+      "source_to_output_scale": 0.3308562197092084,
+      "bbox_scale_applied": false,
+      "scale_changed": false,
+      "anchor_target": [
+        128.0,
+        231
+      ],
+      "scale_strategy": "preserve",
+      "shared_center_x": 128.0,
+      "shared_feet_y": 231
+    }
+  ],
+  "edge_touch_frames": [],
+  "source_edge_touch_frames": [],
+  "output_edge_touch_frames": [],
+  "empty_frames": [],
+  "paste_clamped_frames": [],
+  "qc_summary": {
+    "frame_count": 4,
+    "valid_frame_count": 4,
+    "empty_count": 0,
+    "edge_touch_count": 0,
+    "paste_clamped_count": 0,
+    "body_scale_mean": 0.42502102337036374,
+    "output_subject_height_mean": 159.25,
+    "body_scale_cv": 0.01850321451759136,
+    "anchor_x_std": 0.0727550932803081,
+    "anchor_y_std": 0.026033638722913297,
+    "anchor_y_mean": 0.8542003231017771,
+    "profile_body_scale_drift": 0.010454795245302573
+  },
+  "output_origin": [
+    128.0,
+    231
+  ],
+  "scale_profile": {
+    "path": "assets/characters/lilac-girl/character-scale-profile.json",
+    "version": 1,
+    "name": "lilac-girl",
+    "reference_mode": "idle",
+    "processing_contract_applied": true
+  },
+  "qc_config": {
+    "strict_qc": true,
+    "reject_edge_touch": false,
+    "allow_source_edge_touch": false,
+    "max_body_scale_cv": null,
+    "max_anchor_y_std": null,
+    "max_profile_scale_drift": 0.08
+  },
+  "artRevision": "youyou-eyes-v2"
+}

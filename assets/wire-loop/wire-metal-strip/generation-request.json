@@ -1,0 +1,10 @@
+{
+  "generator": "built-in image_gen",
+  "prompt": "Use image 1 ONLY as a reference for toy materials and image 2 for hand-painted preschool finish. Create one isolated long horizontal FLAT RECTANGULAR MATERIAL SWATCH for a silver-blue toy metal wire. Orthographic front material view, NOT a cylinder, ring, track, metal ingot or finished object. The swatch is a quiet silver-blue base with very subtle broad cream-blue tonal variation, smooth clean painted finish, low contrast. No black outlines in its interior, scratches, rivets, seams, perspective, point highlights, writing or directional cast shadow. Interior should be visually uniform enough to crop a seamless UV texture repeating both horizontally and vertically. Keep rectangle inside central 70% width and 30% height of a landscape 1536x1024 canvas, perfectly solid #FF00FF magenta elsewhere. No background gradient, no magenta tint inside the swatch. No labels, text, logos or other objects. Clean HD game art not pixel art.",
+  "references": [
+    "/Users/sansanaixuexi/Desktop/bluey_hgr/assets/wire-loop/probe-master/raw-sheet.png",
+    "/Users/sansanaixuexi/Desktop/bluey_hgr/assets/ui/level-icons/creek-jump.png"
+  ],
+  "sourcePath": "/Users/sansanaixuexi/.codex/generated_images/01a05797-1499-7fb1-89f4-e89f9cd54add/exec-1211236c-f66f-4cf1-af35-980297e37058.png",
+  "generatedAt": "2026-08-31"
+}

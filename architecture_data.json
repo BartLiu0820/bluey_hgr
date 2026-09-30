@@ -1,12 +1,13 @@
 {
-  "title": "手势小狗三玩法大厅 · 产品架构图",
+  "title": "手势小狗四玩法大厅 · 产品架构图",
   "subtitle": "Phase 2 · Web-only 默认全解锁 · 玩法内教学 + 温和无限计分 · 2026-08-14",
   "status_mode": "priority",
   "target_surface": "web-only",
+  "wire_loop_spec": "03-feature-火线冲击.md",
   "page_shape_gate": {
     "status": "confirmed",
     "confirmed_at": "2026-08-14",
-    "decision": "家长低密度任务流 + 儿童输入就绪 + 单屏三玩法大厅 + 玩法内安全教学 + 全屏游戏画布/浮动小教练 + 单局成绩卡",
+    "decision": "家长低密度任务流 + 儿童输入就绪 + 单屏四玩法2×2大厅 + 玩法内安全教学 + 全屏游戏画布/浮动小教练 + 单局成绩卡",
     "single_viewport_rule": "所有产品 screen 在支持的 Web 视口内完整呈现，不产生页面级横向或纵向滚动。"
   },
   "pm_review_slice": {
@@ -70,13 +71,13 @@
           "submodules": [
             {"name": "手部就绪", "description": "看到任意可靠手部关键点即可确认输入通道可用。"},
             {"name": "键盘就绪", "description": "键盘模式直接确认 Space 与方向键通道可用。"},
-            {"name": "开始游戏", "description": "就绪后直接进入三玩法大厅，不经过全局成绩或动作教学页。"},
+            {"name": "开始游戏", "description": "就绪后直接进入四玩法大厅，不经过全局成绩或动作教学页。"},
             {"name": "友好降级", "description": "识别困难时建议键盘，不把结果描述为儿童失败。"}
           ],
           "sub_layout": "stack"
         },
         {
-          "name": "三玩法大厅",
+          "name": "四玩法大厅",
           "description": "三个大卡片分别表达玩法、控制方式与个人最好成绩，默认全部可选并可反复进入。",
           "priority": "P0",
           "priority_reason": "用户需要按兴趣选择玩法，而不是先完成一个玩法才能验证另一个；大厅同时承担差异说明和重玩入口。",
@@ -220,6 +221,7 @@
     {
       "name": "独立玩法运行时",
       "modules": [
+        {"name": "火线冲击运行时", "description": "wire_loop：固定轨道限时穿环；握持、二维位移、单轴转腕；第一次接触结束；生成材质与共享几何。", "priority": "P0", "priority_reason": "第四玩法已授权实施，规则独立于旧三心分数模型。", "risk": "high", "configurable": true, "actors": ["c_user"], "entities": ["GripPoseFrame", "轨道弧长", "圆环姿态", "首次接触", "用时Top5"], "metrics": ["成功用时", "输入帧龄", "连续性暂停"], "span": 1, "submodules": [{"name": "独立输入与碰撞", "description": "Worker单在途采样、校准/重握、连续几何、按序穿孔。"}, {"name": "限时挑战与成绩", "description": "单调时钟；松手不停表；暂停转练习；仅合格成功局升序入榜。"}]},
         {
           "name": "动作指令运行时",
           "description": "command_runner · 溪边跳跳；用拳掌离散事件驱动即时高跳，以共享 worldSpeed 形成逐渐提速的可重复卷轴循环。",
@@ -385,7 +387,7 @@
   "connections": [
     {"from": "家长设置壳", "to": "会话编排 Session", "label": "模式与授权结果", "type": "data_flow"},
     {"from": "儿童输入就绪", "to": "会话编排 Session", "label": "输入档案与降级建议", "type": "data_flow"},
-    {"from": "三玩法大厅", "to": "会话编排 Session", "label": "当前玩法选择", "type": "data_flow"},
+    {"from": "四玩法大厅", "to": "会话编排 Session", "label": "当前玩法选择", "type": "data_flow"},
     {"from": "会话编排 Session", "to": "儿童游戏画布", "label": "装载玩法与页面状态", "type": "call"},
     {"from": "会话编排 Session", "to": "动作指令运行时", "label": "装载 command_runner", "type": "call"},
     {"from": "会话编排 Session", "to": "跟手躲避运行时", "label": "装载 hand_follow_dodge", "type": "call"},
@@ -400,7 +402,7 @@
     {"from": "动作指令运行时", "to": "计分与个人榜 Score", "label": "生存、越障与收集事件", "type": "data_flow"},
     {"from": "跟手躲避运行时", "to": "计分与个人榜 Score", "label": "生存、过门与收集事件", "type": "data_flow"},
     {"from": "自动弹跳平台运行时", "to": "计分与个人榜 Score", "label": "生存、落台与高度事件", "type": "data_flow"},
-    {"from": "计分与个人榜 Score", "to": "三玩法大厅", "label": "各玩法个人最好", "type": "data_flow"},
+    {"from": "计分与个人榜 Score", "to": "四玩法大厅", "label": "各玩法个人最好", "type": "data_flow"},
     {"from": "计分与个人榜 Score", "to": "单局成绩页", "label": "本次分数与 Top 5", "type": "data_flow"},
     {"from": "手部观测与稳定化", "to": "双通道输入适配", "label": "姿态事件与位置帧", "type": "data_flow"},
     {"from": "双通道输入适配", "to": "动作指令运行时", "label": "PoseTransitionEvent", "type": "data_flow"},
@@ -417,7 +419,7 @@
   "risks": [
     {"module": "家长设置壳", "level": "medium", "type": "权限与角色边界", "description": "家长设置若侵入儿童画布，孩子可能误触摄像头、输入模式或退出。", "suggestion": "将设置集中在家长层，儿童层只保留受保护的暂停与求助入口。"},
     {"module": "儿童输入就绪", "level": "high", "type": "儿童可用性风险", "description": "若在全局页同时训练拳掌、上下跟手与左右跟手，会增加 5 岁儿童认知负担，并与玩法内控制产生冲突。", "suggestion": "全局只确认看见手或键盘可用，主操作固定为“开始游戏”；控制教学全部下沉到当前玩法。"},
-    {"module": "三玩法大厅", "level": "medium", "type": "选择理解风险", "description": "三个入口若保留关卡编号、锁态或前后关系，会让孩子误以为必须按顺序完成。", "suggestion": "三张同权重可点击卡默认全解锁，分别显示控制图形、个人最好和开始操作。"},
+    {"module": "四玩法大厅", "level": "medium", "type": "选择理解风险", "description": "三个入口若保留关卡编号、锁态或前后关系，会让孩子误以为必须按顺序完成。", "suggestion": "三张同权重可点击卡默认全解锁，分别显示控制图形、个人最好和开始操作。"},
     {"module": "儿童游戏画布", "level": "high", "type": "认知负荷风险", "description": "三种控制模型、收集、障碍与相机反馈若同时竞争注意力，会让低龄儿童迷失。", "suggestion": "保持单视口 full-bleed 舞台，一个时刻一个目标，世界反馈先于教练文字。"},
     {"module": "单局成绩页", "level": "medium", "type": "竞争压力风险", "description": "公开名次、昵称或跨玩法比较会把低龄体验变成外部竞争，并扩大隐私边界。", "suggestion": "只展示本次分数、同玩法个人最好与设备内匿名 Top 5；主操作为再玩一次，次操作为换玩法。"},
     {"module": "会话编排 Session", "level": "high", "type": "状态机复杂", "description": "三运行时装载、输入切换、暂停、重玩和返回大厅会产生跨玩法状态分支。", "suggestion": "Session 作为唯一会话状态源，运行时只返回标准分数、速度、失误和安全事件。"},

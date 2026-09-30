@@ -1,0 +1,74 @@
+{
+  "id": "WL-A06",
+  "slug": "finish-dock",
+  "generatedAt": "2026-08-31",
+  "generator": "built-in image_gen",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "sourceSha256": "2b7c763f18e3636a23cd4331edc3118d08ab88d117bbe3bad107b5a685e01852",
+  "processing": {
+    "method": "shared-crop dock pair",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "targetSize": [
+      256,
+      256
+    ],
+    "transform": {
+      "crop": [
+        258,
+        261,
+        996,
+        1068
+      ],
+      "scale": 0.2855018587360595,
+      "paste": [
+        22,
+        13
+      ]
+    }
+  },
+  "exports": [
+    {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        22,
+        13,
+        233,
+        243
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/finish-dock/finish-dock.png",
+      "bytes": 65142,
+      "sha256": "62fdd18c00fd0fcfd107a9d97aa82650f5c2251cafc9159b69aa6ed1d63a2c27"
+    }
+  ],
+  "pixelQc": "pass",
+  "visualReview": {
+    "status": "reviewed",
+    "evidence": [
+      "contact-sheet.png",
+      "small-size-review.png",
+      "frames-review.png"
+    ],
+    "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+  },
+  "geometryIntegration": "not_started",
+  "runtimeIntegration": "not_started"
+}

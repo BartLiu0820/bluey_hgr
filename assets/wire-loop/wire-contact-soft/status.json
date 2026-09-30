@@ -1,0 +1,10 @@
+{
+  "id": "WL-S01",
+  "status": "blocked_missing_audio_credential",
+  "generated": false,
+  "reason": "No audio generator exposed; ELEVENLABS_API_KEY absent from environment and project .env",
+  "promptFile": "assets/wire-loop/wire-contact-soft/prompt-used.txt",
+  "expectedOutput": "assets/audio/sfx/wire-contact-soft.mp3",
+  "fallbackCandidate": "assets/audio/sfx/collision-soft.mp3",
+  "fallbackIntegrated": false
+}

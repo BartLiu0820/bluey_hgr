@@ -1,0 +1,9 @@
+{
+  "generator": "built-in image_gen",
+  "prompt": "Create one instructional game icon derived from the supplied orange-gold CLOSED FIST illustration. Keep exactly its warm orange/gold hand style, brown contour, cream highlights, closed fingers, thumb across/outside fingers, short wrist, rounded preschool anatomy. Remove the reference's two yellow attention rays and green leaf. Around the fist place exactly FOUR separated short RIVER-BLUE ARROWS pointing UP, DOWN, LEFT, RIGHT, one on each cardinal side, with clear gaps from the hand. Arrows evenly balance around fist center, not curving, no extra arrows or hands. This means moving a CLOSED fist, not jumping or opening the hand. Full illustration centered inside central 70% of square 1024x1024 canvas, safe padding, solid flat #FF00FF background and gaps. No text, labels, button plate, motion trail, sparkles, cast shadow or scenery. Smooth clean HD painted game art, readable at 96 pixels, not pixel art.",
+  "references": [
+    "/Users/sansanaixuexi/Desktop/bluey_hgr/assets/ui/instruction-icons/fist-hold.png"
+  ],
+  "sourcePath": "/Users/sansanaixuexi/.codex/generated_images/01a05797-1499-7fb1-89f4-e89f9cd54add/exec-3850f184-ae11-414e-8d60-8b7ed1f0343d.png",
+  "generatedAt": "2026-08-31"
+}

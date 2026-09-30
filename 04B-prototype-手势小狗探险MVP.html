@@ -21,6 +21,15 @@
       font-display: swap;
     }
 
+    @font-face {
+      font-family: "Little Tail Xiaolai";
+      src: url("assets/fonts/xiaolai/Xiaolai-Mianmian.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      unicode-range: U+68C9;
+    }
+
     :root {
       --font-ui: "Little Tail Rounded", ui-rounded, "SF Pro Rounded", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
       --font-display: "Little Tail Xiaolai", "Little Tail Rounded", ui-rounded, "PingFang SC", system-ui, sans-serif;
@@ -383,7 +392,7 @@
     .character-select-head .parent-trigger { justify-self:end; }
     .character-back { justify-self:start; width:clamp(52px,5vw,66px); aspect-ratio:1; padding:5px; border:0; background:transparent; cursor:pointer; }
     .character-back img { width:100%; height:100%; object-fit:contain; }
-    .character-grid { min-height:0; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:clamp(8px,1.4vw,20px); align-items:stretch; }
+    .character-grid { min-height:0; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:clamp(8px,1.4vw,20px); align-items:stretch; }
     .character-card { position:relative; min-width:0; min-height:0; display:grid; grid-template-rows:minmax(0,1fr) auto; place-items:center; gap:5px; padding:clamp(8px,1.2vw,16px) clamp(7px,1vw,13px) clamp(10px,1.5vh,16px); border:3px solid rgba(94,60,36,.24); border-bottom-width:7px; border-radius:clamp(20px,2.3vw,30px); background:rgba(255,249,232,.96); color:var(--ink); box-shadow:0 13px 28px rgba(23,58,82,.12); cursor:pointer; overflow:hidden; transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease; }
     .character-card:hover, .character-card:focus-visible { transform:translateY(-3px); border-color:var(--blue); }
     .character-card[aria-checked="true"] { transform:translateY(-5px); border-color:var(--blue); box-shadow:0 0 0 5px rgba(242,189,85,.72),0 15px 30px rgba(23,58,82,.18); }
@@ -760,6 +769,10 @@
       .character-card strong { font-size:clamp(19px,2.1vw,27px); }
       .character-select-actions { min-height:48px; }
       .character-confirm { min-height:48px; border-bottom-width:6px; }
+    }
+
+    @media (max-width:1050px) and (min-height:720px) {
+      .character-grid { grid-template-columns:repeat(3,minmax(0,1fr)); grid-template-rows:repeat(2,minmax(0,1fr)); }
     }
 
     @media (max-width:760px) {
@@ -1383,6 +1396,7 @@
       .action-symbol.generated-action { width:58px; height:58px; }
     }
   </style>
+  <link rel="stylesheet" href="wire-loop.css">
 </head>
 <body>
   <svg aria-hidden="true" width="0" height="0" style="position:absolute">
@@ -1540,6 +1554,7 @@
           <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="grey-puppy"><img src="assets/characters/grey-puppy/idle/idle-1.png" alt=""><strong>麦麦</strong></button>
           <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="blue-heeler-dad"><img src="assets/characters/blue-heeler-dad/idle/idle-1.png" alt=""><strong>班底特</strong></button>
           <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="garden-girl"><img src="assets/characters/garden-girl/idle/idle-1.png" alt=""><strong>悠悠</strong></button>
+          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="lilac-girl"><img src="assets/characters/lilac-girl/idle/idle-1.png" alt=""><strong>棉棉</strong></button>
         </div>
         <div class="character-select-actions"><button class="character-confirm" id="character-confirm" type="button">选好啦</button></div>
       </div>
@@ -1561,6 +1576,9 @@
           </button>
           <button class="level-card" id="level-card-L3" data-level-id="L3" style="--level-tint:#eadcff">
             <span class="level-card-number"><img src="assets/ui/level-icons/treetop-bounce.png" alt="" aria-hidden="true"></span><h2>树梢蹦蹦</h2><p>左右带路。</p><span class="level-card-scene bounce-scene" aria-hidden="true"><img class="dog-art" src="assets/characters/bluey/jump/jump-2.png" alt=""></span><span class="level-ability" id="level-best-L3">新游戏</span>
+          </button>
+          <button class="level-card" id="level-card-L4" data-level-id="L4" aria-label="火线冲击，可以开始">
+            <span class="level-card-number"><img src="assets/wire-loop/mode-icon/mode-icon.png" alt=""></span><h2>火线冲击</h2><p>握住圆环，慢慢穿过。</p><span class="level-card-scene wire-scene" aria-hidden="true"><img class="dog-art" src="assets/characters/bluey/idle/idle-1.png" alt=""></span><span class="level-ability" id="level-best-L4">用时挑战</span>
           </button>
         </div>
         <div class="map-footer"><span class="status-dot" style="background:var(--green)"></span><span id="map-input-label">每种玩法都会先教一次 · 成绩只保存在这台设备</span></div>
@@ -1673,6 +1691,7 @@
         </div>
       </div>
     </section>
+  <section class="screen" id="wl01" data-screen-id="WL-01" aria-label="火线冲击"></section>
   </main>
 
   <div class="local-launch-gate" id="local-launch-gate" role="dialog" aria-modal="true" aria-labelledby="local-launch-title" aria-hidden="true">
@@ -1696,6 +1715,7 @@
       <div class="drawer-actions">
         <button class="btn btn-primary" id="drawer-resume">继续</button>
         <button class="btn btn-secondary" id="drawer-audio" type="button" aria-pressed="true">声音：开</button>
+        <button class="btn btn-secondary" id="drawer-clear-scores">清空本机成绩</button>
         <button class="btn btn-secondary" id="drawer-switch">改用按键</button>
         <button class="btn btn-secondary" id="drawer-restart" hidden>重新开始本局</button>
         <button class="btn btn-secondary" id="drawer-stop">停止摄像头</button>
@@ -1797,7 +1817,7 @@
         launchRemainingMs: 0,
         launchSource: null,
         currentLevelId: null,
-        unlockedLevelIds: ['L1', 'L2', 'L3'],
+        unlockedLevelIds: ['L1', 'L2', 'L3', 'L4'],
         completedLevelIds: [],
         levelBest: {},
         bestScoreByMode: {},
@@ -1896,7 +1916,7 @@
 
       function syncBgm() {
         const desired = desiredBgmId();
-        const pausedByUi = document.hidden || $('#drawer-backdrop')?.classList.contains('open') || (state.screen === 'LV-02' && state.level?.paused);
+        const pausedByUi = (state.screen === 'WL-01' && state.wirePaused) || document.hidden || $('#drawer-backdrop')?.classList.contains('open') || (state.screen === 'LV-02' && state.level?.paused);
         if (!audioRuntime.enabled || !audioRuntime.unlocked || pausedByUi) { pauseBgm(); return; }
         if (!desired) { stopBgm(true); return; }
         if (audioRuntime.currentBgmId !== desired) {
@@ -1942,7 +1962,8 @@
         { id:'bingo', displayName:'宾果', assetRoot:'bingo' },
         { id:'grey-puppy', displayName:'麦麦', assetRoot:'grey-puppy' },
         { id:'blue-heeler-dad', displayName:'班底特', assetRoot:'blue-heeler-dad' },
-        { id:'garden-girl', displayName:'悠悠', assetRoot:'garden-girl' }
+        { id:'garden-girl', displayName:'悠悠', assetRoot:'garden-girl' },
+        { id:'lilac-girl', displayName:'棉棉', assetRoot:'lilac-girl' }
       ]);
       const CHARACTER_BY_ID = Object.freeze(Object.fromEntries(CHARACTER_DEFINITIONS.map(character => [character.id, character])));
       const CHARACTER_ACTIONS = Object.freeze(['idle','run','jump','hover','bump','hurt','celebrate']);
@@ -2158,6 +2179,7 @@
       function announce(message) { $('#live-region').textContent = message; }
 
       function showScreen(screenId) {
+        if (state.screen === 'WL-01' && screenId !== 'WL-01') closeWireLoop();
         const previousScreenId = state.screen;
         screens.forEach(screen => screen.classList.toggle('active', screen.dataset.screenId === screenId));
         state.screen = screenId;
@@ -2586,7 +2608,8 @@
         const levelPreviews = [
           ['#level-card-L1 .dog-art','jump',2],
           ['#level-card-L2 .dog-art','hover',1],
-          ['#level-card-L3 .dog-art','jump',1]
+          ['#level-card-L3 .dog-art','jump',1],
+          ['#level-card-L4 .dog-art','idle',0]
         ];
         levelPreviews.forEach(([selector, action, frame]) => {
           const image = $(selector);
@@ -2632,9 +2655,15 @@
           const ability = $('.level-ability', card);
           if (ability) ability.textContent = best ? `最好 ${best}` : '新游戏';
         });
+        try {
+          const rows=JSON.parse(localStorage.getItem('gesture-pup-wire-times-v1')||'[]');
+          const mode=state.inputProfile?.mode?.startsWith('camera_')?'camera':'keyboard';
+          const times=Array.isArray(rows)?rows.filter(r=>r.trackId==='garden-s'&&r.trackRevision===1&&r.difficultyId==='gentle'&&r.rulesVersion===2&&r.assistMode==='none'&&r.controlMode===mode&&r.success===true&&r.eligible===true&&Number.isFinite(r.elapsedMs)&&r.elapsedMs>0&&r.elapsedMs<=60000).map(r=>r.elapsedMs):[];
+          $('#level-best-L4').textContent=times.length?`最好 ${(Math.min(...times)/1000).toFixed(1)} 秒`:'用时挑战';
+        } catch (_) { $('#level-best-L4').textContent='用时挑战'; }
         $('#map-input-label').textContent = state.inputProfile?.mode?.startsWith('camera_')
-          ? '三种玩法都能直接选 · 摄像头只在本机识别'
-          : '三种玩法都能直接选 · 开始前会告诉你按哪个键';
+          ? '四种玩法都能直接选 · 摄像头只在本机识别'
+          : '四种玩法都能直接选 · 开始前会告诉你按哪个键';
       }
 
       function enterLevelMap(profile = state.inputProfile) {
@@ -2648,11 +2677,48 @@
         state.launchRemainingMs = 0;
         renderLevelMap();
         showScreen('LV-00');
-        announce('三种玩法都准备好了');
+        announce('四种玩法都准备好了');
         return true;
       }
 
+      let wireController = null, wireMountGeneration = 0;
+      function closeWireLoop() {
+        wireMountGeneration += 1; state.wirePaused=false;
+        wireController?.dispose(); wireController = null;
+        if (state.cameraStream && state.recognizerRuntime && state.inputProfile?.mode?.startsWith('camera_')) {
+          state.recognizerRuntime.start($('#setup-video'), handleRecognizerFrame);
+          state.recognizerLoopActive = true;
+        }
+      }
+      async function openWireLoop() {
+        if (!validProfile(state.inputProfile)) return false;
+        state.level = null; state.launchRemainingMs = 0; state.currentLevelId = 'L4';
+        showScreen('WL-01');
+        const generation = ++wireMountGeneration;
+        $('#wl01').textContent = '火线冲击正在准备…';
+        const cameraMode = state.inputProfile.mode.startsWith('camera_');
+        if (cameraMode) { state.recognizerRuntime?.stop(); state.recognizerLoopActive = false; }
+        try {
+          const { mountWireLoop } = await import('./wire-loop-ui.mjs');
+          if (generation !== wireMountGeneration) return false;
+          const controller = await mountWireLoop($('#wl01'), {
+            mode: cameraMode ? 'camera' : 'keyboard', character:validCharacterId(state.selectedCharacterId), video:$('#setup-video'),
+            onExit:()=>enterLevelMap(state.inputProfile), playSfx, onPauseAudio:()=>{state.wirePaused=true;pauseBgm();},onResumeAudio:()=>{state.wirePaused=false;syncBgm();},onToggleAudio:()=>setAudioEnabled(!audioRuntime.enabled),
+            onControllerReady:controller=>{if(generation===wireMountGeneration)wireController=controller;else controller.dispose();},
+            onKeyboard:()=>{ stopCamera(); state.inputProfile = buildKeyboardProfile(); },
+            onClearScores:()=>{ state.bestScoreByMode={};state.topScoresByMode={L1:[],L2:[],L3:[]};saveLocalScores(); }
+          });
+          if (generation !== wireMountGeneration) { controller?.dispose(); return false; }
+          wireController = controller; return true;
+        } catch (error) {
+          $('#wl01').textContent = '火线冲击加载失败。';
+          const back=document.createElement('button');back.className='btn';back.textContent='返回大厅';back.onclick=()=>enterLevelMap(state.inputProfile);$('#wl01').append(back);
+          console.warn('wire-loop load failed',error);return false;
+        }
+      }
+
       function selectLevel(levelId) {
+        if (levelId === 'L4') return openWireLoop();
         if (!LEVEL_BY_ID[levelId]) return false;
         playSfx('sfx_mode_select');
         state.currentLevelId = levelId;
@@ -3840,6 +3906,7 @@
       let drawerReturnFocus = null;
 
       function openDrawer(trigger) {
+        if (state.screen === 'WL-01') { wireController?.pause(); return; }
         drawerReturnFocus = trigger || document.activeElement;
         playSfx('sfx_pause', .82);
         pauseBgm();
@@ -3856,7 +3923,7 @@
         $('#drawer-restart').hidden = !['LV-01', 'LV-02'].includes(state.screen);
         $('#drawer-switch').hidden = state.inputProfile?.mode === 'keyboard_full' && ['CH-01', 'LV-00', 'LV-01', 'LV-02', 'LV-03'].includes(state.screen);
         $('#drawer-exit').textContent = ['LV-01', 'LV-02'].includes(state.screen) ? '结束本局' : '退出到家长设置';
-        $('#drawer-summary').textContent = state.screen === 'GI-02' ? '摄像头准备已暂停。关闭入口后继续确认小手位置。' : state.screen === 'GI-05' ? '按键准备已暂停。关闭入口后可以继续。' : state.screen === 'CH-01' ? '正在选择人物，关闭入口后可以继续。' : state.screen === 'LV-02' && state.level ? `${state.level.definition.name}已安全暂停：当前 ${Math.round(state.level.score)} 分，还有 ${state.level.courage} 颗勇气心。` : state.screen === 'LV-01' ? '玩法说明已暂停，关闭入口后可以继续。' : state.screen === 'LV-00' ? '正在玩法大厅，三个玩法都可以直接选择。' : '当前流程已暂停。关闭入口后可以继续。';
+        $('#drawer-summary').textContent = state.screen === 'GI-02' ? '摄像头准备已暂停。关闭入口后继续确认小手位置。' : state.screen === 'GI-05' ? '按键准备已暂停。关闭入口后可以继续。' : state.screen === 'CH-01' ? '正在选择人物，关闭入口后可以继续。' : state.screen === 'LV-02' && state.level ? `${state.level.definition.name}已安全暂停：当前 ${Math.round(state.level.score)} 分，还有 ${state.level.courage} 颗勇气心。` : state.screen === 'LV-01' ? '玩法说明已暂停，关闭入口后可以继续。' : state.screen === 'LV-00' ? '正在玩法大厅，四个玩法都可以直接选择。' : '当前流程已暂停。关闭入口后可以继续。';
         $('#drawer-close').focus();
       }
 
@@ -3963,6 +4030,12 @@
       $('#drawer-close').addEventListener('click', () => closeDrawer(true));
       $('#drawer-resume').addEventListener('click', () => closeDrawer(true));
       $('#drawer-audio').addEventListener('click', () => setAudioEnabled(!audioRuntime.enabled));
+      $('#drawer-clear-scores').addEventListener('click', () => {
+        if (!window.confirm('清空这台设备上的四个玩法成绩？')) return;
+        state.bestScoreByMode={};state.topScoresByMode={L1:[],L2:[],L3:[]};saveLocalScores();
+        try { localStorage.removeItem('gesture-pup-wire-times-v1'); } catch (_) {}
+        wireController?.clearRecords();renderLevelMap();announce('本机成绩已清空');
+      });
       $('#drawer-switch').addEventListener('click', () => $('#switch-confirm').classList.add('show'));
       $('#cancel-switch').addEventListener('click', () => $('#switch-confirm').classList.remove('show'));
       $('#confirm-switch').addEventListener('click', goKeyboard);
@@ -3997,7 +4070,10 @@
           if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)) {
             event.preventDefault();
             const currentIndex = CHARACTER_DEFINITIONS.findIndex(character => character.id === state.pendingCharacterId);
-            const delta = event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1 : 1;
+            const columns = getComputedStyle($('#character-grid')).gridTemplateColumns.trim().split(/\s+/).length;
+            const verticalStep = columns < CHARACTER_DEFINITIONS.length ? columns : 1;
+            const step = event.key === 'ArrowUp' || event.key === 'ArrowDown' ? verticalStep : 1;
+            const delta = event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -step : step;
             const nextIndex = (currentIndex + delta + CHARACTER_DEFINITIONS.length) % CHARACTER_DEFINITIONS.length;
             selectCharacter(CHARACTER_DEFINITIONS[nextIndex].id, { focus:true });
           }
@@ -4055,7 +4131,7 @@
         if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
       });
 
-      window.addEventListener('beforeunload', () => { clearInterval(ambientSpriteTimer); stopBgm(true); stopCamera(); });
+      window.addEventListener('beforeunload', () => { wireController?.dispose(); clearInterval(ambientSpriteTimer); stopBgm(true); stopCamera(); });
 
       if (isFileProtocol) showLocalLaunchGate();
 

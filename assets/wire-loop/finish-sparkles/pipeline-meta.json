@@ -1,0 +1,293 @@
+{
+  "id": "WL-A13",
+  "slug": "finish-sparkles",
+  "generatedAt": "2026-08-31",
+  "generator": "built-in image_gen",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "sourceSha256": "e4ccf3a203914af7848ab0a37b9dc551d312d977d850f4016bad673e240667ca",
+  "processing": {
+    "method": "magenta cleanup + uniform affine extraction, annotated central motif aligned; no per-frame scale",
+    "uniformScale": 0.4,
+    "frames": [
+      {
+        "sourceCell": [
+          0,
+          0,
+          627,
+          627
+        ],
+        "sourceOriginPx": [
+          327,
+          335
+        ],
+        "outputOriginPx": [
+          128,
+          128
+        ],
+        "uniformScale": 0.4,
+        "qc": {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            86,
+            107,
+            169,
+            147
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0
+        }
+      },
+      {
+        "sourceCell": [
+          627,
+          0,
+          627,
+          627
+        ],
+        "sourceOriginPx": [
+          915,
+          335
+        ],
+        "outputOriginPx": [
+          128,
+          128
+        ],
+        "uniformScale": 0.4,
+        "qc": {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            55,
+            88,
+            201,
+            171
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0
+        }
+      },
+      {
+        "sourceCell": [
+          0,
+          627,
+          627,
+          627
+        ],
+        "sourceOriginPx": [
+          334,
+          902
+        ],
+        "outputOriginPx": [
+          128,
+          128
+        ],
+        "uniformScale": 0.4,
+        "qc": {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            49,
+            73,
+            211,
+            188
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0
+        }
+      },
+      {
+        "sourceCell": [
+          627,
+          627,
+          627,
+          627
+        ],
+        "sourceOriginPx": [
+          915,
+          907
+        ],
+        "outputOriginPx": [
+          128,
+          128
+        ],
+        "uniformScale": 0.4,
+        "qc": {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            92,
+            117,
+            161,
+            137
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0
+        }
+      }
+    ],
+    "sourceGrid": [
+      2,
+      2
+    ],
+    "originAnnotationToleranceSourcePx": 3,
+    "runtimeIntegration": "pending"
+  },
+  "exports": [
+    {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        86,
+        107,
+        169,
+        147
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/finish-sparkles/processed/finish-1.png",
+      "bytes": 4280,
+      "sha256": "b5223680edd82d5e4374d3f67571cfc57f6d0bb53ced86c8529481c656b7bdbb"
+    },
+    {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        55,
+        88,
+        201,
+        171
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/finish-sparkles/processed/finish-2.png",
+      "bytes": 7189,
+      "sha256": "e5eb81aa28e2ce44491dcbef36a4cb47585cde79f43582a6af633fa1703e3f2c"
+    },
+    {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        49,
+        73,
+        211,
+        188
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/finish-sparkles/processed/finish-3.png",
+      "bytes": 8561,
+      "sha256": "0229ce1d4e8c67fd2f061b422d67090c8658438e0c68cf90fc46f8906d16c5f3"
+    },
+    {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        92,
+        117,
+        161,
+        137
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/finish-sparkles/processed/finish-4.png",
+      "bytes": 2122,
+      "sha256": "ddef5b3879ae5cf2c8c98db6f5de196a3a86b4162d292fcac2d586262128a43b"
+    }
+  ],
+  "pixelQc": "pass",
+  "visualReview": {
+    "status": "reviewed",
+    "evidence": [
+      "contact-sheet.png",
+      "small-size-review.png",
+      "frames-review.png"
+    ],
+    "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+  },
+  "geometryIntegration": "not_started",
+  "runtimeIntegration": "not_started"
+}

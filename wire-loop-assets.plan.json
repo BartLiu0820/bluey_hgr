@@ -1,0 +1,766 @@
+{
+  "schemaVersion": 1,
+  "modeId": "wire_loop",
+  "displayName": "火线冲击",
+  "createdAt": "2026-08-31",
+  "status": "images_ready_audio_blocked",
+  "reviewStatus": "pending_pm",
+  "generatedImageCount": 13,
+  "generatedAudioCount": 0,
+  "planDocument": "火线冲击-开发计划.md",
+  "promptDocument": "火线冲击-素材规格与生成提示词.md",
+  "pathPolicy": "Image actualExports exist and are verified; planned audio and runtime paths remain unimplemented. See productionManifest for current truth.",
+  "productionGate": "User explicitly authorized asset-first production on 2026-08-31. Artwork is ready for review; W0 source-of-truth/tool gates and geometry/runtime validation remain required before gameplay implementation.",
+  "skill": {
+    "name": "generate2dsprite",
+    "path": "/Users/sansanaixuexi/.codex/skills/generate2dsprite/SKILL.md",
+    "rawImageGenerator": "built-in image_gen",
+    "processor": "/Users/sansanaixuexi/.codex/skills/generate2dsprite/scripts/generate2dsprite.py",
+    "processorHelpVerified": true,
+    "cliTargetForPropImpactFx": "asset",
+    "runtimeContract": "none",
+    "sourceBackground": "#FF00FF",
+    "limitations": [
+      "No continuous 3D geometry, collision, audio or timing generation.",
+      "Single-image processing lacks the grid branch's full frame QC metadata.",
+      "Do not square-normalize long props, wide plaques or material strips.",
+      "No procedural drawing as raw requested sprite art; runtime geometry displays generated surface art."
+    ]
+  },
+  "style": {
+    "artStyle": "project-native",
+    "finish": "clean_hd warm hand-painted preschool storybook",
+    "wireColor": "silver-blue",
+    "probeColor": "honey-gold",
+    "gripColor": "river-blue",
+    "viewedReferencePaths": [
+      "assets/maps/menu/adventure-garden.png",
+      "assets/ui/level-icons/creek-jump.png",
+      "assets/ui/instruction-icons/fist-hold.png"
+    ],
+    "additionalReferencePathsToViewBeforeGeneration": [
+      "assets/ui/panels/paper-branch-panel.png"
+    ]
+  },
+  "p0Budget": {
+    "imageGenerationJobs": 13,
+    "staticImageJobs": 11,
+    "animatedImageJobs": 2,
+    "animationFrames": 8,
+    "audioGenerationJobs": 1,
+    "includesDerivedExports": false,
+    "runtimeNewImageBudgetBytesTarget": 6000000,
+    "note": "Targets and production budget only; no asset size or quality measurements have been performed."
+  },
+  "processorProfiles": {
+    "compact_single": {
+      "cliTarget": "asset",
+      "mode": "single",
+      "singleSizeFrom": "asset.targetSize[0]",
+      "exportRenameRequired": true,
+      "additionalQcRequired": [
+        "alpha",
+        "edges",
+        "padding",
+        "actual-scale visual review"
+      ]
+    },
+    "aspect_preserved_single": {
+      "method": "deterministic chroma cleanup and aspect-preserving crop/pad",
+      "squareNormalization": false,
+      "additionalQcRequired": [
+        "alpha",
+        "edges",
+        "anchor metadata",
+        "aspect ratio"
+      ]
+    },
+    "material_source": {
+      "method": "chroma cleanup then visually reviewed interior crop for UV texture",
+      "squareNormalization": false,
+      "additionalQcRequired": [
+        "UV seams in both directions",
+        "no stretch",
+        "no procedural replacement art"
+      ]
+    },
+    "center_fx_2x2": {
+      "cliTarget": "asset",
+      "mode": "impact",
+      "rows": 2,
+      "cols": 2,
+      "cellSize": 256,
+      "scaleStrategy": "preserve",
+      "sharedScale": true,
+      "align": "center",
+      "componentMode": "all",
+      "strictQc": true,
+      "loop": false,
+      "humanoidScaleThresholdsApply": false,
+      "originValidation": "Processor center uses subject geometry, not the authored emission origin. Verify transformed source-cell center; if it drifts, preserve source-grid coordinates or supply validated per-frame origins."
+    }
+  },
+  "assets": [
+    {
+      "id": "WL-A01",
+      "slug": "probe-master",
+      "name": "探头外观母版",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 1,
+      "assetType": "prop",
+      "action": "single",
+      "view": "3/4",
+      "sheet": "single",
+      "targetSize": [
+        512,
+        768
+      ],
+      "processorProfile": "aspect_preserved_single",
+      "anchor": "ring-center",
+      "dependsOn": [],
+      "collisionRole": "reference_only",
+      "usage": [
+        "appearance review",
+        "identity reference for later assets"
+      ],
+      "promptSection": "WL-A01 — probe-master",
+      "plannedOutputRoot": "assets/wire-loop/probe-master",
+      "plannedExports": [
+        "appearance.png",
+        "attachment.json"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/probe-master/appearance.png"
+      ]
+    },
+    {
+      "id": "WL-A02",
+      "slug": "wire-metal-strip",
+      "name": "银蓝火线材质",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 1,
+      "assetType": "prop",
+      "action": "single",
+      "view": "side",
+      "sheet": "single-wide",
+      "targetSize": [
+        1024,
+        128
+      ],
+      "processorProfile": "material_source",
+      "anchor": "uv-origin",
+      "dependsOn": [
+        "WL-A01"
+      ],
+      "collisionRole": "surface_only",
+      "usage": [
+        "generated texture displayed on wire geometry"
+      ],
+      "promptSection": "WL-A02 — wire-metal-strip",
+      "plannedOutputRoot": "assets/wire-loop/wire-metal-strip",
+      "plannedExports": [
+        "material.png",
+        "uv-crop.json"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/wire-metal-strip/material.png"
+      ]
+    },
+    {
+      "id": "WL-A03",
+      "slug": "probe-metal-strip",
+      "name": "暖金圆环材质",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 1,
+      "assetType": "prop",
+      "action": "single",
+      "view": "side",
+      "sheet": "single-wide",
+      "targetSize": [
+        1024,
+        128
+      ],
+      "processorProfile": "material_source",
+      "anchor": "uv-origin",
+      "dependsOn": [
+        "WL-A01"
+      ],
+      "collisionRole": "surface_only",
+      "usage": [
+        "generated texture displayed on continuous probe ring geometry"
+      ],
+      "promptSection": "WL-A03 — probe-metal-strip",
+      "plannedOutputRoot": "assets/wire-loop/probe-metal-strip",
+      "plannedExports": [
+        "material.png",
+        "uv-crop.json"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/probe-metal-strip/material.png"
+      ]
+    },
+    {
+      "id": "WL-A04",
+      "slug": "handle-stem",
+      "name": "独立握柄与细杆",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 1,
+      "assetType": "prop",
+      "action": "single",
+      "view": "side",
+      "sheet": "single-tall",
+      "targetSize": [
+        256,
+        768
+      ],
+      "processorProfile": "aspect_preserved_single",
+      "anchor": "stem-tip",
+      "dependsOn": [
+        "WL-A01"
+      ],
+      "collisionRole": "visual_only",
+      "usage": [
+        "attachment to separately rendered probe ring"
+      ],
+      "promptSection": "WL-A04 — handle-stem",
+      "plannedOutputRoot": "assets/wire-loop/handle-stem",
+      "plannedExports": [
+        "handle-stem.png",
+        "attachment.json"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/handle-stem/handle-stem.png"
+      ]
+    },
+    {
+      "id": "WL-A05",
+      "slug": "start-dock",
+      "name": "起点支座",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 1,
+      "assetType": "prop",
+      "action": "single",
+      "view": "3/4",
+      "sheet": "single",
+      "targetSize": [
+        256,
+        256
+      ],
+      "processorProfile": "compact_single",
+      "anchor": "bottom",
+      "dependsOn": [
+        "WL-A01"
+      ],
+      "collisionRole": "visual_only",
+      "usage": [
+        "start resting dock"
+      ],
+      "promptSection": "WL-A05 — start-dock",
+      "plannedOutputRoot": "assets/wire-loop/start-dock",
+      "plannedExports": [
+        "start-dock.png",
+        "attachment.json"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/start-dock/start-dock.png"
+      ]
+    },
+    {
+      "id": "WL-A06",
+      "slug": "finish-dock",
+      "name": "终点支座",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 1,
+      "assetType": "prop",
+      "action": "single",
+      "view": "3/4",
+      "sheet": "single",
+      "targetSize": [
+        256,
+        256
+      ],
+      "processorProfile": "compact_single",
+      "anchor": "bottom",
+      "dependsOn": [
+        "WL-A05"
+      ],
+      "collisionRole": "visual_only",
+      "usage": [
+        "finish dock; completion uses geometric progress"
+      ],
+      "promptSection": "WL-A06 — finish-dock",
+      "plannedOutputRoot": "assets/wire-loop/finish-dock",
+      "plannedExports": [
+        "finish-dock.png",
+        "attachment.json"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/finish-dock/finish-dock.png"
+      ]
+    },
+    {
+      "id": "WL-A07",
+      "slug": "timer-plaque",
+      "name": "无文字计时牌",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 1,
+      "assetType": "prop",
+      "action": "single",
+      "view": "side",
+      "sheet": "single-wide",
+      "targetSize": [
+        640,
+        320
+      ],
+      "processorProfile": "aspect_preserved_single",
+      "anchor": "center",
+      "dependsOn": [],
+      "collisionRole": "none",
+      "usage": [
+        "remaining time HUD; text rendered separately"
+      ],
+      "promptSection": "WL-A07 — timer-plaque",
+      "plannedOutputRoot": "assets/wire-loop/timer-plaque",
+      "plannedExports": [
+        "timer-plaque.png",
+        "content-insets.json"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/timer-plaque/timer-plaque.png"
+      ]
+    },
+    {
+      "id": "WL-A08",
+      "slug": "mode-icon",
+      "name": "火线玩法入口标识",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 1,
+      "assetType": "prop",
+      "action": "single",
+      "view": "3/4",
+      "sheet": "single",
+      "targetSize": [
+        512,
+        512
+      ],
+      "processorProfile": "compact_single",
+      "anchor": "center",
+      "dependsOn": [
+        "WL-A01"
+      ],
+      "collisionRole": "none",
+      "usage": [
+        "fourth lobby card",
+        "mode introduction"
+      ],
+      "promptSection": "WL-A08 — mode-icon",
+      "plannedOutputRoot": "assets/wire-loop/mode-icon",
+      "plannedExports": [
+        "mode-icon.png"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/mode-icon/mode-icon.png"
+      ]
+    },
+    {
+      "id": "WL-A09",
+      "slug": "fist-move",
+      "name": "握拳四向移动指示",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 1,
+      "assetType": "prop",
+      "action": "single",
+      "view": "side",
+      "sheet": "single",
+      "targetSize": [
+        512,
+        512
+      ],
+      "processorProfile": "compact_single",
+      "anchor": "center",
+      "dependsOn": [],
+      "collisionRole": "none",
+      "ariaLabel": "握紧拳头，轻轻移动",
+      "usage": [
+        "camera tutorial",
+        "camera movement instruction"
+      ],
+      "promptSection": "WL-A09 — fist-move",
+      "plannedOutputRoot": "assets/wire-loop/fist-move",
+      "plannedExports": [
+        "fist-move.png"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/fist-move/fist-move.png"
+      ]
+    },
+    {
+      "id": "WL-A10",
+      "slug": "wrist-tilt",
+      "name": "单轴转腕指示",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 1,
+      "assetType": "prop",
+      "action": "single",
+      "view": "side",
+      "sheet": "single",
+      "targetSize": [
+        512,
+        512
+      ],
+      "processorProfile": "compact_single",
+      "anchor": "center",
+      "dependsOn": [],
+      "collisionRole": "none",
+      "ariaLabel": "握住，轻轻左右倾斜手腕",
+      "usage": [
+        "camera rotation tutorial"
+      ],
+      "promptSection": "WL-A10 — wrist-tilt",
+      "plannedOutputRoot": "assets/wire-loop/wrist-tilt",
+      "plannedExports": [
+        "wrist-tilt.png"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/wrist-tilt/wrist-tilt.png"
+      ]
+    },
+    {
+      "id": "WL-A11",
+      "slug": "release-hand",
+      "name": "张掌松手指示",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 1,
+      "assetType": "prop",
+      "action": "single",
+      "view": "side",
+      "sheet": "single",
+      "targetSize": [
+        512,
+        512
+      ],
+      "processorProfile": "compact_single",
+      "anchor": "center",
+      "dependsOn": [],
+      "collisionRole": "none",
+      "ariaLabel": "张开手掌，探头停住",
+      "usage": [
+        "release tutorial",
+        "released state"
+      ],
+      "promptSection": "WL-A11 — release-hand",
+      "plannedOutputRoot": "assets/wire-loop/release-hand",
+      "plannedExports": [
+        "release-hand.png"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/release-hand/release-hand.png"
+      ]
+    },
+    {
+      "id": "WL-A12",
+      "slug": "contact-flash",
+      "name": "接触短闪",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 4,
+      "assetType": "impact",
+      "action": "impact",
+      "view": "side",
+      "sheet": "2x2",
+      "targetSize": [
+        256,
+        256
+      ],
+      "processorProfile": "center_fx_2x2",
+      "anchor": "contact-center",
+      "frameDurationMsInitial": 70,
+      "loop": false,
+      "dependsOn": [],
+      "collisionRole": "none",
+      "usage": [
+        "one-shot after confirmed first contact"
+      ],
+      "promptSection": "WL-A12 — contact-flash",
+      "plannedOutputRoot": "assets/wire-loop/contact-flash",
+      "plannedExports": [
+        "processed/sheet-transparent.png",
+        "processed/contact-1.png",
+        "processed/contact-2.png",
+        "processed/contact-3.png",
+        "processed/contact-4.png",
+        "processed/animation.gif",
+        "animation.json"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/contact-flash/processed/contact-1.png",
+        "assets/wire-loop/contact-flash/processed/contact-2.png",
+        "assets/wire-loop/contact-flash/processed/contact-3.png",
+        "assets/wire-loop/contact-flash/processed/contact-4.png"
+      ]
+    },
+    {
+      "id": "WL-A13",
+      "slug": "finish-sparkles",
+      "name": "通关短星光",
+      "priority": "P0",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "generationJobs": 1,
+      "frames": 4,
+      "assetType": "fx",
+      "action": "impact",
+      "view": "side",
+      "sheet": "2x2",
+      "targetSize": [
+        256,
+        256
+      ],
+      "processorProfile": "center_fx_2x2",
+      "anchor": "emission-center",
+      "frameDurationMsInitial": 110,
+      "loop": false,
+      "dependsOn": [],
+      "collisionRole": "none",
+      "usage": [
+        "one-shot after success"
+      ],
+      "promptSection": "WL-A13 — finish-sparkles",
+      "plannedOutputRoot": "assets/wire-loop/finish-sparkles",
+      "plannedExports": [
+        "processed/sheet-transparent.png",
+        "processed/finish-1.png",
+        "processed/finish-2.png",
+        "processed/finish-3.png",
+        "processed/finish-4.png",
+        "processed/animation.gif",
+        "animation.json"
+      ],
+      "generatedAt": "2026-08-31",
+      "pixelQc": "pass",
+      "runtimeIntegration": "not_started",
+      "actualExports": [
+        "assets/wire-loop/finish-sparkles/processed/finish-1.png",
+        "assets/wire-loop/finish-sparkles/processed/finish-2.png",
+        "assets/wire-loop/finish-sparkles/processed/finish-3.png",
+        "assets/wire-loop/finish-sparkles/processed/finish-4.png"
+      ]
+    },
+    {
+      "id": "WL-S01",
+      "slug": "wire-contact-soft",
+      "name": "碰线短蜂鸣",
+      "priority": "P0",
+      "kind": "audio",
+      "status": "blocked_missing_audio_credential",
+      "generationJobs": 1,
+      "durationSecondsRange": [
+        0.35,
+        0.5
+      ],
+      "loop": false,
+      "generator": "separate audio workflow; capability to be verified before production",
+      "dependsOn": [],
+      "usage": [
+        "first-contact event only"
+      ],
+      "promptSection": "WL-S01 — wire-contact-soft.mp3",
+      "plannedOutputRoot": "assets/audio/sfx",
+      "plannedExports": [
+        "wire-contact-soft.mp3"
+      ]
+    }
+  ],
+  "optionalAssets": [
+    {
+      "id": "WL-X01",
+      "name": "花园小工坊背景",
+      "priority": "P1",
+      "status": "deferred",
+      "kind": "image",
+      "generationJobs": 1,
+      "targetSize": [
+        1536,
+        864
+      ],
+      "generator": "built-in image_gen scene workflow, not sprite grid processing",
+      "promptSection": "WL-X01 — 可选背景（不采用上述洋红精灵前缀）"
+    },
+    {
+      "id": "WL-X02",
+      "name": "专属专注背景音乐",
+      "priority": "P1",
+      "status": "deferred",
+      "kind": "audio",
+      "generationJobs": 1,
+      "durationSeconds": 18,
+      "loop": true,
+      "promptSection": "WL-X02 — 可选 BGM"
+    },
+    {
+      "id": "WL-X03",
+      "name": "六角色专注动作",
+      "priority": "P1",
+      "status": "deferred",
+      "kind": "image_bundle",
+      "generationJobs": 6,
+      "framesPerJob": 4,
+      "totalFrames": 24,
+      "sheetPerCharacter": "2x2",
+      "promptStatus": "identity-specific prompts deferred until this optional bundle is requested",
+      "promptSection": "WL-X03 — 可选角色专注动作"
+    }
+  ],
+  "reuse": [
+    {
+      "id": "six-character-actions",
+      "source": "assets/characters/character-roster.json",
+      "actions": [
+        "idle",
+        "bump",
+        "celebrate"
+      ],
+      "regenerate": false
+    },
+    {
+      "id": "background",
+      "source": "assets/maps/menu/adventure-garden.png",
+      "regenerate": false
+    },
+    {
+      "id": "pause-result-panel",
+      "source": "assets/ui/panels/paper-branch-panel.png",
+      "regenerate": false
+    },
+    {
+      "id": "grip-ready",
+      "source": "assets/ui/instruction-icons/fist-hold.png",
+      "regenerate": false
+    },
+    {
+      "id": "find-hand",
+      "source": "assets/ui/instruction-icons/find-hand.png",
+      "regenerate": false
+    },
+    {
+      "id": "buttons",
+      "source": "assets/ui/buttons/button-family-manifest.json",
+      "regenerate": false
+    },
+    {
+      "id": "controls",
+      "source": "assets/ui/control-icons/control-icons-manifest.json",
+      "regenerate": false
+    },
+    {
+      "id": "fonts",
+      "source": "assets/fonts/README.md",
+      "regenerate": false,
+      "note": "Check and extend glyph subsets only as needed; render complete time text consistently, no m-as-seconds."
+    },
+    {
+      "id": "audio",
+      "source": "assets/audio/audio-manifest.json",
+      "regenerate": false,
+      "events": [
+        "ui_tap",
+        "gesture_ready",
+        "countdown",
+        "pause",
+        "round_complete"
+      ]
+    }
+  ],
+  "runtimeContracts": [
+    {
+      "id": "wire-geometry",
+      "status": "planned",
+      "implementation": "curve tube in fixed plane",
+      "materialAsset": "WL-A02",
+      "collisionSource": "curve plus wire radius; not alpha or screenshot"
+    },
+    {
+      "id": "probe-loop-geometry",
+      "status": "planned",
+      "implementation": "continuous torus pose with one orientation axis",
+      "materialAsset": "WL-A03",
+      "collisionSource": "center, normal, major radius and tube radius",
+      "attachmentAsset": "WL-A04"
+    }
+  ],
+  "updatedAt": "2026-08-31",
+  "actualImageGenerationCalls": 14,
+  "productionManifest": "assets/wire-loop/asset-manifest.json",
+  "assetProductionAuthorization": "confirmed: user requested generating game assets first; does not confirm all gameplay rules or the overall Phase 4B gate."
+}

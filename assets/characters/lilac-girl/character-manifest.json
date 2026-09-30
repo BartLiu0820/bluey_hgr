@@ -1,0 +1,127 @@
+{
+  "version": 3,
+  "id": "lilac-girl",
+  "displayName": "棉棉",
+  "assetRoot": "lilac-girl",
+  "status": "integrated",
+  "thumbnail": "idle/idle-1.png",
+  "artRevision": "youyou-eyes-v2",
+  "styleReference": "garden-girl",
+  "faceMaster": "references/face-style-master.png",
+  "runtimeActionContract": [
+    "idle",
+    "run",
+    "jump",
+    "hover",
+    "hurt",
+    "bump",
+    "celebrate"
+  ],
+  "framesPerAction": 4,
+  "sheet": {
+    "rows": 2,
+    "cols": 2,
+    "cellSize": 256,
+    "facing": "right",
+    "anchor": "feet",
+    "transparent": true
+  },
+  "outputOrigin": [
+    128.0,
+    231
+  ],
+  "scaleProfile": "character-scale-profile.json",
+  "actions": {
+    "idle": {
+      "label": "待机",
+      "frameDurationMs": 240,
+      "frames": [
+        "idle/idle-1.png",
+        "idle/idle-2.png",
+        "idle/idle-3.png",
+        "idle/idle-4.png"
+      ],
+      "sheet": "idle/sheet-transparent.png",
+      "gif": "idle/animation.gif"
+    },
+    "run": {
+      "label": "跑步",
+      "frameDurationMs": 120,
+      "frames": [
+        "run/run-1.png",
+        "run/run-2.png",
+        "run/run-3.png",
+        "run/run-4.png"
+      ],
+      "sheet": "run/sheet-transparent.png",
+      "gif": "run/animation.gif"
+    },
+    "jump": {
+      "label": "跳跃",
+      "frameDurationMs": 170,
+      "frames": [
+        "jump/jump-1.png",
+        "jump/jump-2.png",
+        "jump/jump-3.png",
+        "jump/jump-4.png"
+      ],
+      "sheet": "jump/sheet-transparent.png",
+      "gif": "jump/animation.gif"
+    },
+    "hover": {
+      "label": "悬浮",
+      "frameDurationMs": 180,
+      "frames": [
+        "hover/hover-1.png",
+        "hover/hover-2.png",
+        "hover/hover-3.png",
+        "hover/hover-4.png"
+      ],
+      "sheet": "hover/sheet-transparent.png",
+      "gif": "hover/animation.gif"
+    },
+    "hurt": {
+      "label": "受惊／救援",
+      "frameDurationMs": 190,
+      "frames": [
+        "hurt/hurt-1.png",
+        "hurt/hurt-2.png",
+        "hurt/hurt-3.png",
+        "hurt/hurt-4.png"
+      ],
+      "sheet": "hurt/sheet-transparent.png",
+      "gif": "hurt/animation.gif"
+    },
+    "bump": {
+      "label": "碰撞",
+      "frameDurationMs": 170,
+      "frames": [
+        "bump/bump-1.png",
+        "bump/bump-2.png",
+        "bump/bump-3.png",
+        "bump/bump-4.png"
+      ],
+      "sheet": "bump/sheet-transparent.png",
+      "gif": "bump/animation.gif"
+    },
+    "celebrate": {
+      "label": "庆祝",
+      "frameDurationMs": 190,
+      "frames": [
+        "celebrate/celebrate-1.png",
+        "celebrate/celebrate-2.png",
+        "celebrate/celebrate-3.png",
+        "celebrate/celebrate-4.png"
+      ],
+      "sheet": "celebrate/sheet-transparent.png",
+      "gif": "celebrate/animation.gif"
+    }
+  },
+  "notes": [
+    "眼睛与脸部参考悠悠的大眼睛画风；七动作统一，保留原服装、身高和动作语义。",
+    "运行时负责跳跃、悬浮与救援的世界坐标位移；素材保留屈膝、后仰等姿态变化。",
+    "同一共享缩放系数用于所有动作；未逐帧缩放，也不需要逐动作运行时缩放补偿。",
+    "已作为棉棉接入游戏角色名单、HTML 角色定义和六角色选择；复用原有三玩法与碰撞规则。",
+    "用户照片派生形象，仅用于本次项目素材；未上传或发布到外部网站。"
+  ]
+}

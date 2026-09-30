@@ -1,0 +1,74 @@
+{
+  "id": "WL-A04",
+  "slug": "handle-stem",
+  "generatedAt": "2026-08-31",
+  "generator": "built-in image_gen",
+  "sourceSize": [
+    1024,
+    1536
+  ],
+  "sourceSha256": "1f8161da4cb342982360da50bd6e67f00c686ce5f3ee324e7b3941dfdaf65fa7",
+  "processing": {
+    "method": "aspect-preserving crop and pad",
+    "sourceSize": [
+      1024,
+      1536
+    ],
+    "targetSize": [
+      256,
+      768
+    ],
+    "transform": {
+      "crop": [
+        402,
+        193,
+        621,
+        1278
+      ],
+      "scale": 0.6370506912442396,
+      "paste": [
+        58,
+        38
+      ]
+    }
+  },
+  "exports": [
+    {
+      "size": [
+        256,
+        768
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        58,
+        38,
+        198,
+        729
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/handle-stem/handle-stem.png",
+      "bytes": 86561,
+      "sha256": "bcb405c6a582d64cf52b0ab5ed1d492a376363fa273afb7b476ae06b84c3001c"
+    }
+  ],
+  "pixelQc": "pass",
+  "visualReview": {
+    "status": "reviewed",
+    "evidence": [
+      "contact-sheet.png",
+      "small-size-review.png",
+      "frames-review.png"
+    ],
+    "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+  },
+  "geometryIntegration": "not_started",
+  "runtimeIntegration": "not_started"
+}

@@ -1,0 +1,14 @@
+{
+  "image": "appearance.png",
+  "anchor": "ring-center",
+  "sourcePoint": [
+    513,
+    458
+  ],
+  "pointPx": [
+    254.667,
+    205.822
+  ],
+  "referenceOnly": true,
+  "note": "Visually annotated appearance center, NOT a collision radius or frozen geometry contract."
+}

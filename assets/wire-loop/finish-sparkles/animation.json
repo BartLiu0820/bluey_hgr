@@ -1,0 +1,25 @@
+{
+  "frames": [
+    "processed/finish-1.png",
+    "processed/finish-2.png",
+    "processed/finish-3.png",
+    "processed/finish-4.png"
+  ],
+  "frameSize": [
+    256,
+    256
+  ],
+  "frameDurationsMs": [
+    110,
+    110,
+    110,
+    110
+  ],
+  "loop": false,
+  "originPx": [
+    128,
+    128
+  ],
+  "onComplete": "hide",
+  "gifIsLoopingReviewOnly": true
+}

@@ -1,0 +1,29 @@
+{
+  "date": "2026-08-31",
+  "artRevision": "youyou-eyes-v2",
+  "status": "PASS",
+  "actions": 7,
+  "changedRuntimeFrames": 28,
+  "styleReference": "garden-girl",
+  "scope": "棉棉脸部与大眼睛风格；不改变身高、衣帽和游戏规则",
+  "maxProfileBodyScaleDrift": 0.03983632373533119,
+  "spriteQC": "28/28 PASS",
+  "gameCheck": "node tests/character-selection-targeted.mjs: 11/11 PASS",
+  "previewCheck": "7 actions / frame four / half speed / dark background / flip / zero errors",
+  "comparison": "face-comparison.png",
+  "screenshots": [
+    "face-comparison.png",
+    "selection-1280x720.png",
+    "selection-1440x900.png",
+    "selection-919x843.png",
+    "mianmian-L1.png",
+    "selection-1024x700.png",
+    "mianmian-L2.png",
+    "mianmian-L3.png",
+    "selection-1219x681.png"
+  ],
+  "limitations": [
+    "摄像头仅模拟就绪，并非真实手势验收"
+  ],
+  "visualReview": "confirmed：用户查看修改对比后回复“好的”"
+}
