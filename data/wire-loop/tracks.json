@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "tracks": [
+    {"id":"garden-practice","revision":1,"difficultyId":"gentle","rulesVersion":2,"tutorial":true,"startX":-2.8,"endX":2.8,"amplitude":0,"halfWave":3.5,"samples":100,"wireRadius":0.055,"ringRadius":0.32,"ringTubeRadius":0.06,"checkpointSpacing":0.16,"timeLimitMs":60000},
+    {"id":"garden-s","revision":1,"difficultyId":"gentle","rulesVersion":2,"tutorial":false,"startX":-3.5,"endX":3.5,"amplitude":1.18,"halfWave":3.5,"samples":220,"wireRadius":0.055,"ringRadius":0.30,"ringTubeRadius":0.06,"checkpointSpacing":0.16,"timeLimitMs":60000}
+  ]
+}

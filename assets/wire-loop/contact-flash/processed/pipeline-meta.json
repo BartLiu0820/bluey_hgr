@@ -1,0 +1,168 @@
+{
+  "method": "magenta cleanup + uniform affine extraction, annotated central motif aligned; no per-frame scale",
+  "uniformScale": 0.4,
+  "frames": [
+    {
+      "sourceCell": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "sourceOriginPx": [
+        315,
+        358
+      ],
+      "outputOriginPx": [
+        128,
+        128
+      ],
+      "uniformScale": 0.4,
+      "qc": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "bbox": [
+          112,
+          111,
+          145,
+          145
+        ],
+        "nonEmpty": true,
+        "cornerAlpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "edgeAlphaPixels": 0,
+        "magentaSpillPixels": 0
+      }
+    },
+    {
+      "sourceCell": [
+        627,
+        0,
+        627,
+        627
+      ],
+      "sourceOriginPx": [
+        929,
+        358
+      ],
+      "outputOriginPx": [
+        128,
+        128
+      ],
+      "uniformScale": 0.4,
+      "qc": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "bbox": [
+          80,
+          77,
+          176,
+          152
+        ],
+        "nonEmpty": true,
+        "cornerAlpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "edgeAlphaPixels": 0,
+        "magentaSpillPixels": 0
+      }
+    },
+    {
+      "sourceCell": [
+        0,
+        627,
+        627,
+        627
+      ],
+      "sourceOriginPx": [
+        315,
+        936
+      ],
+      "outputOriginPx": [
+        128,
+        128
+      ],
+      "uniformScale": 0.4,
+      "qc": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "bbox": [
+          82,
+          77,
+          175,
+          160
+        ],
+        "nonEmpty": true,
+        "cornerAlpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "edgeAlphaPixels": 0,
+        "magentaSpillPixels": 0
+      }
+    },
+    {
+      "sourceCell": [
+        627,
+        627,
+        627,
+        627
+      ],
+      "sourceOriginPx": [
+        929,
+        936
+      ],
+      "outputOriginPx": [
+        128,
+        128
+      ],
+      "uniformScale": 0.4,
+      "qc": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "bbox": [
+          111,
+          112,
+          144,
+          145
+        ],
+        "nonEmpty": true,
+        "cornerAlpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "edgeAlphaPixels": 0,
+        "magentaSpillPixels": 0
+      }
+    }
+  ],
+  "sourceGrid": [
+    2,
+    2
+  ],
+  "originAnnotationToleranceSourcePx": 3,
+  "runtimeIntegration": "pending"
+}

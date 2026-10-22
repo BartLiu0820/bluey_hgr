@@ -1,0 +1,14 @@
+{
+  "image": "timer-plaque.png",
+  "canvasSize": [
+    640,
+    320
+  ],
+  "textRectPx": [
+    180.08,
+    98.457,
+    378.1619999999999,
+    123.4
+  ],
+  "note": "Seconds and all text are HTML; clear rectangle excludes stopwatch, rim and leaves."
+}

@@ -1,5 +1,9 @@
 # 原型规格：三玩法无尽距离与高度里程碑
-> 更新日期：2026-08-17 | 来源：`03-feature-核心关卡循环.md` | Target Surface：web-only
+> 更新日期：2026-08-31 | 来源：`03-feature-核心关卡循环.md` | Target Surface：web-only
+
+## 第四玩法接入合同
+
+2026-09-05 已授权：大厅四卡2×2，第四入口火线冲击，继续消费selectedCharacterId和既有输入就绪会话。旧三玩法规则不变；新握持/位移/转腕仅在WL-01使用，输入合同与计时/失败/成绩界面分别见 `03-feature-火线冲击.md`、`04A-prototype-spec-火线冲击.md`。原三玩法分析继续仅适用原三玩法。
 
 ## 1. Product Frame
 
@@ -7,14 +11,14 @@
 - 主要场景：带摄像头的笔记本浏览器，坐姿或站姿近景单手游玩。
 - 原型目的：验证三个默认开放玩法是否各自易懂、可无限重玩，并重点验证由真实距离/高度驱动的速度与障碍递进是否能被 5 岁儿童感知。
 - Target Surface：`web-only`，沿用 Phase 1 已确认范围。
-- 关键约束：单屏无页面滚动；本机识别；无账号/昵称/联网榜；私人本地版使用用户参考图生成五名候选角色的动作素材，公开发布前必须授权或切回原创角色；摄像头文案不覆盖视频。
+- 关键约束：单屏无页面滚动；本机识别；无账号/昵称/联网榜；私人本地版使用用户参考图生成六名候选角色的动作素材，公开发布前必须授权或切回原创角色；摄像头文案不覆盖视频。
 
 ## 2. Goals And Non-Goals
 
 ### Goals
 
-- 摄像头在 GI-02 点击“继续”、键盘在 GI-05 完成一次按键测试后点击“开始游戏”，都进入 CH-01 五角色选择；确认角色后进入三玩法大厅，两条路径都不经过重复 ready 页。
-- CH-01 提供布鲁伊、宾果、麦麦、班底特、悠悠五选一，提交的 `selectedCharacterId` 驱动大厅、三玩法、救援和成绩页角色素材。
+- 摄像头在 GI-02 点击“继续”、键盘在 GI-05 完成一次按键测试后点击“开始游戏”，都进入 CH-01 六角色选择；确认角色后进入三玩法大厅，两条路径都不经过重复 ready 页。
+- CH-01 提供布鲁伊、宾果、麦麦、班底特、悠悠、棉棉六选一，提交的 `selectedCharacterId` 驱动大厅、三玩法、救援和成绩页角色素材。
 - 三张玩法卡同权重、默认可点，并显示各自控制图形和本机个人最好。
 - 每种玩法有自己的入场说明和 3–5 秒安全教学；大厅上方不展示拳掌三步指引。
 - 三种运行时均不设时长终点；L1/L2 以行进米数、L3 以爬升米数驱动渐进速度、障碍组合、里程碑反馈、3 颗勇气心和单局成绩。
@@ -31,7 +35,7 @@
 
 | User | Need | Context | Success Signal |
 |---|---|---|---|
-| 儿童 | 选择喜欢的人物 | 输入已就绪 | 五张人物卡中确认一张 |
+| 儿童 | 选择喜欢的人物 | 输入已就绪 | 六张人物卡中确认一张 |
 | 儿童 | 自己选择想玩的玩法 | 人物已确认 | 任意卡可直接进入 |
 | 儿童 | 快速理解当前玩法 | 首次进入/重玩 | 在安全教学中完成一次控制 |
 | 儿童 | 知道碰撞后发生了什么 | 落坑/撞边/落空 | 看见救援、心减少并继续 |
@@ -59,11 +63,11 @@
 
 ### Character Selection And Asset Contract
 
-- Roster：`bluey/布鲁伊`、`bingo/宾果`、`grey-puppy/麦麦`、`blue-heeler-dad/班底特`、`garden-girl/悠悠`，顺序与 `assets/characters/character-roster.json` 一致，均可选且无锁态。
+- Roster：`bluey/布鲁伊`、`bingo/宾果`、`grey-puppy/麦麦`、`blue-heeler-dad/班底特`、`garden-girl/悠悠`、`lilac-girl/棉棉`，顺序与 `assets/characters/character-roster.json` 一致，均可选且无锁态。
 - 参考身份：每个角色只改变动作姿势，分别保留轮廓、配色、面部特征和儿童友好画风，不使用滤镜把同一轮廓伪装成另一角色。
-- 动作清单：五名角色分别生成 `idle`、`run`、`jump`、`hover`、`hurt`、`bump`、`celebrate`；每组 2×2、4 帧透明 PNG，并保留原始洋红底表、透明合图、GIF、prompt 与 QC 元数据，共 35 组/140 帧。普通障碍命中播放 `bump`，坑洞/安全云救援继续使用 `hurt`。
-- 选择合同：CH-01 默认聚焦布鲁伊，五卡同权重；点击卡片只更新候选与选中反馈，点击“选好啦”才提交 `selectedCharacterId`。换玩法、再玩一次与成绩页保持当前选择，新会话/刷新回到布鲁伊候选。
-- 状态映射：准备/等待 → `idle`；L1 前进 → `run`；L1/L3 弹跳 → `jump`；L2 跟手 → `hover`；碰撞/坠落/救援 → `hurt`；准备完成/成绩 → `celebrate`。
+- 动作清单：六名角色分别生成 `idle`、`run`、`jump`、`hover`、`hurt`、`bump`、`celebrate`；每组 2×2、4 帧透明 PNG，并保留原始洋红底表、透明合图、GIF、prompt 与 QC 元数据，共 42 组/168 帧。普通障碍命中播放 `bump`，坑洞/安全云救援继续使用 `hurt`。
+- 选择合同：CH-01 默认聚焦布鲁伊，六卡同权重；点击卡片只更新候选与选中反馈，点击“选好啦”才提交 `selectedCharacterId`。换玩法、再玩一次与成绩页保持当前选择，新会话/刷新回到布鲁伊候选。
+- 状态映射：准备/等待 → `idle`；L1 前进 → `run`；L1/L3 弹跳 → `jump`；L2 跟手 → `hover`；普通碰撞 → `bump`；坑洞/安全云救援 → `hurt`；准备完成/成绩 → `celebrate`。
 - 实现边界：动作切换不得改动 `Session`、输入映射、碰撞、计分、救援或 screen transitions；动作帧加载失败时回退到同角色 `idle`，不阻断本局。
 - 发行边界：素材只服务本项目的私人本地试玩；分享构建物、公开发布或商用前必须取得授权，或整体替换为原创角色素材。
 
@@ -154,7 +158,7 @@
 | ID | Screen | Purpose | Entry | Exit |
 |---|---|---|---|---|
 | GI-01/GI-02/GI-05 | 输入设置/就绪 | 输出 InputProfile；摄像头 GI-02、键盘 GI-05 都单页继续 | 起始/降级 | CH-01 |
-| CH-01 | 人物选择 | 五选一并提交会话角色 | 输入就绪 | LV-00/来源输入页 |
+| CH-01 | 人物选择 | 六选一并提交会话角色 | 输入就绪 | LV-00/来源输入页 |
 | LV-00 | 三玩法大厅 | 默认开放的玩法选择 | 人物确认/LV-03 | LV-01 |
 | LV-01 | 玩法入场 | 只说明当前玩法控制 | LV-00/LV-03 | LV-02 |
 | LV-02 | 运行时宿主 | 教学、计分、救援、暂停 | LV-01 | LV-03/LV-00 |
@@ -170,7 +174,7 @@
 | Screen | 进入方式 | 真实交互 | 目标 |
 |---|---|---|---|
 | GI 输入流程 | 起始 | 摄像头 GI-02“继续”或键盘 GI-05“开始游戏” | CH-01 |
-| CH-01 | 输入完成 | 五张人物卡单选 + “选好啦” | LV-00 |
+| CH-01 | 输入完成 | 六张人物卡单选 + “选好啦” | LV-00 |
 | LV-00 | 输入完成/成绩返回 | 点击任一玩法卡 | LV-01 |
 | LV-01 | 已选玩法 | 点击“开始玩” | LV-02 |
 | LV-02 | 倒计时后 | 第3次失误/家长结束 | LV-03 |
@@ -189,12 +193,12 @@
 ### CH-01：人物选择
 
 - Purpose：在玩法选择前确定本次会话的初始人物。
-- Layout：暖纸探险底板保持单屏；顶部一个短标题；中部五张同权重角色卡横排；底部一个主 CTA。919×843 与 1219×681 通过同步缩小卡片/间距保持五卡同屏，不使用横向滚动。
+- Layout：暖纸探险底板保持单屏；顶部一个短标题；中部六张同权重角色卡；宽屏六列，宽度 ≤1050px 且高度 ≥720px 时三列两行；底部一个主 CTA。919×843 与 1219×681 均保持六卡同屏，不使用横向或纵向滚动；上下方向键在两行布局中按列数移动。
 - Card：每卡只显示 `idle-1.png` 和姓名；默认布鲁伊选中，选中态使用太阳黄内环、河蓝外描边、轻抬与对勾角标；不得显示属性、技能、推荐、锁态或角色说明。
-- Interaction：点击或 Enter/Space 选中；方向键可在五卡间移动；同一时刻恰好一个 `role=radio` 为 `aria-checked=true`。主按钮“选好啦”提交并进入 LV-00；返回到来源输入页时保留候选与 InputProfile。
+- Interaction：点击或 Enter/Space 选中；方向键可在六卡间移动；同一时刻恰好一个 `role=radio` 为 `aria-checked=true`。主按钮“选好啦”提交并进入 LV-00；返回到来源输入页时保留候选与 InputProfile。
 - Data needed：characterDefinitions、pendingCharacterId、selectedCharacterId、inputProfile、sourceReadyScreen。
 - Failure：角色图加载失败时显示同色轮廓占位与姓名，卡片仍可选；非法 id 回退 bluey。
-- Acceptance：人物和姓名一一对应；五卡都能改变选中态；确认后 LV-00、LV-01、LV-02、LV-03 读取同一 selectedCharacterId；5 个支持视口无滚动/溢出/遮挡。
+- Acceptance：人物和姓名一一对应；六卡都能改变选中态；确认后 LV-00、LV-01、LV-02、LV-03 读取同一 selectedCharacterId；5 个支持视口无滚动/溢出/遮挡。
 
 ### LV-00：三玩法大厅
 
@@ -329,7 +333,7 @@ Loading 只发生在选择玩法后的 runtime mount；LV-01 保持可见并显�
 
 ## 10. Sample Data
 
-- `characterDefinitions=[bluey,bingo,grey-puppy,blue-heeler-dad,garden-girl]`；`pendingCharacterId=bluey`；确认麦麦后 `selectedCharacterId=grey-puppy`。
+- `characterDefinitions=[bluey,bingo,grey-puppy,blue-heeler-dad,garden-girl,lilac-girl]`；`pendingCharacterId=bluey`；确认麦麦后 `selectedCharacterId=grey-puppy`。
 - `bestScoreByMode={creek_jump:186,firefly_dodge:242,treetop_bounce:131}`。
 - `topScoresByMode.creek_jump=[186,151,124,93,62]`。
 - first-use 卡片：“还没有成绩”。
@@ -410,8 +414,8 @@ Loading 只发生在选择玩法后的 runtime mount；LV-01 保持可见并显�
 ## 18. Acceptance Criteria For HTML Prototype
 
 - [ ] 摄像头 GI-02 点击“继续”进入 CH-01，键盘 GI-05 任意有效键点亮后点击“开始游戏”也进入 CH-01；不存在可达 GI-03/GI-04/GI-06。
-- [ ] CH-01 恰好显示布鲁伊、宾果、麦麦、班底特、悠悠五张可选人物卡；同一时刻恰好一个选中，点击“选好啦”后进入 LV-00。
-- [ ] `selectedCharacterId` 在 LV-00/LV-01/LV-02/LV-03、再玩一次与换玩法中保持；五名角色 35 组/140 帧均按相同状态合同加载，非法 id 或动作帧失败回退到布鲁伊/同角色 idle 而不阻断玩法。
+- [ ] CH-01 恰好显示布鲁伊、宾果、麦麦、班底特、悠悠、棉棉六张可选人物卡；同一时刻恰好一个选中，点击“选好啦”后进入 LV-00。
+- [ ] `selectedCharacterId` 在 LV-00/LV-01/LV-02/LV-03、再玩一次与换玩法中保持；六名角色 42 组/168 帧均按相同状态合同加载，非法 id 或动作帧失败回退到布鲁伊/同角色 idle 而不阻断玩法。
 - [ ] LV-00 三玩法默认全可点，无锁态/编号/完成上一关文案。
 - [ ] LV-01 与 LV-02 tutorial 对三个玩法分别显示唯一正确控制。
 - [ ] `pose-transition`、`fist-hold`、`open-palm-jump`、`hand-move-vertical`、`hand-move-horizontal`、`hand-move-free`、`find-hand` 七枚指示图分别生成并从透明 PNG 加载；GI-02、LV-01、LV-02 动作卡和 no-hand/camera-wait 按状态正确映射，不再显示大尺寸通用内联手掌 SVG。
@@ -441,7 +445,7 @@ Loading 只发生在选择玩法后的 runtime mount；LV-01 保持可见并显�
 - [ ] LV-03 再玩/换玩法/结束游戏真实可达；左侧当局画面、竖向降序 Top 5 和儿童操作在所有视口完整可见；无昵称/公开榜/图片上传。
 - [ ] 摄像头与键盘两路径走通。
 - [ ] 摄像头模式保留右上教练；键盘模式整块教练从布局/无障碍树移除，角色旁黄色手势定位标记不显示，键盘操作仍由中央动作提示与按键完成。
-- [ ] 五角色 35 组/140 张透明帧全部本地可加载；页面不再实例化旧 `#dog` SVG 或滤镜占位角色；L1/L2/L3、普通碰撞 `bump`、坑洞/安全云 `hurt` 与选择/准备/成绩状态切换到当前角色对应动作组。
+- [ ] 六角色 42 组/168 张透明帧全部本地可加载；页面不再实例化旧 `#dog` SVG 或滤镜占位角色；L1/L2/L3、普通碰撞 `bump`、坑洞/安全云 `hurt` 与选择/准备/成绩状态切换到当前角色对应动作组。
 - [ ] 4 条 18 秒丰富欢快 BGM + 14 个 SFX 均从 `assets/audio/` 本地加载；manifest、HTML 映射和文件路径一一对应，无运行时外链或 API key。
 - [ ] 首次用户交互后按 screen 播放正确 BGM；L1/L2/L3 互不叠播；LV-03 停 BGM 并只播放一次结算音。
 - [ ] jump/collect/pass/collision/rescue/platform-land/character-switch/pause cue 在对应状态边沿单次触发；tracking/render/每秒得分不触发 cue。
@@ -456,13 +460,13 @@ Loading 只发生在选择玩法后的 runtime mount；LV-01 保持可见并显�
 ## 19. QA Strategy For HTML Prototype
 
 - QA Mode：`QA-TARGETED`；触发原因是 LV-01 倒计时、HUD 四向安全边距、键盘模式条件隐藏和升级庆祝层均存在纯文本检查无法可靠确认的局部溢出/遮挡风险。
-- Static checks：五角色 roster/35 动作组/140 帧资产路径、数字与七枚指示图状态映射、JS 语法、L1 速度—跳跃参数和 hitbox 字段完整。
-- Browser checks：定向检查 1440×900、1219×681、919×843 的双输入→CH-01、五卡单选、确认→LV-00、角色跨三玩法保持与单视口布局；保留 L1 物理和三玩法 scored loop 回归，不进行无关全量验收。
+- Static checks：六角色 roster/42 动作组/168 帧资产路径、数字与七枚指示图状态映射、JS 语法、L1 速度—跳跃参数和 hitbox 字段完整。
+- Browser checks：定向检查 1440×900、1219×681、919×843 的双输入→CH-01、六卡单选、确认→LV-00、角色跨三玩法保持与单视口布局；保留 L1 物理和三玩法 scored loop 回归，不进行无关全量验收。
 - 人工 UX：确认 L1 角色/障碍确实落在地面中，肉眼接触与扣心一致；从基础到最高速度，跳跃依然有稳定节奏且不会像地面突然从脚下加速滑走。
 
 ## 20. PM Review Slice
 
-- 本阶段关键决策：摄像头与键盘都在单一准备页进入 CH-01，儿童从布鲁伊、宾果、麦麦、班底特、悠悠中确认本次会话人物后进入玩法大厅；所选角色贯穿三玩法与成绩循环。三玩法均为无时长终点的无尽局；L1 使用地面纵深接触带、速度耦合弹道和连续 swept hitbox；其余已确认的输入、HUD、计分、救援和键盘模式边界不变。
+- 本阶段关键决策：摄像头与键盘都在单一准备页进入 CH-01，儿童从布鲁伊、宾果、麦麦、班底特、悠悠、棉棉中确认本次会话人物后进入玩法大厅；所选角色贯穿三玩法与成绩循环。三玩法均为无时长终点的无尽局；L1 使用地面纵深接触带、速度耦合弹道和连续 swept hitbox；其余已确认的输入、HUD、计分、救援和键盘模式边界不变。
 - Target Surface：继续 `web-only`，单视口无滚动。
 - 被放弃的方案：摄像头成功后的重复 ready 页、以同一个简单手掌 SVG 代表所有指令、进度槽脱离图片牌预留轨道、顺序锁关、固定关长、全局动作教程、自创叠云、经典 Flappy 即死、公开排行榜。
 - 需要 PM 确认的问题：用户已明确要求本轮 L1 三项优化；后续试玩需确认地面纵深落点、碰撞时机和基础/高速跳跃手感是否符合直觉，同时确认 64–112px 下动作图与进度槽可读性。

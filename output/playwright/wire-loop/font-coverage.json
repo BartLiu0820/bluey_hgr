@@ -1,0 +1,14 @@
+{
+  "scope": "wire-loop-ui CJK source literals, including comments",
+  "fallback": "existing --font-ui/--font-display system Chinese fallback",
+  "fonts": {
+    "xiaolai/Xiaolai-Regular-subset.woff2": {
+      "missing": "仍他休其冲圆弯息持支断松榜源然碰秒线腕资身轨转轻通银",
+      "missingCount": 26
+    },
+    "resource-han-rounded/ResourceHanRoundedCN-VF-subset.woff2": {
+      "missing": "仍他休其冲圆弯息持支断松榜源然碰秒线腕资身轨转轻通银",
+      "missingCount": 26
+    }
+  }
+}

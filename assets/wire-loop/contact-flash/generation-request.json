@@ -1,0 +1,11 @@
+{
+  "generator": "built-in image_gen",
+  "sourcePath": "/Users/sansanaixuexi/.codex/generated_images/01a05797-1499-7fb1-89f4-e89f9cd54add/exec-8186c0a7-388b-4d6f-b7e6-efb9edff622b.png",
+  "generatedAt": "2026-08-31",
+  "revision": 2,
+  "references": [
+    "assets/wire-loop/contact-flash/raw-sheet-v1.png"
+  ],
+  "reason": "Warm-gold final frame and stronger light-background outline",
+  "prompt": "Edit this exact 2x2 animation sheet. KEEP canvas 1254x1254, all FOUR cell positions, exact central glint positions, ray positions, dot positions, relative sizes, and perfectly solid #FF00FF background unchanged. ONLY correct the contact flash artwork's color/readability: all glints, rays and dots must be warm honey GOLD with pale cream centers and a thin clearly visible WARM OCHRE/BROWN outline, like a tiny storybook game sparkle. Slightly stronger gold edge so the flash reads on both pale cream and dark blue game backgrounds. Especially bottom-right frame: replace the pink/fuchsia pale glint with a small fully honey-gold glint; no pink, no magenta, no red, no lavender anywhere inside artwork. Indicate fading by the already smaller shape rather than mixing with magenta or reducing opacity. All foreground shapes opaque. No new particles, no text, no borders, no extra objects, no lighting added to background. Do not change framing or recenter cells. This is only a color/outline correction to the supplied four-frame asset."
+}

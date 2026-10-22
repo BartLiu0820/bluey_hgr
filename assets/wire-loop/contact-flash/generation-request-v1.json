@@ -1,0 +1,9 @@
+{
+  "generator": "built-in image_gen",
+  "prompt": "Use supplied image only as a reference for honey-gold/cream highlights and smooth clean hand-painted preschool game finish. Create exactly FOUR frames of ONE harmless tiny contact flash animation in a perfect 2x2 equal-cell grid on a square 1024x1024 canvas. Invisible 512x512 cells, centers precisely (256,256), (768,256), (256,768), (768,768). Read left-right top-bottom. Frame 1: small rounded four-point honey-gold glint AT EXACT CELL CENTER. Frame 2: same center glint with three short soft rounded rays opening around it. Frame 3: center glint softens, rays slightly expand, two tiny warm round dots nearby. Frame 4: only a faint but visible compact residual glint at exact center. Do not move the center, do not zoom frames, no normalization to fill cells; expansion and fading change total size naturally. Largest burst fits central 55% width/height of its cell. All detached dots remain close. Perfectly flat opaque #FF00FF entire background, all gaps and gutters; no glow gradient in background, no outlines of grid, no guides, no text or frame numbers. No flame, electric arc, lightning, smoke, wire, ring, character, floor, shadows or large screen flash. Soft-edged but clean opaque illustrated highlights, not pixel art. Keep every frame visible, final disappear is handled later.",
+  "references": [
+    "/Users/sansanaixuexi/Desktop/bluey_hgr/assets/ui/level-icons/creek-jump.png"
+  ],
+  "sourcePath": "/Users/sansanaixuexi/.codex/generated_images/01a05797-1499-7fb1-89f4-e89f9cd54add/exec-dd2ddd2d-7ac5-4635-9d53-a4cc7d2600ac.png",
+  "generatedAt": "2026-08-31"
+}

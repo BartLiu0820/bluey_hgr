@@ -1,0 +1,74 @@
+{
+  "id": "WL-A11",
+  "slug": "release-hand",
+  "generatedAt": "2026-08-31",
+  "generator": "built-in image_gen",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "sourceSha256": "7b32669029be41d108beb12519feca6a1555f64168dc9bace3a8c41152361741",
+  "processing": {
+    "method": "aspect-preserving crop and pad",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "targetSize": [
+      512,
+      512
+    ],
+    "transform": {
+      "crop": [
+        165,
+        85,
+        1103,
+        1174
+      ],
+      "scale": 0.4231404958677686,
+      "paste": [
+        57,
+        25
+      ]
+    }
+  },
+  "exports": [
+    {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        57,
+        25,
+        454,
+        486
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/release-hand/release-hand.png",
+      "bytes": 183494,
+      "sha256": "31a32baf17dcf13389fd2b4bf34031e1840ee58c62c46469953e7e483691f196"
+    }
+  ],
+  "pixelQc": "pass",
+  "visualReview": {
+    "status": "reviewed",
+    "evidence": [
+      "contact-sheet.png",
+      "small-size-review.png",
+      "frames-review.png"
+    ],
+    "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+  },
+  "geometryIntegration": "not_started",
+  "runtimeIntegration": "not_started"
+}

@@ -1,0 +1,1417 @@
+{
+  "assets": [
+    {
+      "id": "WL-A01",
+      "slug": "probe-master",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "sourceSha256": "18289a990abcfafd190c90a65c50ed3bff11b05af6046498b67efc515e3cb72b",
+      "processing": {
+        "method": "aspect-preserving crop and pad",
+        "sourceSize": [
+          1024,
+          1536
+        ],
+        "targetSize": [
+          512,
+          768
+        ],
+        "transform": {
+          "crop": [
+            213,
+            163,
+            818,
+            1378
+          ],
+          "scale": 0.5688888888888889,
+          "paste": [
+            84,
+            38
+          ]
+        }
+      },
+      "exports": [
+        {
+          "size": [
+            512,
+            768
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            84,
+            38,
+            428,
+            729
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/probe-master/appearance.png",
+          "bytes": 131307,
+          "sha256": "ecdf00da64df0f1f20b1a6369b473920eb422fe835ba1ab8f756c1788b6fbead"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A02",
+      "slug": "wire-metal-strip",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceSha256": "c14fdac9ed6342aa88e93266e16cf326bf6588c96f77148a493b55257c804891",
+      "processing": {
+        "method": "interior crop at native scale; horizontal and vertical mirror pair, no painted or procedural replacement",
+        "sourceCrop": [
+          510,
+          478,
+          1022,
+          542
+        ],
+        "sourceSize": [
+          1536,
+          1024
+        ],
+        "targetSize": [
+          1024,
+          128
+        ],
+        "wrapS": "repeat",
+        "wrapT": "repeat",
+        "colorSpace": "sRGB",
+        "edgeMaxDifferenceX": 0,
+        "edgeMaxDifferenceY": 0,
+        "geometryIntegration": "pending; no render/collision claim"
+      },
+      "exports": [
+        {
+          "size": [
+            1024,
+            128
+          ],
+          "mode": "RGB",
+          "bbox": [
+            0,
+            0,
+            1024,
+            128
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "edgeAlphaPixels": 2304,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/wire-metal-strip/material.png",
+          "bytes": 95903,
+          "sha256": "4923e8520c2f2e189c3e91e6e1bc2cc8de6a5e88bc7abf18ce5dd7653ed908de"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A03",
+      "slug": "probe-metal-strip",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceSha256": "a1ceeb74dffd5a4a8d629b0b6376aac43f13b2d0590a481d4d597f9ec84dccbf",
+      "processing": {
+        "method": "interior crop at native scale; horizontal and vertical mirror pair, no painted or procedural replacement",
+        "sourceCrop": [
+          512,
+          479,
+          1024,
+          543
+        ],
+        "sourceSize": [
+          1536,
+          1024
+        ],
+        "targetSize": [
+          1024,
+          128
+        ],
+        "wrapS": "repeat",
+        "wrapT": "repeat",
+        "colorSpace": "sRGB",
+        "edgeMaxDifferenceX": 0,
+        "edgeMaxDifferenceY": 0,
+        "geometryIntegration": "pending; no render/collision claim"
+      },
+      "exports": [
+        {
+          "size": [
+            1024,
+            128
+          ],
+          "mode": "RGB",
+          "bbox": [
+            0,
+            0,
+            1024,
+            128
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "edgeAlphaPixels": 2304,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/probe-metal-strip/material.png",
+          "bytes": 81393,
+          "sha256": "d15809766f8841246e7836a5b63bf6ee97c85d43719054908cec996471c28ecb"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A04",
+      "slug": "handle-stem",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "sourceSha256": "1f8161da4cb342982360da50bd6e67f00c686ce5f3ee324e7b3941dfdaf65fa7",
+      "processing": {
+        "method": "aspect-preserving crop and pad",
+        "sourceSize": [
+          1024,
+          1536
+        ],
+        "targetSize": [
+          256,
+          768
+        ],
+        "transform": {
+          "crop": [
+            402,
+            193,
+            621,
+            1278
+          ],
+          "scale": 0.6370506912442396,
+          "paste": [
+            58,
+            38
+          ]
+        }
+      },
+      "exports": [
+        {
+          "size": [
+            256,
+            768
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            58,
+            38,
+            198,
+            729
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/handle-stem/handle-stem.png",
+          "bytes": 86561,
+          "sha256": "bcb405c6a582d64cf52b0ab5ed1d492a376363fa273afb7b476ae06b84c3001c"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A05",
+      "slug": "start-dock",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "118d2fd93e6d29fceb4bcbe5cdb5c3a309aed9bbbab373c71cec41c5afae007c",
+      "processing": {
+        "method": "shared-crop dock pair",
+        "sourceSize": [
+          1254,
+          1254
+        ],
+        "targetSize": [
+          256,
+          256
+        ],
+        "transform": {
+          "crop": [
+            258,
+            261,
+            996,
+            1068
+          ],
+          "scale": 0.2855018587360595,
+          "paste": [
+            22,
+            13
+          ]
+        }
+      },
+      "exports": [
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            22,
+            13,
+            233,
+            243
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/start-dock/start-dock.png",
+          "bytes": 58974,
+          "sha256": "babdd02e77793146241eef82d72887efec0e156b04723e7aeb4c5717a24f02e2"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A06",
+      "slug": "finish-dock",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "2b7c763f18e3636a23cd4331edc3118d08ab88d117bbe3bad107b5a685e01852",
+      "processing": {
+        "method": "shared-crop dock pair",
+        "sourceSize": [
+          1254,
+          1254
+        ],
+        "targetSize": [
+          256,
+          256
+        ],
+        "transform": {
+          "crop": [
+            258,
+            261,
+            996,
+            1068
+          ],
+          "scale": 0.2855018587360595,
+          "paste": [
+            22,
+            13
+          ]
+        }
+      },
+      "exports": [
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            22,
+            13,
+            233,
+            243
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/finish-dock/finish-dock.png",
+          "bytes": 65142,
+          "sha256": "62fdd18c00fd0fcfd107a9d97aa82650f5c2251cafc9159b69aa6ed1d63a2c27"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A07",
+      "slug": "timer-plaque",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceSha256": "d3cc37bb442ba1658a0a54bc86036f14e220a102b7e177032fda0570538e8e8d",
+      "processing": {
+        "method": "aspect-preserving crop and pad",
+        "sourceSize": [
+          1536,
+          1024
+        ],
+        "targetSize": [
+          640,
+          320
+        ],
+        "transform": {
+          "crop": [
+            48,
+            281,
+            1495,
+            737
+          ],
+          "scale": 0.3980649619903248,
+          "paste": [
+            32,
+            69
+          ]
+        }
+      },
+      "exports": [
+        {
+          "size": [
+            640,
+            320
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            32,
+            69,
+            608,
+            251
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/timer-plaque/timer-plaque.png",
+          "bytes": 129771,
+          "sha256": "dba419cc868f26caeb8269b0fbf1a7bbf9efc2259f31c5533125d479fda244eb"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A08",
+      "slug": "mode-icon",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "775d08743ea88cf76bd429a22d13fc23c5b63286bfe8f363e9a194ec0ffd6b6b",
+      "processing": {
+        "method": "aspect-preserving crop and pad",
+        "sourceSize": [
+          1254,
+          1254
+        ],
+        "targetSize": [
+          512,
+          512
+        ],
+        "transform": {
+          "crop": [
+            240,
+            189,
+            1038,
+            1172
+          ],
+          "scale": 0.46876907426246184,
+          "paste": [
+            69,
+            25
+          ]
+        }
+      },
+      "exports": [
+        {
+          "size": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            69,
+            25,
+            443,
+            486
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/mode-icon/mode-icon.png",
+          "bytes": 132527,
+          "sha256": "cc5a1d0896ce85fc33c6017524055da787d44e83b1c5dcfff886d852681c38b3"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A09",
+      "slug": "fist-move",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "17f7eea4c878f997d1b9c3df1d02783289a2f12c2c8014711ca276f7ed22ecf3",
+      "processing": {
+        "method": "aspect-preserving crop and pad",
+        "sourceSize": [
+          1254,
+          1254
+        ],
+        "targetSize": [
+          512,
+          512
+        ],
+        "transform": {
+          "crop": [
+            67,
+            75,
+            1189,
+            1185
+          ],
+          "scale": 0.4106951871657754,
+          "paste": [
+            25,
+            28
+          ]
+        }
+      },
+      "exports": [
+        {
+          "size": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            25,
+            28,
+            486,
+            484
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/fist-move/fist-move.png",
+          "bytes": 115915,
+          "sha256": "3db21cb6d245f480dabd439a655a239c98496b79b7e121eb858b71f919a66aa4"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A10",
+      "slug": "wrist-tilt",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "b6000a185e345652294d1d0d75053d6d5a650c6ec701f3f146dd9099f9aa305e",
+      "processing": {
+        "method": "aspect-preserving crop and pad",
+        "sourceSize": [
+          1254,
+          1254
+        ],
+        "targetSize": [
+          512,
+          512
+        ],
+        "transform": {
+          "crop": [
+            334,
+            184,
+            967,
+            1065
+          ],
+          "scale": 0.5230419977298525,
+          "paste": [
+            90,
+            25
+          ]
+        }
+      },
+      "exports": [
+        {
+          "size": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            90,
+            25,
+            421,
+            486
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/wrist-tilt/wrist-tilt.png",
+          "bytes": 164952,
+          "sha256": "c5eafd86b2a6d09b853bad01f437c6d75ce66a25365c120950c4a06235732005"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A11",
+      "slug": "release-hand",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "7b32669029be41d108beb12519feca6a1555f64168dc9bace3a8c41152361741",
+      "processing": {
+        "method": "aspect-preserving crop and pad",
+        "sourceSize": [
+          1254,
+          1254
+        ],
+        "targetSize": [
+          512,
+          512
+        ],
+        "transform": {
+          "crop": [
+            165,
+            85,
+            1103,
+            1174
+          ],
+          "scale": 0.4231404958677686,
+          "paste": [
+            57,
+            25
+          ]
+        }
+      },
+      "exports": [
+        {
+          "size": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            57,
+            25,
+            454,
+            486
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/release-hand/release-hand.png",
+          "bytes": 183494,
+          "sha256": "31a32baf17dcf13389fd2b4bf34031e1840ee58c62c46469953e7e483691f196"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A12",
+      "slug": "contact-flash",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "624c068bab06ffe3f3f56907774d16482df56603dd51c0fcd335e7e4cec5f406",
+      "processing": {
+        "method": "magenta cleanup + uniform affine extraction, annotated central motif aligned; no per-frame scale",
+        "uniformScale": 0.4,
+        "frames": [
+          {
+            "sourceCell": [
+              0,
+              0,
+              627,
+              627
+            ],
+            "sourceOriginPx": [
+              315,
+              358
+            ],
+            "outputOriginPx": [
+              128,
+              128
+            ],
+            "uniformScale": 0.4,
+            "qc": {
+              "size": [
+                256,
+                256
+              ],
+              "mode": "RGBA",
+              "bbox": [
+                112,
+                111,
+                145,
+                145
+              ],
+              "nonEmpty": true,
+              "cornerAlpha": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "edgeAlphaPixels": 0,
+              "magentaSpillPixels": 0
+            }
+          },
+          {
+            "sourceCell": [
+              627,
+              0,
+              627,
+              627
+            ],
+            "sourceOriginPx": [
+              929,
+              358
+            ],
+            "outputOriginPx": [
+              128,
+              128
+            ],
+            "uniformScale": 0.4,
+            "qc": {
+              "size": [
+                256,
+                256
+              ],
+              "mode": "RGBA",
+              "bbox": [
+                80,
+                77,
+                176,
+                152
+              ],
+              "nonEmpty": true,
+              "cornerAlpha": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "edgeAlphaPixels": 0,
+              "magentaSpillPixels": 0
+            }
+          },
+          {
+            "sourceCell": [
+              0,
+              627,
+              627,
+              627
+            ],
+            "sourceOriginPx": [
+              315,
+              936
+            ],
+            "outputOriginPx": [
+              128,
+              128
+            ],
+            "uniformScale": 0.4,
+            "qc": {
+              "size": [
+                256,
+                256
+              ],
+              "mode": "RGBA",
+              "bbox": [
+                82,
+                77,
+                175,
+                160
+              ],
+              "nonEmpty": true,
+              "cornerAlpha": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "edgeAlphaPixels": 0,
+              "magentaSpillPixels": 0
+            }
+          },
+          {
+            "sourceCell": [
+              627,
+              627,
+              627,
+              627
+            ],
+            "sourceOriginPx": [
+              929,
+              936
+            ],
+            "outputOriginPx": [
+              128,
+              128
+            ],
+            "uniformScale": 0.4,
+            "qc": {
+              "size": [
+                256,
+                256
+              ],
+              "mode": "RGBA",
+              "bbox": [
+                111,
+                112,
+                144,
+                145
+              ],
+              "nonEmpty": true,
+              "cornerAlpha": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "edgeAlphaPixels": 0,
+              "magentaSpillPixels": 0
+            }
+          }
+        ],
+        "sourceGrid": [
+          2,
+          2
+        ],
+        "originAnnotationToleranceSourcePx": 3,
+        "runtimeIntegration": "pending"
+      },
+      "exports": [
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            112,
+            111,
+            145,
+            145
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/contact-flash/processed/contact-1.png",
+          "bytes": 1838,
+          "sha256": "25843623d1179b3c6c1da608d86dcc86452ea50394a69e24925f2a2d8cc10886"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            80,
+            77,
+            176,
+            152
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/contact-flash/processed/contact-2.png",
+          "bytes": 4578,
+          "sha256": "0544a6cf5aa72cad4bae0a436a684f1bb5dbf6a8447512dba87986e9f86fe0e4"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            82,
+            77,
+            175,
+            160
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/contact-flash/processed/contact-3.png",
+          "bytes": 5079,
+          "sha256": "245202e842e7661ddc622425066f6a68642ad8e69b767e1ccacbc63aa505b3fd"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            111,
+            112,
+            144,
+            145
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/contact-flash/processed/contact-4.png",
+          "bytes": 1754,
+          "sha256": "ac0d932f49e78bc3d129bd856d4ffd1fab2a54c34675d409ce5c2b11f7fa4887"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    },
+    {
+      "id": "WL-A13",
+      "slug": "finish-sparkles",
+      "generatedAt": "2026-08-31",
+      "generator": "built-in image_gen",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "e4ccf3a203914af7848ab0a37b9dc551d312d977d850f4016bad673e240667ca",
+      "processing": {
+        "method": "magenta cleanup + uniform affine extraction, annotated central motif aligned; no per-frame scale",
+        "uniformScale": 0.4,
+        "frames": [
+          {
+            "sourceCell": [
+              0,
+              0,
+              627,
+              627
+            ],
+            "sourceOriginPx": [
+              327,
+              335
+            ],
+            "outputOriginPx": [
+              128,
+              128
+            ],
+            "uniformScale": 0.4,
+            "qc": {
+              "size": [
+                256,
+                256
+              ],
+              "mode": "RGBA",
+              "bbox": [
+                86,
+                107,
+                169,
+                147
+              ],
+              "nonEmpty": true,
+              "cornerAlpha": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "edgeAlphaPixels": 0,
+              "magentaSpillPixels": 0
+            }
+          },
+          {
+            "sourceCell": [
+              627,
+              0,
+              627,
+              627
+            ],
+            "sourceOriginPx": [
+              915,
+              335
+            ],
+            "outputOriginPx": [
+              128,
+              128
+            ],
+            "uniformScale": 0.4,
+            "qc": {
+              "size": [
+                256,
+                256
+              ],
+              "mode": "RGBA",
+              "bbox": [
+                55,
+                88,
+                201,
+                171
+              ],
+              "nonEmpty": true,
+              "cornerAlpha": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "edgeAlphaPixels": 0,
+              "magentaSpillPixels": 0
+            }
+          },
+          {
+            "sourceCell": [
+              0,
+              627,
+              627,
+              627
+            ],
+            "sourceOriginPx": [
+              334,
+              902
+            ],
+            "outputOriginPx": [
+              128,
+              128
+            ],
+            "uniformScale": 0.4,
+            "qc": {
+              "size": [
+                256,
+                256
+              ],
+              "mode": "RGBA",
+              "bbox": [
+                49,
+                73,
+                211,
+                188
+              ],
+              "nonEmpty": true,
+              "cornerAlpha": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "edgeAlphaPixels": 0,
+              "magentaSpillPixels": 0
+            }
+          },
+          {
+            "sourceCell": [
+              627,
+              627,
+              627,
+              627
+            ],
+            "sourceOriginPx": [
+              915,
+              907
+            ],
+            "outputOriginPx": [
+              128,
+              128
+            ],
+            "uniformScale": 0.4,
+            "qc": {
+              "size": [
+                256,
+                256
+              ],
+              "mode": "RGBA",
+              "bbox": [
+                92,
+                117,
+                161,
+                137
+              ],
+              "nonEmpty": true,
+              "cornerAlpha": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "edgeAlphaPixels": 0,
+              "magentaSpillPixels": 0
+            }
+          }
+        ],
+        "sourceGrid": [
+          2,
+          2
+        ],
+        "originAnnotationToleranceSourcePx": 3,
+        "runtimeIntegration": "pending"
+      },
+      "exports": [
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            86,
+            107,
+            169,
+            147
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/finish-sparkles/processed/finish-1.png",
+          "bytes": 4280,
+          "sha256": "b5223680edd82d5e4374d3f67571cfc57f6d0bb53ced86c8529481c656b7bdbb"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            55,
+            88,
+            201,
+            171
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/finish-sparkles/processed/finish-2.png",
+          "bytes": 7189,
+          "sha256": "e5eb81aa28e2ce44491dcbef36a4cb47585cde79f43582a6af633fa1703e3f2c"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            49,
+            73,
+            211,
+            188
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/finish-sparkles/processed/finish-3.png",
+          "bytes": 8561,
+          "sha256": "0229ce1d4e8c67fd2f061b422d67090c8658438e0c68cf90fc46f8906d16c5f3"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            92,
+            117,
+            161,
+            137
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/finish-sparkles/processed/finish-4.png",
+          "bytes": 2122,
+          "sha256": "ddef5b3879ae5cf2c8c98db6f5de196a3a86b4162d292fcac2d586262128a43b"
+        }
+      ],
+      "pixelQc": "pass",
+      "visualReview": {
+        "status": "reviewed",
+        "evidence": [
+          "contact-sheet.png",
+          "small-size-review.png",
+          "frames-review.png"
+        ],
+        "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+      },
+      "geometryIntegration": "not_started",
+      "runtimeIntegration": "not_started"
+    }
+  ],
+  "imageTasks": 13,
+  "exportImages": 19,
+  "runtimeImageBytes": 1150033,
+  "audio": "blocked_missing_credential",
+  "geometryAndRuntime": "not_started",
+  "additionalChecks": {
+    "sourceHashesAndPaths": "pass",
+    "ringHoleTransparent": "pass",
+    "dockSharedTransform": "pass",
+    "materialSeams": "pass",
+    "gifFramesDurationsTransparency": "pass",
+    "previewLinksAndScriptSyntax": "pass",
+    "browserPlayback": "not_run",
+    "audio": "not_generated"
+  }
+}

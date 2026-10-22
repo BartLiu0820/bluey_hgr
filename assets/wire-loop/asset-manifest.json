@@ -1,0 +1,908 @@
+{
+  "schemaVersion": 1,
+  "modeId": "wire_loop",
+  "displayName": "火线冲击",
+  "updatedAt": "2026-09-05",
+  "status": "images_ready_audio_blocked",
+  "reviewStatus": "pending_pm",
+  "scope": "generated images integrated in local wire-loop mode; dedicated audio pending",
+  "imageTasksCompleted": 13,
+  "actualImageGenerationCalls": 14,
+  "primaryPngExports": 19,
+  "rgbaExports": 17,
+  "rgbTextures": 2,
+  "runtimeImageBytes": 1150033,
+  "audioGenerated": 0,
+  "runtimeIntegration": "implemented_browser_verified",
+  "assets": [
+    {
+      "id": "WL-A01",
+      "slug": "probe-master",
+      "name": "探头外观母版",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        512,
+        768
+      ],
+      "collisionRole": "reference_only",
+      "usage": [
+        "appearance review",
+        "identity reference for later assets"
+      ],
+      "runtimeIntegration": "reference_only",
+      "source": "assets/wire-loop/probe-master/raw-sheet.png",
+      "request": "assets/wire-loop/probe-master/generation-request.json",
+      "prompt": "assets/wire-loop/probe-master/prompt-used.txt",
+      "metadata": "assets/wire-loop/probe-master/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            512,
+            768
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            84,
+            38,
+            428,
+            729
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/probe-master/appearance.png",
+          "bytes": 131307,
+          "sha256": "ecdf00da64df0f1f20b1a6369b473920eb422fe835ba1ab8f756c1788b6fbead"
+        }
+      ]
+    },
+    {
+      "id": "WL-A02",
+      "slug": "wire-metal-strip",
+      "name": "银蓝火线材质",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        1024,
+        128
+      ],
+      "collisionRole": "surface_only",
+      "usage": [
+        "generated texture displayed on wire geometry"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/wire-metal-strip/raw-sheet.png",
+      "request": "assets/wire-loop/wire-metal-strip/generation-request.json",
+      "prompt": "assets/wire-loop/wire-metal-strip/prompt-used.txt",
+      "metadata": "assets/wire-loop/wire-metal-strip/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            1024,
+            128
+          ],
+          "mode": "RGB",
+          "bbox": [
+            0,
+            0,
+            1024,
+            128
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "edgeAlphaPixels": 2304,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/wire-metal-strip/material.png",
+          "bytes": 95903,
+          "sha256": "4923e8520c2f2e189c3e91e6e1bc2cc8de6a5e88bc7abf18ce5dd7653ed908de"
+        }
+      ]
+    },
+    {
+      "id": "WL-A03",
+      "slug": "probe-metal-strip",
+      "name": "暖金圆环材质",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        1024,
+        128
+      ],
+      "collisionRole": "surface_only",
+      "usage": [
+        "generated texture displayed on continuous probe ring geometry"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/probe-metal-strip/raw-sheet.png",
+      "request": "assets/wire-loop/probe-metal-strip/generation-request.json",
+      "prompt": "assets/wire-loop/probe-metal-strip/prompt-used.txt",
+      "metadata": "assets/wire-loop/probe-metal-strip/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            1024,
+            128
+          ],
+          "mode": "RGB",
+          "bbox": [
+            0,
+            0,
+            1024,
+            128
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "edgeAlphaPixels": 2304,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/probe-metal-strip/material.png",
+          "bytes": 81393,
+          "sha256": "d15809766f8841246e7836a5b63bf6ee97c85d43719054908cec996471c28ecb"
+        }
+      ]
+    },
+    {
+      "id": "WL-A04",
+      "slug": "handle-stem",
+      "name": "独立握柄与细杆",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        256,
+        768
+      ],
+      "collisionRole": "visual_only",
+      "usage": [
+        "attachment to separately rendered probe ring"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/handle-stem/raw-sheet.png",
+      "request": "assets/wire-loop/handle-stem/generation-request.json",
+      "prompt": "assets/wire-loop/handle-stem/prompt-used.txt",
+      "metadata": "assets/wire-loop/handle-stem/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            256,
+            768
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            58,
+            38,
+            198,
+            729
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/handle-stem/handle-stem.png",
+          "bytes": 86561,
+          "sha256": "bcb405c6a582d64cf52b0ab5ed1d492a376363fa273afb7b476ae06b84c3001c"
+        }
+      ]
+    },
+    {
+      "id": "WL-A05",
+      "slug": "start-dock",
+      "name": "起点支座",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        256,
+        256
+      ],
+      "collisionRole": "visual_only",
+      "usage": [
+        "start resting dock"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/start-dock/raw-sheet.png",
+      "request": "assets/wire-loop/start-dock/generation-request.json",
+      "prompt": "assets/wire-loop/start-dock/prompt-used.txt",
+      "metadata": "assets/wire-loop/start-dock/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            22,
+            13,
+            233,
+            243
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/start-dock/start-dock.png",
+          "bytes": 58974,
+          "sha256": "babdd02e77793146241eef82d72887efec0e156b04723e7aeb4c5717a24f02e2"
+        }
+      ]
+    },
+    {
+      "id": "WL-A06",
+      "slug": "finish-dock",
+      "name": "终点支座",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        256,
+        256
+      ],
+      "collisionRole": "visual_only",
+      "usage": [
+        "finish dock; completion uses geometric progress"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/finish-dock/raw-sheet.png",
+      "request": "assets/wire-loop/finish-dock/generation-request.json",
+      "prompt": "assets/wire-loop/finish-dock/prompt-used.txt",
+      "metadata": "assets/wire-loop/finish-dock/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            22,
+            13,
+            233,
+            243
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/finish-dock/finish-dock.png",
+          "bytes": 65142,
+          "sha256": "62fdd18c00fd0fcfd107a9d97aa82650f5c2251cafc9159b69aa6ed1d63a2c27"
+        }
+      ]
+    },
+    {
+      "id": "WL-A07",
+      "slug": "timer-plaque",
+      "name": "无文字计时牌",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        640,
+        320
+      ],
+      "collisionRole": "none",
+      "usage": [
+        "remaining time HUD; text rendered separately"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/timer-plaque/raw-sheet.png",
+      "request": "assets/wire-loop/timer-plaque/generation-request.json",
+      "prompt": "assets/wire-loop/timer-plaque/prompt-used.txt",
+      "metadata": "assets/wire-loop/timer-plaque/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            640,
+            320
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            32,
+            69,
+            608,
+            251
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/timer-plaque/timer-plaque.png",
+          "bytes": 129771,
+          "sha256": "dba419cc868f26caeb8269b0fbf1a7bbf9efc2259f31c5533125d479fda244eb"
+        }
+      ]
+    },
+    {
+      "id": "WL-A08",
+      "slug": "mode-icon",
+      "name": "火线玩法入口标识",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        512,
+        512
+      ],
+      "collisionRole": "none",
+      "usage": [
+        "fourth lobby card",
+        "mode introduction"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/mode-icon/raw-sheet.png",
+      "request": "assets/wire-loop/mode-icon/generation-request.json",
+      "prompt": "assets/wire-loop/mode-icon/prompt-used.txt",
+      "metadata": "assets/wire-loop/mode-icon/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            69,
+            25,
+            443,
+            486
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/mode-icon/mode-icon.png",
+          "bytes": 132527,
+          "sha256": "cc5a1d0896ce85fc33c6017524055da787d44e83b1c5dcfff886d852681c38b3"
+        }
+      ]
+    },
+    {
+      "id": "WL-A09",
+      "slug": "fist-move",
+      "name": "握拳四向移动指示",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        512,
+        512
+      ],
+      "collisionRole": "none",
+      "usage": [
+        "camera tutorial",
+        "camera movement instruction"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/fist-move/raw-sheet.png",
+      "request": "assets/wire-loop/fist-move/generation-request.json",
+      "prompt": "assets/wire-loop/fist-move/prompt-used.txt",
+      "metadata": "assets/wire-loop/fist-move/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            25,
+            28,
+            486,
+            484
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/fist-move/fist-move.png",
+          "bytes": 115915,
+          "sha256": "3db21cb6d245f480dabd439a655a239c98496b79b7e121eb858b71f919a66aa4"
+        }
+      ]
+    },
+    {
+      "id": "WL-A10",
+      "slug": "wrist-tilt",
+      "name": "单轴转腕指示",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        512,
+        512
+      ],
+      "collisionRole": "none",
+      "usage": [
+        "camera rotation tutorial"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/wrist-tilt/raw-sheet.png",
+      "request": "assets/wire-loop/wrist-tilt/generation-request.json",
+      "prompt": "assets/wire-loop/wrist-tilt/prompt-used.txt",
+      "metadata": "assets/wire-loop/wrist-tilt/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            90,
+            25,
+            421,
+            486
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/wrist-tilt/wrist-tilt.png",
+          "bytes": 164952,
+          "sha256": "c5eafd86b2a6d09b853bad01f437c6d75ce66a25365c120950c4a06235732005"
+        }
+      ]
+    },
+    {
+      "id": "WL-A11",
+      "slug": "release-hand",
+      "name": "张掌松手指示",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        512,
+        512
+      ],
+      "collisionRole": "none",
+      "usage": [
+        "release tutorial",
+        "released state"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/release-hand/raw-sheet.png",
+      "request": "assets/wire-loop/release-hand/generation-request.json",
+      "prompt": "assets/wire-loop/release-hand/prompt-used.txt",
+      "metadata": "assets/wire-loop/release-hand/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            57,
+            25,
+            454,
+            486
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/release-hand/release-hand.png",
+          "bytes": 183494,
+          "sha256": "31a32baf17dcf13389fd2b4bf34031e1840ee58c62c46469953e7e483691f196"
+        }
+      ]
+    },
+    {
+      "id": "WL-A12",
+      "slug": "contact-flash",
+      "name": "接触短闪",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        256,
+        256
+      ],
+      "collisionRole": "none",
+      "usage": [
+        "one-shot after confirmed first contact"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/contact-flash/raw-sheet.png",
+      "request": "assets/wire-loop/contact-flash/generation-request.json",
+      "prompt": "assets/wire-loop/contact-flash/prompt-used.txt",
+      "metadata": "assets/wire-loop/contact-flash/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            112,
+            111,
+            145,
+            145
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/contact-flash/processed/contact-1.png",
+          "bytes": 1838,
+          "sha256": "25843623d1179b3c6c1da608d86dcc86452ea50394a69e24925f2a2d8cc10886"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            80,
+            77,
+            176,
+            152
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/contact-flash/processed/contact-2.png",
+          "bytes": 4578,
+          "sha256": "0544a6cf5aa72cad4bae0a436a684f1bb5dbf6a8447512dba87986e9f86fe0e4"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            82,
+            77,
+            175,
+            160
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/contact-flash/processed/contact-3.png",
+          "bytes": 5079,
+          "sha256": "245202e842e7661ddc622425066f6a68642ad8e69b767e1ccacbc63aa505b3fd"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            111,
+            112,
+            144,
+            145
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/contact-flash/processed/contact-4.png",
+          "bytes": 1754,
+          "sha256": "ac0d932f49e78bc3d129bd856d4ffd1fab2a54c34675d409ce5c2b11f7fa4887"
+        }
+      ],
+      "animation": {
+        "frames": [
+          "processed/contact-1.png",
+          "processed/contact-2.png",
+          "processed/contact-3.png",
+          "processed/contact-4.png"
+        ],
+        "frameSize": [
+          256,
+          256
+        ],
+        "frameDurationsMs": [
+          70,
+          70,
+          70,
+          70
+        ],
+        "loop": false,
+        "originPx": [
+          128,
+          128
+        ],
+        "onComplete": "hide",
+        "gifIsLoopingReviewOnly": true
+      }
+    },
+    {
+      "id": "WL-A13",
+      "slug": "finish-sparkles",
+      "name": "通关短星光",
+      "kind": "image",
+      "status": "image_ready_for_review",
+      "targetSize": [
+        256,
+        256
+      ],
+      "collisionRole": "none",
+      "usage": [
+        "one-shot after success"
+      ],
+      "runtimeIntegration": "implemented_browser_verified",
+      "source": "assets/wire-loop/finish-sparkles/raw-sheet.png",
+      "request": "assets/wire-loop/finish-sparkles/generation-request.json",
+      "prompt": "assets/wire-loop/finish-sparkles/prompt-used.txt",
+      "metadata": "assets/wire-loop/finish-sparkles/pipeline-meta.json",
+      "exports": [
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            86,
+            107,
+            169,
+            147
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/finish-sparkles/processed/finish-1.png",
+          "bytes": 4280,
+          "sha256": "b5223680edd82d5e4374d3f67571cfc57f6d0bb53ced86c8529481c656b7bdbb"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            55,
+            88,
+            201,
+            171
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/finish-sparkles/processed/finish-2.png",
+          "bytes": 7189,
+          "sha256": "e5eb81aa28e2ce44491dcbef36a4cb47585cde79f43582a6af633fa1703e3f2c"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            49,
+            73,
+            211,
+            188
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/finish-sparkles/processed/finish-3.png",
+          "bytes": 8561,
+          "sha256": "0229ce1d4e8c67fd2f061b422d67090c8658438e0c68cf90fc46f8906d16c5f3"
+        },
+        {
+          "size": [
+            256,
+            256
+          ],
+          "mode": "RGBA",
+          "bbox": [
+            92,
+            117,
+            161,
+            137
+          ],
+          "nonEmpty": true,
+          "cornerAlpha": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "edgeAlphaPixels": 0,
+          "magentaSpillPixels": 0,
+          "path": "assets/wire-loop/finish-sparkles/processed/finish-4.png",
+          "bytes": 2122,
+          "sha256": "ddef5b3879ae5cf2c8c98db6f5de196a3a86b4162d292fcac2d586262128a43b"
+        }
+      ],
+      "animation": {
+        "frames": [
+          "processed/finish-1.png",
+          "processed/finish-2.png",
+          "processed/finish-3.png",
+          "processed/finish-4.png"
+        ],
+        "frameSize": [
+          256,
+          256
+        ],
+        "frameDurationsMs": [
+          110,
+          110,
+          110,
+          110
+        ],
+        "loop": false,
+        "originPx": [
+          128,
+          128
+        ],
+        "onComplete": "hide",
+        "gifIsLoopingReviewOnly": true
+      }
+    },
+    {
+      "id": "WL-S01",
+      "status": "blocked_missing_audio_credential",
+      "generated": false,
+      "reason": "No audio generator exposed; ELEVENLABS_API_KEY absent from environment and project .env",
+      "promptFile": "assets/wire-loop/wire-contact-soft/prompt-used.txt",
+      "expectedOutput": "assets/audio/sfx/wire-contact-soft.mp3",
+      "fallbackCandidate": "assets/audio/sfx/collision-soft.mp3",
+      "fallbackIntegrated": false,
+      "runtimeIntegration": "implemented_browser_verified"
+    }
+  ],
+  "reuse": [
+    {
+      "id": "six-character-actions",
+      "source": "assets/characters/character-roster.json",
+      "actions": [
+        "idle",
+        "bump",
+        "celebrate"
+      ],
+      "regenerate": false
+    },
+    {
+      "id": "background",
+      "source": "assets/maps/menu/adventure-garden.png",
+      "regenerate": false
+    },
+    {
+      "id": "pause-result-panel",
+      "source": "assets/ui/panels/paper-branch-panel.png",
+      "regenerate": false
+    },
+    {
+      "id": "grip-ready",
+      "source": "assets/ui/instruction-icons/fist-hold.png",
+      "regenerate": false
+    },
+    {
+      "id": "find-hand",
+      "source": "assets/ui/instruction-icons/find-hand.png",
+      "regenerate": false
+    },
+    {
+      "id": "buttons",
+      "source": "assets/ui/buttons/button-family-manifest.json",
+      "regenerate": false
+    },
+    {
+      "id": "controls",
+      "source": "assets/ui/control-icons/control-icons-manifest.json",
+      "regenerate": false
+    },
+    {
+      "id": "fonts",
+      "source": "assets/fonts/README.md",
+      "regenerate": false,
+      "note": "Check and extend glyph subsets only as needed; render complete time text consistently, no m-as-seconds."
+    },
+    {
+      "id": "audio",
+      "source": "assets/audio/audio-manifest.json",
+      "regenerate": false,
+      "events": [
+        "ui_tap",
+        "gesture_ready",
+        "countdown",
+        "pause",
+        "round_complete"
+      ]
+    }
+  ],
+  "preview": "assets/wire-loop/preview.html",
+  "review": "reviews/wire-loop-assets-review.md",
+  "audioFallback": "existing sfx_collision_soft explicitly reused; no generated replacement"
+}

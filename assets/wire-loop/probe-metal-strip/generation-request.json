@@ -1,0 +1,9 @@
+{
+  "generator": "built-in image_gen",
+  "prompt": "Use the supplied probe master only as a palette and painted material reference. Generate ONE long horizontal FLAT RECTANGULAR MATERIAL SWATCH for its warm honey-gold metal loop, not a ring, not a cylinder, not a finished object. Orthographic front material view. Warm honey golden yellow and soft cream gentle broad color variation, extremely low texture noise, no mirror reflection or dark edge stripe, no black outlines inside the material, no scratches, seams, labels, numbers, point highlights, perspective, shadows. Its interior should be uniform enough to crop a repeatable UV surface in both directions. Keep complete rectangular swatch inside central 70% width and 30% height of a landscape 1536x1024 canvas; perfectly flat solid #FF00FF everywhere outside, no magenta tint inside. Same clean hand-painted storybook material as reference. No text, no pixel art, no additional objects.",
+  "references": [
+    "/Users/sansanaixuexi/Desktop/bluey_hgr/assets/wire-loop/probe-master/raw-sheet.png"
+  ],
+  "sourcePath": "/Users/sansanaixuexi/.codex/generated_images/01a05797-1499-7fb1-89f4-e89f9cd54add/exec-d6a6136d-87b1-45fb-a6f0-8150c9e0aa2c.png",
+  "generatedAt": "2026-08-31"
+}

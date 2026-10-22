@@ -1,0 +1,182 @@
+{
+  "status": "PASS",
+  "artRevision": "youyou-eyes-v2",
+  "actions": 7,
+  "frames": 28,
+  "generation": "built-in image_gen",
+  "processor": "generate2dsprite",
+  "bodyScaleDriftLimit": 0.08,
+  "groundedBodyScaleCvLimit": 0.08,
+  "groundedAnchorYStdLimit": 0.05,
+  "airborneNote": "跳跃/悬浮/救援不使用站立姿态的原始 y 稳定性门槛；仍检查同一共享缩放、体量漂移、空帧、裁切和透明度。",
+  "checks": {
+    "idle": {
+      "status": "PASS",
+      "frameCount": 4,
+      "qc": {
+        "frame_count": 4,
+        "valid_frame_count": 4,
+        "empty_count": 0,
+        "edge_touch_count": 0,
+        "paste_clamped_count": 0,
+        "body_scale_mean": 0.4279708558523367,
+        "output_subject_height_mean": 175.0,
+        "body_scale_cv": 0.0011568276384666045,
+        "anchor_x_std": 0.0497195661094291,
+        "anchor_y_std": 0.000807754442649411,
+        "anchor_y_mean": 0.9054927302100162,
+        "profile_body_scale_drift": 0.003586917124312916
+      },
+      "frameSha256": [
+        "01f7238fe04914d17749cb22760af17e9663fc51cb7802073d121ba3d857390a",
+        "32c2b0f7da93fc23ac38c603978bc58f440176868449bcc2dbd7c771fb19098e",
+        "8b4ec3c83983384cf885e29587bd6ba4e1972bd080c9653b6e2e2c420432e78c",
+        "7fcf1568d098fd4967412c7eadbcd6e386546dedaf913c8f8da3ddf03394ec99"
+      ]
+    },
+    "run": {
+      "status": "PASS",
+      "frameCount": 4,
+      "qc": {
+        "frame_count": 4,
+        "valid_frame_count": 4,
+        "empty_count": 0,
+        "edge_touch_count": 0,
+        "paste_clamped_count": 0,
+        "body_scale_mean": 0.4466216362103687,
+        "output_subject_height_mean": 164.0,
+        "body_scale_cv": 0.024873408983812212,
+        "anchor_x_std": 0.10881249873324479,
+        "anchor_y_std": 0.016250726606406068,
+        "anchor_y_mean": 0.8590468497576736,
+        "profile_body_scale_drift": 0.03983632373533119
+      },
+      "frameSha256": [
+        "7575b49661e7a0d0dbb68756836a039d7d5f83f19d31a3e59cd2eb25f9100ee5",
+        "b66b8c34a5d4a683bf0ac5c1ac9d71f869c6200f9ee706501387cedb630a58c5",
+        "322ce7e7ad10131f511a937be4441661237c0df5fab76fc05f44792514f2882a",
+        "ce43322e02713ff683b312709a13debfbd565bcf7ba3a58b14fd07565746e47e"
+      ]
+    },
+    "jump": {
+      "status": "PASS",
+      "frameCount": 4,
+      "qc": {
+        "frame_count": 4,
+        "valid_frame_count": 4,
+        "empty_count": 0,
+        "edge_touch_count": 0,
+        "paste_clamped_count": 0,
+        "body_scale_mean": 0.4444345548725845,
+        "output_subject_height_mean": 153.5,
+        "body_scale_cv": 0.03375731678215143,
+        "anchor_x_std": 0.05524820435588214,
+        "anchor_y_std": 0.07099973164247411,
+        "anchor_y_mean": 0.8546042003231018,
+        "profile_body_scale_drift": 0.03474430303232934
+      },
+      "frameSha256": [
+        "b46026ef8b42e7b84e7984b82f60261cd838b938f8a8a00cc0afc57d94d861e3",
+        "25d577057e88a43abee92f4a65b671fccf5259251b606fa63e52fd3098de0e56",
+        "e84ec1d8c15164d2cb5d32637dd51273e09a3c86b5a38f1297f094b42f2ed642",
+        "d9491496f22507752002b6d807573e777e2c902b2341c01ac45912a89d542546"
+      ]
+    },
+    "hover": {
+      "status": "PASS",
+      "frameCount": 4,
+      "qc": {
+        "frame_count": 4,
+        "valid_frame_count": 4,
+        "empty_count": 0,
+        "edge_touch_count": 0,
+        "paste_clamped_count": 0,
+        "body_scale_mean": 0.42502102337036374,
+        "output_subject_height_mean": 159.25,
+        "body_scale_cv": 0.01850321451759136,
+        "anchor_x_std": 0.0727550932803081,
+        "anchor_y_std": 0.026033638722913297,
+        "anchor_y_mean": 0.8542003231017771,
+        "profile_body_scale_drift": 0.010454795245302573
+      },
+      "frameSha256": [
+        "024c0b65627b4d4dd07551543f6ebcf2570813e10775c67bda5e0326f7a1bd6e",
+        "1cb2207105312414d5034b52e9e0dd5ff661187cbad96674a62025843cc9421e",
+        "4033ee15a4d0862b20d8bf1fd707666cbbf9f02e0b25fc592673d7f98157523d",
+        "8af610362b6e096c5d9d12a6b27ba72d7afca209bab8c8cef473b5b772b053a3"
+      ]
+    },
+    "hurt": {
+      "status": "PASS",
+      "frameCount": 4,
+      "qc": {
+        "frame_count": 4,
+        "valid_frame_count": 4,
+        "empty_count": 0,
+        "edge_touch_count": 0,
+        "paste_clamped_count": 0,
+        "body_scale_mean": 0.43573972564016383,
+        "output_subject_height_mean": 155.75,
+        "body_scale_cv": 0.045756204654712515,
+        "anchor_x_std": 0.05753088900566234,
+        "anchor_y_std": 0.048256145496749094,
+        "anchor_y_mean": 0.8101777059773829,
+        "profile_body_scale_drift": 0.014500771300946402
+      },
+      "frameSha256": [
+        "bf170ae3b1139f8f57797441b1730901fde4033bdf97f42376d70cf269988573",
+        "31b7493453f8520ca43daea751c95bebc5be558faec7eb7f7b3fc356e54b57e7",
+        "e3904c9d26b79d8d3c7afeca87ae7a2feedfa05fd9087969d035ced17f68d499",
+        "5e82338a8e7dc247f3660a9aac6b87c73cd3924754e3d5e2b52a166bd8e468c3"
+      ]
+    },
+    "bump": {
+      "status": "PASS",
+      "frameCount": 4,
+      "qc": {
+        "frame_count": 4,
+        "valid_frame_count": 4,
+        "empty_count": 0,
+        "edge_touch_count": 0,
+        "paste_clamped_count": 0,
+        "body_scale_mean": 0.42905217189516054,
+        "output_subject_height_mean": 174.0,
+        "body_scale_cv": 0.010659006019444132,
+        "anchor_x_std": 0.00395717244391464,
+        "anchor_y_std": 0.003679496599008179,
+        "anchor_y_mean": 0.9026655896607431,
+        "profile_body_scale_drift": 0.0010693684710354479
+      },
+      "frameSha256": [
+        "492c8239b9af1fd288da813e17a58489b65a72a447c1a51a79146def8359eb42",
+        "ce161c0003e97bd625995659df52c75c7e87c8b6903c4dbe9b6cee8dd9042dec",
+        "b3b0ebd87ed2fc09968f261b9dab1ac2c5d678b4cd3a8e22249ac550627cdea8",
+        "efb80c6274f6fd0f9d50e741340d30efb97c13f5b338e1fd61faa5fd17518e6a"
+      ]
+    },
+    "celebrate": {
+      "status": "PASS",
+      "frameCount": 4,
+      "qc": {
+        "frame_count": 4,
+        "valid_frame_count": 4,
+        "empty_count": 0,
+        "edge_touch_count": 0,
+        "paste_clamped_count": 0,
+        "body_scale_mean": 0.4401558161956556,
+        "output_subject_height_mean": 176.75,
+        "body_scale_cv": 0.006338842052838923,
+        "anchor_x_std": 0.059784743360139996,
+        "anchor_y_std": 0.018578352180936952,
+        "anchor_y_mean": 0.9216478190630049,
+        "profile_body_scale_drift": 0.02478243030759142
+      },
+      "frameSha256": [
+        "228aac7f6145d18f97c56c75ccd28b69afa89f53b604767be9dfe44261988a3f",
+        "bd5ca7425fa1f5b6188397ff71ec6ce3d9b9139ac7f109fa0b4c05dc17d32565",
+        "b5b69a3c301fba49eb41b1dffa5b78b1dcd85a64000b0d79dd0f187c4973ecd6",
+        "458d5db9911464ace1d84b46b31c7f9066ca544a16fa966db4bf28b0b2560920"
+      ]
+    }
+  }
+}

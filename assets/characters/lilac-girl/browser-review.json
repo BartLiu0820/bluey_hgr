@@ -1,0 +1,23 @@
+{
+  "date": "2026-08-31",
+  "surface": "七动作独立预览与已集成游戏角色选择/三玩法",
+  "status": "PASS",
+  "checks": {
+    "allSevenActionButtonsSelectCorrectAction": true,
+    "allSevenActionsCanShowFrameFour": true,
+    "allVisibleImagesLoadedForEachAction": true,
+    "frameSelectionPausesPlayback": true,
+    "halfSpeedSelection": true,
+    "darkBackgroundSelection": true,
+    "horizontalFlipToggle": true,
+    "darkBackgroundEdgesVisuallyReviewed": true,
+    "browserErrorLogCount": 0,
+    "gameCharacterSelectionTargeted": "11/11 PASS",
+    "youyouBeforeAfterFaceComparisonReviewed": true
+  },
+  "limitations": [
+    "摄像头路径仅模拟就绪，没有开启摄像头或进行真实手势验收。",
+    "4 帧动画沿用现有游戏素材合同。"
+  ],
+  "artRevision": "youyou-eyes-v2"
+}

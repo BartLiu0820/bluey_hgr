@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "runtimeActionContract": [
     "idle",
     "run",
@@ -58,6 +58,14 @@
       "assetRoot": "garden-girl",
       "selectionReady": true,
       "rightsStatus": "reference-derived-review-required"
+    },
+    {
+      "id": "lilac-girl",
+      "displayName": "棉棉",
+      "thumbnail": "lilac-girl/idle/idle-1.png",
+      "assetRoot": "lilac-girl",
+      "selectionReady": true,
+      "rightsStatus": "private-user-photo-derived"
     }
   ]
 }

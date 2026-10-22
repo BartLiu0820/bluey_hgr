@@ -1,0 +1,18 @@
+{
+  "image": "handle-stem.png",
+  "anchor": "stem-tip",
+  "sourcePoint": [
+    512,
+    196
+  ],
+  "pointPx": [
+    128.076,
+    39.911
+  ],
+  "directionFromAnchor": [
+    0,
+    1
+  ],
+  "collisionRole": "visual_only",
+  "geometryIntegration": "pending"
+}

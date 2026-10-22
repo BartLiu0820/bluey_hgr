@@ -1,0 +1,17 @@
+[
+  "/Library/Frameworks/Python.framework/Versions/3.10/bin/python3",
+  "/Users/sansanaixuexi/.codex/skills/generate2dsprite/scripts/generate2dsprite.py",
+  "process",
+  "--input",
+  "/Users/sansanaixuexi/Desktop/bluey_hgr/assets/wire-loop/release-hand/raw-sheet.png",
+  "--target",
+  "asset",
+  "--mode",
+  "single",
+  "--output-dir",
+  "/Users/sansanaixuexi/Desktop/bluey_hgr/assets/wire-loop/release-hand/processor-qc",
+  "--prompt-file",
+  "/Users/sansanaixuexi/Desktop/bluey_hgr/assets/wire-loop/release-hand/prompt-used.txt",
+  "--single-size",
+  "512"
+]

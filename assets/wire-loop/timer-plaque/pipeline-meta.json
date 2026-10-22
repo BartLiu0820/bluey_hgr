@@ -1,0 +1,74 @@
+{
+  "id": "WL-A07",
+  "slug": "timer-plaque",
+  "generatedAt": "2026-08-31",
+  "generator": "built-in image_gen",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceSha256": "d3cc37bb442ba1658a0a54bc86036f14e220a102b7e177032fda0570538e8e8d",
+  "processing": {
+    "method": "aspect-preserving crop and pad",
+    "sourceSize": [
+      1536,
+      1024
+    ],
+    "targetSize": [
+      640,
+      320
+    ],
+    "transform": {
+      "crop": [
+        48,
+        281,
+        1495,
+        737
+      ],
+      "scale": 0.3980649619903248,
+      "paste": [
+        32,
+        69
+      ]
+    }
+  },
+  "exports": [
+    {
+      "size": [
+        640,
+        320
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        32,
+        69,
+        608,
+        251
+      ],
+      "nonEmpty": true,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edgeAlphaPixels": 0,
+      "magentaSpillPixels": 0,
+      "path": "assets/wire-loop/timer-plaque/timer-plaque.png",
+      "bytes": 129771,
+      "sha256": "dba419cc868f26caeb8269b0fbf1a7bbf9efc2259f31c5533125d479fda244eb"
+    }
+  ],
+  "pixelQc": "pass",
+  "visualReview": {
+    "status": "reviewed",
+    "evidence": [
+      "contact-sheet.png",
+      "small-size-review.png",
+      "frames-review.png"
+    ],
+    "scope": "raw source and static image/frame review; browser playback and geometry integration pending"
+  },
+  "geometryIntegration": "not_started",
+  "runtimeIntegration": "not_started"
+}
