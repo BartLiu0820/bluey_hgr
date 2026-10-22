@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phase 4B 加载性能优化 Review Console</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --surface-soft: #f0f3f7;
+      --ink: #172033;
+      --muted: #68758a;
+      --line: #d9e0ea;
+      --accent: #2458d3;
+      --accent-soft: #e7eefc;
+      --warn: #9a5a00;
+      --warn-soft: #fff2cf;
+      --ok: #0f766e;
+      --radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.55; }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      padding: 28px clamp(18px, 4vw, 48px);
+    }
+    main {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 24px auto 56px;
+      display: grid;
+      gap: 18px;
+    }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { font-size: clamp(26px, 4vw, 40px); margin-bottom: 8px; }
+    h2 { font-size: 20px; margin-bottom: 14px; }
+    h3 { font-size: 17px; margin-bottom: 10px; }
+    h4 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+    code {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      color: #24324a;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); margin-top: 12px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    ul { padding-left: 20px; margin-bottom: 0; }
+    .muted { color: var(--muted); }
+
+    /* ── Material cards ── */
+    .materials { display: grid; gap: 12px; }
+    .material-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      background: #fbfcfe;
+      transition: border-color 0.15s;
+    }
+    .material-card:hover { border-color: #b5c7e8; }
+    .material-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .material-card-info { display: flex; flex-direction: column; gap: 5px; }
+    .material-card-info h3 { margin: 0; font-size: 16px; }
+    .material-path { font-size: 12px; color: var(--muted); }
+    .material-card-actions { flex-shrink: 0; }
+    .mat-badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .mat-badge-ok { background: var(--accent-soft); color: var(--accent); }
+    .mat-badge-warn { background: var(--warn-soft); color: var(--warn); }
+    .btn-mat {
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      padding: 8px 16px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .btn-mat:hover { background: #d0e0f8; }
+    .btn-mat[disabled] { border-color: var(--line); background: transparent; color: var(--muted); cursor: not-allowed; }
+    .btn-mat-html { border-color: var(--ok); background: #eefaf7; color: var(--ok); }
+    .btn-mat-html:hover { background: #d8f3ed; }
+
+    /* ── Visualizations ── */
+    .visualizations { display: grid; gap: 16px; }
+    .visualization {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: #fbfcfe;
+    }
+    .viz-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .viz-head h3 { margin-bottom: 4px; }
+    .viz-type {
+      align-self: start;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 3px 8px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .flow { display: flex; align-items: stretch; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+    .flow-item {
+      min-width: 170px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #ffffff;
+    }
+    .flow-node { display: grid; gap: 4px; }
+    .flow-node span { font-weight: 800; }
+    .flow-node em { color: var(--muted); font-style: normal; font-size: 12px; }
+    .flow-item.done { border-color: #9fd8c9; background: #f0fbf8; }
+    .flow-item.pending { border-color: #efd18a; background: #fff9e8; }
+    .flow-item.blocked { border-color: #f0a7a7; background: #fff3f3; }
+    .flow-arrow { align-self: center; color: var(--muted); font-weight: 900; }
+    .impact-map {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.7fr) auto minmax(260px, 1.6fr);
+      gap: 14px;
+      align-items: center;
+    }
+    .impact-source, .impact-target {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      background: #ffffff;
+    }
+    .impact-arrow { color: var(--accent); font-size: 24px; font-weight: 900; }
+    .impact-targets { display: grid; gap: 10px; }
+    .matrix-wrap { overflow-x: auto; }
+    table.matrix {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .matrix th, .matrix td {
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      min-width: 120px;
+    }
+    .matrix th { background: var(--surface-soft); color: #2b374b; font-weight: 800; }
+    .risk-list { display: grid; gap: 12px; }
+    .risk-row { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; background: #ffffff; }
+    .risk-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .risk-head span { color: var(--warn); font-weight: 800; }
+    .risk-bar { height: 10px; border-radius: 999px; background: #edf1f6; overflow: hidden; }
+    .risk-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2fbf9f, #f2b84b, #e45757); }
+    .evidence-map { display: grid; gap: 10px; }
+    .evidence-item {
+      display: grid;
+      grid-template-columns: minmax(90px, auto) auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 11px;
+      background: #ffffff;
+    }
+    .evidence-item span, .evidence-item em { color: var(--muted); font-style: normal; font-size: 13px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+    .metric-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #ffffff; }
+    .metric-card span { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .metric-card strong { display: block; margin-top: 6px; font-size: 24px; }
+    .tone-warn { border-color: #efd18a; background: #fff9e8; }
+    .tone-good { border-color: #9fd8c9; background: #f0fbf8; }
+    .tone-bad { border-color: #f0a7a7; background: #fff3f3; }
+
+    /* ── Decision cards ── */
+    .decision-list { display: grid; gap: 16px; }
+    .decision-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; background: #ffffff; }
+    .card-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+    .qid { color: var(--accent); font-weight: 800; font-size: 13px; }
+    .route { color: var(--warn); background: var(--warn-soft); border-radius: 999px; padding: 3px 9px; font-size: 13px; font-weight: 650; }
+    .card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 12px 0; }
+    .meta-block { margin-top: 12px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 7px; }
+    .pill { border: 1px solid var(--line); background: var(--surface-soft); border-radius: 999px; padding: 4px 9px; font-size: 13px; color: #2d3a4f; overflow-wrap: anywhere; }
+    .impact .pill { background: #eefaf7; border-color: #bee8df; color: var(--ok); }
+    .muted-pill { color: var(--muted); background: transparent; }
+    fieldset.feedback { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin: 16px 0 0; background: #fbfcfe; }
+    legend { padding: 0 6px; color: var(--muted); font-weight: 700; font-size: 13px; }
+    label { display: grid; gap: 6px; margin-top: 10px; color: #344156; font-size: 14px; font-weight: 650; }
+    select, textarea { width: 100%; border: 1px solid var(--line); border-radius: 7px; padding: 10px 11px; font: inherit; color: var(--ink); background: #ffffff; }
+    textarea { min-height: 92px; resize: vertical; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    button { border: 0; border-radius: 7px; padding: 10px 14px; background: var(--accent); color: white; font-weight: 750; cursor: pointer; }
+    button.secondary { background: #253044; }
+    .inline-file-link {
+      display: inline-flex;
+      align-items: center;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .inline-file-link code { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .pill-button {
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      color: #2d3a4f;
+      padding: 4px 9px;
+      font-weight: 500;
+      text-align: left;
+    }
+    .pill-button:hover { border-color: #b5c7e8; color: var(--accent); }
+    pre { max-height: 260px; overflow: auto; background: #101827; color: #f8fafc; border-radius: var(--radius); padding: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .notice { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 12px 14px; border-radius: 6px; color: #183b89; }
+
+    /* ── Overlay ── */
+    .overlay-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 18, 36, 0.48);
+      z-index: 200;
+      align-items: stretch;
+      justify-content: flex-end;
+    }
+    .overlay-backdrop.visible { display: flex; }
+    .overlay-panel {
+      width: min(72vw, 920px);
+      height: 100%;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -6px 0 32px rgba(0, 0, 0, 0.18);
+      animation: slideIn 0.18s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(6%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .overlay-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+      flex-shrink: 0;
+    }
+    .overlay-title { flex: 1; min-width: 0; }
+    .overlay-title h2 { margin: 0; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .overlay-title code { font-size: 12px; color: var(--muted); }
+    .overlay-close {
+      flex-shrink: 0;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 12px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .overlay-close:hover { background: #eef1f5; }
+    .overlay-body { flex: 1; overflow-y: auto; padding: 24px 28px; }
+    .overlay-html-notice {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .overlay-html-frame-wrap {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+    }
+    .overlay-html-frame-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfe;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .overlay-html-frame {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+    .overlay-open-btn {
+      border: 1px solid var(--ok);
+      border-radius: 8px;
+      padding: 12px 28px;
+      background: var(--ok);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .overlay-open-btn:hover { background: #0a5f58; }
+
+    /* ── Markdown content ── */
+    .md-content { line-height: 1.72; color: var(--ink); font-size: 15px; }
+    .md-content .md-h { font-weight: 700; margin: 1.4em 0 0.5em; color: #1a2840; }
+    .md-content h2.md-h { font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    .md-content h3.md-h { font-size: 16px; }
+    .md-content h4.md-h { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .md-content h5.md-h, .md-content h6.md-h { font-size: 13px; }
+    .md-content p { margin: 0.65em 0; }
+    .md-content .md-ul, .md-content .md-ol { padding-left: 22px; margin: 0.5em 0; }
+    .md-content .md-ul li, .md-content .md-ol li { margin-bottom: 4px; }
+    .md-content .md-pre { background: #101827; color: #f8fafc; padding: 14px; border-radius: var(--radius); overflow-x: auto; max-height: 380px; margin: 1em 0; font-size: 13px; }
+    .md-content .md-pre code { background: none; color: inherit; padding: 0; font-size: 13px; }
+    .md-content .md-bq { border-left: 3px solid var(--accent); margin: 0.8em 0; padding: 6px 14px; background: var(--accent-soft); border-radius: 0 6px 6px 0; color: #1b3272; }
+    .md-content .md-hr { border: none; border-top: 1px solid var(--line); margin: 1.4em 0; }
+    .md-content .md-table-wrap { overflow-x: auto; margin: 1em 0; }
+    .md-content .md-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    .md-content .md-table th, .md-content .md-table td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .md-content .md-table th { background: var(--surface-soft); font-weight: 700; }
+    .md-content code { font-size: 13px; }
+
+    @media (max-width: 760px) {
+      .summary-grid, .card-grid, .impact-map, .evidence-item { grid-template-columns: 1fr; }
+      .impact-arrow { transform: rotate(90deg); justify-self: start; }
+      .material-card-head { flex-direction: column; }
+      .overlay-panel { width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="badge">PM Review Console</span>
+    <h1>Phase 4B 加载性能优化</h1>
+    <p class="muted">这是阶段审查入口，不是正式阶段产物。PM 反馈在第一版中仅保存在浏览器本地，可复制或下载为 JSON。</p>
+    <div class="meta">
+      <span>产物：<button type="button" class="inline-file-link" data-open-file="04B-prototype-手势小狗探险MVP.html"><code>04B-prototype-手势小狗探险MVP.html</code></button></span>
+      <span>状态：<code>pending_pm</code></span>
+      <span>更新：<code>2026-10-22</code></span>
+    </div>
+  </header>
+  <main>
+    <section class="section">
+      <h2>阶段摘要</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>本阶段关键决策</h4>
+          <ul><li>同尺寸WebP交付，首屏图片下载量减少96.1%</li><li>真实进度，分阶段加载，失败可恢复</li></ul>
+        </div>
+        <div>
+          <h4>被放弃的方案</h4>
+          <ul><li>一次下载全部地图/动作</li><li>假进度与缺图进入</li></ul>
+        </div>
+        <div>
+          <h4>进入下一阶段的条件</h4>
+          <ul><li>试玩确认加载体验与画质；整体Phase 4B状态保持</li></ul>
+        </div>
+        <div>
+          <h4>不需要 PM 审查的执行细节</h4>
+          <ul><li>编码参数、并发数、缓存和测试实现</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>产出物阅读</h2>
+      <p class="muted" style="margin-bottom:14px;">点击"阅读原文"在右侧浮层阅读完整产物内容；Markdown 会渲染为可读 HTML，HTML 产物会在浮层中预览。</p>
+      <div class="materials">
+
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>验收摘要</h3>
+            <code class="material-path">reviews/loading-performance-review.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(0)">阅读原文</button></div>
+        </div>
+      </article>
+
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>输入规格</h3>
+            <code class="material-path">04A-prototype-spec-手势输入闭环.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(1)">阅读原文</button></div>
+        </div>
+      </article>
+
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>关卡规格</h3>
+            <code class="material-path">04A-prototype-spec-核心关卡循环.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(2)">阅读原文</button></div>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>关键可视化</h2>
+      <div class="visualizations">
+
+    <article class="visualization metric_cards">
+      <div class="viz-head">
+        <div>
+          <h3>图片交付与首屏请求量</h3>
+
+        </div>
+        <span class="viz-type">metric_cards</span>
+      </div>
+
+    <div class="metric-grid">
+
+        <div class="metric-card ">
+          <span>运行图片</span>
+          <strong>33.91 → 2.73 MB</strong>
+          <p>234张，同尺寸/同alpha，减少92%</p>
+        </div>
+
+        <div class="metric-card ">
+          <span>首屏图片</span>
+          <strong>28.58 → 1.12 MB</strong>
+          <p>213 → 56请求，减少96.1%；非公网耗时</p>
+        </div>
+
+        <div class="metric-card ">
+          <span>加载专项</span>
+          <strong>10/10 PASS</strong>
+          <p>慢网、取消、失败、超时与重试</p>
+        </div>
+
+    </div>
+
+    </article>
+
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>待确认问题</h2>
+      <div class="decision-list">
+
+      <article class="decision-card" data-question-id="Q-LOADING-01">
+        <div class="card-top">
+          <span class="qid">Q-LOADING-01</span>
+          <span class="route">Route hint: L0</span>
+        </div>
+        <h3>loading提示与压缩后的角色/地图清晰度是否符合预期？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>这是孩子进入游戏时的第一段体验。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>试玩后确认，若画质不满意可提高对应素材编码质量。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="reviews/loading-performance-review.md">reviews/loading-performance-review.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill muted-pill">无 Evidence ID</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">当前集成式MVP加载体验</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="0">
+              <option value="">请选择</option>
+              <option value="确认">确认</option><option value="修改">修改</option><option value="暂缓，补材料">暂缓，补材料</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="0" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>风险与下一步</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>风险</h4>
+          <ul><li>真实公网耗时未实测；摄像头模型首次初始化仍需等待。</li></ul>
+        </div>
+        <div>
+          <h4>下一步</h4>
+          <ul><li>刷新游戏，检查加载文案、角色与地图清晰度。</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>直接反馈</h2>
+      <p class="muted">这里用于填写不属于单个决策卡的整体意见、补充背景或下一步指令。</p>
+      <label class="direct-feedback-label">
+        整体反馈
+        <textarea id="directFeedback" class="direct-feedback-textarea" placeholder="例如：整体确认，但第 2 个问题需要补材料；或请回到 Phase 3 修改字段模型。"></textarea>
+      </label>
+    </section>
+
+    <section class="section">
+      <h2>反馈导出</h2>
+      <p class="notice">第一版 Review Console 不会自动写回项目文件。请复制或下载反馈 JSON 后，让 Claude / Codex 继续处理。</p>
+      <div class="actions">
+        <button type="button" id="copyFeedback">复制反馈 JSON</button>
+        <button type="button" id="downloadFeedback" class="secondary">下载反馈 JSON</button>
+        <span class="muted" id="copyStatus" aria-live="polite"></span>
+      </div>
+      <pre id="feedbackPreview"></pre>
+    </section>
+  </main>
+
+  <template id="mat-tpl-0"><div class="md-content"><h2 class="md-h">加载性能优化验收</h2>
+<p>日期：2026-10-22。QA Mode: TARGETED。</p>
+<h3 class="md-h">实测结果</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>项目</th><th>优化前</th><th>优化后</th></tr></thead><tbody><tr><td>运行时图片（234张）</td><td>33.91 MB</td><td>2.73 MB（-92.0%）</td></tr><tr><td>首屏请求图片</td><td>213张</td><td>56张</td></tr><tr><td>首屏请求图片字节</td><td>28.58 MB</td><td>1.12 MB（-96.1%）</td></tr></tbody></table></div>
+<p>数据口径：基线提交 <code>1e53896</code>；同一浏览器、独立冷页面、本地 HTTP。字节为所请求图片的文件大小，未包含字体/脚本/模型/音频，不是公网等待时长。首屏量取准备完成后；各关卡其余素材按选择下载。原PNG仍保留，因此仓库总体体积不会减少。</p>
+<h3 class="md-h">交付变化</h3>
+<ul class="md-ul"><li>同尺寸WebP运行副本，234张均验证尺寸及每个alpha像素与原图一致；RGB采用quality85有损压缩。</li><li>首次打开显示无需图片或自定义字体的准备层；真实加载+decode完成进度；资源清单不可用可重新加载。</li><li>首屏预载公共UI、六角色idle、地图缩略图和第四玩法图标；选择角色后准备该角色及伙伴动作，选择玩法后准备对应地图和纹理。</li><li>每组最多6个并发；成功资源复用；单图片20秒超时，失败重试只补未完成资源。</li><li>等待时底层inert且游戏按键/计时冻结；角色/玩法准备可返回，取消后旧请求不得跳转。</li><li>隐藏screen停止角色换帧；音频不抢首屏带宽；摄像头模型维持按启用加载。</li></ul>
+<h3 class="md-h">验证证据</h3>
+<ul class="md-ul"><li>加载专项10/10：慢网、完整显示、请求量、角色确认、取消不误跳、三旧玩法、火线冲击、无正常链路404/脚本异常、503重试、20秒超时、资源清单故障恢复（部分断言归为同项）。</li><li>角色选择11/11；角色动作6/6；三玩法计分9/9；L1物理4/4；火线核心17/17、浏览器17/17。</li><li>准备层1440×900、失败层919×843审图无溢出；正常首屏审图通过。</li><li>原图和WebP透明通道完全一致，碰撞几何未改。</li><li>详细可重生成结果：<code>qa/loading-performance/verification.json</code>；测试：<code>npm run qa:loading</code>。</li></ul>
+<h3 class="md-h">PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：减小交付素材，并以真实资源就绪为进入条件；按阶段准备避免一次等待全部内容。</li><li>被放弃的方案：假进度、所有地图与所有动作一起下载、超时后强行缺图进入。</li><li>需要 PM 确认的问题：刷新试玩，确认loading文案、角色和地图清晰度符合预期。</li><li>不需要 PM 审查的执行细节：编码参数、6并发、20秒超时、资源清单、缓存和测试接口。</li><li>进入下一阶段的条件：此次优化等待体验反馈；不自动确认整体Phase 4B或开始新阶段。</li></ul>
+<h3 class="md-h">实测边界</h3>
+<p>真实公网加载时长随网速/服务器缓存而变；摄像头模型的首次初始化仍需要时间。摄像头识别与儿童试玩不由本次合成加载测试替代。</p></div></template>
+<template id="mat-tpl-1"><div class="md-content"><h2 class="md-h">原型规格：输入就绪与玩法内控制</h2>
+<blockquote class="md-bq"><p>更新日期：2026-08-31 | 来源：<code>03-feature-手势输入闭环.md</code> + <code>03-feature-核心关卡循环.md</code> | Target Surface：web-only</p></blockquote>
+<h3 class="md-h">第四玩法接入合同</h3>
+<p>2026-09-05 已授权：大厅四卡2×2，第四入口火线冲击，继续消费selectedCharacterId和既有输入就绪会话。旧三玩法规则不变；新握持/位移/转腕仅在WL-01使用，输入合同与计时/失败/成绩界面分别见 <code>03-feature-火线冲击.md</code>、<code>04A-prototype-spec-火线冲击.md</code>。原三玩法分析继续仅适用原三玩法。</p>
+<h3 class="md-h">1. Product Frame</h3>
+<ul class="md-ul"><li>目标用户：5 岁儿童；家长负责隐私确认、摄像头授权和按键降级。</li><li>主要场景：笔记本浏览器近景单手输入。</li><li>原型目的：验证“输入就绪”与“玩法教学”职责分离，保证双通道输入真实进入三个运行时。</li><li>Target Surface：<code>web-only</code>，沿用 Phase 1 已确认范围。</li><li>关键约束：视频本机处理；单屏无滚动；游戏 readout 不覆盖视频；无全局动作成绩页；儿童可见层从初始界面起采用“图形优先、文字最少”规则。</li></ul>
+<h3 class="md-h">2. Goals And Non-Goals</h3>
+<h4 class="md-h">Goals</h4>
+<ul class="md-ul"><li>摄像头连续 3 帧有可靠关键点即可 ready，不要求拳掌动作。</li><li>摄像头与键盘都在各自单一准备页完成就绪并进入同一人物选择页：GI-02“继续”→CH-01，GI-05“开始游戏”→CH-01；CH-01 确认角色后进入 LV-00，两条路径都不保留第二张输入确认页。</li><li>摄像头与键盘都输出具名双 capability。</li><li>三种玩法在自己的安全场景中教学；L1 走姿态边沿，L2 走连续掌心 X/Y，L3 走连续掌心 X。</li></ul>
+<h4 class="md-h">Non-Goals</h4>
+<ul class="md-ul"><li>不保留“去看看结果/看看结果”、拳掌练习轮次或全局动作结果页。</li><li>不新增第三种必需手型、全身追踪或移动端。</li></ul>
+<h3 class="md-h">3. Page Archetype And Reference Alignment</h3>
+<h4 class="md-h">Page Archetype</h4>
+<ul class="md-ul"><li>页面类型：家长设置任务流 + 单页儿童输入就绪确认 + 单屏人物选择 + 玩法内小教练。</li><li>核心任务：确认系统看见手 → 选择人物 → 开始游戏；进入玩法后只学当前控制。</li><li>信息密度：极低；全局页只显示摄像头/手/ready，玩法页只显示一个控制目标。同一儿童视区最多同时出现 1 个短标题、1 个短提示和 1 个主 CTA。</li><li>默认布局：设置页分步；输入页左大视频/骨架、右 ready；游戏右上浮动小教练且 readout 在视频外。</li><li>为什么不是动作训练室：三个玩法控制不同，全局拳掌教程会误导跟手玩法。</li></ul>
+<h4 class="md-h">Reference Alignment</h4>
+<ul class="md-ul"><li>必须继承：Nex 的家长/儿童分层、本机隐私说明、直接世界反馈；当前用户截图中的大取景与关键点可见性。</li><li>可以偏离：移除旧版练习小狗和结果页。</li><li>禁止偏离：不得让文字覆盖视频；不得显示英文类别、置信度或技术错误给儿童。</li></ul>
+<h4 class="md-h">Product Canvas Rules</h4>
+<ul class="md-ul"><li>只呈现真实用户 UI，不显示 screen-nav、状态开关、测试按钮或 QA 说明。</li><li>测试 seam 仅挂在 <code>window.__mvpTest</code>。</li><li>儿童可见文案优先使用 2–8 个汉字；按钮优先 2–6 个汉字；删除重复表达同一状态的 eyebrow、说明段、进度句和底部注释。</li><li>手势图、方向箭头、角色动作、颜色和声音承担主要解释；文字只补充当前唯一动作，不同时解释后续玩法。</li><li>家长隐私、错误恢复和技术说明可保留完整信息，但放在家长层、折叠说明或仅错误时出现；详细无障碍说明保留在 <code>aria-label</code> / <code>sr-only</code>，不计入儿童可见文字预算。</li></ul>
+<h3 class="md-h">4. Information Architecture</h3>
+<ul class="md-ul"><li>家长层：GI-01 隐私/模式；GI-02 摄像头授权、模型准备与摄像头 ready；家长抽屉。</li><li>儿童就绪：GI-02 摄像头 ready；GI-05 键盘测试与 ready。</li><li>儿童选择：CH-01 六角色选择。</li><li>儿童玩法：LV-01 控制摘要；LV-02 安全教学与正式输入。</li><li>主路径：<code>GI-01 → GI-02 → CH-01 → LV-00</code>；降级：<code>GI-01/GI-02 → GI-05 → CH-01 → LV-00</code>。</li></ul>
+<h3 class="md-h">5. Core Flows</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Flow</th><th>Entry</th><th>Steps</th><th>Success</th><th>Edge</th></tr></thead><tbody><tr><td>摄像头就绪</td><td>GI-01</td><td>隐私→授权→3帧见手</td><td>GI-02“继续”→CH-01</td><td>拒绝/模型失败→键盘</td></tr><tr><td>键盘就绪</td><td>GI-05</td><td>任意按一次 Space/方向键，当前键灯即时点亮</td><td>GI-05“开始游戏”→CH-01</td><td>无需逐键完成或进入第二页</td></tr><tr><td>人物选择</td><td>CH-01</td><td>点选六名人物之一→选中反馈→“选好啦”</td><td>提交 selectedCharacterId→LV-00</td><td>返回对应输入就绪页</td></tr><tr><td>L1 教学</td><td>LV-02 tutorial</td><td>fist→palm→世界动作</td><td>一次高跳</td><td>持掌不连发</td></tr><tr><td>L2 教学</td><td>LV-02 tutorial</td><td>掌心上下左右→角色四向跟手</td><td>横向、纵向各移动一次</td><td>Unknown 仍跟手</td></tr><tr><td>L3 教学</td><td>LV-02 tutorial</td><td>掌心左右→角色对准平台</td><td>左右各一次</td><td>Unknown 不阻断</td></tr><tr><td>无手恢复</td><td>LV-02</td><td>grace→冻结→手回来→3/2/1</td><td>本轮继续</td><td>不扣勇气</td></tr></tbody></table></div>
+<h3 class="md-h">6. Screen Inventory</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>ID</th><th>Screen</th><th>Purpose</th><th>Entry</th><th>Exit</th></tr></thead><tbody><tr><td>GI-01</td><td>家长输入设置</td><td>隐私与模式</td><td>起始</td><td>GI-02/GI-05</td></tr><tr><td>GI-02</td><td>摄像头准备与就绪</td><td>授权、模型、找手；ready 后继续选人物</td><td>GI-01</td><td>CH-01/GI-05</td></tr><tr><td>GI-05</td><td>按键准备与就绪</td><td>同页测试按键、点亮反馈并选择人物</td><td>降级入口</td><td>CH-01/GI-01</td></tr><tr><td>CH-01</td><td>人物选择</td><td>六选一并确认本次会话角色</td><td>GI-02/GI-05</td><td>LV-00/来源输入页</td></tr><tr><td>LV-01/LV-02</td><td>玩法内控制</td><td>当前玩法摘要与安全教学</td><td>LV-00</td><td>正式计分</td></tr></tbody></table></div>
+<h3 class="md-h">7. Coverage Plan</h3>
+<ul class="md-ul"><li>Backbone：与核心规格同一 <code>04B-prototype-手势小狗探险MVP.html</code>。</li><li>GI-03 旧“摄像头已就绪”和 GI-04 旧“动作结果”都不再是 backbone，也不应存在 DOM screen 或可达入口。</li><li>GI-02 的“继续”与 GI-05 的“开始游戏”都真实进入 CH-01；CH-01“选好啦”进入 LV-00；GI-06 不应存在 DOM screen 或可达入口。</li><li>Extension：permission-denied、model-error、no-hand、keyboard takeover 均保留恢复路径。</li></ul>
+<h3 class="md-h">8. Screen Specs</h3>
+<h4 class="md-h">GI-01 家长输入设置</h4>
+<ul class="md-ul"><li>Purpose：权限前建立本机处理信任并选择输入。</li><li>Content：标题“选怎么玩”、摄像头/键盘两种大图形选择、三枚隐私图标；不显示介绍段和两段重复的模式说明。</li><li>Primary：用摄像头玩；Secondary：用按键玩。</li><li>States：隐私未确认时摄像头 disabled；focus；error 不在本页伪装 success。</li><li>Navigation：GI-02 或 GI-05。</li><li>Acceptance：摄像头入口请求前仍有家长可读的折叠说明；首屏常显区只保留选择、三枚隐私承诺与确认；两个按钮 ≥44px。</li></ul>
+<h4 class="md-h">GI-02 摄像头准备</h4>
+<ul class="md-ul"><li>Purpose：请求权限、加载模型、找到一只完整小手。</li><li>Layout：大镜像视频+canvas 为主；侧栏只显示“举起一只手”、当前状态和主操作；三步技术流程不作为儿童常显文字。</li><li>Primary：未 ready 时“开启摄像头/重试”，ready 时“继续”；Secondary：改用按键。</li><li>States：requesting/loading/finding-hand/ready/error。</li><li>Data：cameraStatus、modelStatus、handPresence、landmarks。</li><li>Navigation：连续 3 帧见手后保持在 GI-02 ready 状态；点击“继续”立即派发 camera InputProfile 并进入 CH-01；错误/主动降级 → GI-05。不得进入 GI-03/GI-04。</li><li>Acceptance：关键点与视频对齐；提示不覆盖视频主体；同一时刻只显示一个取景提示，模型/摄像头/手部三项详细状态只供家长按需查看；ready 结论、角色反馈与“继续”都在本页完成，不再复制到第二张准备页。</li><li>Visual asset：摄像头尚未开启/正在找手时使用独立生成的 <code>find-hand.png</code>，不得回退到大尺寸通用内联手掌 SVG。</li></ul>
+<h4 class="md-h">GI-05 按键就绪</h4>
+<ul class="md-ul"><li>Purpose：说明等价能力并进入人物选择。</li><li>Layout：复用 GI-02 的手绘木框暖纸底板与左右栏比例；左侧深河蓝测试舞台显示四向键簇与 Space，右侧只保留“按一下试试”、开始和返回。</li><li>Content：每个键为暖纸/木边按键灯；默认安静，按下时以河蓝/太阳黄高亮、柔和外发光和下压反馈点亮，松开后回到已验证状态。禁止使用旧白底板、单个灰色键帽或第二张 ready 卡。</li><li>Primary：任意有效键被测试后，同页显示 ready 并启用“开始游戏”→CH-01。</li><li>Secondary：返回摄像头。</li><li>States：default/key-active/ready/focus；不要求逐键完成，不自动跳转第二页。</li><li>Acceptance：InputProfile 同时声明 poseTransition/handTrackingY/handTrackingX；Space 与四个方向键都能点亮，任意一个即可 ready；GI-06 不存在；不在进入大厅前展示玩法介绍或多步进度。</li></ul>
+<h4 class="md-h">CH-01 人物选择</h4>
+<ul class="md-ul"><li>Purpose：让儿童在进入玩法大厅前选择本次会话的初始人物。</li><li>Layout：暖纸探险底板；顶部短标题“选一个伙伴”；中部六张同权重人物卡，宽屏六列，宽度 ≤1050px 且高度 ≥720px 时三列两行，低高视口保留六列并同步缩放，不滚动；底部唯一主按钮“选好啦”，左上保留低权重返回。</li><li>Content：人物卡仅显示完整 <code>idle-1.png</code> 与名字：布鲁伊、宾果、麦麦、班底特、悠悠、棉棉；不显示属性、能力、稀有度、锁态或长描述。</li><li>Interaction：默认聚焦布鲁伊；点击/键盘方向移动选择时更新 <code>pendingCharacterId</code>、选中描边、轻抬和 <code>aria-checked</code>；点击“选好啦”提交 <code>selectedCharacterId</code> 并进入 LV-00。</li><li>States：default/selected/focus/image-fallback；六张卡始终可选。</li><li>Acceptance：六张卡均可点击和键盘操作；同一时刻仅一张 <code>aria-checked=true</code>；确认后大厅与三玩法使用所选人物；返回保持候选与 InputProfile；五个支持视口单屏无横向/纵向滚动。</li></ul>
+<h4 class="md-h">LV-01/LV-02 玩法内小教练</h4>
+<ul class="md-ul"><li>Purpose：只在当前玩法内教授当前控制。</li><li>Content：L1 用拳/掌图形 + “握拳 → 张手”；L2 用四向箭头；L3 用左右箭头。标题与辅助句不重复同一动作。</li><li>Camera：缩略视频 + 骨架；readout 是 coach 的静态子区，位于视频之后。</li><li>States：tutorial/need_fist/armed/tracking/success/no-hand/keyboard。</li><li>Acceptance：一个时刻一个目标；L2 label Unknown 时只保留角色跟手视觉，不提示“动作不清楚”；常显文字不超过一个动作短句。</li></ul>
+<h3 class="md-h">9. Component And State Matrix</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Component</th><th>Default</th><th>Loading</th><th>Empty</th><th>Error</th><th>Success</th></tr></thead><tbody><tr><td>Setup choice</td><td>camera/keyboard</td><td>N/A</td><td>N/A</td><td>permission help</td><td>selected</td></tr><tr><td>Camera surface</td><td>preview</td><td>model loading</td><td>finding hand</td><td>retry/keyboard</td><td>landmarks visible</td></tr><tr><td>Input ready CTA</td><td>hidden</td><td>hidden</td><td>hidden</td><td>keyboard exit</td><td>摄像头“继续” / 键盘 GI-05“开始游戏”</td></tr><tr><td>Game coach</td><td>current control</td><td>model ready</td><td>no hand</td><td>camera/model</td><td>seen/armed/tracking</td></tr></tbody></table></div>
+<h3 class="md-h">10. Sample Data</h3>
+<ul class="md-ul"><li>Ready：<code>cameraStatus=active,modelStatus=ready,handPresence=present,inputReady=true</code>。</li><li>Unknown with hand：<code>label=None,handPresent=true,palmCenterX=0.58,palmCenterY=0.42</code>。</li><li>Error：<code>NotAllowedError</code> → “摄像头没有打开，可以重试或用按键继续”。</li><li>InputProfile：<code>{mode:'camera_full',capabilities:{poseTransition:true,handTrackingY:true,handTrackingX:true}}</code>。</li></ul>
+<h3 class="md-h">11. Data And Events</h3>
+<ul class="md-ul"><li><code>PoseTransitionEvent{stablePose,previousStablePose,source,confidence,timestamp}</code>。</li><li><code>HandTrackingFrame{handPresent,palmCenterX,palmCenterY,confidence,timestamp}</code>。</li><li><code>InputProfile{mode,capabilities:{poseTransition,handTrackingY,handTrackingX}}</code>。</li><li>全局 ready 只依赖 handPresent 连续帧；离散游戏 gate 只存在于 L1 runtime。</li><li>进入/重玩玩法时清空 <code>lastStablePose</code> 与 gate，防止跨玩法首个握拳被去重。</li></ul>
+<h3 class="md-h">12. Responsive Rules</h3>
+<ul class="md-ul"><li>视口：1440×900、1280×720、1219×681、1024×700、919×843。</li><li>所有 screen <code>100dvh;overflow:hidden;min-height:0</code>。</li><li>GI-02 默认左右两列；低高度减少视频高度与说明，不改成纵向滚动。</li><li>game coach 宽 <code>clamp(190px,18vw,270px)</code>；readout 静态置于 video/canvas 之后，不使用视频内 absolute overlay。</li><li>文案允许两行但不覆盖按钮；所有主按钮 ≥44px。</li><li>低高度不是把多个说明压小，而是直接隐藏次级文案；儿童主标题、当前动作和主 CTA 不被隐藏。</li></ul>
+<h3 class="md-h">13. Accessibility And Interaction</h3>
+<ul class="md-ul"><li>所有按钮有 label/focus；视频提供“镜像摄像头预览”说明。</li><li>摄像头状态使用 aria-live polite，不逐帧朗读手势。</li><li>reduced motion 不影响关键点、ready、控制状态与世界因果。</li><li>错误始终提供重试和键盘出口。</li><li>精简仅作用于视觉文本；按钮、视频、状态和图标仍保留完整可访问名称。</li></ul>
+<h3 class="md-h">14. Visual / Content / Interaction Thesis</h3>
+<ul class="md-ul"><li>Visual：大视频、极少文字、绿色 ready、儿童可读图标；从 GI-01 起不使用介绍段、三步清单和重复状态卡占据首屏。</li><li>Content：说“我看到小手”，不说“模型置信度低/未知”。</li><li>Interaction：准备页只确认可用；玩法页才把手映射为动作。</li></ul>
+<h3 class="md-h">15. Annotation Points</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Screen</th><th>Point</th><th>Why</th></tr></thead><tbody><tr><td>GI-02</td><td>ready 后“继续”进入 CH-01</td><td>删除重复输入确认页并衔接人物选择</td></tr><tr><td>CH-01</td><td>六角色单选 + 唯一确认按钮</td><td>低龄儿童可感知且不比较复杂属性</td></tr><tr><td>GI-02</td><td>无动作教程</td><td>保持输入就绪与玩法教学分层</td></tr><tr><td>LV-02 coach</td><td>readout 在视频外</td><td>防止遮脸</td></tr><tr><td>L2</td><td>Unknown 仍有位置流</td><td>防止跟手假死</td></tr></tbody></table></div>
+<h3 class="md-h">16. Assumptions</h3>
+<ul class="md-ul"><li>摄像头成功后至少能输出一只手 21 点关键点；关键点只在内存中使用。</li><li>玩法教学状态可本地保存，但不影响三个玩法默认可选。</li></ul>
+<h3 class="md-h">17. Open Questions</h3>
+<ul class="md-ul"><li>无阻塞问题。</li></ul>
+<h3 class="md-h">18. Acceptance Criteria For HTML Prototype</h3>
+<ul class="md-ul"><li>[ ] GI-02 连续 3 帧见手后显示“继续”；点击后只派发一次 camera InputProfile 并进入 CH-01。</li><li>[ ] GI-05 任意有效键点亮后进入同一 CH-01；CH-01 恰好显示布鲁伊、宾果、麦麦、班底特、悠悠、棉棉六张可选卡，确认后进入 LV-00。</li><li>[ ] CH-01 单选状态、键盘焦点与 <code>aria-checked</code> 一致，五个支持视口单屏无滚动；LV-00 与三玩法渲染所选角色。</li><li>[ ] GI-03 旧 ready 页与 GI-04 旧结果页均不作为 DOM screen 存在，也不在任何可达主链路、错误回退或家长抽屉恢复路径中出现。</li><li>[ ] camera<em>full/keyboard</em>full 精确提供三项 capability。</li><li>[ ] 三玩法各自教学，不在大厅上方展示跨玩法步骤。</li><li>[ ] L1 未握拳张掌不触发、持掌不连发、切玩法重置姿态去重。</li><li>[ ] L2 在 label=None/Unknown 且关键点有效时持续更新 X/Y，键盘四方向支持按住；L3 持续更新 X。</li><li>[ ] 视频/canvas/readout 零相交，5 视口单屏无重叠。</li><li>[ ] GI-01 常显区没有介绍段和模式长说明；GI-02 不常显三步技术清单，ready 时只保留一个准备结论和一个主 CTA；GI-05 单页只保留测试舞台、一个准备结论和一个主 CTA。</li><li>[ ] GI-02 未开启/找手占位从 <code>find-hand.png</code> 加载，不实例化大尺寸通用手掌 SVG；GI-05 与 GI-02 使用同一手绘底板家族，五枚按键灯有按下/已验证反馈。</li><li>[ ] 儿童可见层同一视区最多 1 个短标题、1 个短提示、1 个主 CTA；详细隐私/错误说明仍可在家长层、折叠区或错误态访问。</li><li>[ ] 精简可见文字后，所有 icon-only 操作和动态状态仍有 <code>aria-label</code>、<code>aria-live</code> 或 <code>sr-only</code> 名称。</li></ul>
+<h3 class="md-h">19. QA Strategy For HTML Prototype</h3>
+<ul class="md-ul"><li>QA Mode：<code>QA-TARGETED</code>；触发原因是 screen inventory 与摄像头主路径发生变化，需要浏览器验证没有残留可达页或错误恢复跳转。</li><li>变更点检查：GI-02/GI-05 单次派发 InputProfile 并进入 CH-01；GI-03/GI-04/GI-06 不存在；CH-01 六选一确认后进入 LV-00，角色跨三玩法保持。</li><li>Browser checks：定向检查 1440×900、1219×681、919×843；不进行无关全量验收。</li><li>人工 UX：从初始界面走摄像头与按键两条路径，确认摄像头不再多点一次，孩子只需识别图形、一个短提示和一个主按钮。</li></ul>
+<h3 class="md-h">20. PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：全局动作训练改为输入就绪；摄像头授权、见手与 ready 收敛在 GI-02，不保留重复 GI-03；双输入就绪后统一进入 CH-01 六角色选择，确认人物后再进入玩法大厅；三种控制教学下沉到玩法；儿童层继续采用“图形优先、一个短提示、一个主 CTA”，双通道合同与本机隐私不变。</li><li>Target Surface：<code>web-only</code>。</li><li>被放弃的方案：摄像头成功后的第二张 ready 页、全局拳掌练习/结果页、识别倒计时、第三必需手型、视频内文字覆盖。</li><li>需要 PM 确认的问题：无；用户已明确要求 CTA 与教学层级调整。</li><li>不需要 PM 审查的执行细节：连续帧数、推理间隔、测试注入 API。</li><li>进入下一阶段的条件：04B 实现并通过 QA-TARGETED。</li></ul>
+<h3 class="md-h">21. Spec Self-Check</h3>
+<ul class="md-ul"><li>Screen coverage：PASS。</li><li>State coverage：PASS。</li><li>Target surface coverage：PASS。</li><li>Page archetype coverage：PASS。</li><li>Reference alignment：PASS。</li><li>Product canvas rules：PASS。</li><li>Responsive coverage：PASS。</li><li>Handoff readiness：PASS。</li><li>PM review gate readiness：PASS。</li></ul>
+<h3 class="md-h">资源准备与进入状态</h3>
+<ul class="md-ul"><li>Target Surface：沿用 web-only、单视口；低密度全屏准备层，沿现有奶油色/蓝绿配色，使用系统字体与 CSS 即刻显示，不等待背景图或自定义字体。</li><li>Coverage：属于现有 backbone 的启动与进入过渡态，不新增导航分支。首次打开 → 准备首屏 → GI-01；确认角色 → 准备所选角色/伙伴 → LV-00；选玩法 → 准备该玩法 → LV-01/WL-01。</li><li>Default/Loading：显示“冒险马上开始”及当前准备内容，进度按已完成图片加载和解码数量更新，不模拟百分比。准备层覆盖期间，底层不可操作，不启动倒计时或计时。</li><li>Success：关键图片可解码后自动进入；缓存命中不人为延长等待。字体加载可降级系统字体，音频失败不阻塞。</li><li>Error：图片错误/单次超时显示“有些画面还没准备好”，提供“再试一次”；角色/玩法加载可“返回”，保留原选择、输入和成绩；返回后旧请求完成不得自动跳转。初次加载提供重新加载页面恢复脚本故障。</li><li>Empty：资源组为空或已全部缓存时直接完成。</li><li>Assets：生成可重复构建的 WebP 运行时副本，保留 PNG 源文件；保留尺寸、透明区域与锚点，不改变碰撞几何。初次只准备入口/公共UI、角色 idle、玩法缩略图；其他角色动作及玩法地图按选择准备。摄像头模型仅在用户启用摄像头后加载。</li><li>Accessibility：准备状态使用 aria-live=polite、原生 progress；按钮至少44px，可用键盘；底层 inert，失败焦点进入重试，结束恢复原焦点；reduced-motion 下关闭装饰动效。</li><li>Acceptance：慢网时准备层先出现且无缺图入口；首屏不请求未选角色 run/jump 或玩法完整地图；加载完成可正常进入六角色/四玩法；失败重试可恢复、返回取消不误跳；加载等待不消耗倒计时；1440×900 和 919×843 均无页面滚动。</li></ul>
+<h4 class="md-h">PM Review Slice — 加载体验</h4>
+<ul class="md-ul"><li>本阶段关键决策：真实进度、关键素材就绪后进入、分阶段下载与可恢复失败。</li><li>被放弃的方案：一次下载全部地图/动作、假进度、缺图时直接进入。</li><li>需要 PM 确认的问题：优化方向已由本轮请求明确；交付后试玩确认等待文案与画质。</li><li>不需要 PM 审查的执行细节：WebP 编码参数、并发数、缓存去重、超时与测试脚本。</li><li>进入下一阶段的条件：在本轮明确优化范围内完成实现与 QA-TARGETED，不推进整体 Phase 4B 门禁。</li></ul></div></template>
+<template id="mat-tpl-2"><div class="md-content"><h2 class="md-h">原型规格：三玩法无尽距离与高度里程碑</h2>
+<blockquote class="md-bq"><p>更新日期：2026-08-31 | 来源：<code>03-feature-核心关卡循环.md</code> | Target Surface：web-only</p></blockquote>
+<h3 class="md-h">第四玩法接入合同</h3>
+<p>2026-09-05 已授权：大厅四卡2×2，第四入口火线冲击，继续消费selectedCharacterId和既有输入就绪会话。旧三玩法规则不变；新握持/位移/转腕仅在WL-01使用，输入合同与计时/失败/成绩界面分别见 <code>03-feature-火线冲击.md</code>、<code>04A-prototype-spec-火线冲击.md</code>。原三玩法分析继续仅适用原三玩法。</p>
+<h3 class="md-h">1. Product Frame</h3>
+<ul class="md-ul"><li>目标用户：5 岁儿童；家长负责授权、暂停、输入接管和退出。</li><li>主要场景：带摄像头的笔记本浏览器，坐姿或站姿近景单手游玩。</li><li>原型目的：验证三个默认开放玩法是否各自易懂、可无限重玩，并重点验证由真实距离/高度驱动的速度与障碍递进是否能被 5 岁儿童感知。</li><li>Target Surface：<code>web-only</code>，沿用 Phase 1 已确认范围。</li><li>关键约束：单屏无页面滚动；本机识别；无账号/昵称/联网榜；私人本地版使用用户参考图生成六名候选角色的动作素材，公开发布前必须授权或切回原创角色；摄像头文案不覆盖视频。</li></ul>
+<h3 class="md-h">2. Goals And Non-Goals</h3>
+<h4 class="md-h">Goals</h4>
+<ul class="md-ul"><li>摄像头在 GI-02 点击“继续”、键盘在 GI-05 完成一次按键测试后点击“开始游戏”，都进入 CH-01 六角色选择；确认角色后进入三玩法大厅，两条路径都不经过重复 ready 页。</li><li>CH-01 提供布鲁伊、宾果、麦麦、班底特、悠悠、棉棉六选一，提交的 <code>selectedCharacterId</code> 驱动大厅、三玩法、救援和成绩页角色素材。</li><li>三张玩法卡同权重、默认可点，并显示各自控制图形和本机个人最好。</li><li>每种玩法有自己的入场说明和 3–5 秒安全教学；大厅上方不展示拳掌三步指引。</li><li>三种运行时均不设时长终点；L1/L2 以行进米数、L3 以爬升米数驱动渐进速度、障碍组合、里程碑反馈、3 颗勇气心和单局成绩。</li><li>每次升级必须通过同地图画风的生成图片牌、整数米数、短文案和障碍视觉变化共同表达，不使用简单色块或通用徽章占位。</li><li>L1 使用共享 <code>worldSpeed</code> 与空间碰撞；张掌跳跃足够高，落坑反馈完整。</li></ul>
+<h4 class="md-h">Non-Goals</h4>
+<ul class="md-ul"><li>不做顺序锁关、固定关长、跨玩法总排名、账号、昵称、全球榜、好友榜或跨设备同步。</li><li>不做经典 Flappy 式一次碰撞即死、窄缝与高频重开。</li><li>不做移动端；不复制官方场景、音乐、标识、剧情或关卡内容；本轮角色参考素材仅用于家庭设备内私人试玩，不获得或暗示公开发行授权。</li></ul>
+<h3 class="md-h">3. Users And Scenarios</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>User</th><th>Need</th><th>Context</th><th>Success Signal</th></tr></thead><tbody><tr><td>儿童</td><td>选择喜欢的人物</td><td>输入已就绪</td><td>六张人物卡中确认一张</td></tr><tr><td>儿童</td><td>自己选择想玩的玩法</td><td>人物已确认</td><td>任意卡可直接进入</td></tr><tr><td>儿童</td><td>快速理解当前玩法</td><td>首次进入/重玩</td><td>在安全教学中完成一次控制</td></tr><tr><td>儿童</td><td>知道碰撞后发生了什么</td><td>落坑/撞边/落空</td><td>看见救援、心减少并继续</td></tr><tr><td>儿童</td><td>愿意再玩</td><td>第 3 次失误后</td><td>看懂本次分数与最好，选择再玩</td></tr><tr><td>家长</td><td>可接管与清理</td><td>摄像头阻塞/结束</td><td>键盘接管、结束本局、清空本机成绩</td></tr></tbody></table></div>
+<h3 class="md-h">4. Page Archetype And Reference Alignment</h3>
+<h4 class="md-h">Page Archetype</h4>
+<ul class="md-ul"><li>页面类型：低密度人物选择 + 低密度玩法选择大厅 + 玩法内任务流 + 全屏横版舞台 + 单局成绩卡。</li><li>为什么不是关卡地图：三个入口不是内容先后关系；锁态会阻断玩法验证，并错误表达产品结构。</li><li>核心任务：选玩法 → 学当前控制 → 向更远/更高处推进 → 感知里程碑与新障碍 → 被救援后继续 → 查看个人成绩。</li><li>信息密度：大厅每卡 4 个字段以内；游戏同一时刻只有 1 个动作目标。</li><li>默认布局：LV-00 三列大卡；LV-01 中央控制卡；LV-02 full-bleed 世界 + 顶部距离/高度 HUD；摄像头模式显示右上浮动教练，键盘模式不实例化教练与手势定位标记；LV-03 为单屏横向双栏成绩卡，左侧庆祝、右侧分数/Top 5/操作。</li><li>已确认方向：用户明确要求三个玩法默认解锁、教学在玩法内、玩法内递进与分数/排行榜。</li></ul>
+<h4 class="md-h">Reference Alignment</h4>
+<ul class="md-ul"><li>参考样本：Nex/GoNoodle 的直接世界反馈、Chromium 小恐龙的速度—起跳速度耦合与连续空间碰撞、Doodle Jump 的自动弹跳 + 左右对准平台、Jetpack Joyride 的渐进卷轴与个人成绩循环。</li><li>必须继承：少输入、即时反馈、以实际位移表达进程、逐渐提速、跳跃随速度温和补偿、障碍组合进阶、个人进步、碰撞后快速恢复。</li><li>禁止复制：参考游戏的品牌名、角色、美术、声音、具体障碍造型和精确难度曲线；只继承运动变量间的通用关系。</li><li>可以偏离：采用 3 颗勇气心形成自然停点；排行榜只在设备内匿名保存。</li><li>禁止偏离：除用户明确提供的本地主角参考图外，不得复制其他官方角色、美术、音效或关卡布局；不得引入窄缝即死、武器、广告或公开社交竞争。</li></ul>
+<h4 class="md-h">Character Selection And Asset Contract</h4>
+<ul class="md-ul"><li>Roster：<code>bluey/布鲁伊</code>、<code>bingo/宾果</code>、<code>grey-puppy/麦麦</code>、<code>blue-heeler-dad/班底特</code>、<code>garden-girl/悠悠</code>、<code>lilac-girl/棉棉</code>，顺序与 <code>assets/characters/character-roster.json</code> 一致，均可选且无锁态。</li><li>参考身份：每个角色只改变动作姿势，分别保留轮廓、配色、面部特征和儿童友好画风，不使用滤镜把同一轮廓伪装成另一角色。</li><li>动作清单：六名角色分别生成 <code>idle</code>、<code>run</code>、<code>jump</code>、<code>hover</code>、<code>hurt</code>、<code>bump</code>、<code>celebrate</code>；每组 2×2、4 帧透明 PNG，并保留原始洋红底表、透明合图、GIF、prompt 与 QC 元数据，共 42 组/168 帧。普通障碍命中播放 <code>bump</code>，坑洞/安全云救援继续使用 <code>hurt</code>。</li><li>选择合同：CH-01 默认聚焦布鲁伊，六卡同权重；点击卡片只更新候选与选中反馈，点击“选好啦”才提交 <code>selectedCharacterId</code>。换玩法、再玩一次与成绩页保持当前选择，新会话/刷新回到布鲁伊候选。</li><li>状态映射：准备/等待 → <code>idle</code>；L1 前进 → <code>run</code>；L1/L3 弹跳 → <code>jump</code>；L2 跟手 → <code>hover</code>；普通碰撞 → <code>bump</code>；坑洞/安全云救援 → <code>hurt</code>；准备完成/成绩 → <code>celebrate</code>。</li><li>实现边界：动作切换不得改动 <code>Session</code>、输入映射、碰撞、计分、救援或 screen transitions；动作帧加载失败时回退到同角色 <code>idle</code>，不阻断本局。</li><li>发行边界：素材只服务本项目的私人本地试玩；分享构建物、公开发布或商用前必须取得授权，或整体替换为原创角色素材。</li></ul>
+<h4 class="md-h">Layered Map Asset Contract</h4>
+<ul class="md-ul"><li>Pipeline：<code>side<em>scroll</em>mode</code>；<code>parallax<em>layers</code>；独立 <code>platform</em>objects + interactive<em>scene</em>objects</code>；<code>precise_shapes</code>；project-native HTML/CSS/JS。</li><li>Canvas：所有主背景板、舞台参考与预览统一为 <code>1536×864</code>。L1/L2 使用水平镜像循环对并 <code>repeat-x</code>；L3 使用纵向镜像循环对并 <code>repeat-y</code>。</li><li>Runtime layers：fallback color → generated far → generated mid → generated ground/platform skins → obstacles/pickups → actors → feedback → HUD/coach。</li><li>L1：远/中/地面速度比 <code>0.08/0.22/1.0</code>；地面条、软木箱与溪水坑为独立结构，首尾循环不得出现空白或跳缝。溪水坑使用一张宽幅透明皮肤，碰撞仍由运行时目标矩形决定，禁止继续使用深色 CSS 椭圆占位。</li><li>L2：远/中速度比 <code>0.06/0.18</code>；上下树篱使用同一透明障碍皮肤，碰撞仍由 <code>safeY±0.22</code> 运行时矩形决定。</li><li>L3：远/中纵向速度比 <code>0.08/0.16</code>；生成树枝只蒙皮 <code>platforms</code>，安全云只蒙皮救援锚点，摄像机和落台物理不从像素推导。</li><li>Visual restraint：背景 saturation≤约 <code>.86</code>、contrast≤约 <code>.90</code>、低纹理噪声；中央行动区、顶部 12% HUD 与右侧 20% 教练区域不放高对比地标；所有可碰撞物必须比背景更清楚。</li><li>Files：运行契约使用 <code>data/maps/game-maps.json</code>；每个生成资产旁保留 prompt，原始图保留在对应 <code>raw/</code>，透明处理和循环对可重复构建。</li></ul>
+<h4 class="md-h">Map-Consistent Interface Skin Contract</h4>
+<ul class="md-ul"><li>Design thesis：界面应像“放在插画地图上的儿童探险手册”，使用温暖、哑光、轻厚描边与压印按钮；信息区保持干净，不把树叶、云、木纹等高频纹理铺到文字背后。</li><li>Token：<code>paper #fff9e8</code>、<code>paper-soft #f7efcf</code>、<code>river #3889b6</code>、<code>river-dark #185779</code>、<code>moss #6f9f59</code>、<code>bark #8a5a32</code>、<code>sun #f2bd55</code>、<code>ink #173a52</code>、<code>muted #587084</code>；线条优先暖棕/河蓝，避免通用 SaaS 灰线和紫蓝渐变。</li><li>Surface：大厅卡、玩法说明、教练、暂停、成绩使用同一暖纸面；外框 2–3px、底部 5–7px 压印边、圆角 18–28px、单层软阴影。不得出现卡片套卡片或半透明玻璃拟态。</li><li>Controls：主按钮为河蓝底 + 深河蓝底边，次按钮为奶油纸面 + 树皮边，奖励/确认用太阳黄；hover 只轻抬 2–3px，press 下压；所有文字仍满足可读对比。</li><li>HUD/Coach：运行态顶部图片牌只承担距离/高度与下一里程碑进度，不显示星形、分数或阶段文案；分数继续由运行时累计并仅在 LV-03 成绩/Top 5 呈现。距离/高度数字保持最高对比，使用当前玩法生成的无文字图片牌作为底板，实时数字与单位由 HTML 覆盖。教练只属于摄像头模式，继续使用暖纸册页，摄像头本身保持中性深色画框；键盘模式隐藏整块教练。</li><li>LV-00：三张玩法卡各自使用对应地图远/中景作为低对比缩略舞台；角色和玩法图标在其上，禁止继续用纯 CSS 彩条/圆形替代场景。</li><li>LV-01：玩法入场封面必须直接复用所选玩法的远/中景和结构底层；切换 L1/L2/L3 时更新 <code>data-theme</code>，不得保留旧 <code>.sun-disc/.hill/.paper-path</code> 封面。</li><li>LV-02：继续沿用地图分层和独立结构物件；提示、HUD、教练使用统一界面 token，不改变世界物理与碰撞。</li><li>LV-03：成绩页背后显示当前玩法的低对比地图远景，成绩主体为暖纸探险记录板；角色、奖章、分数和操作优先于背景。</li><li>Asset policy：里程碑牌、障碍变体与数字字形使用同一手绘地图风格；既有按钮、卡片和长文本容器继续使用 CSS token，实时中文/米数不烘焙进图片。升级反馈为独立轻量庆祝层，可用 CSS 纸带、光芒与粒子组合，不得复用或放大顶部 HUD 图片牌。</li></ul>
+<h4 class="md-h">Endless Milestone Visual Asset Contract</h4>
+<ul class="md-ul"><li>UI 图片：生成 <code>creek/firefly/treetop</code> 三张无文字透明完整里程碑面板；面板分别使用溪流路牌+饼干印章、叶片+萤火虫光点、树枝+云朵高度标识，轮廓与现有地图结构物件一致。顶部 HUD 中央原容器由完整图片直接替代，图片不是容器旁的 icon，也不叠加第二层 CSS 白底。</li><li>升级反馈：不复用顶部完整里程碑面板，改为独立的太阳黄纸带/光芒与叶片粒子层；L1/L3 默认在世界顶部中轴偏下安全区出现，L2 因四向动作卡与按键簇占据中轴，庆祝层固定在左侧 HUD 下方安全区。使用与 HUD 不重复的短标题（如“节奏升级！”“树梢高手！”）和一行实时里程碑“来到 100 米”。显示约 1800ms，含弹入、轻微过冲、粒子散开和淡出；图层低于当前动作提示与摄像头教练，不遮 HUD、角色和危险物。</li><li>数字字形：生成一组无多余装饰的 <code>0–9 + m</code> 手绘字形，统一深河蓝主体、奶油高光和暖棕轻描边；小写 <code>m</code> 必须与数字同高、同描边、同纹理，不允许继续混用系统字体。运行态距离/高度的数字与单位 <code>m</code>、LV-03 本次分数/最好/Top 5 优先使用该图集；加载失败时回退到 <code>tabular-nums</code> 系统文本，动态值仍保留可读文本与无障碍语义。</li><li>障碍图片：L1 生成原木路障和双层软木箱视觉；L2 生成圆叶篱与芦苇叶篱两种轮廓；L3 生成窄枝与弯枝平台皮肤。宽/长、碰撞承载对象逐个生成，不放入普通方形 prop pack。</li><li>透明处理：内置图片生成先输出单色洋红背景，再本地去底；最终 PNG 必须有 alpha、四角透明、主体不触边、无洋红溢边，并记录 prompt/manifest/目标显示尺寸。</li><li>运行边界：图片不携带文字、数字、碰撞、里程碑逻辑或对象生命周期；CSS 只负责响应式排版和实时数据叠加，不重新绘制图片主体。</li></ul>
+<h4 class="md-h">Generated Instruction Icon Contract</h4>
+<ul class="md-ul"><li>目的：关卡入口、运行动作卡与安全等待必须显示“当前要做什么”，不能把一个通用手掌线框复用为“拳→掌”“握拳”“上下/左右移动”和“正在找手”等不同语义。</li><li>资产：每一项均单独生成、单独去底、单独存档，不从一张图集切片：<code>pose-transition.png</code>（闭拳→张掌，带一条清晰转换箭头）、<code>fist-hold.png</code>（闭拳准备）、<code>open-palm-jump.png</code>（张掌向上触发）、<code>hand-move-vertical.png</code>（保留历史上下语义）、<code>hand-move-horizontal.png</code>（手掌左右带路）、<code>hand-move-free.png</code>（手掌四周有上/下/左/右四个清晰箭头）、<code>find-hand.png</code>（手位于友好取景/定位环中，表达重新找到小手）。</li><li>画风：与暖纸/木框/河蓝/苔绿/太阳黄的探险手册一致，圆润、轻厚描边、柔和高光、5 岁儿童可在 64–112px 显示尺寸下辨认；无文字、无角色、无品牌标识、无大面积圆形按钮底板，避免让指示图看起来可点击。</li><li>状态映射：LV-01 L1=<code>pose-transition</code>、L2=<code>hand-move-free</code>、L3=<code>hand-move-horizontal</code>；LV-02 L1 <code>need<em>fist/armed</code>=<code>fist-hold</code>，<code>jump/need</em>reset</code>=<code>open-palm-jump</code>，L2=<code>hand-move-free</code>，L3=<code>hand-move-horizontal</code>；GI-02 未开启/找手与 no-hand/camera-wait 暂停层=<code>find-hand</code>。键盘模式沿用等价方向/空格提示，但不得显示摄像头找手图。</li><li>透明处理：生成时使用单色洋红背景，本地 chroma-key 去底；最终 PNG 必须为 RGBA、四角 alpha=0、主体不触边、无洋红溢边。每个文件保留独立 prompt 与 manifest 记录。</li><li>加载失败：保留同义短文案与 <code>aria-label</code>，可回退为低对比 CSS 边框占位，但不得回退成语义错误的通用手掌 SVG；图片只传达动作，不承载点击行为或运行逻辑。</li></ul>
+<h4 class="md-h">Audio Feedback Contract</h4>
+<ul class="md-ul"><li>资源：<code>assets/audio/audio-manifest.json</code> 定义 4 条 18 秒循环 BGM 与 14 个短音效；新 BGM 使用更丰富、欢快且彼此可区分的配器，04B 只读取项目内 MP3，不依赖 CDN、后端或运行时 ElevenLabs 请求。</li><li>Screen 映射：GI-01、GI-02、GI-05、CH-01、LV-00、LV-01 使用 <code>bgm<em>menu</code>；LV-02 按 L1/L2/L3 使用 <code>bgm</em>creek</code> / <code>bgm<em>firefly</code> / <code>bgm</em>treetop</code>；LV-03 停止 BGM 并播放一次 <code>sfx<em>round</em>complete</code>。</li><li>事件映射：玩法选择、输入就绪、倒计时 tick/go、L1 jump、collect、pass、soft collision、rescue、L3 platform land、character switch、pause 与 UI confirm 使用各自 cue；位置跟手和每秒生存分不得发声。</li><li>控制：家长抽屉新增一个真实产品按钮“声音：开/关”，<code>aria-pressed</code> 与本机偏好同步；不新增 screen、不占儿童 HUD、不提供复杂滑杆。</li><li>生命周期：首次可信用户交互后才允许播放；家长抽屉、<code>document.hidden</code> 与安全暂停会暂停 BGM；恢复时继续当前主题；任何 <code>play()</code> 失败都静默降级且不得产生未处理异常。</li><li>混音：BGM <code>0.22</code>、SFX <code>0.52</code>；同类 cue 有 120–360ms 冷却，碰撞/救援使用柔和音色，结算时不得与 BGM 叠播。</li></ul>
+<h4 class="md-h">Product Canvas Rules</h4>
+<ul class="md-ul"><li>主画布只展示真实产品 UI。</li><li>不放 screen-nav、state-nav、inspector、测试按钮、QA 文案或原型说明。</li><li>测试注入 API 仅挂在 <code>window.__mvpTest</code>，不渲染可见控件。</li><li>儿童可见层从初始界面到成绩页采用“图形与角色反馈优先、文字最少”：同一视区最多 1 个短标题、1 个当前动作短句和 1 个主 CTA；不同时显示 eyebrow、标题、说明段、状态脚注来重复同一信息。</li><li>玩法名、分数数字、勇气心、当前动作和主/返回操作属于必要信息；玩法长描述、设备存储说明、速度文字、输入模式技术名和重复鼓励句默认不常显。</li><li>家长抽屉、隐私折叠区、错误恢复和无障碍语义允许保留完整文字；视觉精简不得删除 <code>aria-label</code>、<code>aria-live</code> 或 <code>sr-only</code> 的必要解释。</li></ul>
+<h3 class="md-h">5. Information Architecture</h3>
+<h4 class="md-h">Web</h4>
+<ul class="md-ul"><li>导航：输入就绪 → CH-01 人物选择 → LV-00 玩法大厅 → LV-01 玩法入场 → LV-02 教学/正式计分/救援 → LV-03 成绩 → 再玩或大厅。</li><li>主工作区：LV-02 世界舞台。</li><li>辅助上下文：顶部距离/高度 HUD、摄像头模式的浮动教练、家长暂停层。</li><li>主操作位置：大厅卡片底部；入场/成绩卡底部；游戏不依赖点击主操作。</li></ul>
+<h3 class="md-h">6. Core Flows</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Flow</th><th>Entry</th><th>Steps</th><th>Success</th><th>Failure / Edge Cases</th></tr></thead><tbody><tr><td>初始人物选择</td><td>GI-02/GI-05</td><td>进入 CH-01 → 选择一张人物卡 → 选好啦</td><td>selectedCharacterId 提交并进入 LV-00</td><td>图片失败仍保留名字与可选态；返回输入页</td></tr><tr><td>任意玩法选择</td><td>LV-00</td><td>点击任一卡 → LV-01</td><td>对应玩法装载</td><td>无锁态；缺 capability 时提示接管</td></tr><tr><td>玩法内教学</td><td>LV-01</td><td>开始 → 3/2/1 → 无危险教学</td><td>完成一次对应控制</td><td>8s 后家长可直接开始；不扣心</td></tr><tr><td>距离/高度无尽计分</td><td>LV-02 tutorial done</td><td>实际位移累计米数 → 跨里程碑 → 速度/障碍升级 → 失误救援</td><td>刷新个人最好与最高里程碑</td><td>第3次失误或主动结束进入成绩</td></tr><tr><td>L1 跳坑</td><td>LV-02 L1</td><td>拳→掌 → 空间跳跃 → 跨坑</td><td>越坑 + 分</td><td>未跳/高度不足 → 掉落托回</td></tr><tr><td>L2 跟手</td><td>LV-02 L2</td><td>掌心X/Y → 双轴平滑 → 四向移动穿宽通道</td><td>过门 + 分</td><td>Unknown 仍跟手；丢手暂停</td></tr><tr><td>L3 平台弹跳</td><td>LV-02 L3</td><td>自动弹跳 + 掌心X左右对准 → 落台</td><td>高度/落台 + 分</td><td>落空安全云托回扣心</td></tr><tr><td>成绩与重玩</td><td>LV-03</td><td>显示本次/最好/Top5</td><td>再玩或换玩法</td><td>localStorage 不可用则只显示本次</td></tr></tbody></table></div>
+<h3 class="md-h">7. Screen Inventory</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>ID</th><th>Screen</th><th>Purpose</th><th>Entry</th><th>Exit</th></tr></thead><tbody><tr><td>GI-01/GI-02/GI-05</td><td>输入设置/就绪</td><td>输出 InputProfile；摄像头 GI-02、键盘 GI-05 都单页继续</td><td>起始/降级</td><td>CH-01</td></tr><tr><td>CH-01</td><td>人物选择</td><td>六选一并提交会话角色</td><td>输入就绪</td><td>LV-00/来源输入页</td></tr><tr><td>LV-00</td><td>三玩法大厅</td><td>默认开放的玩法选择</td><td>人物确认/LV-03</td><td>LV-01</td></tr><tr><td>LV-01</td><td>玩法入场</td><td>只说明当前玩法控制</td><td>LV-00/LV-03</td><td>LV-02</td></tr><tr><td>LV-02</td><td>运行时宿主</td><td>教学、计分、救援、暂停</td><td>LV-01</td><td>LV-03/LV-00</td></tr><tr><td>LV-03</td><td>单局成绩</td><td>本次分数、最好、Top 5</td><td>LV-02</td><td>LV-01/LV-00</td></tr></tbody></table></div>
+<h3 class="md-h">7B. Coverage Plan</h3>
+<h4 class="md-h">Backbone Group <code>integrated-mode-hub-score-loops</code></h4>
+<ul class="md-ul"><li>起始 Screen：GI-01</li><li>输出文件：<code>04B-prototype-手势小狗探险MVP.html</code></li></ul>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Screen</th><th>进入方式</th><th>真实交互</th><th>目标</th></tr></thead><tbody><tr><td>GI 输入流程</td><td>起始</td><td>摄像头 GI-02“继续”或键盘 GI-05“开始游戏”</td><td>CH-01</td></tr><tr><td>CH-01</td><td>输入完成</td><td>六张人物卡单选 + “选好啦”</td><td>LV-00</td></tr><tr><td>LV-00</td><td>输入完成/成绩返回</td><td>点击任一玩法卡</td><td>LV-01</td></tr><tr><td>LV-01</td><td>已选玩法</td><td>点击“开始玩”</td><td>LV-02</td></tr><tr><td>LV-02</td><td>倒计时后</td><td>第3次失误/家长结束</td><td>LV-03</td></tr><tr><td>LV-03</td><td>本局结束</td><td>再玩一次/换玩法</td><td>LV-01/LV-00</td></tr></tbody></table></div>
+<h4 class="md-h">Extension States</h4>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Surface</th><th>Type</th><th>说明</th></tr></thead><tbody><tr><td>LV-02</td><td>no-hand / camera-error</td><td>主干内可恢复状态</td></tr><tr><td>LV-02</td><td>parent-pause</td><td>主干内可恢复状态</td></tr><tr><td>LV-03</td><td>storage-error / first-score</td><td>不阻断再玩</td></tr></tbody></table></div>
+<h3 class="md-h">8. Screen Specs</h3>
+<h4 class="md-h">CH-01：人物选择</h4>
+<ul class="md-ul"><li>Purpose：在玩法选择前确定本次会话的初始人物。</li><li>Layout：暖纸探险底板保持单屏；顶部一个短标题；中部六张同权重角色卡；宽屏六列，宽度 ≤1050px 且高度 ≥720px 时三列两行；底部一个主 CTA。919×843 与 1219×681 均保持六卡同屏，不使用横向或纵向滚动；上下方向键在两行布局中按列数移动。</li><li>Card：每卡只显示 <code>idle-1.png</code> 和姓名；默认布鲁伊选中，选中态使用太阳黄内环、河蓝外描边、轻抬与对勾角标；不得显示属性、技能、推荐、锁态或角色说明。</li><li>Interaction：点击或 Enter/Space 选中；方向键可在六卡间移动；同一时刻恰好一个 <code>role=radio</code> 为 <code>aria-checked=true</code>。主按钮“选好啦”提交并进入 LV-00；返回到来源输入页时保留候选与 InputProfile。</li><li>Data needed：characterDefinitions、pendingCharacterId、selectedCharacterId、inputProfile、sourceReadyScreen。</li><li>Failure：角色图加载失败时显示同色轮廓占位与姓名，卡片仍可选；非法 id 回退 bluey。</li><li>Acceptance：人物和姓名一一对应；六卡都能改变选中态；确认后 LV-00、LV-01、LV-02、LV-03 读取同一 selectedCharacterId；5 个支持视口无滚动/溢出/遮挡。</li></ul>
+<h4 class="md-h">LV-00：三玩法大厅</h4>
+<ul class="md-ul"><li>Platform：Web。</li><li>Purpose：让孩子按玩法差异选择，而不是理解顺序进度。</li><li>User intent：今天想玩哪一种？</li><li>Layout regions：顶部品牌/家长入口；中央短标题；三列同权玩法卡。页面底层使用低对比插画天空/草地，三卡内分别显示溪边、湿地、树梢地图缩略舞台；不常显底部设备说明。</li><li>Primary content：玩法名、一个控制图形、地图缩略舞台、个人最好；卡片不显示控制说明段。</li><li>Primary action：整卡点击进入当前玩法。</li><li>Secondary actions：家长入口。</li><li>Navigation：任一卡 → LV-01；不允许 disabled/locked。</li><li>Data needed：<code>modeDefinitions</code>、<code>bestScoreByMode</code>。</li><li>States：default；first-use 显示“还没有成绩”；return 显示个人最好；storage-error 显示“本次设备暂不保存”。</li><li>Interactions：hover/focus/press 有清晰反馈；卡片顺序不表示锁关。</li><li>Responsive：5 个支持视口始终三列；缩短描述而不改成滚动列表。</li><li>Accessibility：整卡为 button，aria-label 含玩法名和个人最好，焦点明显。</li><li>Acceptance：三卡可点；无关卡编号、锁图标、“完成上一关”、玩法说明段和底部设备脚注；三张地图缩略舞台真实来自各关地图资产；无页面滚动。</li></ul>
+<h4 class="md-h">LV-01：玩法入场</h4>
+<ul class="md-ul"><li>Platform：Web。</li><li>Purpose：只教当前玩法的控制，不承担三玩法比较。</li><li>Layout regions：所选玩法远/中景铺满封面；中央暖纸标题签直接包含角色/玩法名、个人最高分、一张大控制示意和一个动作短句；底部开始/返回。标题签使用明确的四向内容安全边距，所有文字/数字必须位于纸张装饰内缘。倒计时作为绝对定位的独立中层，不参与原内容流排版；进入 3/2/1 时隐藏最高分、控制图、角色和按钮，只保留安全区内的玩法名、中央数字与下方“准备”。最高分不得再单独占用顶部 HUD。封面地图与 LV-02 当前玩法保持同一主题。</li><li>Primary content：</li></ul>
+<p>  - L1：独立生成的闭拳→张掌转换图 + “握拳 → 张手”。<br>  - L2：独立生成的手掌四向带路图 + “上下左右带路”。<br>  - L3：独立生成的手掌左右带路图 + “左右带路”。</p>
+<ul class="md-ul"><li>Primary action：“开始玩”。</li><li>Secondary actions：“换个玩法”；已看过教学时可勾选“再看一次”。</li><li>Navigation：开始 → LV-02 3/2/1；返回 → LV-00。</li><li>Data needed：<code>modeId</code>、<code>inputProfile</code>、<code>tutorialSeenByMode</code>。</li><li>States：camera/keyboard 文案适配；missing capability；focused；countdown-safe。</li><li>Acceptance：三个 mode 的生成式动作图/短句严格对应，页面不同时展示其他玩法步骤、输入技术名或准备状态长句；动作图是非交互透明图片，不是通用线框 SVG 或圆形按钮；倒计时 3/2/1 不推动玩法名或“准备”越出纸张内容安全区，标题上下至少保留 20px 视觉余量；L1/L2/L3 封面分别使用 creek/firefly/treetop 新地图，不实例化旧 CSS 山丘、太阳、花线或土路。</li></ul>
+<h4 class="md-h">LV-02：共享运行时宿主</h4>
+<ul class="md-ul"><li>Platform：Web。</li><li>Purpose：托管教学、正式计分、救援与暂停，同时让世界反馈成为视觉主角。</li><li>Layout regions：full-bleed world；紧贴顶部安全区的唯一距离/高度 HUD；中央瞬时目标；摄像头模式右上浮动教练；家长暂停覆盖层。键盘模式不保留右上视频/提示面板，也不显示角色旁手势定位标记。</li><li>Primary content：完整里程碑图片面板内只显示整数距离/高度与覆盖底部内容区的进度槽，右侧保留 3 颗心、输入方式与暂停，世界内显示角色、危险物/目标和当前唯一动作图形；运行态不显示星形、分数、阶段短文案、倍率、输入模式技术名或双行识别 readout。分数继续在内存中累计，结算页再呈现。</li><li>Primary action：手势/掌心位置；键盘等价输入。</li><li>Secondary actions：暂停/结束本局/输入接管。</li><li>Audio：玩法主题 BGM 在首次用户交互后播放；家长暂停/无手安全暂停/页面后台时停播。按钮本身不进入儿童 HUD，声音总开关位于家长抽屉。</li><li>Navigation：第3次失误或结束 → LV-03；返回大厅需家长确认。</li><li>Data needed：run state、runtime state、InputProfile、camera status。</li><li>States：countdown/tutorial/scored_run/milestone-up/bump-impact/rescue/invulnerable/no-hand/paused/camera-error/ending；<code>bump-impact</code> 使用当前所选角色的 2×2 四帧 gentle bump 动作。</li><li>Interactions：所有运行时暂停时 <code>scoredElapsedMs</code>、<code>progressMeters</code> 和世界对象冻结；救援期间不接受碰撞。跨阈值时 <code>milestone-up</code> 独立庆祝层显示约 1800ms，1700ms 内不生成新危险物但已有对象继续运行；动效包含纸带弹入过冲、光芒/叶片粒子散开与淡出，不改变世界物理。</li><li>Audio interactions：jump/collect/pass/collision/rescue/platform-land/character-switch 只在对应状态转换边沿触发一次；连续 tracking frame、逐秒分数和 render loop 不触发音效。</li><li>Responsive：世界铺满；摄像头教练不遮角色、目标或 HUD；识别 readout 位于视频外；键盘模式释放右侧全部空间。</li><li>Accessibility：HUD 有 aria-live polite；视觉隐藏的当前分数仍保留语义文本但不逐帧朗读；暂停可键盘触发；里程碑只在跨阈值时朗读一次；reduced motion 下庆祝层仅淡入淡出，米数和短文案仍完整。</li><li>Acceptance：任何失误都可见；前两次继续，第3次成绩；无 Game Over 文案；暂停/救援/原地等待不增加米数。</li></ul>
+<h5 class="md-h">LV-02 / 共享里程碑 HUD</h5>
+<ul class="md-ul"><li>Persistent HUD：当前玩法图片牌作为顶部唯一信息底板，内部只显示整数 <code>progressMeters</code> + 单位 <code>m</code> 与进度槽；没有星形、分数、阶段标签或“新挑战来了”。距离/高度数字四周使用显式安全边距，最长 4 位数 + <code>m</code> 不得触碰装饰。</li><li>Progress：进度槽必须落在图片牌为水面/枝条预留的底部轨道槽中，横向覆盖该内容安全区并与槽位中心线对齐；标准高度为 <code>clamp(16px,1.45vw,22px)</code>，不得低于 16px，不得压到左侧饼干/叶片或下方装饰枝条。它指向下一基础里程碑；Tier 5 后仍按无尽段推进，但段名只保留在无障碍语义与结算文案中，不常显于顶部牌。</li><li>Milestone-up：使用与顶部图片牌不同的独立庆祝层，标题和副文案各一行；禁止出现“新挑战来了/新的挑战出现啦”，禁止复用、放大或再次显示 HUD 底板。标题按档位选择“越走越远！”“节奏升级！”“连续闯关！”“超级探险家！”“无限旅程！”；L3 第一档用“越跳越高！”。副文案仅为“来到 N 米”。</li><li>Responsive：1440×900 至 919×843 均需保持 HUD 贴近上沿；数字与进度不隐藏，空间不足时只缩小装饰。摄像头模式给教练留安全区，键盘模式不预留教练宽度。</li><li>Acceptance：同一阈值每局只出现一次；庆祝层收起后顶部面板与障碍皮肤已切换到新 Tier；顶部没有星级/分数概念和重复阶段文案；进度槽高度 ≥16px、四边位于图片牌内容安全区、视觉中心与预留轨道中心偏差 ≤4px；独立庆祝层与 HUD、角色、动作提示无重叠。</li></ul>
+<h5 class="md-h">LV-02 / L1 溪边跳跳</h5>
+<ul class="md-ul"><li>Tutorial：4 秒无坑宽路；完成 1 次拳→掌高跳。</li><li>World：角色固定约 26% X；背景/地面/道具/木箱/坑洞共用 <code>worldSpeed</code>。角色脚底与障碍底边锚定在地面贴图内部同一条纵深接触带，草边轻微覆盖底部，不能悬浮在地面上沿。</li><li>Map：远景、中景和地面条为三个独立可循环层；用镜像循环对保证正/负偏移均首尾连续，地面碰撞不读取背景像素；纵深接触带是运行时几何，不从贴图 alpha 反推。</li><li>Jump：使用逐帧竖直速度/重力积分；基础起跳 <code>690px/s</code>、重力 <code>1220px/s²</code>，速度每增加 1.0× 额外提供约 <code>95px/s</code> 起跳辅助并增加约 <code>110px/s²</code> 重力。1.0×–1.6× 腾空约 1.13–1.17s、峰值约 195–217px；单次跳跃在起跳帧冻结参数，途中升级不改轨迹。</li><li>Cue：依据当前速度和目标宽度计算提示距离，使提示到危险区保持约 0.92–1.12s；速度提升只把提示前移，不压缩儿童反应时间。</li><li>Collision：角色、箱/原木/双层箱与坑洞水面开口均使用人工内缩碰撞体；每帧用 <code>previousWorldX→worldX</code> swept interval 求交。实心障碍按脚底与障碍顶边判断，坑洞在水面开口重叠且 <code>jumpY&lt;38px</code> 时命中；透明留白和两侧草岸不参与碰撞。首次真实水平接触时，竖直重叠则碰撞、竖直安全错开则成功，两者都只判定一次。</li><li>Lifecycle：坑/箱/原木无论成功越过还是碰撞，判定后均进入 <code>passedObjects</code>，继续按当前 <code>worldSpeed</code> 向左穿过角色位置，完全离开屏幕后才回收；<code>judged=true</code> 保证不重复扣心。</li><li>Success：跨坑/越箱 +20 与 streak 奖励。</li><li>Distance/Difficulty：<code>worldSpeed*delta/48</code> 累计整数米数；100/250/450/700m 依次解锁原木路障、箱→安全地面→坑、坑→安全地面→箱和安全高级轮换；任意危险判定区仍间隔至少 1.8s。</li><li>Rescue：掉落 220ms → 伙伴托回 420ms → 落地 180ms；勇气减一，1.2s 无敌。</li><li>Acceptance：角色脚底、箱/原木底边和坑洞近岸位于地面纵深带内；推荐起跳可越 96–118px 坑；目标未与可见主体重叠前不提前扣心，高速单帧跨越仍能命中；跳过后只记一次成功，未跳触发完整救援，同一对象不得连续扣心。</li></ul>
+<h5 class="md-h">LV-02 / L2 萤火虫躲躲</h5>
+<ul class="md-ul"><li>Tutorial：5 秒无障碍，横向和纵向各跟随一次。</li><li>World：掌心 X/Y 分别映射世界 X=16%–68%、Y=22%–72%，角色可上下左右自由移动但不进入右侧教练安全区。</li><li>Processing：X/Y 两轴各自使用 EMA .28、3.5% deadzone、单帧≤12%；Unknown 有关键点时继续。</li><li>Success：进入宽安全带 +20；碰撞勇气减一并泡泡弹回，1.2s 护盾。</li><li>Lifecycle：通道越过角色判定线后进入 passedObjects，仍继续向左穿过角色位置，直到完全离开画面才销毁；下一通道可以同时生成。</li><li>Collision timing：通道矩形与角色当前 X 碰撞体水平穿越时只判定一次；左右移动改变相遇时机，Y 是否位于安全带决定通过/碰撞。</li><li>Map：青绿色低对比远/中景保持中心通道空旷；上下树篱为独立透明皮肤，视觉皮肤与 <code>safeY</code> 碰撞矩形生命周期分离。</li><li>Distance/Difficulty：<code>worldSpeed*delta/48</code> 累计整数米数；100/250/450/700m 依次进入偏移单门、高低交替、双门回正区和安全高级轮换，并切换圆叶/芦苇叶篱皮肤；安全带半高始终 ≥0.24。</li><li>No hand：≤600ms 保持；&gt;600ms 冻结世界，不扣心。</li></ul>
+<h5 class="md-h">LV-02 / L3 树梢蹦蹦</h5>
+<ul class="md-ul"><li>Tutorial：角色持续自动弹跳；一张宽安全平台和左右光点，完成左右各一次跟手。</li><li>World：纵向世界坐标；角色有 <code>playerWorldY</code>、<code>verticalVelocity</code>、重力和实际脚部碰撞。只在下降阶段穿越平台 worldY 且横向重叠时落台，落台立即再弹。</li><li>Camera：角色屏幕 Y 高于约 40% 时 <code>cameraY</code> 单调向上追随；平台屏幕 Y 由 <code>platformWorldY-cameraY</code> 计算，因此随镜头自然下移。不得用定时器让平台穿过固定落台线。</li><li>Map：低对比树冠远/中景按 <code>cameraY</code> 纵向视差；生成树枝踏板与安全云为独立透明对象，只读取现有 platform/rescue 几何。</li><li>Control：掌心 X 经过 EMA .30、3.5% deadzone、单帧≤12% 后映射到世界 18%–82%；Unknown 有关键点时继续；键盘 ←/→ 可按住。</li><li>Success：下降落到平台 +20、立刻获得下一次向上速度；攀升高度来自真实最大世界 Y。镜头上方持续生成可达平台，低于镜头下沿后才回收。</li><li>Height/Difficulty：<code>maxPlayerWorldY/20</code> 累计整数高度米数；20/50/90/140m 依次进入左右交替、宽窄交替、连续换向和安全高级轮换，并切换窄枝/弯枝皮肤；弹跳节奏最高 1.35x，平台仍可达且宽度 ≥28%。</li><li>Rescue：跌出镜头下沿时安全云托到最近可见平台、勇气减一、1.2s 护盾并继续；没有坠落即死或回到开局。</li><li>Difficulty：基础平台宽 28%–36%；只温和提高弹跳节奏、横向换位和宽窄组合，不引入破碎/消失/移动平台。</li></ul>
+<h4 class="md-h">LV-03：单局成绩</h4>
+<ul class="md-ul"><li>Platform：Web。</li><li>Purpose：积极收尾并提供个人重玩动力。</li><li>Layout regions：当前玩法低对比地图远景铺底；暖纸探险记录板左栏为“本局小记忆”画框，摄像头模式截取结算瞬间一帧并叠加地图主题点缀/角色，键盘或不可用时回退到当前玩法地图；右栏只常显简短鼓励、本次大分、个人最高分、竖向降序同玩法 Top 5 与双操作。所有内容位于 <code>max-height:calc(100dvh - header)</code> 内。</li><li>Primary content：<code>score</code>、<code>progressMeters</code>、<code>highestMilestoneLabel</code>、<code>isNewBest</code>、<code>bestScore</code>、<code>topScores[0..4]</code>、当前内存态 <code>runSnapshotDataUrl|null</code>。</li><li>Primary action：“再玩一次”。</li><li>Secondary actions：“换个玩法”。</li><li>Navigation：再玩 → LV-01 当前玩法；换玩法 → LV-00。</li><li>Audio：进入成绩页先停当前 BGM，再播放一次温和结算 jingle；再玩/换玩法后由目标 screen 重新选择主题。</li><li>States：first-score/new-best/regular/storage-error。</li><li>Accessibility：榜单为从高到低的竖向有序列表；本局画面有替代文本，地图回退不依赖颜色表达；新最好用文字与图形，不只靠颜色。</li><li>Responsive：宽屏保持两栏；低高度压缩插画而不隐藏 Top 5/按钮；不使用页面或卡内滚动。</li><li>Acceptance：不显示姓名输入、全球排名、失败率、跨玩法排名、重复的玩法成绩标题或结束原因长句；主操作不是“下一关”；左侧游玩画面、竖向 5 条 Top 5 与两枚儿童操作按钮完整可见；截图只存在当前页面内存，不写 localStorage、不上传。</li></ul>
+<h3 class="md-h">9. Component And State Matrix</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Component</th><th>Default</th><th>Empty</th><th>Error</th><th>Success</th><th>Disabled / Focused</th></tr></thead><tbody><tr><td>Mode card</td><td>best score</td><td>还没有成绩</td><td>本机暂不保存</td><td>可进入</td><td>不允许 disabled；focus ring</td></tr><tr><td>Runtime score model</td><td>visually hidden</td><td>N/A</td><td>N/A</td><td>持续累计；LV-03 呈现</td><td>pause frozen</td></tr><tr><td>Courage hearts</td><td>3</td><td>0→ending</td><td>N/A</td><td>rescue continues</td><td>invulnerable pulse</td></tr><tr><td>Milestone image panel</td><td>玩法完整图片面板 + 0m + 满宽进度</td><td>N/A</td><td>图片失败回退文字边框</td><td>米数增长；无阶段标签</td><td>pause frozen；focus N/A</td></tr><tr><td>Milestone celebration</td><td>hidden</td><td>N/A</td><td>仍显示实时文字</td><td>独立纸带 + 光芒/叶片粒子单次出现</td><td>reduced motion fade only</td></tr><tr><td>Camera coach</td><td>current control</td><td>no hand</td><td>camera/model</td><td>seen/armed</td><td>keyboard mode hidden</td></tr><tr><td>Instruction icon</td><td>mode/state 对应独立透明 PNG</td><td>no-hand 使用 find-hand</td><td>同义短文案 + 非误导占位</td><td>当前动作图清晰加载</td><td>非交互；focus N/A</td></tr><tr><td>Pause/reminder board</td><td>图标 + eyebrow + 标题 + 1–2 行正文</td><td>N/A</td><td>可恢复短文案</td><td>安全恢复倒计时</td><td>正文行高约 1.6；区块间距 12–16px</td></tr><tr><td>Result Top 5</td><td>ordered scores</td><td>第一次成绩</td><td>storage unavailable</td><td>new best</td><td>focusable actions</td></tr><tr><td>Run memory frame</td><td>当前摄像头单帧</td><td>玩法地图回退</td><td>捕获失败回退地图</td><td>当前局画面 + 主题点缀</td><td>非交互；不持久化</td></tr><tr><td>Parent audio toggle</td><td>声音：开</td><td>N/A</td><td>静默降级</td><td>当前主题恢复</td><td><code>aria-pressed</code> + focus ring</td></tr><tr><td>BGM channel</td><td>screen theme</td><td>首次交互前静默</td><td>load/play failure 静默</td><td>单曲循环</td><td>paused in drawer/background</td></tr></tbody></table></div>
+<p>Loading 覆盖首次打开、角色确认与玩法进入；关键资源就绪后再显示目标画面，具体见“资源准备与进入状态”。</p>
+<h3 class="md-h">10. Sample Data</h3>
+<ul class="md-ul"><li><code>characterDefinitions=[bluey,bingo,grey-puppy,blue-heeler-dad,garden-girl,lilac-girl]</code>；<code>pendingCharacterId=bluey</code>；确认麦麦后 <code>selectedCharacterId=grey-puppy</code>。</li><li><code>bestScoreByMode={creek<em>jump:186,firefly</em>dodge:242,treetop_bounce:131}</code>。</li><li><code>topScoresByMode.creek_jump=[186,151,124,93,62]</code>。</li><li>first-use 卡片：“还没有成绩”。</li><li>L1 run：<code>score=84,courage=2,progressMeters=268,milestoneTier=2,speedMultiplier=1.25,streak=3</code>。</li><li>L3 run：<code>score=131,courage=3,progressMeters=54,milestoneTier=2,bounceTempoMultiplier=1.12</code>。</li><li>长边界文案：“摄像头暂时没看见小手，小路已经停下，不会扣勇气”。</li></ul>
+<h3 class="md-h">11. Data And Events</h3>
+<ul class="md-ul"><li><code>CharacterDefinition{id,displayName,thumbnail,assetRoot,selectionReady}</code> 来自 <code>assets/characters/character-roster.json</code>；<code>CharacterSelectedEvent{characterId,source,timestamp}</code> 只在“选好啦”提交时派发。</li><li><code>SessionState{inputProfile,selectedCharacterId,modeId}</code>；换玩法、再玩与成绩返回保持 <code>selectedCharacterId</code>，新会话不从 localStorage 恢复。</li><li><code>ModeDefinition{modeId,runtimeType,baseSpeed,progressMetric,pixelsPerMeter,milestoneThresholds,maxMotionMultiplier,obstaclePatterns,missLimit}</code>。</li><li><code>RunState{runId,phase,score,courage,streak,scoredElapsedMs,progressMeters,milestoneTier,endlessSegment,speedMultiplier,bounceTempoMultiplier,obstacleTier,milestoneOverlayUntilMs,invulnerableUntilMs}</code>。</li><li><code>MilestoneEvent{modeId,metric,meters,tier,endlessSegment,label,triggeredAt}</code>；每个基础阈值/无尽段每局至多一个。</li><li><code>ScoreEvent{type,points,modeId,timestamp}</code>。</li><li><code>MistakeEvent{type,modeId,worldObjectId,timestamp}</code>。</li><li><code>RunResult{modeId,score,bestScore,topScores,isNewBest,endedBy,snapshotCaptured}</code>；<code>runSnapshotDataUrl</code> 仅在 LV-03 内存态，不进入持久化结果。</li><li>L1 <code>WorldObject{objectId,type,worldX,previousWorldX,visualWidth,collisionWidth,collisionHeight,collisionInset,resolved,judged}</code>、<code>PlayerHitbox{x,width,height,footInset}</code> 与 <code>JumpState{phase,elapsedMs,jumpY,verticalVelocity,gravity}</code>；新对象初始左边缘必须位于世界右边界之外。</li><li>L2 <code>PassedObject{objectId,type,worldX,width,judged,outcome}</code> 与 <code>playerX/playerY</code>，完成判定后仍更新位置直到完全离场。</li><li>L3 <code>HandTrackingFrame{palmCenterX,...}</code>、<code>BounceState{phase,elapsedMs,playerX}</code>、<code>Platform{id,x,y,width,judged,starCollected}</code>。</li><li><code>AudioPreference{enabled}</code> 使用独立 localStorage key <code>gesture-pup-audio-v1</code>；<code>AudioRuntime{unlocked,currentBgmId,lastSfxAt}</code> 仅在内存中存在。</li><li><code>AudioCue{id,kind,file,usage,loop,durationSeconds}</code> 来自 <code>assets/audio/audio-manifest.json</code>；04B 以冻结映射接入，不在浏览器里携带生成 API key。</li><li><code>MilestoneAsset{modeId,panelImage,obstacleVariantImages,prompt,displaySize,collisionRole}</code> 来自本地 manifest；图片不定义碰撞。</li><li><code>InstructionIconAsset{id,file,usageStates,prompt,displaySize,ariaLabel}</code> 来自 <code>assets/ui/instruction-icons/instruction-icons-manifest.json</code>；图片不定义输入判定或交互。</li></ul>
+<h3 class="md-h">12. Responsive Rules</h3>
+<ul class="md-ul"><li>支持视口：1440×900、1280×720、1219×681、1024×700、919×843。</li><li><code>html,body,#app</code> 使用 <code>height:100%;overflow:hidden</code>；screen 使用 <code>100dvh</code> 与 <code>min-height:0</code>。</li><li>LV-00 始终三列；低高度减少卡内空白、角色插画与描述行数，按钮 ≥44px。</li><li>LV-01 暖纸标题签采用固定安全区栅格而非按父宽度放大的百分比 padding；倒计时不参与普通内容流，所有支持视口都不得裁切玩法名、倒计时数字或“准备”。</li><li>LV-02 摄像头模式 coach 宽 <code>clamp(190px,18vw,270px)</code>；摄像头 <code>max-height:26vh</code>；readout 静态位于视频下方。键盘模式 coach 使用 <code>hidden</code> 从布局和无障碍树移除，不显示替代占位卡。</li><li>LV-02 里程碑进度槽高度使用 <code>clamp(16px,1.45vw,22px)</code>；在五个支持视口中均以图片牌预留轨道为锚，不通过 viewport 百分比独立漂移。</li><li>目标/坑洞不得生成在 coach 遮挡区域内；游戏核心对象位于世界左侧 72% 可见区。</li><li>LV-03 使用横向双栏，左侧为 16:9 当局单帧画框，右侧 Top 5 固定为从高到低的 5 行；卡片与页面均不滚动，低高度优先缩小画框和装饰角色。</li></ul>
+<h3 class="md-h">13. Accessibility And Interaction</h3>
+<ul class="md-ul"><li>所有按钮/玩法卡支持 Tab、Enter/Space，焦点对比明显。</li><li>游戏 Space 事件不得与按钮激活冲突；只有 game surface focused 时控制角色。</li><li>触控/点击目标 ≥44×44px。</li><li>动态分数/米数不每帧朗读；只在越障、失误、跨里程碑和新最好时 aria-live polite。</li><li>风格化数字仍必须保留同值的文本或 <code>aria-label</code>，不能让分数/米数只存在于背景图片。</li><li><code>prefers-reduced-motion</code> 移除升级弹跳/旋转与粒子位移，只保留短暂淡入淡出；仍保留跳高、掉落/托回、心减少、平台位移与安全云反馈。</li><li>声音不是唯一反馈：每个 cue 必须继续保留既有视觉/文字/aria-live 反馈；声音开关使用文本与 <code>aria-pressed</code>，不只靠图标或颜色。</li></ul>
+<h3 class="md-h">14. Visual / Content / Interaction Thesis</h3>
+<ul class="md-ul"><li>Product type：家庭儿童体感小游戏合集。</li><li>Visual thesis：明亮原创卡通世界 + 暖纸探险手册 UI；大胆形状、轻厚描边、清晰层级、极少文字。地图负责空间感，UI 负责可读性，二者共享河蓝/苔绿/树皮/太阳黄而不共享高频背景纹理。</li><li>Content tone：具体、鼓励、无评价；优先 2–8 个汉字的动作词与结果词，“没关系，再来”而不是“失败”。</li><li>Interaction thesis：世界先反馈，图形其次，文字只补足当前一步；玩法选择平权，个人成绩不公开比较。</li><li>Density：大厅低密度三卡；游戏单目标；成绩卡只展示同玩法 5 条。</li></ul>
+<h3 class="md-h">15. Annotation Points</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Screen</th><th>Point</th><th>Why</th></tr></thead><tbody><tr><td>LV-00</td><td>三卡全部可点</td><td>证明是玩法大厅而非顺序关卡</td></tr><tr><td>LV-01</td><td>单一控制图</td><td>证明教学下沉到玩法</td></tr><tr><td>LV-01/LV-02/no-hand</td><td>独立生成式指示图</td><td>证明复合动作、当前动作和重新找手没有复用错误通用图标</td></tr><tr><td>LV-02/L1</td><td>坑洞、jumpY、救援</td><td>证明视觉与判定共享物理</td></tr><tr><td>LV-02/L2</td><td>已判定通道继续离场</td><td>证明判定与视觉生命周期解耦</td></tr><tr><td>LV-02/L3</td><td>自动弹跳、掌心X与宽平台</td><td>证明采用成熟平台循环且只有一个儿童控制任务</td></tr><tr><td>LV-02</td><td>心/米数/图片里程碑牌/独立庆祝层</td><td>证明真实位移驱动的无尽循环与可感知升级，同时避免顶部信息重复</td></tr><tr><td>LV-03</td><td>本机 Top 5</td><td>证明个人榜边界</td></tr></tbody></table></div>
+<h3 class="md-h">16. Assumptions</h3>
+<ul class="md-ul"><li>家庭笔记本可用宽度至少 919px；本轮不覆盖手机远程摄像头游玩。</li><li>localStorage 在大多数家庭浏览器可用；不可用时不阻断当前游戏。</li><li>真实儿童手感仍需家长陪同试玩验证，自动化只保证状态与布局。</li></ul>
+<h3 class="md-h">17. Open Questions</h3>
+<ul class="md-ul"><li>无阻塞问题。若真实儿童通常无法到达第二个里程碑，优先调低前两档米数或放宽障碍，不允许改回按时间推进。</li></ul>
+<h3 class="md-h">18. Acceptance Criteria For HTML Prototype</h3>
+<ul class="md-ul"><li>[ ] 摄像头 GI-02 点击“继续”进入 CH-01，键盘 GI-05 任意有效键点亮后点击“开始游戏”也进入 CH-01；不存在可达 GI-03/GI-04/GI-06。</li><li>[ ] CH-01 恰好显示布鲁伊、宾果、麦麦、班底特、悠悠、棉棉六张可选人物卡；同一时刻恰好一个选中，点击“选好啦”后进入 LV-00。</li><li>[ ] <code>selectedCharacterId</code> 在 LV-00/LV-01/LV-02/LV-03、再玩一次与换玩法中保持；六名角色 42 组/168 帧均按相同状态合同加载，非法 id 或动作帧失败回退到布鲁伊/同角色 idle 而不阻断玩法。</li><li>[ ] LV-00 三玩法默认全可点，无锁态/编号/完成上一关文案。</li><li>[ ] LV-01 与 LV-02 tutorial 对三个玩法分别显示唯一正确控制。</li><li>[ ] <code>pose-transition</code>、<code>fist-hold</code>、<code>open-palm-jump</code>、<code>hand-move-vertical</code>、<code>hand-move-horizontal</code>、<code>hand-move-free</code>、<code>find-hand</code> 七枚指示图分别生成并从透明 PNG 加载；GI-02、LV-01、LV-02 动作卡和 no-hand/camera-wait 按状态正确映射，不再显示大尺寸通用内联手掌 SVG。</li><li>[ ] LV-01 开始后的 3/2/1 倒计时不挤压普通内容；玩法名、数字和“准备”均位于暖纸标题签四向安全区，5 个支持视口无裁切、越界或边缘重叠。</li><li>[ ] LV-02 三 runtime 均实现 score/courage/progressMeters/milestone/obstacle-tier/rescue/result。</li><li>[ ] L1/L2 米数只由有效水平世界位移累计；L3 米数只由历史最大真实世界高度累计；暂停、救援和原地等待至少 5 秒均不改变米数。</li><li>[ ] L1/L2 在 100/250/450/700m、L3 在 20/50/90/140m 同步更新速度档、障碍档、HUD 完整图片面板并单次显示独立庆祝层；庆祝层不复用 HUD 图片牌、不出现“新挑战来了”。</li><li>[ ] HUD 进度槽在 5 个支持视口均位于完整图片牌预留轨道内，高度 16–22px，和轨道中心偏差 ≤4px，不与饼干、叶片或底部枝条装饰相交。</li><li>[ ] Tier 5 后继续运行并按 300m/60m 增加“无限旅程 N”；速度保持软上限，障碍在安全模式池轮换。</li><li>[ ] L1 worldSpeed 同时驱动背景、地面、坑洞和障碍；角色脚底与障碍底边位于地面贴图纵深接触带内；每个 L1 障碍初始左边缘在画面最右边界之外并逐帧左移进入，不得凭空出现在可见区。</li><li>[ ] L1 碰撞使用人工内缩 hitbox 和 <code>previousWorldX→worldX</code> swept interval；未发生可见主体水平/竖直重叠时不提前扣心，50ms 子步与最高 1.6× 下不漏碰；坑洞草岸/透明留白不算危险，成功/碰撞各只判定一次，判定后继续离场。</li><li>[ ] L1 在 1.0×–1.6× 下起跳速度随 <code>worldSpeed</code> 温和增加、重力同步调整；腾空约 1.13–1.17s，提示到危险区约 0.92–1.12s，跨档时半空轨迹不突变。</li><li>[ ] L1 三层在前进/反向至少 2 个画布宽后仍完全覆盖视口，循环对无空白、闪缝或首尾跳变；外缘像素差为 0。</li><li>[ ] L1 推荐起跳可越坑；过早落地、未跳或身体真实碰到障碍会掉落/受挫、托回、扣心并短暂无敌。</li><li>[ ] L2 通道完成判定后仍继续穿过角色位置并自然离场；同屏允许下一目标生成。</li><li>[ ] L2 摄像头掌心与键盘四方向均可同时改变 X/Y；角色 X 保持在 16%–68%，Y 保持在 22%–72%，300ms 内有对应移动反馈。</li><li>[ ] L2 树篱贴图不改变 <code>safeY</code> 安全带，不与远/中景合并，也不因完成判定提前移除。</li><li>[ ] L1 原木/双层箱、L2 圆叶/芦苇叶篱、L3 窄枝/弯枝为独立生成透明图片；加载失败不改变运行时几何或阻断本局。</li><li>[ ] L3 角色自动弹跳，摄像头掌心 X 与键盘 ←/→ 均能左右对准宽平台；Unknown 不阻断位置流。</li><li>[ ] L3 连续完成至少 3 次下降落台再弹；角色达到上方阈值后 cameraY 增加，平台 worldY 不变但 screenY 向下移动，画面自动向上推进。</li><li>[ ] L3 落台按真实高度加分并继续，跌出镜头下沿显示安全云、扣心并继续；不出现坠落即死。</li><li>[ ] 三关生成背景均为 scenery-only；背景低对比且不遮 HUD/教练/角色/碰撞物，软木箱、树篱、踏板和安全云均从独立透明图加载。</li><li>[ ] LV-01 三种玩法封面复用对应新地图，旧 CSS 山丘/太阳/花线/土路不再可见；LV-00 缩略舞台与 LV-03 背景也能识别当前地图主题。</li><li>[ ] L1 溪水坑从独立透明图片加载，色彩和线条与 creek 地面/软木箱一致；运行时碰撞宽度、扣心和救援逻辑不变。</li><li>[ ] 大厅、玩法说明、HUD、教练、暂停和成绩页共享暖纸/河蓝/苔绿/树皮/太阳黄 token；文字区无高频纹理、主次按钮层级清楚、无玻璃拟态和卡片套卡片。</li><li>[ ] 第3次失误进入 LV-03；本次分数写入对应玩法本机 Top5；摄像头模式捕获当前局单帧但不持久化。</li><li>[ ] LV-03 再玩/换玩法/结束游戏真实可达；左侧当局画面、竖向降序 Top 5 和儿童操作在所有视口完整可见；无昵称/公开榜/图片上传。</li><li>[ ] 摄像头与键盘两路径走通。</li><li>[ ] 摄像头模式保留右上教练；键盘模式整块教练从布局/无障碍树移除，角色旁黄色手势定位标记不显示，键盘操作仍由中央动作提示与按键完成。</li><li>[ ] 六角色 42 组/168 张透明帧全部本地可加载；页面不再实例化旧 <code>#dog</code> SVG 或滤镜占位角色；L1/L2/L3、普通碰撞 <code>bump</code>、坑洞/安全云 <code>hurt</code> 与选择/准备/成绩状态切换到当前角色对应动作组。</li><li>[ ] 4 条 18 秒丰富欢快 BGM + 14 个 SFX 均从 <code>assets/audio/</code> 本地加载；manifest、HTML 映射和文件路径一一对应，无运行时外链或 API key。</li><li>[ ] 首次用户交互后按 screen 播放正确 BGM；L1/L2/L3 互不叠播；LV-03 停 BGM 并只播放一次结算音。</li><li>[ ] jump/collect/pass/collision/rescue/platform-land/character-switch/pause cue 在对应状态边沿单次触发；tracking/render/每秒得分不触发 cue。</li><li>[ ] 家长抽屉声音按钮可聚焦，<code>aria-pressed</code>/文案/本地偏好一致；关闭、后台与暂停会停止或暂停声音，恢复后继续；播放失败不阻断玩法。</li><li>[ ] 无原型脚手架；5 个视口均单屏、零重叠、按钮可用。</li><li>[ ] L2 顶部动作提示与里程碑庆祝层在所有支持视口边界矩形不相交；二者出现时均不遮 HUD、角色或危险物。</li><li>[ ] 从 GI-01 到 LV-03，儿童常显区不出现介绍段、步骤清单、玩法长描述、设备存储脚注、输入技术名或重复状态说明；家长/错误/无障碍信息仍完整可达。</li><li>[ ] LV-00 卡片只常显玩法名、地图/角色、图形和最好成绩；LV-01 只显示一个动作短句；LV-02 HUD 只常显距离/高度、满宽进度与勇气心，不显示星形、分数或阶段标签；LV-03 显示简短鼓励、风格化分数、最高里程碑、最好、Top 5 与两枚儿童操作。</li><li>[ ] <code>0–9 + m</code> 风格化字形在运行态米数及 LV-03 分数/最好/Top 5 生效；距离单位不得混用系统 <code>m</code>，长到 4 位数字 + <code>m</code> 仍不碰底板装饰，素材失败时回退到等值 <code>tabular-nums</code> 文本。</li><li>[ ] 同一儿童视区最多 1 个短标题、1 个当前动作短句和 1 个主 CTA；必要的返回按钮可并列但视觉降级。</li></ul>
+<h3 class="md-h">19. QA Strategy For HTML Prototype</h3>
+<ul class="md-ul"><li>QA Mode：<code>QA-TARGETED</code>；触发原因是 LV-01 倒计时、HUD 四向安全边距、键盘模式条件隐藏和升级庆祝层均存在纯文本检查无法可靠确认的局部溢出/遮挡风险。</li><li>Static checks：六角色 roster/42 动作组/168 帧资产路径、数字与七枚指示图状态映射、JS 语法、L1 速度—跳跃参数和 hitbox 字段完整。</li><li>Browser checks：定向检查 1440×900、1219×681、919×843 的双输入→CH-01、六卡单选、确认→LV-00、角色跨三玩法保持与单视口布局；保留 L1 物理和三玩法 scored loop 回归，不进行无关全量验收。</li><li>人工 UX：确认 L1 角色/障碍确实落在地面中，肉眼接触与扣心一致；从基础到最高速度，跳跃依然有稳定节奏且不会像地面突然从脚下加速滑走。</li></ul>
+<h3 class="md-h">20. PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：摄像头与键盘都在单一准备页进入 CH-01，儿童从布鲁伊、宾果、麦麦、班底特、悠悠、棉棉中确认本次会话人物后进入玩法大厅；所选角色贯穿三玩法与成绩循环。三玩法均为无时长终点的无尽局；L1 使用地面纵深接触带、速度耦合弹道和连续 swept hitbox；其余已确认的输入、HUD、计分、救援和键盘模式边界不变。</li><li>Target Surface：继续 <code>web-only</code>，单视口无滚动。</li><li>被放弃的方案：摄像头成功后的重复 ready 页、以同一个简单手掌 SVG 代表所有指令、进度槽脱离图片牌预留轨道、顺序锁关、固定关长、全局动作教程、自创叠云、经典 Flappy 即死、公开排行榜。</li><li>需要 PM 确认的问题：用户已明确要求本轮 L1 三项优化；后续试玩需确认地面纵深落点、碰撞时机和基础/高速跳跃手感是否符合直觉，同时确认 64–112px 下动作图与进度槽可读性。</li><li>不需要 PM 审查的执行细节：CSS 数值、对象生成随机种子、测试 seam、音频冷却毫秒与 localStorage key。</li><li>进入下一阶段的条件：HTML builder 按该 screen/state 契约实现并通过 QA-TARGETED。</li></ul>
+<h3 class="md-h">21. Spec Self-Check</h3>
+<ul class="md-ul"><li>Screen coverage：PASS。</li><li>State coverage：PASS。</li><li>Target surface coverage：PASS（web-only）。</li><li>Page archetype coverage：PASS。</li><li>Reference alignment：PASS。</li><li>Product canvas rules：PASS。</li><li>Responsive coverage：PASS（5 个 Web 视口）。</li><li>Handoff readiness：PASS。</li><li>PM review gate readiness：PASS（confirmed）。</li></ul>
+<h3 class="md-h">资源准备与进入状态</h3>
+<ul class="md-ul"><li>Target Surface：沿用 web-only、单视口；低密度全屏准备层，沿现有奶油色/蓝绿配色，使用系统字体与 CSS 即刻显示，不等待背景图或自定义字体。</li><li>Coverage：属于现有 backbone 的启动与进入过渡态，不新增导航分支。首次打开 → 准备首屏 → GI-01；确认角色 → 准备所选角色/伙伴 → LV-00；选玩法 → 准备该玩法 → LV-01/WL-01。</li><li>Default/Loading：显示“冒险马上开始”及当前准备内容，进度按已完成图片加载和解码数量更新，不模拟百分比。准备层覆盖期间，底层不可操作，不启动倒计时或计时。</li><li>Success：关键图片可解码后自动进入；缓存命中不人为延长等待。字体加载可降级系统字体，音频失败不阻塞。</li><li>Error：图片错误/单次超时显示“有些画面还没准备好”，提供“再试一次”；角色/玩法加载可“返回”，保留原选择、输入和成绩；返回后旧请求完成不得自动跳转。初次加载提供重新加载页面恢复脚本故障。</li><li>Empty：资源组为空或已全部缓存时直接完成。</li><li>Assets：生成可重复构建的 WebP 运行时副本，保留 PNG 源文件；保留尺寸、透明区域与锚点，不改变碰撞几何。初次只准备入口/公共UI、角色 idle、玩法缩略图；其他角色动作及玩法地图按选择准备。摄像头模型仅在用户启用摄像头后加载。</li><li>Accessibility：准备状态使用 aria-live=polite、原生 progress；按钮至少44px，可用键盘；底层 inert，失败焦点进入重试，结束恢复原焦点；reduced-motion 下关闭装饰动效。</li><li>Acceptance：慢网时准备层先出现且无缺图入口；首屏不请求未选角色 run/jump 或玩法完整地图；加载完成可正常进入六角色/四玩法；失败重试可恢复、返回取消不误跳；加载等待不消耗倒计时；1440×900 和 919×843 均无页面滚动。</li></ul>
+<h4 class="md-h">PM Review Slice — 加载体验</h4>
+<ul class="md-ul"><li>本阶段关键决策：真实进度、关键素材就绪后进入、分阶段下载与可恢复失败。</li><li>被放弃的方案：一次下载全部地图/动作、假进度、缺图时直接进入。</li><li>需要 PM 确认的问题：优化方向已由本轮请求明确；交付后试玩确认等待文案与画质。</li><li>不需要 PM 审查的执行细节：WebP 编码参数、并发数、缓存去重、超时与测试脚本。</li><li>进入下一阶段的条件：在本轮明确优化范围内完成实现与 QA-TARGETED，不推进整体 Phase 4B 门禁。</li></ul></div></template>
+
+  <div class="overlay-backdrop" id="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayHeading">
+    <div class="overlay-panel">
+      <div class="overlay-header">
+        <div class="overlay-title">
+          <h2 id="overlayHeading">产出物原文</h2>
+          <code id="overlayFile"></code>
+        </div>
+        <button class="overlay-close" onclick="closeOverlay()" aria-label="关闭浮层">关闭 ✕</button>
+      </div>
+      <div class="overlay-body" id="overlayBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const cards = [{"question_id":"Q-LOADING-01","question":"loading提示与压缩后的角色/地图清晰度是否符合预期？","why_it_matters":"这是孩子进入游戏时的第一段体验。","recommended_decision":"试玩后确认，若画质不满意可提高对应素材编码质量。","options":["确认","修改","暂缓，补材料"],"source_files":["reviews/loading-performance-review.md"],"evidence_refs":[],"downstream_impact":["当前集成式MVP加载体验"],"route_hint":"L0"}];
+    const storageKey = "pm-review-console:phase-4b-加载性能优化:04b-prototype-手势小狗探险mvp-html";
+    const basePayload = {
+      phase: "Phase 4B 加载性能优化",
+      artifact: "04B-prototype-手势小狗探险MVP.html",
+      source_status: "pending_pm"
+    };
+    const materialMeta = [{"file":"reviews/loading-performance-review.md","href":"./loading-performance-review.md","type":"markdown","missing":false,"title":"验收摘要"},{"file":"04A-prototype-spec-手势输入闭环.md","href":"../04A-prototype-spec-手势输入闭环.md","type":"markdown","missing":false,"title":"输入规格"},{"file":"04A-prototype-spec-核心关卡循环.md","href":"../04A-prototype-spec-核心关卡循环.md","type":"markdown","missing":false,"title":"关卡规格"}];
+
+    const overlay = document.getElementById("overlay");
+    const overlayBody = document.getElementById("overlayBody");
+    const overlayHeading = document.getElementById("overlayHeading");
+    const overlayFile = document.getElementById("overlayFile");
+
+    function esc(s) {
+      return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    function escAttr(s) {
+      return String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function normalizeLocalPath(value) {
+      let raw = String(value || "").trim();
+      if (!raw || raw.startsWith("#") || /^[a-z]+:/i.test(raw)) return "";
+      raw = raw.split("#")[0].split("?")[0].replace(/\\/g, "/");
+      try { raw = decodeURIComponent(raw); } catch (_) {}
+      raw = raw.replace(/^\.\//, "");
+      while (raw.startsWith("../")) raw = raw.slice(3);
+      return raw;
+    }
+
+    function findMaterialIndexByFile(value) {
+      const target = normalizeLocalPath(value);
+      if (!target) return -1;
+      return materialMeta.findIndex((meta) => {
+        const file = normalizeLocalPath(meta.file);
+        const href = normalizeLocalPath(meta.href);
+        return file === target || href === target || file.endsWith("/" + target) || href.endsWith("/" + target);
+      });
+    }
+
+    function openFileReference(file) {
+      const index = findMaterialIndexByFile(file);
+      if (index >= 0) {
+        openOverlay(index);
+        return true;
+      }
+      return false;
+    }
+
+    function openOverlay(index) {
+      const meta = materialMeta[index];
+      if (!meta) return;
+      overlayHeading.textContent = meta.title || "产出物原文";
+      overlayFile.textContent = meta.file || "";
+
+      if (meta.missing) {
+        overlayBody.innerHTML =
+          '<p style="color:var(--warn);padding:20px 0">文件未找到：<code>' +
+          esc(meta.file) + '</code><br>请确认文件路径或重新生成 Review Console。</p>';
+      } else if (meta.type === "html") {
+        const href = meta.href || meta.file || "";
+        overlayBody.innerHTML =
+          '<div class="overlay-html-frame-wrap">' +
+          '<div class="overlay-html-frame-top">' +
+          '<span>HTML 产物正在右侧浮层中预览。若浏览器限制本地 iframe，可使用备用入口。</span>' +
+          '<a class="overlay-open-btn" href="' + escAttr(href) + '" target="_blank" rel="noopener">新窗口打开</a>' +
+          '</div>' +
+          '<iframe class="overlay-html-frame" src="' + escAttr(href) + '" title="' + escAttr(meta.title || "HTML 产物预览") + '"></iframe>' +
+          '</div>';
+      } else {
+        const tpl = document.getElementById("mat-tpl-" + index);
+        if (tpl && tpl.content.childElementCount > 0) {
+          overlayBody.innerHTML = "";
+          overlayBody.appendChild(tpl.content.cloneNode(true));
+        } else {
+          overlayBody.innerHTML = '<p class="muted">内容不可用。</p>';
+        }
+      }
+
+      overlay.classList.add("visible");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeOverlay() {
+      overlay.classList.remove("visible");
+      document.body.style.overflow = "";
+      overlayBody.innerHTML = "";
+    }
+
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("visible")) closeOverlay();
+    });
+    document.addEventListener("click", (e) => {
+      const fileTrigger = e.target.closest("[data-open-file]");
+      if (fileTrigger) {
+        const handled = openFileReference(fileTrigger.getAttribute("data-open-file"));
+        if (handled) e.preventDefault();
+        return;
+      }
+
+      const materialLink = e.target.closest(".md-content a[href]");
+      if (!materialLink) return;
+      const handled = openFileReference(materialLink.getAttribute("href"));
+      if (handled) e.preventDefault();
+    });
+
+    function collectFeedback() {
+      const directFeedback = document.getElementById("directFeedback")?.value || "";
+      const responses = cards.map((card, index) => {
+        const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]')?.value || "";
+        const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]')?.value || "";
+        return { question_id: card.question_id, question: card.question, decision, comment };
+      });
+      return { ...basePayload, exported_at: new Date().toISOString(), direct_feedback: directFeedback, responses };
+    }
+
+    function saveLocal() {
+      const payload = collectFeedback();
+      localStorage.setItem(storageKey, JSON.stringify(payload));
+      document.getElementById("feedbackPreview").textContent = JSON.stringify(payload, null, 2);
+    }
+
+    function restoreLocal() {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) { saveLocal(); return; }
+      try {
+        const payload = JSON.parse(raw);
+        const directFeedback = document.getElementById("directFeedback");
+        if (directFeedback) directFeedback.value = payload.direct_feedback || "";
+        payload.responses?.forEach((response, index) => {
+          const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]');
+          const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]');
+          if (decision) decision.value = response.decision || "";
+          if (comment) comment.value = response.comment || "";
+        });
+      } catch (_) { localStorage.removeItem(storageKey); }
+      saveLocal();
+    }
+
+    document.querySelectorAll("select, textarea").forEach((field) => {
+      field.addEventListener("input", saveLocal);
+      field.addEventListener("change", saveLocal);
+    });
+
+    document.getElementById("copyFeedback").addEventListener("click", async () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const status = document.getElementById("copyStatus");
+      if (navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(text);
+          if (status) status.textContent = "已复制";
+          return;
+        } catch (_) {
+          window.prompt("复制反馈 JSON", text);
+        }
+      } else {
+        window.prompt("复制反馈 JSON", text);
+      }
+      if (status) status.textContent = "请从弹窗复制";
+    });
+
+    document.getElementById("downloadFeedback").addEventListener("click", () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const blob = new Blob([text], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "phase-4b-加载性能优化-feedback.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+
+    restoreLocal();
+  </script>
+</body>
+</html>

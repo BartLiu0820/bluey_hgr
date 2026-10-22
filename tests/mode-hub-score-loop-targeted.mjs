@@ -28,6 +28,7 @@ async function pageAt(viewport = { width: 1280, height: 720 }) {
   page.on("console", message => { if (message.type() === "error" && !message.text().includes("Failed to load resource")) errors.push(message.text()); });
   page.on("response", response => { if (response.status() >= 400 && !response.url().endsWith("/favicon.ico")) errors.push(`${response.status()} ${response.url()}`); });
   await page.goto(url, { waitUntil: "load" });
+  await page.evaluate(() => window.gameReady);
   await page.waitForFunction(() => Boolean(window.__mvpTest));
   return page;
 }
@@ -84,6 +85,7 @@ try {
   assert.equal((await state(page)).screen, "CH-01");
   assert.equal(await page.evaluate(() => window.__qaInputReadyCount), 1);
   await page.locator("#character-confirm").click();
+  await page.waitForFunction(() => window.__mvpTest.getState().screen === "LV-00");
   assert.equal((await state(page)).screen, "LV-00");
   pass("摄像头准备页继续按钮单次派发，人物确认后进入玩法大厅");
 
@@ -266,6 +268,7 @@ try {
       }));
     });
     await viewportPage.reload({ waitUntil:'load' });
+    await viewportPage.evaluate(() => window.gameReady);
     await viewportPage.waitForFunction(() => Boolean(window.__mvpTest));
     await startMode(viewportPage);
     const layout = await viewportPage.evaluate(() => ({

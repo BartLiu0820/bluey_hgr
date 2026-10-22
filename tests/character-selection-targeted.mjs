@@ -20,7 +20,7 @@ assert.deepEqual(roster.characters.map(({ id, displayName }) => [id, displayName
 const screenshotDir = process.env.CHARACTER_SELECTION_SCREENSHOT_DIR;
 if (screenshotDir) fs.mkdirSync(screenshotDir, { recursive:true });
 const spritePaths = characters.flatMap(([character]) => actions.flatMap(action =>
-  Array.from({ length:4 }, (_, index) => `assets/characters/${character}/${action}/${action}-${index + 1}.png`)
+  Array.from({ length:4 }, (_, index) => `assets/characters/${character}/${action}/${action}-${index + 1}.webp`)
 ));
 const mimeTypes = { ".css":"text/css", ".html":"text/html; charset=utf-8", ".mjs":"text/javascript; charset=utf-8", ".js":"text/javascript; charset=utf-8", ".png":"image/png", ".mp3":"audio/mpeg", ".woff2":"font/woff2", ".wasm":"application/wasm", ".task":"application/octet-stream" };
 
@@ -50,6 +50,7 @@ try {
   assetPage.on("pageerror", error => errors.push(`pageerror: ${error.message}`));
   assetPage.on("console", message => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
   await assetPage.goto(url, { waitUntil:"load" });
+  await assetPage.evaluate(() => window.gameReady);
   const loaded = await assetPage.evaluate(paths => Promise.all(paths.map(src => new Promise(resolve => {
     const image = new Image();
     image.onload = () => resolve({ src, ok:image.naturalWidth === 256 && image.naturalHeight === 256 });
@@ -66,6 +67,7 @@ try {
     page.on("pageerror", error => errors.push(`${viewport.width}x${viewport.height} pageerror: ${error.message}`));
     page.on("console", message => { if (message.type() === "error") errors.push(`${viewport.width}x${viewport.height} console: ${message.text()}`); });
     await page.goto(url, { waitUntil:"load" });
+  await page.evaluate(() => window.gameReady);
     const state = await page.evaluate(() => window.__mvpTest.startWithMode("keyboard_full"));
     assert.equal(state.screen, "CH-01");
     assert.equal(await page.locator("#ch01.screen.active").count(), 1);
@@ -114,23 +116,26 @@ try {
   page.on("pageerror", error => errors.push(`flow pageerror: ${error.message}`));
   page.on("console", message => { if (message.type() === "error") errors.push(`flow console: ${message.text()}`); });
   await page.goto(url, { waitUntil:"load" });
+  await page.evaluate(() => window.gameReady);
   await page.evaluate(() => window.__mvpTest.startWithMode("camera_full"));
   assert.equal((await page.evaluate(() => window.__mvpTest.getState())).screen, "CH-01");
   if (process.env.CHARACTER_SELECTION_SCREENSHOT) await page.screenshot({ path:process.env.CHARACTER_SELECTION_SCREENSHOT, fullPage:false });
   await page.click('.character-card[data-character-id="grey-puppy"]');
   assert.equal((await page.evaluate(() => window.__mvpTest.getState())).pendingCharacterId, "grey-puppy");
   await page.click("#character-confirm");
+    await page.waitForFunction(() => window.__mvpTest.getState().screen === "LV-00");
   let state = await page.evaluate(() => window.__mvpTest.getState());
   assert.equal(state.screen, "LV-00");
   assert.equal(state.selectedCharacterId, "grey-puppy");
   assert.equal(await page.locator("#level-card-L1 .dog-art").getAttribute("data-character"), "grey-puppy");
   await page.click("#level-card-L1");
+    await page.waitForFunction(() => window.__mvpTest.getState().screen === "LV-01");
   assert.equal(await page.locator(".launch-dogs .dog-art").first().getAttribute("data-character"), "grey-puppy");
   await page.click("#launch-start");
   await page.evaluate(() => window.__mvpTest.advance(3000));
   state = await page.evaluate(() => window.__mvpTest.getState());
   assert.equal(state.level.currentCharacterId, "grey-puppy");
-  assert.match(await page.locator("#level-dog").getAttribute("src"), /\/grey-puppy\/run\/run-[1-4]\.png$/);
+  assert.match(await page.locator("#level-dog").getAttribute("src"), /\/grey-puppy\/run\/run-[1-4]\.webp$/);
   await page.evaluate(() => window.__mvpTest.enterLevelMap());
   state = await page.evaluate(() => window.__mvpTest.getState());
   assert.equal(state.selectedCharacterId, "grey-puppy");
@@ -143,16 +148,19 @@ try {
     game.on("pageerror", error => errors.push(`${levelId} pageerror: ${error.message}`));
     game.on("console", message => { if (message.type() === "error") errors.push(`${levelId} console: ${message.text()}`); });
     await game.goto(url, { waitUntil:"load" });
+  await game.evaluate(() => window.gameReady);
     await game.evaluate(() => window.__mvpTest.startWithMode("keyboard_full"));
     await game.getByRole("radio", { name:"棉棉", exact:true }).click();
     await game.click("#character-confirm");
+    await game.waitForFunction(() => window.__mvpTest.getState().screen === "LV-00");
     assert.equal((await game.evaluate(() => window.__mvpTest.getState())).selectedCharacterId, "lilac-girl");
     assert.deepEqual(await game.locator('.level-card .dog-art').evaluateAll(nodes => nodes.map(node => node.dataset.character)), ["lilac-girl", "lilac-girl", "lilac-girl", "lilac-girl"]);
     await game.click(`#level-card-${levelId}`);
+    await game.waitForFunction(() => window.__mvpTest.getState().screen === "LV-01");
     assert.equal(await game.locator(".launch-dogs .dog-art").first().getAttribute("data-character"), "lilac-girl");
     await game.click("#launch-start");
     await game.evaluate(() => window.__mvpTest.advance(3000));
-    const assertAction = async action => assert.match(await game.locator("#level-dog").getAttribute("src"), new RegExp(`/lilac-girl/${action}/${action}-[1-4]\\.png$`));
+    const assertAction = async action => assert.match(await game.locator("#level-dog").getAttribute("src"), new RegExp(`/lilac-girl/${action}/${action}-[1-4]\\.webp$`));
     assert.equal((await game.evaluate(() => window.__mvpTest.getState())).level.currentCharacterId, "lilac-girl");
     assert.equal(await game.locator("#character-dot").getAttribute("aria-label"), "棉棉");
     await assertAction(expectedAction);
@@ -174,7 +182,7 @@ try {
     const result = await game.evaluate(() => window.__mvpTest.getState());
     assert.equal(result.screen, "LV-03");
     assert.equal(result.completionSummary.finalCharacterId, "lilac-girl");
-    assert.match(await game.locator(".run-memory-dogs .dog-art").first().getAttribute("src"), /\/lilac-girl\/celebrate\/celebrate-[1-4]\.png$/);
+    assert.match(await game.locator(".run-memory-dogs .dog-art").first().getAttribute("src"), /\/lilac-girl\/celebrate\/celebrate-[1-4]\.webp$/);
     await game.click("#play-again");
     await game.click("#launch-start");
     await game.evaluate(() => window.__mvpTest.advance(3000));

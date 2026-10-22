@@ -60,7 +60,7 @@
       color: var(--ink);
       background:
         linear-gradient(180deg, rgba(226,245,247,.22), rgba(244,246,216,.32)),
-        url('assets/maps/menu/adventure-garden.png') center / cover no-repeat;
+        url('assets/maps/menu/adventure-garden.webp') center / cover no-repeat;
       font-family: var(--font-ui);
       font-variation-settings: "ROND" 100;
       overflow: hidden;
@@ -379,12 +379,12 @@
     /* Integrated three-level game: full world, one child instruction, compact camera coach. */
     .game-screen, .level-map-screen { padding: 0; overflow: hidden; height: 100dvh; min-height: 0; }
     .game-screen { background:#bde9fb; }
-    .level-map-screen { background:linear-gradient(rgba(232,247,245,.20),rgba(255,249,232,.28)),url('assets/maps/menu/adventure-garden.png') center/cover no-repeat; }
+    .level-map-screen { background:linear-gradient(rgba(232,247,245,.20),rgba(255,249,232,.28)),url('assets/maps/menu/adventure-garden.webp') center/cover no-repeat; }
     .game-screen::after, .level-map-screen::after { display: none; }
     .level-map-screen {
       background:
         linear-gradient(180deg,rgba(228,247,249,.82),rgba(239,244,206,.9)),
-        url('assets/maps/creek/far-loop-pair.png') center / auto 100% repeat-x;
+        url('assets/maps/creek/far-loop-pair.webp') center / auto 100% repeat-x;
     }
     .character-select-shell { position:absolute; inset:0; display:grid; grid-template-rows:auto minmax(0,1fr) auto; gap:clamp(10px,2vh,22px); padding:clamp(16px,3vh,32px) clamp(18px,4vw,60px); overflow:hidden; }
     .character-select-head { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:16px; padding:8px 14px; border:2px solid rgba(94,60,36,.18); border-bottom-width:5px; border-radius:20px; background:rgba(255,249,232,.88); }
@@ -421,9 +421,9 @@
     .level-card-scene { position:relative; z-index:1; min-height:0; display:grid; place-items:center; overflow:hidden; border:2px solid rgba(94,60,36,.2); border-radius:22px; background-position:center; background-repeat:no-repeat; background-size:cover; }
     .level-card-scene .dog-art { width:clamp(104px,12vw,176px); height:clamp(118px,16vh,186px); scale:1.28; filter:drop-shadow(0 12px 8px rgba(71,73,33,.16)); }
     .level-card-scene::after, .level-card-scene::before { content:none; }
-    .level-card-scene.creek-scene { background-image:linear-gradient(rgba(255,249,232,.18),rgba(255,249,232,.18)),url('assets/maps/creek/mid-loop-pair.png'),url('assets/maps/creek/far-loop-pair.png'); }
-    .level-card-scene.follow-scene { background-image:linear-gradient(rgba(255,249,232,.14),rgba(255,249,232,.14)),url('assets/maps/firefly/mid-loop-pair.png'),url('assets/maps/firefly/far-loop-pair.png'); }
-    .level-card-scene.bounce-scene { background-image:linear-gradient(rgba(255,249,232,.12),rgba(255,249,232,.12)),url('assets/maps/treetop/mid-loop-pair.png'),url('assets/maps/treetop/far-loop-pair.png'); }
+    .level-card-scene.creek-scene { background-image:linear-gradient(rgba(255,249,232,.18),rgba(255,249,232,.18)),url('assets/maps/creek/mid-loop-pair.webp'),url('assets/maps/creek/far-loop-pair.webp'); }
+    .level-card-scene.follow-scene { background-image:linear-gradient(rgba(255,249,232,.14),rgba(255,249,232,.14)),url('assets/maps/firefly/mid-loop-pair.webp'),url('assets/maps/firefly/far-loop-pair.webp'); }
+    .level-card-scene.bounce-scene { background-image:linear-gradient(rgba(255,249,232,.12),rgba(255,249,232,.12)),url('assets/maps/treetop/mid-loop-pair.webp'),url('assets/maps/treetop/far-loop-pair.webp'); }
     .level-ability { align-self:end; width:fit-content; padding:9px 13px; border-radius:999px; background:var(--level-tint,#d9f1ff); color:#17324d; font-weight:950; z-index:1; }
     .map-footer { min-height:46px; display:flex; align-items:center; justify-content:center; gap:10px; color:var(--muted); font-weight:850; text-align:center; }
     .launch-actions { display:flex; justify-content:center; align-items:center; gap:12px; margin-top:14px; }
@@ -471,13 +471,13 @@
     .map-layer { position:absolute; inset:-1px; background-position:0 0; will-change:background-position; pointer-events:none; }
     .map-layer.far { z-index:0; opacity:.78; filter:saturate(.84) contrast(.9) brightness(1.02); }
     .map-layer.mid { z-index:1; opacity:.62; filter:saturate(.8) contrast(.88); }
-    .world[data-theme="creek"] .map-layer.far { background-image:url('assets/maps/creek/far-loop-pair.png'); background-size:auto 100%; background-repeat:repeat-x; }
-    .world[data-theme="creek"] .map-layer.mid { background-image:url('assets/maps/creek/mid-loop-pair.png'); background-size:auto 100%; background-repeat:repeat-x; }
-    .world[data-theme="firefly"] .map-layer.far { background-image:url('assets/maps/firefly/far-loop-pair.png'); background-size:auto 100%; background-repeat:repeat-x; opacity:.8; }
-    .world[data-theme="firefly"] .map-layer.mid { background-image:url('assets/maps/firefly/mid-loop-pair.png'); background-size:auto 100%; background-repeat:repeat-x; opacity:.58; }
-    .world[data-theme="treetop"] .map-layer.far { background-image:url('assets/maps/treetop/far-loop-pair.png'); background-size:100% auto; background-repeat:repeat-y; opacity:.76; }
-    .world[data-theme="treetop"] .map-layer.mid { background-image:url('assets/maps/treetop/mid-loop-pair.png'); background-size:100% auto; background-repeat:repeat-y; opacity:.58; }
-    .map-ground-skin { position:absolute; z-index:3; left:-1%; right:-1%; bottom:2%; height:15%; display:none; pointer-events:none; background-image:url('assets/map-objects/creek-ground-strip/loop-pair.png'); background-repeat:repeat-x; background-size:auto 100%; background-position:0 bottom; filter:saturate(.92) contrast(.96); will-change:background-position; }
+    .world[data-theme="creek"] .map-layer.far { background-image:url('assets/maps/creek/far-loop-pair.webp'); background-size:auto 100%; background-repeat:repeat-x; }
+    .world[data-theme="creek"] .map-layer.mid { background-image:url('assets/maps/creek/mid-loop-pair.webp'); background-size:auto 100%; background-repeat:repeat-x; }
+    .world[data-theme="firefly"] .map-layer.far { background-image:url('assets/maps/firefly/far-loop-pair.webp'); background-size:auto 100%; background-repeat:repeat-x; opacity:.8; }
+    .world[data-theme="firefly"] .map-layer.mid { background-image:url('assets/maps/firefly/mid-loop-pair.webp'); background-size:auto 100%; background-repeat:repeat-x; opacity:.58; }
+    .world[data-theme="treetop"] .map-layer.far { background-image:url('assets/maps/treetop/far-loop-pair.webp'); background-size:100% auto; background-repeat:repeat-y; opacity:.76; }
+    .world[data-theme="treetop"] .map-layer.mid { background-image:url('assets/maps/treetop/mid-loop-pair.webp'); background-size:100% auto; background-repeat:repeat-y; opacity:.58; }
+    .map-ground-skin { position:absolute; z-index:3; left:-1%; right:-1%; bottom:2%; height:15%; display:none; pointer-events:none; background-image:url('assets/map-objects/creek-ground-strip/loop-pair.webp'); background-repeat:repeat-x; background-size:auto 100%; background-position:0 bottom; filter:saturate(.92) contrast(.96); will-change:background-position; }
     .world[data-theme="creek"] .map-ground-skin { display:block; }
     .legacy-scenery { display:none !important; }
     .game-layout { position:absolute; inset:0; background:#123a57; overflow:hidden; }
@@ -524,29 +524,29 @@
     .world-object { position:absolute; left:72%; bottom:var(--ground-contact-bottom,15%); width:132px; height:92px; z-index:4; display:none; transform:translateX(-50%); }
     .world-object.show { display: block; }
     .world-object.puddle { height: 38px; bottom: 14%; border-radius: 50%; background: #4fb4dd; border: 5px solid #2a7fab; box-shadow: inset 0 7px rgba(255,255,255,.34); }
-    .world-object.pit { height:auto; aspect-ratio:1450 / 351; bottom:4.6%; border:0; border-radius:0; background:transparent url('assets/map-objects/creek-pit/prop.png') center bottom / contain no-repeat; box-shadow:none; filter:drop-shadow(0 8px 7px rgba(31,82,86,.18)); }
-    .world-object.box { width:95px; height:82px; background:transparent url('assets/map-objects/soft-crate/prop.png') center bottom / contain no-repeat; border:0; border-radius:0; filter:drop-shadow(0 8px 6px rgba(76,49,23,.18)); }
-    .world-object.log { width:136px; height:72px; background:transparent url('assets/map-objects/creek-log/prop.png') center bottom / contain no-repeat; border:0; filter:drop-shadow(0 8px 6px rgba(76,49,23,.18)); }
-    .world-object.double-crate { width:146px; height:104px; background:transparent url('assets/map-objects/creek-double-crate/prop.png') center bottom / contain no-repeat; border:0; filter:drop-shadow(0 8px 6px rgba(76,49,23,.18)); }
+    .world-object.pit { height:auto; aspect-ratio:1450 / 351; bottom:4.6%; border:0; border-radius:0; background:transparent url('assets/map-objects/creek-pit/prop.webp') center bottom / contain no-repeat; box-shadow:none; filter:drop-shadow(0 8px 7px rgba(31,82,86,.18)); }
+    .world-object.box { width:95px; height:82px; background:transparent url('assets/map-objects/soft-crate/prop.webp') center bottom / contain no-repeat; border:0; border-radius:0; filter:drop-shadow(0 8px 6px rgba(76,49,23,.18)); }
+    .world-object.log { width:136px; height:72px; background:transparent url('assets/map-objects/creek-log/prop.webp') center bottom / contain no-repeat; border:0; filter:drop-shadow(0 8px 6px rgba(76,49,23,.18)); }
+    .world-object.double-crate { width:146px; height:104px; background:transparent url('assets/map-objects/creek-double-crate/prop.webp') center bottom / contain no-repeat; border:0; filter:drop-shadow(0 8px 6px rgba(76,49,23,.18)); }
     .world-object.flags { height: 138px; bottom: 31%; border-top: 12px solid #ed6e62; border-radius: 8px; }
     .world-object.flags::before { content: ""; position: absolute; left: 8px; right: 8px; top: -5px; height: 72px; background: repeating-linear-gradient(90deg,#ffd35c 0 24px,#fff2b7 24px 48px); clip-path: polygon(0 0,100% 0,90% 72%,78% 0,66% 72%,54% 0,42% 72%,30% 0,18% 72%,6% 0); }
     .world-object.branch { width: 142px; height: 28px; bottom: 42%; border-radius: 999px; background: #a66b3d; border: 5px solid #744424; transform-origin: center; }
     .world-object.relay { width: 150px; height: 190px; bottom: 13%; border: 11px solid #f0a248; border-bottom: 0; border-radius: 75px 75px 0 0; background: transparent; }
     .world-object.relay::after { content: "伙伴接力"; position: absolute; top: 42px; left: 12px; right: 12px; padding: 8px; background: #fff8d9; border-radius: 12px; text-align: center; font-weight: 950; color: #7b4811; }
     .world-object.gap { width:112px; height:100%; bottom:0; background:transparent; border:0; border-radius:0; overflow:hidden; }
-    .world-object.gap::before, .world-object.gap::after { content:""; position:absolute; left:0; right:0; background-color:transparent; background-image:var(--gap-image,url('assets/map-objects/firefly-leaf-barrier/prop.png')); background-repeat:no-repeat; background-size:100% auto; border:0; box-shadow:0 8px 18px rgba(28,68,61,.16); }
-    .world-object.gap[data-skin="roundleaf"] { --gap-image:url('assets/map-objects/firefly-roundleaf-barrier/prop.png'); }
-    .world-object.gap[data-skin="reed"] { --gap-image:url('assets/map-objects/firefly-reed-barrier/prop.png'); }
+    .world-object.gap::before, .world-object.gap::after { content:""; position:absolute; left:0; right:0; background-color:transparent; background-image:var(--gap-image,url('assets/map-objects/firefly-leaf-barrier/prop.webp')); background-repeat:no-repeat; background-size:100% auto; border:0; box-shadow:0 8px 18px rgba(28,68,61,.16); }
+    .world-object.gap[data-skin="roundleaf"] { --gap-image:url('assets/map-objects/firefly-roundleaf-barrier/prop.webp'); }
+    .world-object.gap[data-skin="reed"] { --gap-image:url('assets/map-objects/firefly-reed-barrier/prop.webp'); }
     .world-object.gap::before { top:0; height:var(--gap-top,28%); background-position:center bottom; }
     .world-object.gap::after { top:var(--gap-bottom,72%); bottom:0; background-position:center bottom; transform:rotate(180deg); }
-    .bounce-platform { position:absolute; z-index:4; height:clamp(28px,4.2vh,46px); transform:translate(-50%,-50%); border-radius:0; background:transparent url('assets/map-objects/treetop-branch-platform/prop.png') center / 100% 100% no-repeat; border:0; filter:drop-shadow(0 10px 9px rgba(54,103,56,.16)); }
+    .bounce-platform { position:absolute; z-index:4; height:clamp(28px,4.2vh,46px); transform:translate(-50%,-50%); border-radius:0; background:transparent url('assets/map-objects/treetop-branch-platform/prop.webp') center / 100% 100% no-repeat; border:0; filter:drop-shadow(0 10px 9px rgba(54,103,56,.16)); }
     .bounce-platform[data-skin="narrow"],
     .bounce-platform[data-skin="curved"] { background-size:116% auto; background-position:center 48%; }
-    .bounce-platform[data-skin="narrow"] { background-image:url('assets/map-objects/treetop-narrow-branch/prop.png'); }
-    .bounce-platform[data-skin="curved"] { background-image:url('assets/map-objects/treetop-curved-branch/prop.png'); }
+    .bounce-platform[data-skin="narrow"] { background-image:url('assets/map-objects/treetop-narrow-branch/prop.webp'); }
+    .bounce-platform[data-skin="curved"] { background-image:url('assets/map-objects/treetop-curved-branch/prop.webp'); }
     .bounce-platform::after { content:none; }
     .bounce-platform.passed { opacity:.68; }
-    .safe-cloud { position:absolute; z-index:6; left:var(--safe-x,50%); top:var(--safe-y,72%); width:clamp(130px,15vw,210px); height:clamp(34px,5vh,48px); transform:translate(-50%,-50%); border-radius:0; background:transparent url('assets/map-objects/safety-cloud/prop.png') center / contain no-repeat; border:0; filter:drop-shadow(0 10px 12px rgba(89,73,21,.15)); animation:safeCloudPop .72s ease-out both; }
+    .safe-cloud { position:absolute; z-index:6; left:var(--safe-x,50%); top:var(--safe-y,72%); width:clamp(130px,15vw,210px); height:clamp(34px,5vh,48px); transform:translate(-50%,-50%); border-radius:0; background:transparent url('assets/map-objects/safety-cloud/prop.webp') center / contain no-repeat; border:0; filter:drop-shadow(0 10px 12px rgba(89,73,21,.15)); animation:safeCloudPop .72s ease-out both; }
     @keyframes safeCloudPop { 0% { transform:translate(-50%,-50%) scale(.4); opacity:.2; } 50% { transform:translate(-50%,-50%) scale(1.08); opacity:1; } 100% { transform:translate(-50%,-50%) scale(1); opacity:1; } }
     .tracking-guide { position:absolute; z-index:4; left:clamp(105px,15vw,205px); top:55%; width:56px; height:56px; display:none; place-items:center; transform:translate(-50%,-50%); border-radius:50%; background:rgba(255,245,146,.85); border:5px solid rgba(255,255,255,.92); box-shadow:0 0 0 9px rgba(255,239,108,.22),0 10px 24px rgba(40,91,84,.22); color:#8e6111; font-size:28px; transition:left .1s linear,top .1s linear; }
     .tracking-guide::after { content:""; position:absolute; left:48px; width:clamp(36px,5vw,72px); height:5px; border-radius:999px; background:repeating-linear-gradient(90deg,rgba(255,245,146,.95) 0 10px,transparent 10px 17px); }
@@ -660,7 +660,7 @@
     .stage, .keyboard-stage {
       background:
         linear-gradient(rgba(255,249,232,.38),rgba(241,245,209,.52)),
-        url('assets/maps/creek/far-loop-pair.png') center / auto 100% repeat-x;
+        url('assets/maps/creek/far-loop-pair.webp') center / auto 100% repeat-x;
       border:3px solid rgba(94,60,36,.22);
     }
     .stage::before { background:#f4cf68; opacity:.72; }
@@ -704,13 +704,13 @@
     .local-score-list li { background:var(--paper-soft); border-color:rgba(94,60,36,.22); }
     .local-score-list li:first-child { background:#fff0af; border-color:#d79a30; }
     #lv03[data-theme="creek"] {
-      background:linear-gradient(rgba(229,246,247,.68),rgba(237,244,208,.78)),url('assets/maps/creek/far-loop-pair.png') center / auto 100% repeat-x;
+      background:linear-gradient(rgba(229,246,247,.68),rgba(237,244,208,.78)),url('assets/maps/creek/far-loop-pair.webp') center / auto 100% repeat-x;
     }
     #lv03[data-theme="firefly"] {
-      background:linear-gradient(rgba(226,244,236,.7),rgba(236,241,204,.82)),url('assets/maps/firefly/far-loop-pair.png') center / auto 100% repeat-x;
+      background:linear-gradient(rgba(226,244,236,.7),rgba(236,241,204,.82)),url('assets/maps/firefly/far-loop-pair.webp') center / auto 100% repeat-x;
     }
     #lv03[data-theme="treetop"] {
-      background:linear-gradient(rgba(230,246,246,.7),rgba(238,244,213,.82)),url('assets/maps/treetop/far-loop-pair.png') center / 100% auto repeat-y;
+      background:linear-gradient(rgba(230,246,246,.7),rgba(238,244,213,.82)),url('assets/maps/treetop/far-loop-pair.webp') center / 100% auto repeat-y;
     }
 
     @media (max-width:1100px) {
@@ -961,7 +961,7 @@
     .game-coach {
       width:clamp(226px,19vw,292px); top:clamp(64px,8vh,76px);
       padding:clamp(21px,2.2vw,29px) clamp(16px,1.8vw,22px) clamp(25px,2.5vw,34px);
-      border:0; border-radius:0; background:transparent url('assets/ui/panels/paper-branch-panel.png') center / 100% 100% no-repeat;
+      border:0; border-radius:0; background:transparent url('assets/ui/panels/paper-branch-panel.webp') center / 100% 100% no-repeat;
       box-shadow:none; overflow:visible;
     }
     .coach-camera { border-radius:15px; }
@@ -970,7 +970,7 @@
     .pause-card {
       width:min(640px,84vw,calc((100dvh - 44px) * 4 / 3)); aspect-ratio:4 / 3;
       padding:clamp(50px,5vw,64px) clamp(56px,5.6vw,72px) clamp(68px,6.4vw,82px); border:0; border-radius:0;
-      background:transparent url('assets/ui/panels/paper-branch-panel.png') center / 100% 100% no-repeat;
+      background:transparent url('assets/ui/panels/paper-branch-panel.webp') center / 100% 100% no-repeat;
       box-shadow:none; display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(0,1fr);
       place-items:stretch; min-width:0; min-height:0; text-align:left;
     }
@@ -998,7 +998,7 @@
     .launch-copy > div {
       box-sizing:border-box; width:min(700px,88vw,calc((100dvh - 38px) * 4 / 3)); max-width:none; aspect-ratio:4 / 3;
       padding:9% 12% 12%; border:0; border-radius:0;
-      background:transparent url('assets/ui/panels/paper-branch-panel.png') center / 100% 100% no-repeat;
+      background:transparent url('assets/ui/panels/paper-branch-panel.webp') center / 100% 100% no-repeat;
       box-shadow:none; display:grid; justify-items:center; align-content:center; gap:clamp(3px,.8vh,8px); overflow:hidden;
     }
     .launch-copy h1 { margin:2px 0; font-size:clamp(34px,4.5vw,54px); line-height:1; }
@@ -1015,7 +1015,7 @@
     .finish-card {
       box-sizing:border-box; width:min(1060px,calc(100% - 30px),calc((100dvh - 88px) * 4 / 3)); aspect-ratio:4 / 3;
       padding:9% 10% 11%; border:0; border-radius:0;
-      background:transparent url('assets/ui/panels/paper-branch-panel.png') center / 100% 100% no-repeat;
+      background:transparent url('assets/ui/panels/paper-branch-panel.webp') center / 100% 100% no-repeat;
       box-shadow:none; grid-template-columns:minmax(230px,.88fr) minmax(330px,1.12fr); gap:clamp(18px,3vw,42px);
     }
 
@@ -1088,7 +1088,7 @@
       width:min(1180px,100%,calc((100dvh - 112px) * 1.46));
       padding:clamp(60px,7%,82px) clamp(66px,8%,98px) clamp(78px,9%,108px);
       border:0; border-radius:0; box-shadow:none;
-      background:transparent url('assets/ui/panels/paper-branch-panel.png') center / 100% 100% no-repeat;
+      background:transparent url('assets/ui/panels/paper-branch-panel.webp') center / 100% 100% no-repeat;
       display:flex; flex-direction:column; justify-content:center; overflow:hidden;
     }
     #gi01 .setup-content {
@@ -1180,7 +1180,7 @@
       background-position:var(--digit-position) 50%;
       filter:drop-shadow(0 .06em .02em rgba(23,58,82,.18));
     }
-    .art-digits-ready .art-digit { color:transparent; background-image:url('assets/ui/numbers/adventure-digits.png'); }
+    .art-digits-ready .art-digit { color:transparent; background-image:url('assets/ui/numbers/adventure-digits.webp'); }
     .art-unit-m { width:.714em; height:1em; margin-left:.025em; }
 
     .milestone-copy {
@@ -1305,7 +1305,7 @@
       box-sizing:border-box; width:min(1440px,100%,calc((100dvh - 92px) * 1.5));
       padding:clamp(54px,5.2vw,78px) clamp(62px,6vw,92px) clamp(68px,6.5vw,96px);
       grid-template-columns:minmax(0,1.58fr) minmax(238px,.62fr); gap:clamp(18px,2.2vw,34px);
-      border:0; border-bottom:0; border-radius:0; background:transparent url('assets/ui/panels/camera-prep-panel.png') center / 100% 100% no-repeat;
+      border:0; border-bottom:0; border-radius:0; background:transparent url('assets/ui/panels/camera-prep-panel.webp') center / 100% 100% no-repeat;
       box-shadow:none; overflow:hidden; flex:0 1 auto; aspect-ratio:3 / 2; grid-template-rows:minmax(0,1fr);
     }
     #gi02 .preview-shell {
@@ -1336,7 +1336,7 @@
     #gi05 .keyboard-panel {
       box-sizing:border-box; width:min(1440px,100%,calc((100dvh - 92px) * 1.5));
       padding:clamp(54px,5.2vw,78px) clamp(62px,6vw,92px) clamp(68px,6.5vw,96px);
-      border:0; border-bottom:0; border-radius:0; background:transparent url('assets/ui/panels/camera-prep-panel.png') center / 100% 100% no-repeat;
+      border:0; border-bottom:0; border-radius:0; background:transparent url('assets/ui/panels/camera-prep-panel.webp') center / 100% 100% no-repeat;
       box-shadow:none; overflow:hidden; flex:0 1 auto; aspect-ratio:3 / 2;
     }
     #gi05 .keyboard-grid { width:100%; height:100%; gap:clamp(18px,2.2vw,34px); }
@@ -1395,10 +1395,46 @@
       #gi05 .key-lamp.space-key { min-height:52px; }
       .action-symbol.generated-action { width:58px; height:58px; }
     }
+
+    #asset-loading { position:fixed; inset:0; z-index:10000; display:grid; place-items:center; padding:24px; background:radial-gradient(ellipse at 50% 80%, #e0efcf 0, #fff9e8 65%); color:#173a52; font-family:system-ui,sans-serif; }
+    #asset-loading[hidden] { display:none; }
+    .loading-content { width:min(440px,100%); text-align:center; }
+    .loading-mark { font-size:52px; color:#3889b6; line-height:1; margin-bottom:22px; }
+    #asset-loading h2 { margin:0 0 14px; font:700 28px/1.3 system-ui,sans-serif; }
+    #asset-loading p { font:16px/1.6 system-ui,sans-serif; }
+    #asset-loading progress { display:block; width:100%; height:18px; margin:28px 0 12px; accent-color:#3889b6; }
+    #asset-loading progress[hidden] { display:none; }
+    #asset-loading button { min-width:120px; min-height:48px; margin:10px 6px 0; border:2px solid #185779; border-radius:24px; padding:10px 18px; background:#fff9e8; cursor:pointer; font:600 16px system-ui,sans-serif; }
+    #asset-loading button[hidden] { display:none; }
+    #asset-loading [data-loading-retry] { color:white; background:#185779; }
+    #asset-loading [data-loading-count] { display:block; font-variant-numeric:tabular-nums; }
   </style>
   <link rel="stylesheet" href="wire-loop.css">
 </head>
 <body>
+  <div id="asset-loading" role="dialog" aria-modal="true" aria-labelledby="asset-loading-title" tabindex="-1" data-state="loading">
+    <div class="loading-content">
+      <div class="loading-mark" aria-hidden="true">✦</div>
+      <h2 id="asset-loading-title">冒险马上开始</h2>
+      <p data-loading-message role="status" aria-live="polite">正在准备画面，请稍等一小会儿</p>
+      <progress aria-label="画面准备进度" max="100" value="0"></progress>
+      <span data-loading-count aria-hidden="true">0%</span>
+      <button type="button" data-loading-retry hidden onclick="location.reload()">重新加载</button>
+      <button type="button" data-loading-back hidden>返回</button>
+      <noscript><p>请开启浏览器的 JavaScript 后重新加载。</p></noscript>
+    </div>
+  </div>
+  <script>
+    window.assetBootWatchdog = setTimeout(() => {
+      const box = document.querySelector('#asset-loading');
+      if (!box.hidden) {
+        box.dataset.state = 'error';
+        box.querySelector('[data-loading-message]').textContent = '准备有点慢，请检查网络后重新加载。';
+        box.querySelector('[data-loading-retry]').hidden = false;
+      }
+    }, 30000);
+  </script>
+
   <svg aria-hidden="true" width="0" height="0" style="position:absolute">
     <defs>
       <symbol id="icon-paw" viewBox="0 0 64 64"><path fill="currentColor" d="M17 28c6 0 9-7 7-13-2-6-8-8-12-3s-1 16 5 16Zm30 0c6 0 9-11 5-16s-10-3-12 3c-2 6 1 13 7 13ZM9 42c5 2 10-3 10-9s-5-10-10-8c-7 3-7 14 0 17Zm46 0c7-3 7-14 0-17-5-2-10 2-10 8s5 11 10 9ZM32 27c-10 0-21 12-19 21 2 8 10 8 19 3 9 5 17 5 19-3 2-9-9-21-19-21Z"/></symbol>
@@ -1434,13 +1470,13 @@
     </defs>
   </svg>
 
-  <main id="app" class="product-canvas">
+  <main id="app" class="product-canvas" inert>
     <section class="screen active" id="gi01" data-screen-id="GI-01" aria-labelledby="gi01-game-title">
       <header class="start-brand-header">
         <div class="start-title-lockup">
-          <img class="start-title-mark" src="assets/ui/brand/little-tail-team-mark.png" alt="" aria-hidden="true">
+          <img class="start-title-mark" data-src="assets/ui/brand/little-tail-team-mark.webp" alt="" aria-hidden="true">
           <h1 id="gi01-game-title">小尾巴探险队</h1>
-          <img class="start-title-mark" src="assets/ui/brand/little-tail-team-mark.png" alt="" aria-hidden="true">
+          <img class="start-title-mark" data-src="assets/ui/brand/little-tail-team-mark.webp" alt="" aria-hidden="true">
         </div>
       </header>
       <div class="panel setup-panel">
@@ -1451,12 +1487,12 @@
           </div>
           <div class="mode-grid">
             <article class="mode-card recommended">
-              <div class="mode-actions"><button class="mode-icon-button" id="camera-choice" aria-label="用手势玩" title="用手势玩" disabled><img src="assets/ui/buttons/icon-4.png" alt="" aria-hidden="true"></button></div>
+              <div class="mode-actions"><button class="mode-icon-button" id="camera-choice" aria-label="用手势玩" title="用手势玩" disabled><img data-src="assets/ui/buttons/icon-4.webp" alt="" aria-hidden="true"></button></div>
               <div class="mode-copy"><div class="mode-label-row"><h3>用手势玩</h3><span class="eyebrow">推荐</span></div><p>摄像头在本机识别</p></div>
               <span id="privacy-hint" class="sr-only">请先确认下方隐私说明</span>
             </article>
             <article class="mode-card">
-              <div class="mode-actions"><button class="mode-icon-button" id="keyboard-choice" aria-label="用按键玩" title="用按键玩"><img src="assets/ui/buttons/icon-5.png" alt="" aria-hidden="true"></button></div>
+              <div class="mode-actions"><button class="mode-icon-button" id="keyboard-choice" aria-label="用按键玩" title="用按键玩"><img data-src="assets/ui/buttons/icon-5.webp" alt="" aria-hidden="true"></button></div>
               <div class="mode-copy"><div class="mode-label-row"><h3>用按键玩</h3></div><p>不用摄像头</p></div>
             </article>
           </div>
@@ -1475,8 +1511,8 @@
 
     <section class="screen" id="gi02" data-screen-id="GI-02" aria-labelledby="gi02-title">
       <header class="topbar">
-        <div class="brand"><span class="brand-mark"><img src="assets/ui/brand/little-tail-team-mark.png" alt="" aria-hidden="true"></span><span>小尾巴探险队</span></div>
-        <button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口"><img src="assets/ui/control-icons/parent-control.png" alt="" aria-hidden="true"></button>
+        <div class="brand"><span class="brand-mark"><img data-src="assets/ui/brand/little-tail-team-mark.webp" alt="" aria-hidden="true"></span><span>小尾巴探险队</span></div>
+        <button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口"><img data-src="assets/ui/control-icons/parent-control.webp" alt="" aria-hidden="true"></button>
       </header>
       <div class="panel split-panel">
         <div class="step-column">
@@ -1489,16 +1525,16 @@
             <li class="step-item" id="step-hand"><span class="step-number">3</span><span>让系统找到一只小手</span></li>
           </ol>
           <div class="action-stack">
-            <button class="icon-copy-button" id="enable-camera" aria-label="开启摄像头" title="开启摄像头"><img src="assets/ui/buttons/icon-4.png" alt="" aria-hidden="true"><span>开启摄像头</span></button>
-            <button class="icon-copy-button primary" id="start-practice" disabled><img src="assets/ui/buttons/icon-1.png" alt="" aria-hidden="true"><span>继续</span></button>
-            <button class="icon-copy-button" data-go-keyboard><img src="assets/ui/buttons/icon-5.png" alt="" aria-hidden="true"><span>改用按键</span></button>
-            <button class="icon-copy-button quiet" data-back-settings><img src="assets/ui/control-icons/back-control.png" alt="" aria-hidden="true"><span>返回家长设置</span></button>
+            <button class="icon-copy-button" id="enable-camera" aria-label="开启摄像头" title="开启摄像头"><img data-src="assets/ui/buttons/icon-4.webp" alt="" aria-hidden="true"><span>开启摄像头</span></button>
+            <button class="icon-copy-button primary" id="start-practice" disabled><img data-src="assets/ui/buttons/icon-1.webp" alt="" aria-hidden="true"><span>继续</span></button>
+            <button class="icon-copy-button" data-go-keyboard><img data-src="assets/ui/buttons/icon-5.webp" alt="" aria-hidden="true"><span>改用按键</span></button>
+            <button class="icon-copy-button quiet" data-back-settings><img data-src="assets/ui/control-icons/back-control.webp" alt="" aria-hidden="true"><span>返回家长设置</span></button>
           </div>
         </div>
         <div class="preview-shell" aria-label="摄像头预览区域">
           <video id="setup-video" autoplay muted playsinline></video>
           <canvas class="landmark-canvas" id="setup-landmarks" aria-hidden="true"></canvas>
-          <div class="preview-placeholder" id="setup-placeholder"><img class="preview-hand-icon" src="assets/ui/instruction-icons/find-hand.png" alt="把小手放进摄像头画面"><strong>举起一只手</strong><p>先开启摄像头</p></div>
+          <div class="preview-placeholder" id="setup-placeholder"><img class="preview-hand-icon" data-src="assets/ui/instruction-icons/find-hand.webp" alt="把小手放进摄像头画面"><strong>举起一只手</strong><p>先开启摄像头</p></div>
           <div class="camera-corners"></div>
           <span class="local-badge">仅本机预览</span>
           <div class="camera-readout" aria-live="polite"><span class="readout-pill" id="setup-framing">举起一只手</span><span class="readout-pill" id="setup-seen">正在找手</span></div>
@@ -1513,7 +1549,7 @@
     </section>
 
     <section class="screen" id="gi05" data-screen-id="GI-05" aria-labelledby="keyboard-title">
-      <header class="topbar"><div class="brand"><span class="brand-mark"><img src="assets/ui/brand/little-tail-team-mark.png" alt="" aria-hidden="true"></span><span>小尾巴探险队</span></div><button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口，也可按 P"><img src="assets/ui/control-icons/parent-control.png" alt="" aria-hidden="true"></button></header>
+      <header class="topbar"><div class="brand"><span class="brand-mark"><img data-src="assets/ui/brand/little-tail-team-mark.webp" alt="" aria-hidden="true"></span><span>小尾巴探险队</span></div><button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口，也可按 P"><img data-src="assets/ui/control-icons/parent-control.webp" alt="" aria-hidden="true"></button></header>
       <div class="panel keyboard-panel" tabindex="-1" id="keyboard-panel">
         <div class="keyboard-grid">
           <div class="keyboard-stage" aria-label="按键测试区域">
@@ -1532,9 +1568,9 @@
             <h2 id="keyboard-title">按一下试试</h2>
             <p class="key-state" id="key-state" aria-live="polite">空格或方向键都可以</p>
             <div class="keyboard-ready-actions">
-              <button class="icon-copy-button primary" id="start-keyboard-game" disabled><img src="assets/ui/buttons/icon-1.png" alt="" aria-hidden="true"><span>开始游戏</span></button>
-              <button class="icon-copy-button" id="back-to-camera"><img src="assets/ui/buttons/icon-4.png" alt="" aria-hidden="true"><span>改用摄像头</span></button>
-              <button class="icon-copy-button quiet" data-back-settings><img src="assets/ui/control-icons/back-control.png" alt="" aria-hidden="true"><span>返回家长设置</span></button>
+              <button class="icon-copy-button primary" id="start-keyboard-game" disabled><img data-src="assets/ui/buttons/icon-1.webp" alt="" aria-hidden="true"><span>开始游戏</span></button>
+              <button class="icon-copy-button" id="back-to-camera"><img data-src="assets/ui/buttons/icon-4.webp" alt="" aria-hidden="true"><span>改用摄像头</span></button>
+              <button class="icon-copy-button quiet" data-back-settings><img data-src="assets/ui/control-icons/back-control.webp" alt="" aria-hidden="true"><span>返回家长设置</span></button>
             </div>
           </div>
         </div>
@@ -1544,17 +1580,17 @@
     <section class="screen level-map-screen character-select-screen" id="ch01" data-screen-id="CH-01" aria-labelledby="ch01-title">
       <div class="character-select-shell">
         <header class="character-select-head">
-          <button class="character-back" id="character-back" aria-label="返回输入准备" title="返回输入准备"><img src="assets/ui/control-icons/back-control.png" alt="" aria-hidden="true"></button>
+          <button class="character-back" id="character-back" aria-label="返回输入准备" title="返回输入准备"><img data-src="assets/ui/control-icons/back-control.webp" alt="" aria-hidden="true"></button>
           <h1 id="ch01-title">选一个伙伴</h1>
-          <button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口，也可按 P"><img src="assets/ui/control-icons/parent-control.png" alt="" aria-hidden="true"></button>
+          <button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口，也可按 P"><img data-src="assets/ui/control-icons/parent-control.webp" alt="" aria-hidden="true"></button>
         </header>
         <div class="character-grid" id="character-grid" role="radiogroup" aria-label="选择人物">
-          <button class="character-card" type="button" role="radio" aria-checked="true" data-character-id="bluey"><img src="assets/characters/bluey/idle/idle-1.png" alt=""><strong>布鲁伊</strong></button>
-          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="bingo"><img src="assets/characters/bingo/idle/idle-1.png" alt=""><strong>宾果</strong></button>
-          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="grey-puppy"><img src="assets/characters/grey-puppy/idle/idle-1.png" alt=""><strong>麦麦</strong></button>
-          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="blue-heeler-dad"><img src="assets/characters/blue-heeler-dad/idle/idle-1.png" alt=""><strong>班底特</strong></button>
-          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="garden-girl"><img src="assets/characters/garden-girl/idle/idle-1.png" alt=""><strong>悠悠</strong></button>
-          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="lilac-girl"><img src="assets/characters/lilac-girl/idle/idle-1.png" alt=""><strong>棉棉</strong></button>
+          <button class="character-card" type="button" role="radio" aria-checked="true" data-character-id="bluey"><img data-src="assets/characters/bluey/idle/idle-1.webp" alt=""><strong>布鲁伊</strong></button>
+          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="bingo"><img data-src="assets/characters/bingo/idle/idle-1.webp" alt=""><strong>宾果</strong></button>
+          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="grey-puppy"><img data-src="assets/characters/grey-puppy/idle/idle-1.webp" alt=""><strong>麦麦</strong></button>
+          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="blue-heeler-dad"><img data-src="assets/characters/blue-heeler-dad/idle/idle-1.webp" alt=""><strong>班底特</strong></button>
+          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="garden-girl"><img data-src="assets/characters/garden-girl/idle/idle-1.webp" alt=""><strong>悠悠</strong></button>
+          <button class="character-card" type="button" role="radio" aria-checked="false" data-character-id="lilac-girl"><img data-src="assets/characters/lilac-girl/idle/idle-1.webp" alt=""><strong>棉棉</strong></button>
         </div>
         <div class="character-select-actions"><button class="character-confirm" id="character-confirm" type="button">选好啦</button></div>
       </div>
@@ -1563,22 +1599,22 @@
     <section class="screen level-map-screen" id="lv00" data-screen-id="LV-00" aria-labelledby="lv00-title">
       <div class="level-map-shell">
         <header class="level-map-head">
-          <div class="brand"><span class="brand-mark"><img src="assets/ui/brand/little-tail-team-mark.png" alt="" aria-hidden="true"></span><span>小尾巴探险队</span></div>
+          <div class="brand"><span class="brand-mark"><img data-src="assets/ui/brand/little-tail-team-mark.webp" alt="" aria-hidden="true"></span><span>小尾巴探险队</span></div>
         <div class="level-map-title"><span class="eyebrow">三个都能玩</span><h1 id="lv00-title">选一个玩</h1></div>
-          <button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口，也可按 P"><img src="assets/ui/control-icons/parent-control.png" alt="" aria-hidden="true"></button>
+          <button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口，也可按 P"><img data-src="assets/ui/control-icons/parent-control.webp" alt="" aria-hidden="true"></button>
         </header>
         <div class="level-grid" aria-label="玩法选择">
           <button class="level-card current" id="level-card-L1" data-level-id="L1" style="--level-tint:#d9f1ff">
-            <span class="level-card-number"><img src="assets/ui/level-icons/creek-jump.png" alt="" aria-hidden="true"></span><h2>溪边跳跳</h2><p>握拳，再张手。</p><span class="level-card-scene creek-scene" aria-hidden="true"><img class="dog-art" src="assets/characters/bluey/jump/jump-3.png" alt=""></span><span class="level-ability" id="level-best-L1">新游戏</span>
+            <span class="level-card-number"><img data-src="assets/ui/level-icons/creek-jump.webp" alt="" aria-hidden="true"></span><h2>溪边跳跳</h2><p>握拳，再张手。</p><span class="level-card-scene creek-scene" aria-hidden="true"><img class="dog-art" data-src="assets/characters/bluey/jump/jump-3.webp" alt=""></span><span class="level-ability" id="level-best-L1">新游戏</span>
           </button>
           <button class="level-card" id="level-card-L2" data-level-id="L2" style="--level-tint:#fff0b8">
-            <span class="level-card-number"><img src="assets/ui/level-icons/firefly-dodge.png" alt="" aria-hidden="true"></span><h2>萤火虫躲躲</h2><p>上下左右带路。</p><span class="level-card-scene follow-scene" aria-hidden="true"><img class="dog-art" src="assets/characters/bluey/hover/hover-2.png" alt=""></span><span class="level-ability" id="level-best-L2">新游戏</span>
+            <span class="level-card-number"><img data-src="assets/ui/level-icons/firefly-dodge.webp" alt="" aria-hidden="true"></span><h2>萤火虫躲躲</h2><p>上下左右带路。</p><span class="level-card-scene follow-scene" aria-hidden="true"><img class="dog-art" data-src="assets/characters/bluey/hover/hover-2.webp" alt=""></span><span class="level-ability" id="level-best-L2">新游戏</span>
           </button>
           <button class="level-card" id="level-card-L3" data-level-id="L3" style="--level-tint:#eadcff">
-            <span class="level-card-number"><img src="assets/ui/level-icons/treetop-bounce.png" alt="" aria-hidden="true"></span><h2>树梢蹦蹦</h2><p>左右带路。</p><span class="level-card-scene bounce-scene" aria-hidden="true"><img class="dog-art" src="assets/characters/bluey/jump/jump-2.png" alt=""></span><span class="level-ability" id="level-best-L3">新游戏</span>
+            <span class="level-card-number"><img data-src="assets/ui/level-icons/treetop-bounce.webp" alt="" aria-hidden="true"></span><h2>树梢蹦蹦</h2><p>左右带路。</p><span class="level-card-scene bounce-scene" aria-hidden="true"><img class="dog-art" data-src="assets/characters/bluey/jump/jump-2.webp" alt=""></span><span class="level-ability" id="level-best-L3">新游戏</span>
           </button>
           <button class="level-card" id="level-card-L4" data-level-id="L4" aria-label="火线冲击，可以开始">
-            <span class="level-card-number"><img src="assets/wire-loop/mode-icon/mode-icon.png" alt=""></span><h2>火线冲击</h2><p>握住圆环，慢慢穿过。</p><span class="level-card-scene wire-scene" aria-hidden="true"><img class="dog-art" src="assets/characters/bluey/idle/idle-1.png" alt=""></span><span class="level-ability" id="level-best-L4">用时挑战</span>
+            <span class="level-card-number"><img data-src="assets/wire-loop/mode-icon/mode-icon.webp" alt=""></span><h2>火线冲击</h2><p>握住圆环，慢慢穿过。</p><span class="level-card-scene wire-scene" aria-hidden="true"><img class="dog-art" data-src="assets/characters/bluey/idle/idle-1.webp" alt=""></span><span class="level-ability" id="level-best-L4">用时挑战</span>
           </button>
         </div>
         <div class="map-footer"><span class="status-dot" style="background:var(--green)"></span><span id="map-input-label">每种玩法都会先教一次 · 成绩只保存在这台设备</span></div>
@@ -1588,7 +1624,7 @@
     <section class="screen game-screen" id="lv01" data-screen-id="LV-01" aria-labelledby="lv01-title">
       <div class="game-hud" aria-label="探险准备状态">
         <span class="sr-only" id="launch-level-label">溪边跳跳</span><span class="sr-only" id="launch-mode">按键已准备</span>
-        <div class="hud-actions"><button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口，也可按 P"><img src="assets/ui/control-icons/parent-control.png" alt="" aria-hidden="true"></button></div>
+        <div class="hud-actions"><button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口，也可按 P"><img data-src="assets/ui/control-icons/parent-control.webp" alt="" aria-hidden="true"></button></div>
       </div>
       <div class="world launch-world" id="launch-world" data-theme="creek" aria-label="蓝色小狗角色在当前关卡地图起点等待出发">
         <div class="map-parallax" aria-hidden="true"><div class="map-layer far" id="launch-map-far"></div><div class="map-layer mid" id="launch-map-mid"></div></div>
@@ -1597,11 +1633,11 @@
           <span class="eyebrow" id="launch-eyebrow">第 1 关 · 跳跃</span>
           <h1 id="lv01-title">溪边跳跳</h1>
           <p class="launch-best-inline" id="launch-best">还没有成绩</p>
-          <div class="launch-control-symbol generated-gesture" aria-hidden="true"><img class="instruction-image" id="launch-control-image" src="assets/ui/instruction-icons/pose-transition.png" alt=""></div>
+          <div class="launch-control-symbol generated-gesture" aria-hidden="true"><img class="instruction-image" id="launch-control-image" data-src="assets/ui/instruction-icons/pose-transition.webp" alt=""></div>
           <p class="lead" id="launch-status">握拳 → 张手</p>
           <div class="launch-count" id="launch-count" aria-live="polite"></div>
-          <div class="launch-dogs" aria-hidden="true"><img class="dog-art" data-sprite-loop="celebrate" data-character="bluey" src="assets/characters/bluey/celebrate/celebrate-1.png" alt=""><img class="dog-art partner-dog" data-sprite-loop="idle" data-character="bingo" src="assets/characters/bingo/idle/idle-1.png" alt=""></div>
-          <div class="launch-actions"><button class="btn art-button" id="launch-start" aria-label="开始玩" title="开始玩"><img src="assets/ui/buttons/medium/button-1.png" alt="" aria-hidden="true"></button><button class="btn art-button" id="launch-back" aria-label="换个玩法" title="换个玩法"><img src="assets/ui/buttons/medium/button-3.png" alt="" aria-hidden="true"></button></div>
+          <div class="launch-dogs" aria-hidden="true"><img class="dog-art" data-sprite-loop="celebrate" data-character="bluey" data-src="assets/characters/bluey/celebrate/celebrate-1.webp" alt=""><img class="dog-art partner-dog" data-sprite-loop="idle" data-character="bingo" data-src="assets/characters/bingo/idle/idle-1.webp" alt=""></div>
+          <div class="launch-actions"><button class="btn art-button" id="launch-start" aria-label="开始玩" title="开始玩"><img data-src="assets/ui/buttons/medium/button-1.webp" alt="" aria-hidden="true"></button><button class="btn art-button" id="launch-back" aria-label="换个玩法" title="换个玩法"><img data-src="assets/ui/buttons/medium/button-3.webp" alt="" aria-hidden="true"></button></div>
         </div></div>
       </div>
     </section>
@@ -1611,14 +1647,14 @@
       <div class="game-hud">
         <span class="sr-only" id="game-level-label">溪边跳跳</span>
         <div class="milestone-hud" id="milestone-hud" aria-label="前进 0 米">
-          <img id="milestone-panel-image" src="assets/ui/milestones/creek/badge.png" alt="" aria-hidden="true">
+          <img id="milestone-panel-image" data-src="assets/ui/milestones/creek/badge.webp" alt="" aria-hidden="true">
           <div class="milestone-copy"><strong class="milestone-meters" id="milestone-meters" aria-label="前进 0 米">0m</strong><span class="progress-track" aria-hidden="true"><span class="progress-fill" id="milestone-progress-fill"></span></span></div>
           <span class="sr-only" id="score-count">0</span>
           <span class="sr-only" id="segment-label">安全教学</span><span class="sr-only" id="speed-label">慢慢走</span>
         </div>
         <div class="hud-actions">
           <div class="hud-pill"><span class="courage-hearts" id="courage-hearts" aria-label="还有三颗勇气心">♥ ♥ ♥</span><span class="character-dot" id="character-dot" aria-hidden="true"></span><span id="input-chip">按键</span></div>
-          <button class="parent-trigger generated-compact" data-open-parent aria-label="暂停并打开家长入口，也可按 P"><img src="assets/ui/buttons/icon-6.png" alt="" aria-hidden="true"></button>
+          <button class="parent-trigger generated-compact" data-open-parent aria-label="暂停并打开家长入口，也可按 P"><img data-src="assets/ui/buttons/icon-6.webp" alt="" aria-hidden="true"></button>
         </div>
       </div>
       <div class="game-layout">
@@ -1636,10 +1672,10 @@
             <div class="milestone-overlay-copy"><strong id="milestone-overlay-title">越走越远！</strong><span id="milestone-overlay-copy">来到 100 米</span></div>
           </div>
           <div class="tracking-guide" id="tracking-guide" aria-hidden="true">✦</div>
-          <div class="level-dog-wrap" id="level-dog-wrap"><img class="level-dog" id="level-dog" src="assets/characters/bluey/idle/idle-1.png" alt=""></div>
+          <div class="level-dog-wrap" id="level-dog-wrap"><img class="level-dog" id="level-dog" data-src="assets/characters/bluey/idle/idle-1.webp" alt=""></div>
           <div class="target-cue" id="target-cue">
             <div class="action-card" id="action-card" role="status" aria-live="polite">
-              <img class="action-symbol generated-action" id="action-symbol-image" src="assets/ui/instruction-icons/fist-hold.png" alt="" aria-hidden="true">
+              <img class="action-symbol generated-action" id="action-symbol-image" data-src="assets/ui/instruction-icons/fist-hold.webp" alt="" aria-hidden="true">
               <div><strong id="action-title">跳过小水洼</strong><small id="action-help">先握拳，再张开手</small></div>
             </div>
             <button class="child-action" id="child-action" aria-keyshortcuts="Space ArrowUp">跳起来</button>
@@ -1650,7 +1686,7 @@
             <div class="pause-card">
               <div class="pause-content">
                 <div class="pause-heading-row">
-                  <span class="pause-icon-shell generated-gesture"><img class="pause-hand" id="pause-instruction-image" src="assets/ui/instruction-icons/find-hand.png" alt="" aria-hidden="true"></span>
+                  <span class="pause-icon-shell generated-gesture"><img class="pause-hand" id="pause-instruction-image" data-src="assets/ui/instruction-icons/find-hand.webp" alt="" aria-hidden="true"></span>
                   <span class="pause-copy-group"><span class="eyebrow" id="pause-eyebrow">安全等待</span><h2 id="pause-title">正在找小手</h2></span>
                 </div>
                 <p class="lead" id="pause-copy">小路已经停下，不会撞到障碍。</p>
@@ -1665,7 +1701,7 @@
             <video id="game-video" autoplay muted playsinline></video>
             <canvas class="landmark-canvas" id="game-landmarks" aria-hidden="true"></canvas>
             <div class="camera-corners"></div>
-            <div class="coach-placeholder"><div><img class="pause-hand" src="assets/ui/buttons/icon-5.png" alt="" aria-hidden="true"><br>看这里的按键提示</div></div>
+            <div class="coach-placeholder"><div><img class="pause-hand" data-src="assets/ui/buttons/icon-5.webp" alt="" aria-hidden="true"><br>看这里的按键提示</div></div>
           </div>
           <div class="camera-readout" aria-live="polite"><span class="readout-pill" id="game-framing">正在找小手</span><span class="readout-pill" id="game-seen">我看到：正在找动作</span></div>
           <div class="control-status" id="game-control-status"><strong id="game-control-label">先做小拳头准备</strong><small id="game-control-help">张开手行动 · 动作后再握拳</small></div>
@@ -1675,10 +1711,10 @@
     </section>
 
     <section class="screen" id="lv03" data-screen-id="LV-03" aria-labelledby="lv03-title">
-      <header class="topbar"><div class="brand"><span class="brand-mark"><img src="assets/ui/brand/little-tail-team-mark.png" alt="" aria-hidden="true"></span><span>小尾巴探险队</span></div><button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口"><img src="assets/ui/control-icons/parent-control.png" alt="" aria-hidden="true"></button></header>
+      <header class="topbar"><div class="brand"><span class="brand-mark"><img data-src="assets/ui/brand/little-tail-team-mark.webp" alt="" aria-hidden="true"></span><span>小尾巴探险队</span></div><button class="parent-trigger generated-parent" data-open-parent aria-label="打开家长入口"><img data-src="assets/ui/control-icons/parent-control.webp" alt="" aria-hidden="true"></button></header>
       <div class="finish-card game-panel-surface">
         <div class="finish-celebration">
-          <div class="run-memory" id="run-memory" aria-label="本局游玩画面记录"><img id="run-snapshot-image" alt="本局摄像头画面的一帧记录"><canvas id="run-snapshot-canvas" hidden></canvas><div class="run-memory-dogs" aria-hidden="true"><img class="dog-art" data-sprite-loop="celebrate" data-character="bluey" src="assets/characters/bluey/celebrate/celebrate-1.png" alt=""><img class="dog-art partner-dog" data-sprite-loop="celebrate" data-character="bingo" src="assets/characters/bingo/celebrate/celebrate-3.png" alt=""></div></div>
+          <div class="run-memory" id="run-memory" aria-label="本局游玩画面记录"><img id="run-snapshot-image" alt="本局摄像头画面的一帧记录"><canvas id="run-snapshot-canvas" hidden></canvas><div class="run-memory-dogs" aria-hidden="true"><img class="dog-art" data-sprite-loop="celebrate" data-character="bluey" data-src="assets/characters/bluey/celebrate/celebrate-1.webp" alt=""><img class="dog-art partner-dog" data-sprite-loop="celebrate" data-character="bingo" data-src="assets/characters/bingo/celebrate/celebrate-3.webp" alt=""></div></div>
         </div>
         <div class="finish-summary">
           <span class="eyebrow" id="finish-eyebrow">完成啦</span>
@@ -1687,7 +1723,7 @@
           <p class="finish-count" id="finish-progress">前进了 0 米 · 出发啦</p>
           <p class="lead" id="finish-ability">最高分 <strong class="finish-best-value" id="finish-best">0</strong></p>
           <ol class="local-score-list" id="local-score-list" aria-label="这台设备上的个人前五次成绩"></ol>
-          <div class="result-actions"><button class="btn art-button" id="play-again" aria-label="再玩一次" title="再玩一次"><img src="assets/ui/buttons/medium/button-2.png" alt="" aria-hidden="true"></button><button class="btn art-button" id="return-map" aria-label="换个玩法" title="换个玩法"><img src="assets/ui/buttons/medium/button-3.png" alt="" aria-hidden="true"></button><button class="btn btn-quiet" id="finish-settings">回到家长设置</button></div>
+          <div class="result-actions"><button class="btn art-button" id="play-again" aria-label="再玩一次" title="再玩一次"><img data-src="assets/ui/buttons/medium/button-2.webp" alt="" aria-hidden="true"></button><button class="btn art-button" id="return-map" aria-label="换个玩法" title="换个玩法"><img data-src="assets/ui/buttons/medium/button-3.webp" alt="" aria-hidden="true"></button><button class="btn btn-quiet" id="finish-settings">回到家长设置</button></div>
         </div>
       </div>
     </section>
@@ -1696,7 +1732,7 @@
 
   <div class="local-launch-gate" id="local-launch-gate" role="dialog" aria-modal="true" aria-labelledby="local-launch-title" aria-hidden="true">
     <div class="local-launch-card">
-      <span class="round-icon generated-gesture"><img src="assets/ui/buttons/icon-4.png" alt="" aria-hidden="true"></span>
+      <span class="round-icon generated-gesture"><img data-src="assets/ui/buttons/icon-4.webp" alt="" aria-hidden="true"></span>
       <span class="eyebrow">需要从本地游戏地址打开</span>
       <h1 id="local-launch-title">手势模型还没有启动</h1>
       <p class="lead">直接双击 HTML 会被浏览器拦住，摄像头模型无法加载。请先运行项目里的 <strong>start.sh</strong>，再打开下面的游戏地址。</p>
@@ -1727,6 +1763,8 @@
 
   <div class="sr-only" id="live-region" aria-live="polite"></div>
 
+  <script src="runtime-images.js"></script>
+  <script src="game-loading.js"></script>
   <script>
     (() => {
       'use strict';
@@ -1739,7 +1777,7 @@
       const artDigitImage = new Image();
       artDigitImage.addEventListener('load', () => document.documentElement.classList.add('art-digits-ready'));
       artDigitImage.addEventListener('error', () => document.documentElement.classList.remove('art-digits-ready'));
-      artDigitImage.src = 'assets/ui/numbers/adventure-digits.png';
+      artDigitImage.src = 'assets/ui/numbers/adventure-digits.webp';
 
       function renderArtNumber(target, value, suffix = '', ariaLabel = '') {
         if (!target) return;
@@ -1882,7 +1920,7 @@
       function prepareAudio() {
         Object.entries(AUDIO_ASSETS).forEach(([id, src]) => {
           const audio = new Audio(src);
-          audio.preload = id.startsWith('bgm_') ? 'metadata' : 'auto';
+          audio.preload = 'none';
           if (id.startsWith('bgm_')) {
             audio.loop = true;
             audio.volume = .22;
@@ -1970,27 +2008,27 @@
       function buildCharacterSprites(character) {
         return Object.freeze(Object.fromEntries(CHARACTER_ACTIONS.map(action => [
           action,
-          Object.freeze([1,2,3,4].map(frame => `assets/characters/${character.assetRoot}/${action}/${action}-${frame}.png`))
+          Object.freeze([1,2,3,4].map(frame => `assets/characters/${character.assetRoot}/${action}/${action}-${frame}.webp`))
         ])));
       }
       const CHARACTER_SPRITES = Object.freeze(Object.fromEntries(CHARACTER_DEFINITIONS.map(character => [character.id, buildCharacterSprites(character)])));
       const BLUEY_SPRITES = CHARACTER_SPRITES.bluey;
       const MAP_ASSETS = Object.freeze([
-        'assets/maps/creek/far-loop-pair.png','assets/maps/creek/mid-loop-pair.png','assets/map-objects/creek-ground-strip/loop-pair.png','assets/map-objects/soft-crate/prop.png','assets/map-objects/creek-pit/prop.png','assets/map-objects/creek-log/prop.png','assets/map-objects/creek-double-crate/prop.png','assets/ui/milestones/creek/badge.png',
-        'assets/maps/firefly/far-loop-pair.png','assets/maps/firefly/mid-loop-pair.png','assets/map-objects/firefly-leaf-barrier/prop.png','assets/map-objects/firefly-roundleaf-barrier/prop.png','assets/map-objects/firefly-reed-barrier/prop.png','assets/ui/milestones/firefly/badge.png',
-        'assets/maps/treetop/far-loop-pair.png','assets/maps/treetop/mid-loop-pair.png','assets/map-objects/treetop-branch-platform/prop.png','assets/map-objects/treetop-narrow-branch/prop.png','assets/map-objects/treetop-curved-branch/prop.png','assets/map-objects/safety-cloud/prop.png','assets/ui/milestones/treetop/badge.png','assets/ui/panels/paper-branch-panel.png',
-        'assets/ui/instruction-icons/pose-transition.png','assets/ui/instruction-icons/fist-hold.png','assets/ui/instruction-icons/open-palm-jump.png','assets/ui/instruction-icons/hand-move-vertical.png','assets/ui/instruction-icons/hand-move-horizontal.png','assets/ui/instruction-icons/hand-move-free.png','assets/ui/instruction-icons/find-hand.png'
+        'assets/maps/creek/far-loop-pair.webp','assets/maps/creek/mid-loop-pair.webp','assets/map-objects/creek-ground-strip/loop-pair.webp','assets/map-objects/soft-crate/prop.webp','assets/map-objects/creek-pit/prop.webp','assets/map-objects/creek-log/prop.webp','assets/map-objects/creek-double-crate/prop.webp','assets/ui/milestones/creek/badge.webp',
+        'assets/maps/firefly/far-loop-pair.webp','assets/maps/firefly/mid-loop-pair.webp','assets/map-objects/firefly-leaf-barrier/prop.webp','assets/map-objects/firefly-roundleaf-barrier/prop.webp','assets/map-objects/firefly-reed-barrier/prop.webp','assets/ui/milestones/firefly/badge.webp',
+        'assets/maps/treetop/far-loop-pair.webp','assets/maps/treetop/mid-loop-pair.webp','assets/map-objects/treetop-branch-platform/prop.webp','assets/map-objects/treetop-narrow-branch/prop.webp','assets/map-objects/treetop-curved-branch/prop.webp','assets/map-objects/safety-cloud/prop.webp','assets/ui/milestones/treetop/badge.webp','assets/ui/panels/paper-branch-panel.webp',
+        'assets/ui/instruction-icons/pose-transition.webp','assets/ui/instruction-icons/fist-hold.webp','assets/ui/instruction-icons/open-palm-jump.webp','assets/ui/instruction-icons/hand-move-vertical.webp','assets/ui/instruction-icons/hand-move-horizontal.webp','assets/ui/instruction-icons/hand-move-free.webp','assets/ui/instruction-icons/find-hand.webp'
       ]);
-      const MILESTONE_PANELS = Object.freeze({ creek:'assets/ui/milestones/creek/badge.png', firefly:'assets/ui/milestones/firefly/badge.png', treetop:'assets/ui/milestones/treetop/badge.png' });
+      const MILESTONE_PANELS = Object.freeze({ creek:'assets/ui/milestones/creek/badge.webp', firefly:'assets/ui/milestones/firefly/badge.webp', treetop:'assets/ui/milestones/treetop/badge.webp' });
       const INSTRUCTION_ICONS = Object.freeze({
-        keyboard:'assets/ui/buttons/icon-2.png',
-        poseTransition:'assets/ui/instruction-icons/pose-transition.png',
-        fistHold:'assets/ui/instruction-icons/fist-hold.png',
-        openPalmJump:'assets/ui/instruction-icons/open-palm-jump.png',
-        vertical:'assets/ui/instruction-icons/hand-move-vertical.png',
-        horizontal:'assets/ui/instruction-icons/hand-move-horizontal.png',
-        freeMove:'assets/ui/instruction-icons/hand-move-free.png',
-        findHand:'assets/ui/instruction-icons/find-hand.png'
+        keyboard:'assets/ui/buttons/icon-2.webp',
+        poseTransition:'assets/ui/instruction-icons/pose-transition.webp',
+        fistHold:'assets/ui/instruction-icons/fist-hold.webp',
+        openPalmJump:'assets/ui/instruction-icons/open-palm-jump.webp',
+        vertical:'assets/ui/instruction-icons/hand-move-vertical.webp',
+        horizontal:'assets/ui/instruction-icons/hand-move-horizontal.webp',
+        freeMove:'assets/ui/instruction-icons/hand-move-free.webp',
+        findHand:'assets/ui/instruction-icons/find-hand.webp'
       });
       const INSTRUCTION_ICON_LABELS = Object.freeze({ keyboard:'使用键盘控制', poseTransition:'握拳后张开手掌', fistHold:'握紧拳头', openPalmJump:'张开手掌向上跳', vertical:'手掌上下移动', horizontal:'手掌左右移动', freeMove:'手掌上下左右移动', findHand:'把小手放回摄像头画面' });
       function instructionIconFor(definition, { keyboard = false, gate = 'waiting', launch = false } = {}) {
@@ -2066,7 +2104,7 @@
       function updateAmbientSprites() {
         const now = performance.now();
         $$('[data-sprite-loop]').forEach(element => {
-          if (element.dataset.spritePlaying === 'true') return;
+          if (element.dataset.spritePlaying === 'true' || !element.closest('.screen.active') || GameAssets.busy) return;
           const action = element.dataset.spriteLoop || 'idle';
           const sprites = spriteSetForElement(element);
           const frames = sprites[action] || sprites.idle;
@@ -2075,8 +2113,7 @@
         });
       }
 
-      Object.values(CHARACTER_SPRITES).flatMap(sprites => Object.values(sprites).flat()).forEach(src => { const image = new Image(); image.src = src; });
-      MAP_ASSETS.forEach(src => { const image = new Image(); image.src = src; });
+
       const ambientSpriteTimer = setInterval(updateAmbientSprites, 90);
       updateAmbientSprites();
 
@@ -2183,6 +2220,7 @@
         const previousScreenId = state.screen;
         screens.forEach(screen => screen.classList.toggle('active', screen.dataset.screenId === screenId));
         state.screen = screenId;
+        GameAssets.hydrate(document.querySelector(`.screen[data-screen-id="${screenId}"]`));
         document.title = `${screenId}｜小尾巴探险队`;
         window.scrollTo(0, 0);
         announce(`已进入 ${screenId}`);
@@ -2627,14 +2665,16 @@
         if (activeDog && !state.level) { activeDog.dataset.character = primary; setSpriteFrame(activeDog, 'idle', 0); }
         const dot = $('#character-dot');
         if (dot) {
-          dot.style.backgroundImage = `url('assets/characters/${primary}/idle/idle-1.png')`;
+          dot.style.backgroundImage = `url('assets/characters/${primary}/idle/idle-1.webp')`;
           dot.setAttribute('aria-label', CHARACTER_BY_ID[primary].displayName);
         }
       }
 
-      function confirmCharacterSelection() {
+      async function confirmCharacterSelection() {
         if (state.screen !== 'CH-01') return false;
-        state.selectedCharacterId = validCharacterId(state.pendingCharacterId);
+        const chosen = validCharacterId(state.pendingCharacterId);
+        if (!await GameAssets.prepare(GameAssets.characters([chosen, partnerCharacterId(chosen)]), '伙伴正在准备')) return false;
+        state.selectedCharacterId = chosen;
         syncCharacterSurfaces(state.selectedCharacterId);
         playSfx('sfx_mode_select');
         window.dispatchEvent(new CustomEvent('character-selected', { detail: { characterId:state.selectedCharacterId, source:state.characterSelectionSource, timestamp:Date.now() } }));
@@ -2692,6 +2732,7 @@
       }
       async function openWireLoop() {
         if (!validProfile(state.inputProfile)) return false;
+        if (!await GameAssets.prepare([...GameAssets.wire, ...GameAssets.characters([state.selectedCharacterId])], '正在准备火线冲击')) return false;
         state.level = null; state.launchRemainingMs = 0; state.currentLevelId = 'L4';
         showScreen('WL-01');
         const generation = ++wireMountGeneration;
@@ -2747,12 +2788,15 @@
         };
       }
 
-      function beginLaunch(profile, source = 'LV-03', levelId = state.currentLevelId) {
+      async function beginLaunch(profile, source = 'LV-03', levelId = state.currentLevelId) {
         if (!validProfile(profile)) {
           announce('输入准备不完整，请重新准备');
           showScreen(profile?.mode?.startsWith('camera_') ? 'GI-02' : 'GI-05');
           return false;
         }
+        const assetRanges = { L1:[0,8], L2:[8,14], L3:[14,22] };
+        const range = assetRanges[levelId] || assetRanges.L1;
+        if (!await GameAssets.prepare([...MAP_ASSETS.slice(...range), ...GameAssets.characters([state.selectedCharacterId, partnerCharacterId()])], '正在准备小路')) return false;
         state.inputProfile = profile;
         state.launchSource = source;
         state.lastGameStablePose = null;
@@ -3692,7 +3736,7 @@
         const activeCharacter = CHARACTER_BY_ID[activeCharacterId];
         const characterDot = $('#character-dot');
         characterDot.classList.remove('orange');
-        characterDot.style.backgroundImage = `url('assets/characters/${activeCharacterId}/idle/idle-1.png')`;
+        characterDot.style.backgroundImage = `url('assets/characters/${activeCharacterId}/idle/idle-1.webp')`;
         characterDot.setAttribute('aria-label', activeCharacter.displayName);
         $('#level-dog').dataset.character = activeCharacterId;
         renderLevelDogSprite(run);
@@ -3816,7 +3860,7 @@
         const image = $('#run-snapshot-image');
         const canvas = $('#run-snapshot-canvas');
         const video = $('#game-video');
-        const fallback = definition.theme === 'firefly' ? 'assets/maps/firefly/background-preview.png' : definition.theme === 'treetop' ? 'assets/maps/treetop/background-preview.png' : 'assets/maps/creek/background-preview.png';
+        const fallback = definition.theme === 'firefly' ? 'assets/maps/firefly/background-preview.webp' : definition.theme === 'treetop' ? 'assets/maps/treetop/background-preview.webp' : 'assets/maps/creek/background-preview.webp';
         memory.style.backgroundImage = `linear-gradient(rgba(255,249,232,.12),rgba(255,249,232,.12)),url('${fallback}')`;
         memory.classList.remove('has-snapshot');
         image.removeAttribute('src');
@@ -3896,8 +3940,8 @@
       let lastFrame = performance.now();
       function gameFrame(now) {
         const delta = Math.min(60, Math.max(0, now - lastFrame)); lastFrame = now;
-        if (state.screen === 'LV-01') updateLaunch(delta);
-        if (state.screen === 'LV-02') updateLevel(delta);
+        if (!GameAssets.busy && state.screen === 'LV-01') updateLaunch(delta);
+        if (!GameAssets.busy && state.screen === 'LV-02') updateLevel(delta);
         requestAnimationFrame(gameFrame);
       }
       requestAnimationFrame(gameFrame);
@@ -4055,6 +4099,7 @@
       });
 
       document.addEventListener('keydown', event => {
+        if (GameAssets.busy) return;
         if (event.key === 'p' || event.key === 'P') {
           if (!drawer.classList.contains('open') && ['GI-02', 'GI-05', 'CH-01', 'LV-00', 'LV-01', 'LV-02', 'LV-03'].includes(state.screen)) { event.preventDefault(); openDrawer(document.activeElement); }
           return;
@@ -4368,9 +4413,9 @@
           return window.__mvpTest.setProgressMeters(meters);
         },
         levels: () => LEVELS.map(level => ({ id: level.id, runtimeType: level.runtimeType, progressMetric:level.progressMetric, pixelsPerMeter:level.pixelsPerMeter, milestoneThresholds:[...level.milestoneThresholds], endlessStepMeters:level.endlessStepMeters, speedByTier:level.speedByTier ? [...level.speedByTier] : null, bounceTempoByTier:level.bounceTempoByTier ? [...level.bounceTempoByTier] : null, tutorialMs: level.tutorialMs, baseWorldSpeed: level.baseWorldSpeed, targetSpacingMs: level.targetSpacingMs, targetTemplates: level.targetTemplates.map(target => ({ ...target })) })),
-        chooseCharacter(characterId = 'bluey', confirm = false) {
+        async chooseCharacter(characterId = 'bluey', confirm = false) {
           selectCharacter(validCharacterId(characterId), { announceSelection:false });
-          if (confirm) confirmCharacterSelection();
+          if (confirm) await confirmCharacterSelection();
           return window.__gesturePrototype.getState();
         },
         characters: () => CHARACTER_DEFINITIONS.map(character => ({ ...character })),
@@ -4391,6 +4436,7 @@
         completeLevel,
         showScreen
       };
+      window.gameReady = GameAssets.prepare(GameAssets.startup, '冒险马上开始', {boot:true}).then(() => { GameAssets.hydrate(); updateAmbientSprites(); });
     })();
   </script>
 </body>

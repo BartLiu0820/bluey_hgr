@@ -23,7 +23,8 @@
         "ui/milestones/*/badge.png",
         "ui/numbers/adventure-*.png",
         "ui/panels/camera-prep-panel.png",
-        "ui/panels/paper-branch-panel.png"
+        "ui/panels/paper-branch-panel.png",
+        "**/*.webp"
       ]
     },
     "authoring-source-keep": {

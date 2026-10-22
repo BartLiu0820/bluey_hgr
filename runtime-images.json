@@ -1,0 +1,1877 @@
+{
+  "version": 1,
+  "images": [
+    {
+      "source": "assets/characters/bingo/bump/bump-1.png",
+      "url": "assets/characters/bingo/bump/bump-1.webp",
+      "sourceBytes": 20863,
+      "bytes": 4390,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/bump/bump-2.png",
+      "url": "assets/characters/bingo/bump/bump-2.webp",
+      "sourceBytes": 22634,
+      "bytes": 5002,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/bump/bump-3.png",
+      "url": "assets/characters/bingo/bump/bump-3.webp",
+      "sourceBytes": 20846,
+      "bytes": 4628,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/bump/bump-4.png",
+      "url": "assets/characters/bingo/bump/bump-4.webp",
+      "sourceBytes": 19657,
+      "bytes": 4210,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/celebrate/celebrate-1.png",
+      "url": "assets/characters/bingo/celebrate/celebrate-1.webp",
+      "sourceBytes": 26828,
+      "bytes": 5940,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/celebrate/celebrate-2.png",
+      "url": "assets/characters/bingo/celebrate/celebrate-2.webp",
+      "sourceBytes": 25130,
+      "bytes": 5504,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/celebrate/celebrate-3.png",
+      "url": "assets/characters/bingo/celebrate/celebrate-3.webp",
+      "sourceBytes": 25056,
+      "bytes": 5494,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/celebrate/celebrate-4.png",
+      "url": "assets/characters/bingo/celebrate/celebrate-4.webp",
+      "sourceBytes": 25939,
+      "bytes": 5822,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/hover/hover-1.png",
+      "url": "assets/characters/bingo/hover/hover-1.webp",
+      "sourceBytes": 21059,
+      "bytes": 5060,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/hover/hover-2.png",
+      "url": "assets/characters/bingo/hover/hover-2.webp",
+      "sourceBytes": 22193,
+      "bytes": 5124,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/hover/hover-3.png",
+      "url": "assets/characters/bingo/hover/hover-3.webp",
+      "sourceBytes": 21386,
+      "bytes": 5054,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/hover/hover-4.png",
+      "url": "assets/characters/bingo/hover/hover-4.webp",
+      "sourceBytes": 18916,
+      "bytes": 4394,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/hurt/hurt-1.png",
+      "url": "assets/characters/bingo/hurt/hurt-1.webp",
+      "sourceBytes": 24899,
+      "bytes": 5778,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/hurt/hurt-2.png",
+      "url": "assets/characters/bingo/hurt/hurt-2.webp",
+      "sourceBytes": 20274,
+      "bytes": 4458,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/hurt/hurt-3.png",
+      "url": "assets/characters/bingo/hurt/hurt-3.webp",
+      "sourceBytes": 24520,
+      "bytes": 5758,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/hurt/hurt-4.png",
+      "url": "assets/characters/bingo/hurt/hurt-4.webp",
+      "sourceBytes": 19858,
+      "bytes": 4330,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/idle/idle-1.png",
+      "url": "assets/characters/bingo/idle/idle-1.webp",
+      "sourceBytes": 23091,
+      "bytes": 4838,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/idle/idle-2.png",
+      "url": "assets/characters/bingo/idle/idle-2.webp",
+      "sourceBytes": 23507,
+      "bytes": 4818,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/idle/idle-3.png",
+      "url": "assets/characters/bingo/idle/idle-3.webp",
+      "sourceBytes": 23189,
+      "bytes": 4738,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/idle/idle-4.png",
+      "url": "assets/characters/bingo/idle/idle-4.webp",
+      "sourceBytes": 22820,
+      "bytes": 4550,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/jump/jump-1.png",
+      "url": "assets/characters/bingo/jump/jump-1.webp",
+      "sourceBytes": 19248,
+      "bytes": 4388,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/jump/jump-2.png",
+      "url": "assets/characters/bingo/jump/jump-2.webp",
+      "sourceBytes": 21688,
+      "bytes": 4846,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/jump/jump-3.png",
+      "url": "assets/characters/bingo/jump/jump-3.webp",
+      "sourceBytes": 19931,
+      "bytes": 4528,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/jump/jump-4.png",
+      "url": "assets/characters/bingo/jump/jump-4.webp",
+      "sourceBytes": 19368,
+      "bytes": 4500,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/run/run-1.png",
+      "url": "assets/characters/bingo/run/run-1.webp",
+      "sourceBytes": 25421,
+      "bytes": 5700,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/run/run-2.png",
+      "url": "assets/characters/bingo/run/run-2.webp",
+      "sourceBytes": 22251,
+      "bytes": 4932,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/run/run-3.png",
+      "url": "assets/characters/bingo/run/run-3.webp",
+      "sourceBytes": 24873,
+      "bytes": 5580,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bingo/run/run-4.png",
+      "url": "assets/characters/bingo/run/run-4.webp",
+      "sourceBytes": 22786,
+      "bytes": 5072,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/bump/bump-1.png",
+      "url": "assets/characters/blue-heeler-dad/bump/bump-1.webp",
+      "sourceBytes": 20632,
+      "bytes": 4272,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/bump/bump-2.png",
+      "url": "assets/characters/blue-heeler-dad/bump/bump-2.webp",
+      "sourceBytes": 21435,
+      "bytes": 4750,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/bump/bump-3.png",
+      "url": "assets/characters/blue-heeler-dad/bump/bump-3.webp",
+      "sourceBytes": 20488,
+      "bytes": 4326,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/bump/bump-4.png",
+      "url": "assets/characters/blue-heeler-dad/bump/bump-4.webp",
+      "sourceBytes": 20657,
+      "bytes": 4298,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/celebrate/celebrate-1.png",
+      "url": "assets/characters/blue-heeler-dad/celebrate/celebrate-1.webp",
+      "sourceBytes": 21104,
+      "bytes": 4684,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/celebrate/celebrate-2.png",
+      "url": "assets/characters/blue-heeler-dad/celebrate/celebrate-2.webp",
+      "sourceBytes": 21542,
+      "bytes": 4756,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/celebrate/celebrate-3.png",
+      "url": "assets/characters/blue-heeler-dad/celebrate/celebrate-3.webp",
+      "sourceBytes": 23498,
+      "bytes": 5200,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/celebrate/celebrate-4.png",
+      "url": "assets/characters/blue-heeler-dad/celebrate/celebrate-4.webp",
+      "sourceBytes": 19510,
+      "bytes": 4148,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/hover/hover-1.png",
+      "url": "assets/characters/blue-heeler-dad/hover/hover-1.webp",
+      "sourceBytes": 26499,
+      "bytes": 5442,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/hover/hover-2.png",
+      "url": "assets/characters/blue-heeler-dad/hover/hover-2.webp",
+      "sourceBytes": 26697,
+      "bytes": 5636,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/hover/hover-3.png",
+      "url": "assets/characters/blue-heeler-dad/hover/hover-3.webp",
+      "sourceBytes": 26078,
+      "bytes": 5384,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/hover/hover-4.png",
+      "url": "assets/characters/blue-heeler-dad/hover/hover-4.webp",
+      "sourceBytes": 27179,
+      "bytes": 5760,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/hurt/hurt-1.png",
+      "url": "assets/characters/blue-heeler-dad/hurt/hurt-1.webp",
+      "sourceBytes": 26136,
+      "bytes": 5778,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/hurt/hurt-2.png",
+      "url": "assets/characters/blue-heeler-dad/hurt/hurt-2.webp",
+      "sourceBytes": 21519,
+      "bytes": 4410,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/hurt/hurt-3.png",
+      "url": "assets/characters/blue-heeler-dad/hurt/hurt-3.webp",
+      "sourceBytes": 20600,
+      "bytes": 4362,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/hurt/hurt-4.png",
+      "url": "assets/characters/blue-heeler-dad/hurt/hurt-4.webp",
+      "sourceBytes": 24230,
+      "bytes": 5152,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/idle/idle-1.png",
+      "url": "assets/characters/blue-heeler-dad/idle/idle-1.webp",
+      "sourceBytes": 26100,
+      "bytes": 5100,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/idle/idle-2.png",
+      "url": "assets/characters/blue-heeler-dad/idle/idle-2.webp",
+      "sourceBytes": 26074,
+      "bytes": 5172,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/idle/idle-3.png",
+      "url": "assets/characters/blue-heeler-dad/idle/idle-3.webp",
+      "sourceBytes": 26517,
+      "bytes": 5438,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/idle/idle-4.png",
+      "url": "assets/characters/blue-heeler-dad/idle/idle-4.webp",
+      "sourceBytes": 26137,
+      "bytes": 5100,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/jump/jump-1.png",
+      "url": "assets/characters/blue-heeler-dad/jump/jump-1.webp",
+      "sourceBytes": 22061,
+      "bytes": 4660,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/jump/jump-2.png",
+      "url": "assets/characters/blue-heeler-dad/jump/jump-2.webp",
+      "sourceBytes": 23922,
+      "bytes": 5244,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/jump/jump-3.png",
+      "url": "assets/characters/blue-heeler-dad/jump/jump-3.webp",
+      "sourceBytes": 20363,
+      "bytes": 4206,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/jump/jump-4.png",
+      "url": "assets/characters/blue-heeler-dad/jump/jump-4.webp",
+      "sourceBytes": 21403,
+      "bytes": 4754,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/run/run-1.png",
+      "url": "assets/characters/blue-heeler-dad/run/run-1.webp",
+      "sourceBytes": 19455,
+      "bytes": 4376,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/run/run-2.png",
+      "url": "assets/characters/blue-heeler-dad/run/run-2.webp",
+      "sourceBytes": 20518,
+      "bytes": 4628,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/run/run-3.png",
+      "url": "assets/characters/blue-heeler-dad/run/run-3.webp",
+      "sourceBytes": 19773,
+      "bytes": 4524,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/blue-heeler-dad/run/run-4.png",
+      "url": "assets/characters/blue-heeler-dad/run/run-4.webp",
+      "sourceBytes": 20374,
+      "bytes": 4588,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/bump/bump-1.png",
+      "url": "assets/characters/bluey/bump/bump-1.webp",
+      "sourceBytes": 19941,
+      "bytes": 4222,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/bump/bump-2.png",
+      "url": "assets/characters/bluey/bump/bump-2.webp",
+      "sourceBytes": 22259,
+      "bytes": 4804,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/bump/bump-3.png",
+      "url": "assets/characters/bluey/bump/bump-3.webp",
+      "sourceBytes": 21285,
+      "bytes": 4706,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/bump/bump-4.png",
+      "url": "assets/characters/bluey/bump/bump-4.webp",
+      "sourceBytes": 19996,
+      "bytes": 4206,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/celebrate/celebrate-1.png",
+      "url": "assets/characters/bluey/celebrate/celebrate-1.webp",
+      "sourceBytes": 18651,
+      "bytes": 4244,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/celebrate/celebrate-2.png",
+      "url": "assets/characters/bluey/celebrate/celebrate-2.webp",
+      "sourceBytes": 18899,
+      "bytes": 4344,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/celebrate/celebrate-3.png",
+      "url": "assets/characters/bluey/celebrate/celebrate-3.webp",
+      "sourceBytes": 20185,
+      "bytes": 4792,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/celebrate/celebrate-4.png",
+      "url": "assets/characters/bluey/celebrate/celebrate-4.webp",
+      "sourceBytes": 17098,
+      "bytes": 3790,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/hover/hover-1.png",
+      "url": "assets/characters/bluey/hover/hover-1.webp",
+      "sourceBytes": 18961,
+      "bytes": 4302,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/hover/hover-2.png",
+      "url": "assets/characters/bluey/hover/hover-2.webp",
+      "sourceBytes": 18927,
+      "bytes": 4160,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/hover/hover-3.png",
+      "url": "assets/characters/bluey/hover/hover-3.webp",
+      "sourceBytes": 19438,
+      "bytes": 4334,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/hover/hover-4.png",
+      "url": "assets/characters/bluey/hover/hover-4.webp",
+      "sourceBytes": 18165,
+      "bytes": 4038,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/hurt/hurt-1.png",
+      "url": "assets/characters/bluey/hurt/hurt-1.webp",
+      "sourceBytes": 26674,
+      "bytes": 5664,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/hurt/hurt-2.png",
+      "url": "assets/characters/bluey/hurt/hurt-2.webp",
+      "sourceBytes": 20159,
+      "bytes": 4128,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/hurt/hurt-3.png",
+      "url": "assets/characters/bluey/hurt/hurt-3.webp",
+      "sourceBytes": 19309,
+      "bytes": 3886,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/hurt/hurt-4.png",
+      "url": "assets/characters/bluey/hurt/hurt-4.webp",
+      "sourceBytes": 19721,
+      "bytes": 4050,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/idle/idle-1.png",
+      "url": "assets/characters/bluey/idle/idle-1.webp",
+      "sourceBytes": 19464,
+      "bytes": 4096,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/idle/idle-2.png",
+      "url": "assets/characters/bluey/idle/idle-2.webp",
+      "sourceBytes": 19834,
+      "bytes": 4250,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/idle/idle-3.png",
+      "url": "assets/characters/bluey/idle/idle-3.webp",
+      "sourceBytes": 20627,
+      "bytes": 4544,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/idle/idle-4.png",
+      "url": "assets/characters/bluey/idle/idle-4.webp",
+      "sourceBytes": 19500,
+      "bytes": 4046,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/jump/jump-1.png",
+      "url": "assets/characters/bluey/jump/jump-1.webp",
+      "sourceBytes": 17499,
+      "bytes": 3932,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/jump/jump-2.png",
+      "url": "assets/characters/bluey/jump/jump-2.webp",
+      "sourceBytes": 20025,
+      "bytes": 4436,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/jump/jump-3.png",
+      "url": "assets/characters/bluey/jump/jump-3.webp",
+      "sourceBytes": 20677,
+      "bytes": 4792,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/jump/jump-4.png",
+      "url": "assets/characters/bluey/jump/jump-4.webp",
+      "sourceBytes": 17076,
+      "bytes": 3900,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/run/run-1.png",
+      "url": "assets/characters/bluey/run/run-1.webp",
+      "sourceBytes": 21658,
+      "bytes": 4774,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/run/run-2.png",
+      "url": "assets/characters/bluey/run/run-2.webp",
+      "sourceBytes": 20708,
+      "bytes": 4588,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/run/run-3.png",
+      "url": "assets/characters/bluey/run/run-3.webp",
+      "sourceBytes": 21841,
+      "bytes": 4980,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/bluey/run/run-4.png",
+      "url": "assets/characters/bluey/run/run-4.webp",
+      "sourceBytes": 20387,
+      "bytes": 4528,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/bump/bump-1.png",
+      "url": "assets/characters/garden-girl/bump/bump-1.webp",
+      "sourceBytes": 16764,
+      "bytes": 3820,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/bump/bump-2.png",
+      "url": "assets/characters/garden-girl/bump/bump-2.webp",
+      "sourceBytes": 18377,
+      "bytes": 4194,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/bump/bump-3.png",
+      "url": "assets/characters/garden-girl/bump/bump-3.webp",
+      "sourceBytes": 18044,
+      "bytes": 3994,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/bump/bump-4.png",
+      "url": "assets/characters/garden-girl/bump/bump-4.webp",
+      "sourceBytes": 16390,
+      "bytes": 3758,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/celebrate/celebrate-1.png",
+      "url": "assets/characters/garden-girl/celebrate/celebrate-1.webp",
+      "sourceBytes": 17368,
+      "bytes": 3902,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/celebrate/celebrate-2.png",
+      "url": "assets/characters/garden-girl/celebrate/celebrate-2.webp",
+      "sourceBytes": 17259,
+      "bytes": 3768,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/celebrate/celebrate-3.png",
+      "url": "assets/characters/garden-girl/celebrate/celebrate-3.webp",
+      "sourceBytes": 18492,
+      "bytes": 4176,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/celebrate/celebrate-4.png",
+      "url": "assets/characters/garden-girl/celebrate/celebrate-4.webp",
+      "sourceBytes": 16323,
+      "bytes": 3662,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/hover/hover-1.png",
+      "url": "assets/characters/garden-girl/hover/hover-1.webp",
+      "sourceBytes": 22045,
+      "bytes": 4754,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/hover/hover-2.png",
+      "url": "assets/characters/garden-girl/hover/hover-2.webp",
+      "sourceBytes": 21703,
+      "bytes": 4654,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/hover/hover-3.png",
+      "url": "assets/characters/garden-girl/hover/hover-3.webp",
+      "sourceBytes": 20711,
+      "bytes": 4536,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/hover/hover-4.png",
+      "url": "assets/characters/garden-girl/hover/hover-4.webp",
+      "sourceBytes": 20976,
+      "bytes": 4460,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/hurt/hurt-1.png",
+      "url": "assets/characters/garden-girl/hurt/hurt-1.webp",
+      "sourceBytes": 24154,
+      "bytes": 5114,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/hurt/hurt-2.png",
+      "url": "assets/characters/garden-girl/hurt/hurt-2.webp",
+      "sourceBytes": 18527,
+      "bytes": 3670,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/hurt/hurt-3.png",
+      "url": "assets/characters/garden-girl/hurt/hurt-3.webp",
+      "sourceBytes": 20063,
+      "bytes": 4342,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/hurt/hurt-4.png",
+      "url": "assets/characters/garden-girl/hurt/hurt-4.webp",
+      "sourceBytes": 19687,
+      "bytes": 4174,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/idle/idle-1.png",
+      "url": "assets/characters/garden-girl/idle/idle-1.webp",
+      "sourceBytes": 22681,
+      "bytes": 4704,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/idle/idle-2.png",
+      "url": "assets/characters/garden-girl/idle/idle-2.webp",
+      "sourceBytes": 21814,
+      "bytes": 4582,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/idle/idle-3.png",
+      "url": "assets/characters/garden-girl/idle/idle-3.webp",
+      "sourceBytes": 22736,
+      "bytes": 4616,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/idle/idle-4.png",
+      "url": "assets/characters/garden-girl/idle/idle-4.webp",
+      "sourceBytes": 22442,
+      "bytes": 4700,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/jump/jump-1.png",
+      "url": "assets/characters/garden-girl/jump/jump-1.webp",
+      "sourceBytes": 20702,
+      "bytes": 4366,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/jump/jump-2.png",
+      "url": "assets/characters/garden-girl/jump/jump-2.webp",
+      "sourceBytes": 24476,
+      "bytes": 5108,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/jump/jump-3.png",
+      "url": "assets/characters/garden-girl/jump/jump-3.webp",
+      "sourceBytes": 22709,
+      "bytes": 4924,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/jump/jump-4.png",
+      "url": "assets/characters/garden-girl/jump/jump-4.webp",
+      "sourceBytes": 20056,
+      "bytes": 4204,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/run/run-1.png",
+      "url": "assets/characters/garden-girl/run/run-1.webp",
+      "sourceBytes": 18180,
+      "bytes": 4248,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/run/run-2.png",
+      "url": "assets/characters/garden-girl/run/run-2.webp",
+      "sourceBytes": 17770,
+      "bytes": 4240,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/run/run-3.png",
+      "url": "assets/characters/garden-girl/run/run-3.webp",
+      "sourceBytes": 17894,
+      "bytes": 4228,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/garden-girl/run/run-4.png",
+      "url": "assets/characters/garden-girl/run/run-4.webp",
+      "sourceBytes": 18103,
+      "bytes": 4266,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/bump/bump-1.png",
+      "url": "assets/characters/grey-puppy/bump/bump-1.webp",
+      "sourceBytes": 24811,
+      "bytes": 5018,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/bump/bump-2.png",
+      "url": "assets/characters/grey-puppy/bump/bump-2.webp",
+      "sourceBytes": 24869,
+      "bytes": 4962,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/bump/bump-3.png",
+      "url": "assets/characters/grey-puppy/bump/bump-3.webp",
+      "sourceBytes": 23142,
+      "bytes": 4768,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/bump/bump-4.png",
+      "url": "assets/characters/grey-puppy/bump/bump-4.webp",
+      "sourceBytes": 24830,
+      "bytes": 5076,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/celebrate/celebrate-1.png",
+      "url": "assets/characters/grey-puppy/celebrate/celebrate-1.webp",
+      "sourceBytes": 23589,
+      "bytes": 5084,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/celebrate/celebrate-2.png",
+      "url": "assets/characters/grey-puppy/celebrate/celebrate-2.webp",
+      "sourceBytes": 23126,
+      "bytes": 4880,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/celebrate/celebrate-3.png",
+      "url": "assets/characters/grey-puppy/celebrate/celebrate-3.webp",
+      "sourceBytes": 23582,
+      "bytes": 5072,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/celebrate/celebrate-4.png",
+      "url": "assets/characters/grey-puppy/celebrate/celebrate-4.webp",
+      "sourceBytes": 22016,
+      "bytes": 4598,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/hover/hover-1.png",
+      "url": "assets/characters/grey-puppy/hover/hover-1.webp",
+      "sourceBytes": 20005,
+      "bytes": 3898,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/hover/hover-2.png",
+      "url": "assets/characters/grey-puppy/hover/hover-2.webp",
+      "sourceBytes": 21055,
+      "bytes": 4256,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/hover/hover-3.png",
+      "url": "assets/characters/grey-puppy/hover/hover-3.webp",
+      "sourceBytes": 19819,
+      "bytes": 3886,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/hover/hover-4.png",
+      "url": "assets/characters/grey-puppy/hover/hover-4.webp",
+      "sourceBytes": 21695,
+      "bytes": 4412,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/hurt/hurt-1.png",
+      "url": "assets/characters/grey-puppy/hurt/hurt-1.webp",
+      "sourceBytes": 26208,
+      "bytes": 5304,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/hurt/hurt-2.png",
+      "url": "assets/characters/grey-puppy/hurt/hurt-2.webp",
+      "sourceBytes": 21207,
+      "bytes": 4194,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/hurt/hurt-3.png",
+      "url": "assets/characters/grey-puppy/hurt/hurt-3.webp",
+      "sourceBytes": 23481,
+      "bytes": 4582,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/hurt/hurt-4.png",
+      "url": "assets/characters/grey-puppy/hurt/hurt-4.webp",
+      "sourceBytes": 23478,
+      "bytes": 4716,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/idle/idle-1.png",
+      "url": "assets/characters/grey-puppy/idle/idle-1.webp",
+      "sourceBytes": 29596,
+      "bytes": 5752,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/idle/idle-2.png",
+      "url": "assets/characters/grey-puppy/idle/idle-2.webp",
+      "sourceBytes": 29536,
+      "bytes": 5704,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/idle/idle-3.png",
+      "url": "assets/characters/grey-puppy/idle/idle-3.webp",
+      "sourceBytes": 29457,
+      "bytes": 5652,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/idle/idle-4.png",
+      "url": "assets/characters/grey-puppy/idle/idle-4.webp",
+      "sourceBytes": 29620,
+      "bytes": 5752,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/jump/jump-1.png",
+      "url": "assets/characters/grey-puppy/jump/jump-1.webp",
+      "sourceBytes": 20222,
+      "bytes": 4102,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/jump/jump-2.png",
+      "url": "assets/characters/grey-puppy/jump/jump-2.webp",
+      "sourceBytes": 22586,
+      "bytes": 4668,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/jump/jump-3.png",
+      "url": "assets/characters/grey-puppy/jump/jump-3.webp",
+      "sourceBytes": 22229,
+      "bytes": 4740,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/jump/jump-4.png",
+      "url": "assets/characters/grey-puppy/jump/jump-4.webp",
+      "sourceBytes": 18985,
+      "bytes": 3920,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/run/run-1.png",
+      "url": "assets/characters/grey-puppy/run/run-1.webp",
+      "sourceBytes": 22085,
+      "bytes": 4538,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/run/run-2.png",
+      "url": "assets/characters/grey-puppy/run/run-2.webp",
+      "sourceBytes": 21279,
+      "bytes": 4274,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/run/run-3.png",
+      "url": "assets/characters/grey-puppy/run/run-3.webp",
+      "sourceBytes": 23288,
+      "bytes": 4928,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/grey-puppy/run/run-4.png",
+      "url": "assets/characters/grey-puppy/run/run-4.webp",
+      "sourceBytes": 21106,
+      "bytes": 4256,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/bump/bump-1.png",
+      "url": "assets/characters/lilac-girl/bump/bump-1.webp",
+      "sourceBytes": 25763,
+      "bytes": 5320,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/bump/bump-2.png",
+      "url": "assets/characters/lilac-girl/bump/bump-2.webp",
+      "sourceBytes": 27279,
+      "bytes": 5658,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/bump/bump-3.png",
+      "url": "assets/characters/lilac-girl/bump/bump-3.webp",
+      "sourceBytes": 26935,
+      "bytes": 5474,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/bump/bump-4.png",
+      "url": "assets/characters/lilac-girl/bump/bump-4.webp",
+      "sourceBytes": 25490,
+      "bytes": 5232,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/celebrate/celebrate-1.png",
+      "url": "assets/characters/lilac-girl/celebrate/celebrate-1.webp",
+      "sourceBytes": 27606,
+      "bytes": 5740,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/celebrate/celebrate-2.png",
+      "url": "assets/characters/lilac-girl/celebrate/celebrate-2.webp",
+      "sourceBytes": 28289,
+      "bytes": 5900,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/celebrate/celebrate-3.png",
+      "url": "assets/characters/lilac-girl/celebrate/celebrate-3.webp",
+      "sourceBytes": 28242,
+      "bytes": 5882,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/celebrate/celebrate-4.png",
+      "url": "assets/characters/lilac-girl/celebrate/celebrate-4.webp",
+      "sourceBytes": 27322,
+      "bytes": 5662,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/hover/hover-1.png",
+      "url": "assets/characters/lilac-girl/hover/hover-1.webp",
+      "sourceBytes": 27327,
+      "bytes": 5590,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/hover/hover-2.png",
+      "url": "assets/characters/lilac-girl/hover/hover-2.webp",
+      "sourceBytes": 27615,
+      "bytes": 5696,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/hover/hover-3.png",
+      "url": "assets/characters/lilac-girl/hover/hover-3.webp",
+      "sourceBytes": 25038,
+      "bytes": 5126,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/hover/hover-4.png",
+      "url": "assets/characters/lilac-girl/hover/hover-4.webp",
+      "sourceBytes": 26873,
+      "bytes": 5512,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/hurt/hurt-1.png",
+      "url": "assets/characters/lilac-girl/hurt/hurt-1.webp",
+      "sourceBytes": 31225,
+      "bytes": 6398,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/hurt/hurt-2.png",
+      "url": "assets/characters/lilac-girl/hurt/hurt-2.webp",
+      "sourceBytes": 28129,
+      "bytes": 5690,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/hurt/hurt-3.png",
+      "url": "assets/characters/lilac-girl/hurt/hurt-3.webp",
+      "sourceBytes": 26891,
+      "bytes": 5516,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/hurt/hurt-4.png",
+      "url": "assets/characters/lilac-girl/hurt/hurt-4.webp",
+      "sourceBytes": 27466,
+      "bytes": 5564,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/idle/idle-1.png",
+      "url": "assets/characters/lilac-girl/idle/idle-1.webp",
+      "sourceBytes": 26176,
+      "bytes": 5336,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/idle/idle-2.png",
+      "url": "assets/characters/lilac-girl/idle/idle-2.webp",
+      "sourceBytes": 26046,
+      "bytes": 5298,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/idle/idle-3.png",
+      "url": "assets/characters/lilac-girl/idle/idle-3.webp",
+      "sourceBytes": 25732,
+      "bytes": 5178,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/idle/idle-4.png",
+      "url": "assets/characters/lilac-girl/idle/idle-4.webp",
+      "sourceBytes": 26116,
+      "bytes": 5354,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/jump/jump-1.png",
+      "url": "assets/characters/lilac-girl/jump/jump-1.webp",
+      "sourceBytes": 26627,
+      "bytes": 5402,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/jump/jump-2.png",
+      "url": "assets/characters/lilac-girl/jump/jump-2.webp",
+      "sourceBytes": 32192,
+      "bytes": 6428,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/jump/jump-3.png",
+      "url": "assets/characters/lilac-girl/jump/jump-3.webp",
+      "sourceBytes": 28124,
+      "bytes": 5586,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/jump/jump-4.png",
+      "url": "assets/characters/lilac-girl/jump/jump-4.webp",
+      "sourceBytes": 27294,
+      "bytes": 5454,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/run/run-1.png",
+      "url": "assets/characters/lilac-girl/run/run-1.webp",
+      "sourceBytes": 30960,
+      "bytes": 6474,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/run/run-2.png",
+      "url": "assets/characters/lilac-girl/run/run-2.webp",
+      "sourceBytes": 26560,
+      "bytes": 5494,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/run/run-3.png",
+      "url": "assets/characters/lilac-girl/run/run-3.webp",
+      "sourceBytes": 31569,
+      "bytes": 6716,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/characters/lilac-girl/run/run-4.png",
+      "url": "assets/characters/lilac-girl/run/run-4.webp",
+      "sourceBytes": 28517,
+      "bytes": 5980,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/map-objects/creek-double-crate/prop.png",
+      "url": "assets/map-objects/creek-double-crate/prop.webp",
+      "sourceBytes": 651545,
+      "bytes": 33958,
+      "width": 1341,
+      "height": 1173
+    },
+    {
+      "source": "assets/map-objects/creek-ground-strip/loop-pair.png",
+      "url": "assets/map-objects/creek-ground-strip/loop-pair.webp",
+      "sourceBytes": 365756,
+      "bytes": 22352,
+      "width": 2602,
+      "height": 151
+    },
+    {
+      "source": "assets/map-objects/creek-log/prop.png",
+      "url": "assets/map-objects/creek-log/prop.webp",
+      "sourceBytes": 359908,
+      "bytes": 22850,
+      "width": 1942,
+      "height": 809
+    },
+    {
+      "source": "assets/map-objects/creek-pit/prop.png",
+      "url": "assets/map-objects/creek-pit/prop.webp",
+      "sourceBytes": 502047,
+      "bytes": 31122,
+      "width": 1450,
+      "height": 351
+    },
+    {
+      "source": "assets/map-objects/firefly-leaf-barrier/prop.png",
+      "url": "assets/map-objects/firefly-leaf-barrier/prop.webp",
+      "sourceBytes": 699407,
+      "bytes": 51266,
+      "width": 426,
+      "height": 1438
+    },
+    {
+      "source": "assets/map-objects/firefly-reed-barrier/prop.png",
+      "url": "assets/map-objects/firefly-reed-barrier/prop.webp",
+      "sourceBytes": 1268079,
+      "bytes": 91804,
+      "width": 778,
+      "height": 2022
+    },
+    {
+      "source": "assets/map-objects/firefly-roundleaf-barrier/prop.png",
+      "url": "assets/map-objects/firefly-roundleaf-barrier/prop.webp",
+      "sourceBytes": 1104948,
+      "bytes": 78474,
+      "width": 778,
+      "height": 2022
+    },
+    {
+      "source": "assets/map-objects/safety-cloud/prop.png",
+      "url": "assets/map-objects/safety-cloud/prop.webp",
+      "sourceBytes": 295877,
+      "bytes": 16866,
+      "width": 1381,
+      "height": 311
+    },
+    {
+      "source": "assets/map-objects/soft-crate/prop.png",
+      "url": "assets/map-objects/soft-crate/prop.webp",
+      "sourceBytes": 461408,
+      "bytes": 18290,
+      "width": 699,
+      "height": 722
+    },
+    {
+      "source": "assets/map-objects/treetop-branch-platform/prop.png",
+      "url": "assets/map-objects/treetop-branch-platform/prop.webp",
+      "sourceBytes": 163137,
+      "bytes": 8254,
+      "width": 1254,
+      "height": 173
+    },
+    {
+      "source": "assets/map-objects/treetop-curved-branch/prop.png",
+      "url": "assets/map-objects/treetop-curved-branch/prop.webp",
+      "sourceBytes": 290530,
+      "bytes": 18620,
+      "width": 1774,
+      "height": 887
+    },
+    {
+      "source": "assets/map-objects/treetop-narrow-branch/prop.png",
+      "url": "assets/map-objects/treetop-narrow-branch/prop.webp",
+      "sourceBytes": 278964,
+      "bytes": 16416,
+      "width": 1881,
+      "height": 836
+    },
+    {
+      "source": "assets/maps/creek/background-preview.png",
+      "url": "assets/maps/creek/background-preview.webp",
+      "sourceBytes": 953591,
+      "bytes": 32526,
+      "width": 1536,
+      "height": 864
+    },
+    {
+      "source": "assets/maps/creek/far-loop-pair.png",
+      "url": "assets/maps/creek/far-loop-pair.webp",
+      "sourceBytes": 2142057,
+      "bytes": 59188,
+      "width": 3072,
+      "height": 864
+    },
+    {
+      "source": "assets/maps/creek/mid-loop-pair.png",
+      "url": "assets/maps/creek/mid-loop-pair.webp",
+      "sourceBytes": 433743,
+      "bytes": 46732,
+      "width": 3072,
+      "height": 864
+    },
+    {
+      "source": "assets/maps/firefly/background-preview.png",
+      "url": "assets/maps/firefly/background-preview.webp",
+      "sourceBytes": 1109375,
+      "bytes": 40058,
+      "width": 1536,
+      "height": 864
+    },
+    {
+      "source": "assets/maps/firefly/far-loop-pair.png",
+      "url": "assets/maps/firefly/far-loop-pair.webp",
+      "sourceBytes": 2274116,
+      "bytes": 46904,
+      "width": 3072,
+      "height": 864
+    },
+    {
+      "source": "assets/maps/firefly/mid-loop-pair.png",
+      "url": "assets/maps/firefly/mid-loop-pair.webp",
+      "sourceBytes": 504925,
+      "bytes": 95176,
+      "width": 3072,
+      "height": 864
+    },
+    {
+      "source": "assets/maps/menu/adventure-garden.png",
+      "url": "assets/maps/menu/adventure-garden.webp",
+      "sourceBytes": 1430333,
+      "bytes": 54870,
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "source": "assets/maps/treetop/background-preview.png",
+      "url": "assets/maps/treetop/background-preview.webp",
+      "sourceBytes": 1031969,
+      "bytes": 31760,
+      "width": 1536,
+      "height": 864
+    },
+    {
+      "source": "assets/maps/treetop/far-loop-pair.png",
+      "url": "assets/maps/treetop/far-loop-pair.webp",
+      "sourceBytes": 2234066,
+      "bytes": 41458,
+      "width": 1536,
+      "height": 1728
+    },
+    {
+      "source": "assets/maps/treetop/mid-loop-pair.png",
+      "url": "assets/maps/treetop/mid-loop-pair.webp",
+      "sourceBytes": 603469,
+      "bytes": 84192,
+      "width": 1536,
+      "height": 1728
+    },
+    {
+      "source": "assets/ui/brand/little-tail-team-mark.png",
+      "url": "assets/ui/brand/little-tail-team-mark.webp",
+      "sourceBytes": 231505,
+      "bytes": 27350,
+      "width": 512,
+      "height": 512
+    },
+    {
+      "source": "assets/ui/buttons/icon-1.png",
+      "url": "assets/ui/buttons/icon-1.webp",
+      "sourceBytes": 86048,
+      "bytes": 13612,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/ui/buttons/icon-2.png",
+      "url": "assets/ui/buttons/icon-2.webp",
+      "sourceBytes": 89447,
+      "bytes": 14478,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/ui/buttons/icon-4.png",
+      "url": "assets/ui/buttons/icon-4.webp",
+      "sourceBytes": 90610,
+      "bytes": 14544,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/ui/buttons/icon-5.png",
+      "url": "assets/ui/buttons/icon-5.webp",
+      "sourceBytes": 86681,
+      "bytes": 14240,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/ui/buttons/icon-6.png",
+      "url": "assets/ui/buttons/icon-6.webp",
+      "sourceBytes": 83820,
+      "bytes": 12956,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/ui/buttons/medium/button-1.png",
+      "url": "assets/ui/buttons/medium/button-1.webp",
+      "sourceBytes": 183200,
+      "bytes": 16258,
+      "width": 484,
+      "height": 283
+    },
+    {
+      "source": "assets/ui/buttons/medium/button-2.png",
+      "url": "assets/ui/buttons/medium/button-2.webp",
+      "sourceBytes": 195307,
+      "bytes": 18776,
+      "width": 497,
+      "height": 286
+    },
+    {
+      "source": "assets/ui/buttons/medium/button-3.png",
+      "url": "assets/ui/buttons/medium/button-3.webp",
+      "sourceBytes": 194989,
+      "bytes": 18938,
+      "width": 484,
+      "height": 287
+    },
+    {
+      "source": "assets/ui/control-icons/back-control.png",
+      "url": "assets/ui/control-icons/back-control.webp",
+      "sourceBytes": 1229051,
+      "bytes": 82822,
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "source": "assets/ui/control-icons/parent-control.png",
+      "url": "assets/ui/control-icons/parent-control.webp",
+      "sourceBytes": 86014,
+      "bytes": 15338,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/ui/instruction-icons/find-hand.png",
+      "url": "assets/ui/instruction-icons/find-hand.webp",
+      "sourceBytes": 149863,
+      "bytes": 28564,
+      "width": 430,
+      "height": 446
+    },
+    {
+      "source": "assets/ui/instruction-icons/fist-hold.png",
+      "url": "assets/ui/instruction-icons/fist-hold.webp",
+      "sourceBytes": 104174,
+      "bytes": 14318,
+      "width": 306,
+      "height": 420
+    },
+    {
+      "source": "assets/ui/instruction-icons/hand-move-free.png",
+      "url": "assets/ui/instruction-icons/hand-move-free.webp",
+      "sourceBytes": 191310,
+      "bytes": 34748,
+      "width": 512,
+      "height": 512
+    },
+    {
+      "source": "assets/ui/instruction-icons/hand-move-horizontal.png",
+      "url": "assets/ui/instruction-icons/hand-move-horizontal.webp",
+      "sourceBytes": 140689,
+      "bytes": 21664,
+      "width": 512,
+      "height": 323
+    },
+    {
+      "source": "assets/ui/instruction-icons/hand-move-vertical.png",
+      "url": "assets/ui/instruction-icons/hand-move-vertical.webp",
+      "sourceBytes": 126545,
+      "bytes": 26796,
+      "width": 327,
+      "height": 512
+    },
+    {
+      "source": "assets/ui/instruction-icons/open-palm-jump.png",
+      "url": "assets/ui/instruction-icons/open-palm-jump.webp",
+      "sourceBytes": 110974,
+      "bytes": 22642,
+      "width": 331,
+      "height": 401
+    },
+    {
+      "source": "assets/ui/instruction-icons/pose-transition.png",
+      "url": "assets/ui/instruction-icons/pose-transition.webp",
+      "sourceBytes": 103569,
+      "bytes": 19278,
+      "width": 512,
+      "height": 283
+    },
+    {
+      "source": "assets/ui/level-icons/creek-jump.png",
+      "url": "assets/ui/level-icons/creek-jump.webp",
+      "sourceBytes": 196680,
+      "bytes": 30414,
+      "width": 512,
+      "height": 512
+    },
+    {
+      "source": "assets/ui/level-icons/firefly-dodge.png",
+      "url": "assets/ui/level-icons/firefly-dodge.webp",
+      "sourceBytes": 223305,
+      "bytes": 43478,
+      "width": 512,
+      "height": 512
+    },
+    {
+      "source": "assets/ui/level-icons/treetop-bounce.png",
+      "url": "assets/ui/level-icons/treetop-bounce.webp",
+      "sourceBytes": 150474,
+      "bytes": 24288,
+      "width": 512,
+      "height": 512
+    },
+    {
+      "source": "assets/ui/milestones/creek/badge.png",
+      "url": "assets/ui/milestones/creek/badge.webp",
+      "sourceBytes": 1083774,
+      "bytes": 45782,
+      "width": 1935,
+      "height": 812
+    },
+    {
+      "source": "assets/ui/milestones/firefly/badge.png",
+      "url": "assets/ui/milestones/firefly/badge.webp",
+      "sourceBytes": 721160,
+      "bytes": 34166,
+      "width": 1942,
+      "height": 809
+    },
+    {
+      "source": "assets/ui/milestones/treetop/badge.png",
+      "url": "assets/ui/milestones/treetop/badge.webp",
+      "sourceBytes": 1175727,
+      "bytes": 71534,
+      "width": 1942,
+      "height": 809
+    },
+    {
+      "source": "assets/ui/numbers/adventure-digits.png",
+      "url": "assets/ui/numbers/adventure-digits.webp",
+      "sourceBytes": 509343,
+      "bytes": 74562,
+      "width": 2200,
+      "height": 280
+    },
+    {
+      "source": "assets/ui/panels/camera-prep-panel.png",
+      "url": "assets/ui/panels/camera-prep-panel.webp",
+      "sourceBytes": 1211706,
+      "bytes": 38062,
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "source": "assets/ui/panels/paper-branch-panel.png",
+      "url": "assets/ui/panels/paper-branch-panel.webp",
+      "sourceBytes": 1117758,
+      "bytes": 32118,
+      "width": 1448,
+      "height": 1086
+    },
+    {
+      "source": "assets/wire-loop/contact-flash/processed/contact-1.png",
+      "url": "assets/wire-loop/contact-flash/processed/contact-1.webp",
+      "sourceBytes": 1838,
+      "bytes": 1060,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/wire-loop/contact-flash/processed/contact-2.png",
+      "url": "assets/wire-loop/contact-flash/processed/contact-2.webp",
+      "sourceBytes": 4578,
+      "bytes": 2262,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/wire-loop/contact-flash/processed/contact-3.png",
+      "url": "assets/wire-loop/contact-flash/processed/contact-3.webp",
+      "sourceBytes": 5079,
+      "bytes": 2544,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/wire-loop/contact-flash/processed/contact-4.png",
+      "url": "assets/wire-loop/contact-flash/processed/contact-4.webp",
+      "sourceBytes": 1754,
+      "bytes": 986,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/wire-loop/finish-dock/finish-dock.png",
+      "url": "assets/wire-loop/finish-dock/finish-dock.webp",
+      "sourceBytes": 65142,
+      "bytes": 14878,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/wire-loop/finish-sparkles/processed/finish-1.png",
+      "url": "assets/wire-loop/finish-sparkles/processed/finish-1.webp",
+      "sourceBytes": 4280,
+      "bytes": 1838,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/wire-loop/finish-sparkles/processed/finish-2.png",
+      "url": "assets/wire-loop/finish-sparkles/processed/finish-2.webp",
+      "sourceBytes": 7189,
+      "bytes": 3134,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/wire-loop/finish-sparkles/processed/finish-3.png",
+      "url": "assets/wire-loop/finish-sparkles/processed/finish-3.webp",
+      "sourceBytes": 8561,
+      "bytes": 3840,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/wire-loop/finish-sparkles/processed/finish-4.png",
+      "url": "assets/wire-loop/finish-sparkles/processed/finish-4.webp",
+      "sourceBytes": 2122,
+      "bytes": 1254,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/wire-loop/fist-move/fist-move.png",
+      "url": "assets/wire-loop/fist-move/fist-move.webp",
+      "sourceBytes": 115915,
+      "bytes": 21466,
+      "width": 512,
+      "height": 512
+    },
+    {
+      "source": "assets/wire-loop/mode-icon/mode-icon.png",
+      "url": "assets/wire-loop/mode-icon/mode-icon.webp",
+      "sourceBytes": 132527,
+      "bytes": 32352,
+      "width": 512,
+      "height": 512
+    },
+    {
+      "source": "assets/wire-loop/probe-metal-strip/material.png",
+      "url": "assets/wire-loop/probe-metal-strip/material.webp",
+      "sourceBytes": 81393,
+      "bytes": 1700,
+      "width": 1024,
+      "height": 128
+    },
+    {
+      "source": "assets/wire-loop/release-hand/release-hand.png",
+      "url": "assets/wire-loop/release-hand/release-hand.webp",
+      "sourceBytes": 183494,
+      "bytes": 25318,
+      "width": 512,
+      "height": 512
+    },
+    {
+      "source": "assets/wire-loop/start-dock/start-dock.png",
+      "url": "assets/wire-loop/start-dock/start-dock.webp",
+      "sourceBytes": 58974,
+      "bytes": 13006,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "source": "assets/wire-loop/timer-plaque/timer-plaque.png",
+      "url": "assets/wire-loop/timer-plaque/timer-plaque.webp",
+      "sourceBytes": 129771,
+      "bytes": 10184,
+      "width": 640,
+      "height": 320
+    },
+    {
+      "source": "assets/wire-loop/wire-metal-strip/material.png",
+      "url": "assets/wire-loop/wire-metal-strip/material.webp",
+      "sourceBytes": 95903,
+      "bytes": 1040,
+      "width": 1024,
+      "height": 128
+    },
+    {
+      "source": "assets/wire-loop/wrist-tilt/wrist-tilt.png",
+      "url": "assets/wire-loop/wrist-tilt/wrist-tilt.webp",
+      "sourceBytes": 164952,
+      "bytes": 23508,
+      "width": 512,
+      "height": 512
+    }
+  ]
+}

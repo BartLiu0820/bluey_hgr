@@ -18,3 +18,13 @@
 - 音频、字体和手势模型：当前均为运行依赖；许可证与 manifest 一并保留。
 
 机器可读 glob 与说明位于 `asset-retention.json`。若未来制作只包含运行文件的发布包，应按该清单排除 `authoring-source-keep`，不要直接从项目源仓库删除。
+
+## 运行时图片压缩
+
+集成式 MVP 与火线冲击使用同目录 `.webp` 副本；PNG 保留作为生成源和历史预览依赖。`runtime-images.json` 为交付清单，`runtime-images.js` 为浏览器资源组输入。
+
+- 重建：`npm run assets:build-images`（Python 3 + Pillow/WebP）。
+- 策略：quality 85、method 6；保持原图尺寸、透明通道和锚点，无裁切或缩放。
+- 当前234张交付图片：33,910,892 → 2,726,168 字节，减少92.0%。
+- 初始只准备公共UI、地图缩略图、六角色idle；角色确认与玩法选择按需准备其余图片。音频按播放需要读取，识别模型仍只在启用摄像头后加载。
+- 验证：`npm run qa:loading`。性能对比基线为提交 `1e53896`，可通过 `LOADING_BASELINE_REF` 指定其他旧版本。

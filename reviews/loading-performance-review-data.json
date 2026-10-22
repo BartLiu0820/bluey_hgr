@@ -1,0 +1,86 @@
+{
+  "phase": "Phase 4B 加载性能优化",
+  "artifact": "04B-prototype-手势小狗探险MVP.html",
+  "status": "pending_pm",
+  "updated_at": "2026-10-22",
+  "summary": {
+    "key_decisions": [
+      "同尺寸WebP交付，首屏图片下载量减少96.1%",
+      "真实进度，分阶段加载，失败可恢复"
+    ],
+    "discarded_options": [
+      "一次下载全部地图/动作",
+      "假进度与缺图进入"
+    ],
+    "next_stage_conditions": [
+      "试玩确认加载体验与画质；整体Phase 4B状态保持"
+    ],
+    "execution_details_not_for_pm": [
+      "编码参数、并发数、缓存和测试实现"
+    ]
+  },
+  "materials": [
+    {
+      "title": "验收摘要",
+      "file": "reviews/loading-performance-review.md"
+    },
+    {
+      "title": "输入规格",
+      "file": "04A-prototype-spec-手势输入闭环.md"
+    },
+    {
+      "title": "关卡规格",
+      "file": "04A-prototype-spec-核心关卡循环.md"
+    }
+  ],
+  "visualizations": [
+    {
+      "type": "metric_cards",
+      "title": "图片交付与首屏请求量",
+      "items": [
+        {
+          "label": "运行图片",
+          "value": "33.91 → 2.73 MB",
+          "note": "234张，同尺寸/同alpha，减少92%"
+        },
+        {
+          "label": "首屏图片",
+          "value": "28.58 → 1.12 MB",
+          "note": "213 → 56请求，减少96.1%；非公网耗时"
+        },
+        {
+          "label": "加载专项",
+          "value": "10/10 PASS",
+          "note": "慢网、取消、失败、超时与重试"
+        }
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-LOADING-01",
+      "question": "loading提示与压缩后的角色/地图清晰度是否符合预期？",
+      "why_it_matters": "这是孩子进入游戏时的第一段体验。",
+      "recommended_decision": "试玩后确认，若画质不满意可提高对应素材编码质量。",
+      "options": [
+        "确认",
+        "修改",
+        "暂缓，补材料"
+      ],
+      "source_files": [
+        "reviews/loading-performance-review.md"
+      ],
+      "evidence_refs": [],
+      "downstream_impact": [
+        "当前集成式MVP加载体验"
+      ],
+      "route_hint": "L0"
+    }
+  ],
+  "risks": [
+    "真实公网耗时未实测；摄像头模型首次初始化仍需等待。"
+  ],
+  "next_actions": [
+    "刷新游戏，检查加载文案、角色与地图清晰度。"
+  ]
+}

@@ -27,12 +27,13 @@ async function pageAt(viewport) {
   page.on("pageerror", error => errors.push(error.message));
   page.on("console", message => { if (message.type() === "error" && !message.text().startsWith("Failed to load resource:")) errors.push(message.text()); });
   await page.goto(url, { waitUntil:"load" });
+  await page.evaluate(() => window.gameReady);
   await page.waitForFunction(() => Boolean(window.__mvpTest));
   return page;
 }
 
 async function launchScoredL1(page) {
-  await page.evaluate(() => { window.__mvpTest.startWithMode("keyboard_full"); window.__mvpTest.selectLevel("L1"); });
+  await page.evaluate(async () => { window.__mvpTest.startWithMode("keyboard_full"); await window.__mvpTest.selectLevel("L1"); });
   await page.locator("#launch-start").click();
   await page.evaluate(() => window.__mvpTest.advance(3000));
   await page.evaluate(() => window.__mvpTest.emit("JUMP", "child_keyboard"));

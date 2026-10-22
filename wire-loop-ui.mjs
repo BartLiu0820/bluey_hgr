@@ -9,7 +9,7 @@ export async function mountWireLoop(root,{mode='keyboard',character='bluey',vide
   let disposed=false,renderer=null,runtime=null,camera=null,raf=0,lastAt=performance.now(),lastFrameAt=0,phase='loading',activeTrack=0,fxAt=0,fxKind=null,fxPoint=null,cameraFailed=false,inputHint='';
   const input=new WireInput(),keys=new Set();
   let storage;try{storage=localStorage;}catch{}const records=new WireRecords(storage);
-  root.innerHTML=`<div class="wl-shell"><header class="wl-header"><button class="wl-button" data-wl="exit" aria-label="返回玩法大厅">‹ 返回</button><h1>火线冲击</h1><button class="wl-button" data-wl="pause" aria-label="暂停游戏">暂停</button></header><div class="wl-playfield"><div class="wl-stage"></div><video class="wl-camera" autoplay muted playsinline hidden aria-label="本机小手预览"></video><div class="wl-clock" hidden><strong>60.0</strong><span>秒</span><small></small></div><div class="wl-partner"><img alt="伙伴" src="assets/characters/${character}/idle/idle-1.png"></div><img class="wl-fx" alt="" hidden><div class="wl-overlay"><div class="wl-panel"><h2 tabindex="-1"></h2><p class="wl-copy"></p><div class="wl-help"><figure><img src="assets/wire-loop/fist-move/fist-move.png" alt="握拳移动"><figcaption>握住 · 移动</figcaption></figure><figure><img src="assets/wire-loop/wrist-tilt/wrist-tilt.png" alt="轻轻转腕"><figcaption>轻轻转向</figcaption></figure><figure><img src="assets/wire-loop/release-hand/release-hand.png" alt="松手停住"><figcaption>松手 · 停住</figcaption></figure></div><ol class="wl-records"></ol><div class="wl-actions"></div></div></div></div><footer class="wl-footer" aria-live="polite"></footer></div>`;
+  root.innerHTML=`<div class="wl-shell"><header class="wl-header"><button class="wl-button" data-wl="exit" aria-label="返回玩法大厅">‹ 返回</button><h1>火线冲击</h1><button class="wl-button" data-wl="pause" aria-label="暂停游戏">暂停</button></header><div class="wl-playfield"><div class="wl-stage"></div><video class="wl-camera" autoplay muted playsinline hidden aria-label="本机小手预览"></video><div class="wl-clock" hidden><strong>60.0</strong><span>秒</span><small></small></div><div class="wl-partner"><img alt="伙伴" src="assets/characters/${character}/idle/idle-1.webp"></div><img class="wl-fx" alt="" hidden><div class="wl-overlay"><div class="wl-panel"><h2 tabindex="-1"></h2><p class="wl-copy"></p><div class="wl-help"><figure><img src="assets/wire-loop/fist-move/fist-move.webp" alt="握拳移动"><figcaption>握住 · 移动</figcaption></figure><figure><img src="assets/wire-loop/wrist-tilt/wrist-tilt.webp" alt="轻轻转腕"><figcaption>轻轻转向</figcaption></figure><figure><img src="assets/wire-loop/release-hand/release-hand.webp" alt="松手停住"><figcaption>松手 · 停住</figcaption></figure></div><ol class="wl-records"></ol><div class="wl-actions"></div></div></div></div><footer class="wl-footer" aria-live="polite"></footer></div>`;
   const $=s=>root.querySelector(s),stage=$('.wl-stage'),overlay=$('.wl-overlay'),actions=$('.wl-actions'),help=$('.wl-help'),ranking=$('.wl-records'),footer=$('.wl-footer'),partner=$('.wl-partner img');
   const preview=$('.wl-camera');if(mode==='camera'&&video?.srcObject){preview.hidden=false;preview.srcObject=video.srcObject;preview.play().catch(()=>{});}
   const abort=new AbortController();
@@ -40,7 +40,7 @@ export async function mountWireLoop(root,{mode='keyboard',character='bluey',vide
       phase='result';keys.clear();const success=event.type==='success';
       fxKind=success?'finish':event.type==='failed_contact'?'contact':null;fxAt=performance.now();fxPoint=event.contact?.point||runtime.pose;
       playSfx(success?'sfx_round_complete':'sfx_collision_soft',.55);
-      partner.src=`assets/characters/${character}/${success?'celebrate':'bump'}/${success?'celebrate':'bump'}-2.png`;
+      partner.src=`assets/characters/${character}/${success?'celebrate':'bump'}/${success?'celebrate':'bump'}-2.webp`;
       if(success&&!runtime.track.tutorial)records.add(runtime.record());
       let title=success?'穿过去啦！':event.type==='failed_contact'?'碰到线啦':'时间到啦';
       let copy=runtime.track.tutorial?(success?'试手完成，准备挑战弯弯的火线。':'再来一次，慢慢移动就好。'):success?`${(runtime.elapsedMs/1000).toFixed(1)} 秒${runtime.eligible?'':' · 练习完成，不入榜'}`:'没关系，再试一次。';
@@ -51,7 +51,7 @@ export async function mountWireLoop(root,{mode='keyboard',character='bluey',vide
   }
   let tracks=[];
   function start(index){
-    if(disposed)return;onResumeAudio();activeTrack=index;keys.clear();input.reset();inputHint='';lastFrameAt=performance.now();fxKind=null;$('.wl-fx').hidden=true;partner.src=`assets/characters/${character}/idle/idle-1.png`;
+    if(disposed)return;onResumeAudio();activeTrack=index;keys.clear();input.reset();inputHint='';lastFrameAt=performance.now();fxKind=null;$('.wl-fx').hidden=true;partner.src=`assets/characters/${character}/idle/idle-1.webp`;
     renderer?.dispose();renderer=null;runtime=new WireLoopRuntime(tracks[index],{controlMode:mode,onEvent});
     try{renderer=new WireRenderer(stage,tracks[index],()=>failResource('画面暂时中断了，可以返回再试。'));}catch{failResource('这个小游戏需要浏览器支持 WebGL。其他玩法仍然可以玩。');return;}
     $('.wl-clock').hidden=tracks[index].tutorial;phase=mode==='camera'?'calibrating':'playing';lastAt=performance.now();
@@ -72,7 +72,7 @@ export async function mountWireLoop(root,{mode='keyboard',character='bluey',vide
       }
       renderer.render(runtime.pose);$('.wl-clock strong').textContent=(Math.max(0,runtime.track.timeLimitMs-runtime.elapsedMs)/1000).toFixed(1);$('.wl-clock small').textContent=!runtime.eligible&&!runtime.track.tutorial?'练习':'';
       if(phase==='playing'){const released=runtime.state==='released';const text=runtime.state==='tracking_hold'?'找一找小手…':inputHint?inputHint:released?'停住啦，时间还在走':runtime.state==='ready'?'从起点出发 · '+instruction():instruction();if(footer.textContent!==text)footer.textContent=text;}
-      const fx=$('.wl-fx');if(fxKind){const frameMs=fxKind==='contact'?70:110,index=Math.max(0,Math.floor((now-fxAt)/frameMs));if(index<4){fx.hidden=false;const p=renderer.project(fxPoint);fx.style.left=`${p.x}px`;fx.style.top=`${p.y}px`;fx.src=`assets/wire-loop/${fxKind==='contact'?'contact-flash':'finish-sparkles'}/processed/${fxKind}-${index+1}.png`;}else{fx.hidden=true;fxKind=null;}}
+      const fx=$('.wl-fx');if(fxKind){const frameMs=fxKind==='contact'?70:110,index=Math.max(0,Math.floor((now-fxAt)/frameMs));if(index<4){fx.hidden=false;const p=renderer.project(fxPoint);fx.style.left=`${p.x}px`;fx.style.top=`${p.y}px`;fx.src=`assets/wire-loop/${fxKind==='contact'?'contact-flash':'finish-sparkles'}/processed/${fxKind}-${index+1}.webp`;}else{fx.hidden=true;fxKind=null;}}
     }
   }
   function acceptFrame(result){
