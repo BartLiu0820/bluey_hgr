@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phase 4B 摄像头模型加载反馈 Review Console</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --surface-soft: #f0f3f7;
+      --ink: #172033;
+      --muted: #68758a;
+      --line: #d9e0ea;
+      --accent: #2458d3;
+      --accent-soft: #e7eefc;
+      --warn: #9a5a00;
+      --warn-soft: #fff2cf;
+      --ok: #0f766e;
+      --radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.55; }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      padding: 28px clamp(18px, 4vw, 48px);
+    }
+    main {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 24px auto 56px;
+      display: grid;
+      gap: 18px;
+    }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { font-size: clamp(26px, 4vw, 40px); margin-bottom: 8px; }
+    h2 { font-size: 20px; margin-bottom: 14px; }
+    h3 { font-size: 17px; margin-bottom: 10px; }
+    h4 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+    code {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      color: #24324a;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); margin-top: 12px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    ul { padding-left: 20px; margin-bottom: 0; }
+    .muted { color: var(--muted); }
+
+    /* ── Material cards ── */
+    .materials { display: grid; gap: 12px; }
+    .material-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      background: #fbfcfe;
+      transition: border-color 0.15s;
+    }
+    .material-card:hover { border-color: #b5c7e8; }
+    .material-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .material-card-info { display: flex; flex-direction: column; gap: 5px; }
+    .material-card-info h3 { margin: 0; font-size: 16px; }
+    .material-path { font-size: 12px; color: var(--muted); }
+    .material-card-actions { flex-shrink: 0; }
+    .mat-badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .mat-badge-ok { background: var(--accent-soft); color: var(--accent); }
+    .mat-badge-warn { background: var(--warn-soft); color: var(--warn); }
+    .btn-mat {
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      padding: 8px 16px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .btn-mat:hover { background: #d0e0f8; }
+    .btn-mat[disabled] { border-color: var(--line); background: transparent; color: var(--muted); cursor: not-allowed; }
+    .btn-mat-html { border-color: var(--ok); background: #eefaf7; color: var(--ok); }
+    .btn-mat-html:hover { background: #d8f3ed; }
+
+    /* ── Visualizations ── */
+    .visualizations { display: grid; gap: 16px; }
+    .visualization {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: #fbfcfe;
+    }
+    .viz-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .viz-head h3 { margin-bottom: 4px; }
+    .viz-type {
+      align-self: start;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 3px 8px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .flow { display: flex; align-items: stretch; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+    .flow-item {
+      min-width: 170px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #ffffff;
+    }
+    .flow-node { display: grid; gap: 4px; }
+    .flow-node span { font-weight: 800; }
+    .flow-node em { color: var(--muted); font-style: normal; font-size: 12px; }
+    .flow-item.done { border-color: #9fd8c9; background: #f0fbf8; }
+    .flow-item.pending { border-color: #efd18a; background: #fff9e8; }
+    .flow-item.blocked { border-color: #f0a7a7; background: #fff3f3; }
+    .flow-arrow { align-self: center; color: var(--muted); font-weight: 900; }
+    .impact-map {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.7fr) auto minmax(260px, 1.6fr);
+      gap: 14px;
+      align-items: center;
+    }
+    .impact-source, .impact-target {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      background: #ffffff;
+    }
+    .impact-arrow { color: var(--accent); font-size: 24px; font-weight: 900; }
+    .impact-targets { display: grid; gap: 10px; }
+    .matrix-wrap { overflow-x: auto; }
+    table.matrix {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .matrix th, .matrix td {
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      min-width: 120px;
+    }
+    .matrix th { background: var(--surface-soft); color: #2b374b; font-weight: 800; }
+    .risk-list { display: grid; gap: 12px; }
+    .risk-row { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; background: #ffffff; }
+    .risk-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .risk-head span { color: var(--warn); font-weight: 800; }
+    .risk-bar { height: 10px; border-radius: 999px; background: #edf1f6; overflow: hidden; }
+    .risk-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2fbf9f, #f2b84b, #e45757); }
+    .evidence-map { display: grid; gap: 10px; }
+    .evidence-item {
+      display: grid;
+      grid-template-columns: minmax(90px, auto) auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 11px;
+      background: #ffffff;
+    }
+    .evidence-item span, .evidence-item em { color: var(--muted); font-style: normal; font-size: 13px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+    .metric-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #ffffff; }
+    .metric-card span { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .metric-card strong { display: block; margin-top: 6px; font-size: 24px; }
+    .tone-warn { border-color: #efd18a; background: #fff9e8; }
+    .tone-good { border-color: #9fd8c9; background: #f0fbf8; }
+    .tone-bad { border-color: #f0a7a7; background: #fff3f3; }
+
+    /* ── Decision cards ── */
+    .decision-list { display: grid; gap: 16px; }
+    .decision-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; background: #ffffff; }
+    .card-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+    .qid { color: var(--accent); font-weight: 800; font-size: 13px; }
+    .route { color: var(--warn); background: var(--warn-soft); border-radius: 999px; padding: 3px 9px; font-size: 13px; font-weight: 650; }
+    .card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 12px 0; }
+    .meta-block { margin-top: 12px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 7px; }
+    .pill { border: 1px solid var(--line); background: var(--surface-soft); border-radius: 999px; padding: 4px 9px; font-size: 13px; color: #2d3a4f; overflow-wrap: anywhere; }
+    .impact .pill { background: #eefaf7; border-color: #bee8df; color: var(--ok); }
+    .muted-pill { color: var(--muted); background: transparent; }
+    fieldset.feedback { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin: 16px 0 0; background: #fbfcfe; }
+    legend { padding: 0 6px; color: var(--muted); font-weight: 700; font-size: 13px; }
+    label { display: grid; gap: 6px; margin-top: 10px; color: #344156; font-size: 14px; font-weight: 650; }
+    select, textarea { width: 100%; border: 1px solid var(--line); border-radius: 7px; padding: 10px 11px; font: inherit; color: var(--ink); background: #ffffff; }
+    textarea { min-height: 92px; resize: vertical; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    button { border: 0; border-radius: 7px; padding: 10px 14px; background: var(--accent); color: white; font-weight: 750; cursor: pointer; }
+    button.secondary { background: #253044; }
+    .inline-file-link {
+      display: inline-flex;
+      align-items: center;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .inline-file-link code { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .pill-button {
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      color: #2d3a4f;
+      padding: 4px 9px;
+      font-weight: 500;
+      text-align: left;
+    }
+    .pill-button:hover { border-color: #b5c7e8; color: var(--accent); }
+    pre { max-height: 260px; overflow: auto; background: #101827; color: #f8fafc; border-radius: var(--radius); padding: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .notice { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 12px 14px; border-radius: 6px; color: #183b89; }
+
+    /* ── Overlay ── */
+    .overlay-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 18, 36, 0.48);
+      z-index: 200;
+      align-items: stretch;
+      justify-content: flex-end;
+    }
+    .overlay-backdrop.visible { display: flex; }
+    .overlay-panel {
+      width: min(72vw, 920px);
+      height: 100%;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -6px 0 32px rgba(0, 0, 0, 0.18);
+      animation: slideIn 0.18s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(6%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .overlay-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+      flex-shrink: 0;
+    }
+    .overlay-title { flex: 1; min-width: 0; }
+    .overlay-title h2 { margin: 0; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .overlay-title code { font-size: 12px; color: var(--muted); }
+    .overlay-close {
+      flex-shrink: 0;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 12px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .overlay-close:hover { background: #eef1f5; }
+    .overlay-body { flex: 1; overflow-y: auto; padding: 24px 28px; }
+    .overlay-html-notice {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .overlay-html-frame-wrap {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+    }
+    .overlay-html-frame-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfe;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .overlay-html-frame {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+    .overlay-open-btn {
+      border: 1px solid var(--ok);
+      border-radius: 8px;
+      padding: 12px 28px;
+      background: var(--ok);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.12s;
+    }
+    .overlay-open-btn:hover { background: #0a5f58; }
+
+    /* ── Markdown content ── */
+    .md-content { line-height: 1.72; color: var(--ink); font-size: 15px; }
+    .md-content .md-h { font-weight: 700; margin: 1.4em 0 0.5em; color: #1a2840; }
+    .md-content h2.md-h { font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    .md-content h3.md-h { font-size: 16px; }
+    .md-content h4.md-h { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .md-content h5.md-h, .md-content h6.md-h { font-size: 13px; }
+    .md-content p { margin: 0.65em 0; }
+    .md-content .md-ul, .md-content .md-ol { padding-left: 22px; margin: 0.5em 0; }
+    .md-content .md-ul li, .md-content .md-ol li { margin-bottom: 4px; }
+    .md-content .md-pre { background: #101827; color: #f8fafc; padding: 14px; border-radius: var(--radius); overflow-x: auto; max-height: 380px; margin: 1em 0; font-size: 13px; }
+    .md-content .md-pre code { background: none; color: inherit; padding: 0; font-size: 13px; }
+    .md-content .md-bq { border-left: 3px solid var(--accent); margin: 0.8em 0; padding: 6px 14px; background: var(--accent-soft); border-radius: 0 6px 6px 0; color: #1b3272; }
+    .md-content .md-hr { border: none; border-top: 1px solid var(--line); margin: 1.4em 0; }
+    .md-content .md-table-wrap { overflow-x: auto; margin: 1em 0; }
+    .md-content .md-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    .md-content .md-table th, .md-content .md-table td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .md-content .md-table th { background: var(--surface-soft); font-weight: 700; }
+    .md-content code { font-size: 13px; }
+
+    @media (max-width: 760px) {
+      .summary-grid, .card-grid, .impact-map, .evidence-item { grid-template-columns: 1fr; }
+      .impact-arrow { transform: rotate(90deg); justify-self: start; }
+      .material-card-head { flex-direction: column; }
+      .overlay-panel { width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="badge">PM Review Console</span>
+    <h1>Phase 4B 摄像头模型加载反馈</h1>
+    <p class="muted">这是阶段审查入口，不是正式阶段产物。PM 反馈在第一版中仅保存在浏览器本地，可复制或下载为 JSON。</p>
+    <div class="meta">
+      <span>产物：<button type="button" class="inline-file-link" data-open-file="04B-prototype-手势小狗探险MVP.html"><code>04B-prototype-手势小狗探险MVP.html</code></button></span>
+      <span>状态：<code>pending_pm</code></span>
+      <span>更新：<code>2026-10-23</code></span>
+    </div>
+  </header>
+  <main>
+    <section class="section">
+      <h2>阶段摘要</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>本阶段关键决策</h4>
+          <ul><li>可见loading持续到首帧推理返回</li><li>慢加载、失败、超时可恢复；取消后旧请求不启动摄像头</li></ul>
+        </div>
+        <div>
+          <h4>被放弃的方案</h4>
+          <ul><li>虚假百分比</li><li>模型未就绪时提前要求举手</li></ul>
+        </div>
+        <div>
+          <h4>进入下一阶段的条件</h4>
+          <ul><li>试玩确认等待文案；整体Phase 4B门禁保持</li></ul>
+        </div>
+        <div>
+          <h4>不需要 PM 审查的执行细节</h4>
+          <ul><li>计时器、并发去重、取消隔离和测试实现</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>产出物阅读</h2>
+      <p class="muted" style="margin-bottom:14px;">点击"阅读原文"在右侧浮层阅读完整产物内容；Markdown 会渲染为可读 HTML，HTML 产物会在浮层中预览。</p>
+      <div class="materials">
+
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>修复与验收摘要</h3>
+            <code class="material-path">reviews/gesture-loading-review.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(0)">阅读原文</button></div>
+        </div>
+      </article>
+
+      <article class="material-card">
+        <div class="material-card-head">
+          <div class="material-card-info">
+            <span class="mat-badge mat-badge-ok">Markdown</span>
+            <h3>输入规格</h3>
+            <code class="material-path">04A-prototype-spec-手势输入闭环.md</code>
+          </div>
+          <div class="material-card-actions"><button class="btn-mat " onclick="openOverlay(1)">阅读原文</button></div>
+        </div>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>关键可视化</h2>
+      <div class="visualizations">
+
+    <article class="visualization stage_flow">
+      <div class="viz-head">
+        <div>
+          <h3>摄像头准备反馈</h3>
+
+        </div>
+        <span class="viz-type">stage_flow</span>
+      </div>
+
+    <div class="flow">
+
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>等待授权</span>
+            <em>done</em>
+          </div>
+          <p>请允许浏览器使用摄像头</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>准备动作助手</span>
+            <em>done</em>
+          </div>
+          <p>加载模型并等待首帧；8秒提醒、60秒可重试</p>
+        </div>
+      <div class="flow-arrow">→</div>
+        <div class="flow-item done">
+          <div class="flow-node">
+            <span>举起一只手</span>
+            <em>done</em>
+          </div>
+          <p>首次推理成功后找手；三帧见手才允许继续</p>
+        </div>
+
+    </div>
+
+    </article>
+
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>待确认问题</h2>
+      <div class="decision-list">
+
+      <article class="decision-card" data-question-id="Q-GESTURE-LOADING-01">
+        <div class="card-top">
+          <span class="qid">Q-GESTURE-LOADING-01</span>
+          <span class="route">Route hint: L0</span>
+        </div>
+        <h3>首次开启摄像头时，等待提示是否清楚？</h3>
+        <div class="card-grid">
+          <section>
+            <h4>为什么问</h4>
+            <p>避免模型未启动时误以为手势摆错。</p>
+          </section>
+          <section>
+            <h4>默认建议</h4>
+            <p>刷新页面体验一次摄像头启动后确认。</p>
+          </section>
+        </div>
+        <div class="meta-block">
+          <h4>来源文件</h4>
+          <div class="pills"><button type="button" class="pill pill-button" data-open-file="reviews/gesture-loading-review.md">reviews/gesture-loading-review.md</button></div>
+        </div>
+        <div class="meta-block">
+          <h4>证据引用</h4>
+          <div class="pills"><span class="pill muted-pill">无 Evidence ID</span></div>
+        </div>
+        <div class="meta-block">
+          <h4>下游影响</h4>
+          <div class="pills impact"><span class="pill">GI-02摄像头准备体验</span></div>
+        </div>
+        <fieldset class="feedback">
+          <legend>PM 本地反馈</legend>
+          <label>
+            决策
+            <select data-feedback-field="decision" data-index="0">
+              <option value="">请选择</option>
+              <option value="确认">确认</option><option value="修改">修改</option><option value="暂缓，补材料">暂缓，补材料</option>
+            </select>
+          </label>
+          <label>
+            说明
+            <textarea data-feedback-field="comment" data-index="0" placeholder="写下确认理由、修改意见、看不懂的点或需要补充的材料。"></textarea>
+          </label>
+        </fieldset>
+      </article>
+
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>风险与下一步</h2>
+      <div class="summary-grid">
+        <div>
+          <h4>风险</h4>
+          <ul><li>真实模型+模拟摄像头已验证；真实设备识别体验待试玩。本次未缩短模型实际下载时间。</li></ul>
+        </div>
+        <div>
+          <h4>下一步</h4>
+          <ul><li>刷新本地游戏，点击开启摄像头体验等待提示。</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>直接反馈</h2>
+      <p class="muted">这里用于填写不属于单个决策卡的整体意见、补充背景或下一步指令。</p>
+      <label class="direct-feedback-label">
+        整体反馈
+        <textarea id="directFeedback" class="direct-feedback-textarea" placeholder="例如：整体确认，但第 2 个问题需要补材料；或请回到 Phase 3 修改字段模型。"></textarea>
+      </label>
+    </section>
+
+    <section class="section">
+      <h2>反馈导出</h2>
+      <p class="notice">第一版 Review Console 不会自动写回项目文件。请复制或下载反馈 JSON 后，让 Claude / Codex 继续处理。</p>
+      <div class="actions">
+        <button type="button" id="copyFeedback">复制反馈 JSON</button>
+        <button type="button" id="downloadFeedback" class="secondary">下载反馈 JSON</button>
+        <span class="muted" id="copyStatus" aria-live="polite"></span>
+      </div>
+      <pre id="feedbackPreview"></pre>
+    </section>
+  </main>
+
+  <template id="mat-tpl-0"><div class="md-content"><h2 class="md-h">摄像头模型加载反馈</h2>
+<p>日期：2026-10-23。Change ID：CR-20261023-gesture-model-loading。L0 修复，沿用输入规格 GI-02 的 requesting/loading/finding-hand/ready/error 状态。</p>
+<ul class="md-ul"><li>授权等待：显示“正在开启摄像头 / 请允许浏览器使用摄像头”。</li><li>模型等待：显示转圈与“正在准备动作助手 / 首次准备可能稍久，小手可以先放下”。不显示虚假百分比。</li><li>模型初始化后继续提示“正在启动识别”，首个有效推理结果返回后才转为找手；无手不误报已就绪，连续三帧见手才可继续。</li><li>8 秒后提示“准备有点久，可以稍等或改用按键”；60 秒仍无首帧结果进入可重试错误。</li><li>用户返回或改用按键会关闭摄像头；迟到的授权/模型不得启动识别或自动导航。失败时停止流并显示“再试一次”。</li></ul>
+<h3 class="md-h">QA</h3>
+<p>QA-TARGETED：本次涉及真实浏览器模型初始化与异步取消竞争，文本检查无法验证等待状态切换。</p>
+<ul class="md-ul"><li><code>npm run qa:gesture-loading</code>：8/8；1440×900、919×843、1024×700 无页面滚动或按钮遮挡；包括真实 MediaPipe + 浏览器模拟摄像头的首帧推理。</li><li><code>node tests/character-selection-targeted.mjs</code>：11/11，双输入/六角色及三玩法链路保持。</li><li>工作流门禁与 Git diff 检查通过。</li><li>证据：<code>qa/gesture-loading/verification.json</code>、<code>qa/gesture-loading/loading-1440x900.png</code>（本地可再生成，Git 忽略）。</li><li>限制：本次改善等待反馈，未声称缩短模型下载/初始化耗时；没有使用真实摄像头采集用户画面，真实设备识别效果待试玩。</li></ul>
+<h3 class="md-h">PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：在摄像头准备页展示可见等待提示，模型首帧完成后再提示举手；继续沿用三帧见手门槛。</li><li>被放弃的方案：虚假加载百分比；让孩子在模型尚未启动时不断调整手势。</li><li>需要 PM 确认的问题：首次启用摄像头时，等待提示是否足够清楚；暂无阻塞实施的问题。</li><li>不需要 PM 审查的执行细节：计时器清理、请求去重、过期结果隔离与测试工具。</li><li>进入下一阶段的条件：本修复已验证；体验 pending_pm，整体 Phase 4B 门禁不自动确认。</li></ul></div></template>
+<template id="mat-tpl-1"><div class="md-content"><h2 class="md-h">原型规格：输入就绪与玩法内控制</h2>
+<blockquote class="md-bq"><p>更新日期：2026-08-31 | 来源：<code>03-feature-手势输入闭环.md</code> + <code>03-feature-核心关卡循环.md</code> | Target Surface：web-only</p></blockquote>
+<h3 class="md-h">第四玩法接入合同</h3>
+<p>2026-09-05 已授权：大厅四卡2×2，第四入口火线冲击，继续消费selectedCharacterId和既有输入就绪会话。旧三玩法规则不变；新握持/位移/转腕仅在WL-01使用，输入合同与计时/失败/成绩界面分别见 <code>03-feature-火线冲击.md</code>、<code>04A-prototype-spec-火线冲击.md</code>。原三玩法分析继续仅适用原三玩法。</p>
+<h3 class="md-h">1. Product Frame</h3>
+<ul class="md-ul"><li>目标用户：5 岁儿童；家长负责隐私确认、摄像头授权和按键降级。</li><li>主要场景：笔记本浏览器近景单手输入。</li><li>原型目的：验证“输入就绪”与“玩法教学”职责分离，保证双通道输入真实进入三个运行时。</li><li>Target Surface：<code>web-only</code>，沿用 Phase 1 已确认范围。</li><li>关键约束：视频本机处理；单屏无滚动；游戏 readout 不覆盖视频；无全局动作成绩页；儿童可见层从初始界面起采用“图形优先、文字最少”规则。</li></ul>
+<h3 class="md-h">2. Goals And Non-Goals</h3>
+<h4 class="md-h">Goals</h4>
+<ul class="md-ul"><li>摄像头连续 3 帧有可靠关键点即可 ready，不要求拳掌动作。</li><li>摄像头与键盘都在各自单一准备页完成就绪并进入同一人物选择页：GI-02“继续”→CH-01，GI-05“开始游戏”→CH-01；CH-01 确认角色后进入 LV-00，两条路径都不保留第二张输入确认页。</li><li>摄像头与键盘都输出具名双 capability。</li><li>三种玩法在自己的安全场景中教学；L1 走姿态边沿，L2 走连续掌心 X/Y，L3 走连续掌心 X。</li></ul>
+<h4 class="md-h">Non-Goals</h4>
+<ul class="md-ul"><li>不保留“去看看结果/看看结果”、拳掌练习轮次或全局动作结果页。</li><li>不新增第三种必需手型、全身追踪或移动端。</li></ul>
+<h3 class="md-h">3. Page Archetype And Reference Alignment</h3>
+<h4 class="md-h">Page Archetype</h4>
+<ul class="md-ul"><li>页面类型：家长设置任务流 + 单页儿童输入就绪确认 + 单屏人物选择 + 玩法内小教练。</li><li>核心任务：确认系统看见手 → 选择人物 → 开始游戏；进入玩法后只学当前控制。</li><li>信息密度：极低；全局页只显示摄像头/手/ready，玩法页只显示一个控制目标。同一儿童视区最多同时出现 1 个短标题、1 个短提示和 1 个主 CTA。</li><li>默认布局：设置页分步；输入页左大视频/骨架、右 ready；游戏右上浮动小教练且 readout 在视频外。</li><li>为什么不是动作训练室：三个玩法控制不同，全局拳掌教程会误导跟手玩法。</li></ul>
+<h4 class="md-h">Reference Alignment</h4>
+<ul class="md-ul"><li>必须继承：Nex 的家长/儿童分层、本机隐私说明、直接世界反馈；当前用户截图中的大取景与关键点可见性。</li><li>可以偏离：移除旧版练习小狗和结果页。</li><li>禁止偏离：不得让文字覆盖视频；不得显示英文类别、置信度或技术错误给儿童。</li></ul>
+<h4 class="md-h">Product Canvas Rules</h4>
+<ul class="md-ul"><li>只呈现真实用户 UI，不显示 screen-nav、状态开关、测试按钮或 QA 说明。</li><li>测试 seam 仅挂在 <code>window.__mvpTest</code>。</li><li>儿童可见文案优先使用 2–8 个汉字；按钮优先 2–6 个汉字；删除重复表达同一状态的 eyebrow、说明段、进度句和底部注释。</li><li>手势图、方向箭头、角色动作、颜色和声音承担主要解释；文字只补充当前唯一动作，不同时解释后续玩法。</li><li>家长隐私、错误恢复和技术说明可保留完整信息，但放在家长层、折叠说明或仅错误时出现；详细无障碍说明保留在 <code>aria-label</code> / <code>sr-only</code>，不计入儿童可见文字预算。</li></ul>
+<h3 class="md-h">4. Information Architecture</h3>
+<ul class="md-ul"><li>家长层：GI-01 隐私/模式；GI-02 摄像头授权、模型准备与摄像头 ready；家长抽屉。</li><li>儿童就绪：GI-02 摄像头 ready；GI-05 键盘测试与 ready。</li><li>儿童选择：CH-01 六角色选择。</li><li>儿童玩法：LV-01 控制摘要；LV-02 安全教学与正式输入。</li><li>主路径：<code>GI-01 → GI-02 → CH-01 → LV-00</code>；降级：<code>GI-01/GI-02 → GI-05 → CH-01 → LV-00</code>。</li></ul>
+<h3 class="md-h">5. Core Flows</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Flow</th><th>Entry</th><th>Steps</th><th>Success</th><th>Edge</th></tr></thead><tbody><tr><td>摄像头就绪</td><td>GI-01</td><td>隐私→授权→3帧见手</td><td>GI-02“继续”→CH-01</td><td>拒绝/模型失败→键盘</td></tr><tr><td>键盘就绪</td><td>GI-05</td><td>任意按一次 Space/方向键，当前键灯即时点亮</td><td>GI-05“开始游戏”→CH-01</td><td>无需逐键完成或进入第二页</td></tr><tr><td>人物选择</td><td>CH-01</td><td>点选六名人物之一→选中反馈→“选好啦”</td><td>提交 selectedCharacterId→LV-00</td><td>返回对应输入就绪页</td></tr><tr><td>L1 教学</td><td>LV-02 tutorial</td><td>fist→palm→世界动作</td><td>一次高跳</td><td>持掌不连发</td></tr><tr><td>L2 教学</td><td>LV-02 tutorial</td><td>掌心上下左右→角色四向跟手</td><td>横向、纵向各移动一次</td><td>Unknown 仍跟手</td></tr><tr><td>L3 教学</td><td>LV-02 tutorial</td><td>掌心左右→角色对准平台</td><td>左右各一次</td><td>Unknown 不阻断</td></tr><tr><td>无手恢复</td><td>LV-02</td><td>grace→冻结→手回来→3/2/1</td><td>本轮继续</td><td>不扣勇气</td></tr></tbody></table></div>
+<h3 class="md-h">6. Screen Inventory</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>ID</th><th>Screen</th><th>Purpose</th><th>Entry</th><th>Exit</th></tr></thead><tbody><tr><td>GI-01</td><td>家长输入设置</td><td>隐私与模式</td><td>起始</td><td>GI-02/GI-05</td></tr><tr><td>GI-02</td><td>摄像头准备与就绪</td><td>授权、模型、找手；ready 后继续选人物</td><td>GI-01</td><td>CH-01/GI-05</td></tr><tr><td>GI-05</td><td>按键准备与就绪</td><td>同页测试按键、点亮反馈并选择人物</td><td>降级入口</td><td>CH-01/GI-01</td></tr><tr><td>CH-01</td><td>人物选择</td><td>六选一并确认本次会话角色</td><td>GI-02/GI-05</td><td>LV-00/来源输入页</td></tr><tr><td>LV-01/LV-02</td><td>玩法内控制</td><td>当前玩法摘要与安全教学</td><td>LV-00</td><td>正式计分</td></tr></tbody></table></div>
+<h3 class="md-h">7. Coverage Plan</h3>
+<ul class="md-ul"><li>Backbone：与核心规格同一 <code>04B-prototype-手势小狗探险MVP.html</code>。</li><li>GI-03 旧“摄像头已就绪”和 GI-04 旧“动作结果”都不再是 backbone，也不应存在 DOM screen 或可达入口。</li><li>GI-02 的“继续”与 GI-05 的“开始游戏”都真实进入 CH-01；CH-01“选好啦”进入 LV-00；GI-06 不应存在 DOM screen 或可达入口。</li><li>Extension：permission-denied、model-error、no-hand、keyboard takeover 均保留恢复路径。</li></ul>
+<h3 class="md-h">8. Screen Specs</h3>
+<h4 class="md-h">GI-01 家长输入设置</h4>
+<ul class="md-ul"><li>Purpose：权限前建立本机处理信任并选择输入。</li><li>Content：标题“选怎么玩”、摄像头/键盘两种大图形选择、三枚隐私图标；不显示介绍段和两段重复的模式说明。</li><li>Primary：用摄像头玩；Secondary：用按键玩。</li><li>States：隐私未确认时摄像头 disabled；focus；error 不在本页伪装 success。</li><li>Navigation：GI-02 或 GI-05。</li><li>Acceptance：摄像头入口请求前仍有家长可读的折叠说明；首屏常显区只保留选择、三枚隐私承诺与确认；两个按钮 ≥44px。</li></ul>
+<h4 class="md-h">GI-02 摄像头准备</h4>
+<ul class="md-ul"><li>Purpose：请求权限、加载模型、找到一只完整小手。</li><li>Layout：大镜像视频+canvas 为主；侧栏只显示“举起一只手”、当前状态和主操作；三步技术流程不作为儿童常显文字。</li><li>Primary：未 ready 时“开启摄像头/重试”，ready 时“继续”；Secondary：改用按键。</li><li>States：requesting/loading/finding-hand/ready/error。</li><li>Data：cameraStatus、modelStatus、handPresence、landmarks。</li><li>Navigation：连续 3 帧见手后保持在 GI-02 ready 状态；点击“继续”立即派发 camera InputProfile 并进入 CH-01；错误/主动降级 → GI-05。不得进入 GI-03/GI-04。</li><li>Acceptance：关键点与视频对齐；提示不覆盖视频主体；同一时刻只显示一个取景提示，模型/摄像头/手部三项详细状态只供家长按需查看；ready 结论、角色反馈与“继续”都在本页完成，不再复制到第二张准备页。</li><li>Visual asset：摄像头尚未开启/正在找手时使用独立生成的 <code>find-hand.png</code>，不得回退到大尺寸通用内联手掌 SVG。</li></ul>
+<h4 class="md-h">GI-05 按键就绪</h4>
+<ul class="md-ul"><li>Purpose：说明等价能力并进入人物选择。</li><li>Layout：复用 GI-02 的手绘木框暖纸底板与左右栏比例；左侧深河蓝测试舞台显示四向键簇与 Space，右侧只保留“按一下试试”、开始和返回。</li><li>Content：每个键为暖纸/木边按键灯；默认安静，按下时以河蓝/太阳黄高亮、柔和外发光和下压反馈点亮，松开后回到已验证状态。禁止使用旧白底板、单个灰色键帽或第二张 ready 卡。</li><li>Primary：任意有效键被测试后，同页显示 ready 并启用“开始游戏”→CH-01。</li><li>Secondary：返回摄像头。</li><li>States：default/key-active/ready/focus；不要求逐键完成，不自动跳转第二页。</li><li>Acceptance：InputProfile 同时声明 poseTransition/handTrackingY/handTrackingX；Space 与四个方向键都能点亮，任意一个即可 ready；GI-06 不存在；不在进入大厅前展示玩法介绍或多步进度。</li></ul>
+<h4 class="md-h">CH-01 人物选择</h4>
+<ul class="md-ul"><li>Purpose：让儿童在进入玩法大厅前选择本次会话的初始人物。</li><li>Layout：暖纸探险底板；顶部短标题“选一个伙伴”；中部六张同权重人物卡，宽屏六列，宽度 ≤1050px 且高度 ≥720px 时三列两行，低高视口保留六列并同步缩放，不滚动；底部唯一主按钮“选好啦”，左上保留低权重返回。</li><li>Content：人物卡仅显示完整 <code>idle-1.png</code> 与名字：布鲁伊、宾果、麦麦、班底特、悠悠、棉棉；不显示属性、能力、稀有度、锁态或长描述。</li><li>Interaction：默认聚焦布鲁伊；点击/键盘方向移动选择时更新 <code>pendingCharacterId</code>、选中描边、轻抬和 <code>aria-checked</code>；点击“选好啦”提交 <code>selectedCharacterId</code> 并进入 LV-00。</li><li>States：default/selected/focus/image-fallback；六张卡始终可选。</li><li>Acceptance：六张卡均可点击和键盘操作；同一时刻仅一张 <code>aria-checked=true</code>；确认后大厅与三玩法使用所选人物；返回保持候选与 InputProfile；五个支持视口单屏无横向/纵向滚动。</li></ul>
+<h4 class="md-h">LV-01/LV-02 玩法内小教练</h4>
+<ul class="md-ul"><li>Purpose：只在当前玩法内教授当前控制。</li><li>Content：L1 用拳/掌图形 + “握拳 → 张手”；L2 用四向箭头；L3 用左右箭头。标题与辅助句不重复同一动作。</li><li>Camera：缩略视频 + 骨架；readout 是 coach 的静态子区，位于视频之后。</li><li>States：tutorial/need_fist/armed/tracking/success/no-hand/keyboard。</li><li>Acceptance：一个时刻一个目标；L2 label Unknown 时只保留角色跟手视觉，不提示“动作不清楚”；常显文字不超过一个动作短句。</li></ul>
+<h3 class="md-h">9. Component And State Matrix</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Component</th><th>Default</th><th>Loading</th><th>Empty</th><th>Error</th><th>Success</th></tr></thead><tbody><tr><td>Setup choice</td><td>camera/keyboard</td><td>N/A</td><td>N/A</td><td>permission help</td><td>selected</td></tr><tr><td>Camera surface</td><td>preview</td><td>model loading</td><td>finding hand</td><td>retry/keyboard</td><td>landmarks visible</td></tr><tr><td>Input ready CTA</td><td>hidden</td><td>hidden</td><td>hidden</td><td>keyboard exit</td><td>摄像头“继续” / 键盘 GI-05“开始游戏”</td></tr><tr><td>Game coach</td><td>current control</td><td>model ready</td><td>no hand</td><td>camera/model</td><td>seen/armed/tracking</td></tr></tbody></table></div>
+<h3 class="md-h">10. Sample Data</h3>
+<ul class="md-ul"><li>Ready：<code>cameraStatus=active,modelStatus=ready,handPresence=present,inputReady=true</code>。</li><li>Unknown with hand：<code>label=None,handPresent=true,palmCenterX=0.58,palmCenterY=0.42</code>。</li><li>Error：<code>NotAllowedError</code> → “摄像头没有打开，可以重试或用按键继续”。</li><li>InputProfile：<code>{mode:'camera_full',capabilities:{poseTransition:true,handTrackingY:true,handTrackingX:true}}</code>。</li></ul>
+<h3 class="md-h">11. Data And Events</h3>
+<ul class="md-ul"><li><code>PoseTransitionEvent{stablePose,previousStablePose,source,confidence,timestamp}</code>。</li><li><code>HandTrackingFrame{handPresent,palmCenterX,palmCenterY,confidence,timestamp}</code>。</li><li><code>InputProfile{mode,capabilities:{poseTransition,handTrackingY,handTrackingX}}</code>。</li><li>全局 ready 只依赖 handPresent 连续帧；离散游戏 gate 只存在于 L1 runtime。</li><li>进入/重玩玩法时清空 <code>lastStablePose</code> 与 gate，防止跨玩法首个握拳被去重。</li></ul>
+<h3 class="md-h">12. Responsive Rules</h3>
+<ul class="md-ul"><li>视口：1440×900、1280×720、1219×681、1024×700、919×843。</li><li>所有 screen <code>100dvh;overflow:hidden;min-height:0</code>。</li><li>GI-02 默认左右两列；低高度减少视频高度与说明，不改成纵向滚动。</li><li>game coach 宽 <code>clamp(190px,18vw,270px)</code>；readout 静态置于 video/canvas 之后，不使用视频内 absolute overlay。</li><li>文案允许两行但不覆盖按钮；所有主按钮 ≥44px。</li><li>低高度不是把多个说明压小，而是直接隐藏次级文案；儿童主标题、当前动作和主 CTA 不被隐藏。</li></ul>
+<h3 class="md-h">13. Accessibility And Interaction</h3>
+<ul class="md-ul"><li>所有按钮有 label/focus；视频提供“镜像摄像头预览”说明。</li><li>摄像头状态使用 aria-live polite，不逐帧朗读手势。</li><li>reduced motion 不影响关键点、ready、控制状态与世界因果。</li><li>错误始终提供重试和键盘出口。</li><li>精简仅作用于视觉文本；按钮、视频、状态和图标仍保留完整可访问名称。</li></ul>
+<h3 class="md-h">14. Visual / Content / Interaction Thesis</h3>
+<ul class="md-ul"><li>Visual：大视频、极少文字、绿色 ready、儿童可读图标；从 GI-01 起不使用介绍段、三步清单和重复状态卡占据首屏。</li><li>Content：说“我看到小手”，不说“模型置信度低/未知”。</li><li>Interaction：准备页只确认可用；玩法页才把手映射为动作。</li></ul>
+<h3 class="md-h">15. Annotation Points</h3>
+<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Screen</th><th>Point</th><th>Why</th></tr></thead><tbody><tr><td>GI-02</td><td>ready 后“继续”进入 CH-01</td><td>删除重复输入确认页并衔接人物选择</td></tr><tr><td>CH-01</td><td>六角色单选 + 唯一确认按钮</td><td>低龄儿童可感知且不比较复杂属性</td></tr><tr><td>GI-02</td><td>无动作教程</td><td>保持输入就绪与玩法教学分层</td></tr><tr><td>LV-02 coach</td><td>readout 在视频外</td><td>防止遮脸</td></tr><tr><td>L2</td><td>Unknown 仍有位置流</td><td>防止跟手假死</td></tr></tbody></table></div>
+<h3 class="md-h">16. Assumptions</h3>
+<ul class="md-ul"><li>摄像头成功后至少能输出一只手 21 点关键点；关键点只在内存中使用。</li><li>玩法教学状态可本地保存，但不影响三个玩法默认可选。</li></ul>
+<h3 class="md-h">17. Open Questions</h3>
+<ul class="md-ul"><li>无阻塞问题。</li></ul>
+<h3 class="md-h">18. Acceptance Criteria For HTML Prototype</h3>
+<ul class="md-ul"><li>[ ] GI-02 连续 3 帧见手后显示“继续”；点击后只派发一次 camera InputProfile 并进入 CH-01。</li><li>[ ] GI-05 任意有效键点亮后进入同一 CH-01；CH-01 恰好显示布鲁伊、宾果、麦麦、班底特、悠悠、棉棉六张可选卡，确认后进入 LV-00。</li><li>[ ] CH-01 单选状态、键盘焦点与 <code>aria-checked</code> 一致，五个支持视口单屏无滚动；LV-00 与三玩法渲染所选角色。</li><li>[ ] GI-03 旧 ready 页与 GI-04 旧结果页均不作为 DOM screen 存在，也不在任何可达主链路、错误回退或家长抽屉恢复路径中出现。</li><li>[ ] camera<em>full/keyboard</em>full 精确提供三项 capability。</li><li>[ ] 三玩法各自教学，不在大厅上方展示跨玩法步骤。</li><li>[ ] L1 未握拳张掌不触发、持掌不连发、切玩法重置姿态去重。</li><li>[ ] L2 在 label=None/Unknown 且关键点有效时持续更新 X/Y，键盘四方向支持按住；L3 持续更新 X。</li><li>[ ] 视频/canvas/readout 零相交，5 视口单屏无重叠。</li><li>[ ] GI-01 常显区没有介绍段和模式长说明；GI-02 不常显三步技术清单，ready 时只保留一个准备结论和一个主 CTA；GI-05 单页只保留测试舞台、一个准备结论和一个主 CTA。</li><li>[ ] GI-02 未开启/找手占位从 <code>find-hand.png</code> 加载，不实例化大尺寸通用手掌 SVG；GI-05 与 GI-02 使用同一手绘底板家族，五枚按键灯有按下/已验证反馈。</li><li>[ ] 儿童可见层同一视区最多 1 个短标题、1 个短提示、1 个主 CTA；详细隐私/错误说明仍可在家长层、折叠区或错误态访问。</li><li>[ ] 精简可见文字后，所有 icon-only 操作和动态状态仍有 <code>aria-label</code>、<code>aria-live</code> 或 <code>sr-only</code> 名称。</li></ul>
+<h3 class="md-h">19. QA Strategy For HTML Prototype</h3>
+<ul class="md-ul"><li>QA Mode：<code>QA-TARGETED</code>；触发原因是 screen inventory 与摄像头主路径发生变化，需要浏览器验证没有残留可达页或错误恢复跳转。</li><li>变更点检查：GI-02/GI-05 单次派发 InputProfile 并进入 CH-01；GI-03/GI-04/GI-06 不存在；CH-01 六选一确认后进入 LV-00，角色跨三玩法保持。</li><li>Browser checks：定向检查 1440×900、1219×681、919×843；不进行无关全量验收。</li><li>人工 UX：从初始界面走摄像头与按键两条路径，确认摄像头不再多点一次，孩子只需识别图形、一个短提示和一个主按钮。</li></ul>
+<h3 class="md-h">20. PM Review Slice</h3>
+<ul class="md-ul"><li>本阶段关键决策：全局动作训练改为输入就绪；摄像头授权、见手与 ready 收敛在 GI-02，不保留重复 GI-03；双输入就绪后统一进入 CH-01 六角色选择，确认人物后再进入玩法大厅；三种控制教学下沉到玩法；儿童层继续采用“图形优先、一个短提示、一个主 CTA”，双通道合同与本机隐私不变。</li><li>Target Surface：<code>web-only</code>。</li><li>被放弃的方案：摄像头成功后的第二张 ready 页、全局拳掌练习/结果页、识别倒计时、第三必需手型、视频内文字覆盖。</li><li>需要 PM 确认的问题：无；用户已明确要求 CTA 与教学层级调整。</li><li>不需要 PM 审查的执行细节：连续帧数、推理间隔、测试注入 API。</li><li>进入下一阶段的条件：04B 实现并通过 QA-TARGETED。</li></ul>
+<h3 class="md-h">21. Spec Self-Check</h3>
+<ul class="md-ul"><li>Screen coverage：PASS。</li><li>State coverage：PASS。</li><li>Target surface coverage：PASS。</li><li>Page archetype coverage：PASS。</li><li>Reference alignment：PASS。</li><li>Product canvas rules：PASS。</li><li>Responsive coverage：PASS。</li><li>Handoff readiness：PASS。</li><li>PM review gate readiness：PASS。</li></ul>
+<h3 class="md-h">资源准备与进入状态</h3>
+<ul class="md-ul"><li>Target Surface：沿用 web-only、单视口；低密度全屏准备层，沿现有奶油色/蓝绿配色，使用系统字体与 CSS 即刻显示，不等待背景图或自定义字体。</li><li>Coverage：属于现有 backbone 的启动与进入过渡态，不新增导航分支。首次打开 → 准备首屏 → GI-01；确认角色 → 准备所选角色/伙伴 → LV-00；选玩法 → 准备该玩法 → LV-01/WL-01。</li><li>Default/Loading：显示“冒险马上开始”及当前准备内容，进度按已完成图片加载和解码数量更新，不模拟百分比。准备层覆盖期间，底层不可操作，不启动倒计时或计时。</li><li>Success：关键图片可解码后自动进入；缓存命中不人为延长等待。字体加载可降级系统字体，音频失败不阻塞。</li><li>Error：图片错误/单次超时显示“有些画面还没准备好”，提供“再试一次”；角色/玩法加载可“返回”，保留原选择、输入和成绩；返回后旧请求完成不得自动跳转。初次加载提供重新加载页面恢复脚本故障。</li><li>Empty：资源组为空或已全部缓存时直接完成。</li><li>Assets：生成可重复构建的 WebP 运行时副本，保留 PNG 源文件；保留尺寸、透明区域与锚点，不改变碰撞几何。初次只准备入口/公共UI、角色 idle、玩法缩略图；其他角色动作及玩法地图按选择准备。摄像头模型仅在用户启用摄像头后加载。</li><li>Accessibility：准备状态使用 aria-live=polite、原生 progress；按钮至少44px，可用键盘；底层 inert，失败焦点进入重试，结束恢复原焦点；reduced-motion 下关闭装饰动效。</li><li>Acceptance：慢网时准备层先出现且无缺图入口；首屏不请求未选角色 run/jump 或玩法完整地图；加载完成可正常进入六角色/四玩法；失败重试可恢复、返回取消不误跳；加载等待不消耗倒计时；1440×900 和 919×843 均无页面滚动。</li></ul>
+<h4 class="md-h">PM Review Slice — 加载体验</h4>
+<ul class="md-ul"><li>本阶段关键决策：真实进度、关键素材就绪后进入、分阶段下载与可恢复失败。</li><li>被放弃的方案：一次下载全部地图/动作、假进度、缺图时直接进入。</li><li>需要 PM 确认的问题：优化方向已由本轮请求明确；交付后试玩确认等待文案与画质。</li><li>不需要 PM 审查的执行细节：WebP 编码参数、并发数、缓存去重、超时与测试脚本。</li><li>进入下一阶段的条件：在本轮明确优化范围内完成实现与 QA-TARGETED，不推进整体 Phase 4B 门禁。</li></ul></div></template>
+
+  <div class="overlay-backdrop" id="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayHeading">
+    <div class="overlay-panel">
+      <div class="overlay-header">
+        <div class="overlay-title">
+          <h2 id="overlayHeading">产出物原文</h2>
+          <code id="overlayFile"></code>
+        </div>
+        <button class="overlay-close" onclick="closeOverlay()" aria-label="关闭浮层">关闭 ✕</button>
+      </div>
+      <div class="overlay-body" id="overlayBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const cards = [{"question_id":"Q-GESTURE-LOADING-01","question":"首次开启摄像头时，等待提示是否清楚？","why_it_matters":"避免模型未启动时误以为手势摆错。","recommended_decision":"刷新页面体验一次摄像头启动后确认。","options":["确认","修改","暂缓，补材料"],"source_files":["reviews/gesture-loading-review.md"],"evidence_refs":[],"downstream_impact":["GI-02摄像头准备体验"],"route_hint":"L0"}];
+    const storageKey = "pm-review-console:phase-4b-摄像头模型加载反馈:04b-prototype-手势小狗探险mvp-html";
+    const basePayload = {
+      phase: "Phase 4B 摄像头模型加载反馈",
+      artifact: "04B-prototype-手势小狗探险MVP.html",
+      source_status: "pending_pm"
+    };
+    const materialMeta = [{"file":"reviews/gesture-loading-review.md","href":"./gesture-loading-review.md","type":"markdown","missing":false,"title":"修复与验收摘要"},{"file":"04A-prototype-spec-手势输入闭环.md","href":"../04A-prototype-spec-手势输入闭环.md","type":"markdown","missing":false,"title":"输入规格"}];
+
+    const overlay = document.getElementById("overlay");
+    const overlayBody = document.getElementById("overlayBody");
+    const overlayHeading = document.getElementById("overlayHeading");
+    const overlayFile = document.getElementById("overlayFile");
+
+    function esc(s) {
+      return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    function escAttr(s) {
+      return String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function normalizeLocalPath(value) {
+      let raw = String(value || "").trim();
+      if (!raw || raw.startsWith("#") || /^[a-z]+:/i.test(raw)) return "";
+      raw = raw.split("#")[0].split("?")[0].replace(/\\/g, "/");
+      try { raw = decodeURIComponent(raw); } catch (_) {}
+      raw = raw.replace(/^\.\//, "");
+      while (raw.startsWith("../")) raw = raw.slice(3);
+      return raw;
+    }
+
+    function findMaterialIndexByFile(value) {
+      const target = normalizeLocalPath(value);
+      if (!target) return -1;
+      return materialMeta.findIndex((meta) => {
+        const file = normalizeLocalPath(meta.file);
+        const href = normalizeLocalPath(meta.href);
+        return file === target || href === target || file.endsWith("/" + target) || href.endsWith("/" + target);
+      });
+    }
+
+    function openFileReference(file) {
+      const index = findMaterialIndexByFile(file);
+      if (index >= 0) {
+        openOverlay(index);
+        return true;
+      }
+      return false;
+    }
+
+    function openOverlay(index) {
+      const meta = materialMeta[index];
+      if (!meta) return;
+      overlayHeading.textContent = meta.title || "产出物原文";
+      overlayFile.textContent = meta.file || "";
+
+      if (meta.missing) {
+        overlayBody.innerHTML =
+          '<p style="color:var(--warn);padding:20px 0">文件未找到：<code>' +
+          esc(meta.file) + '</code><br>请确认文件路径或重新生成 Review Console。</p>';
+      } else if (meta.type === "html") {
+        const href = meta.href || meta.file || "";
+        overlayBody.innerHTML =
+          '<div class="overlay-html-frame-wrap">' +
+          '<div class="overlay-html-frame-top">' +
+          '<span>HTML 产物正在右侧浮层中预览。若浏览器限制本地 iframe，可使用备用入口。</span>' +
+          '<a class="overlay-open-btn" href="' + escAttr(href) + '" target="_blank" rel="noopener">新窗口打开</a>' +
+          '</div>' +
+          '<iframe class="overlay-html-frame" src="' + escAttr(href) + '" title="' + escAttr(meta.title || "HTML 产物预览") + '"></iframe>' +
+          '</div>';
+      } else {
+        const tpl = document.getElementById("mat-tpl-" + index);
+        if (tpl && tpl.content.childElementCount > 0) {
+          overlayBody.innerHTML = "";
+          overlayBody.appendChild(tpl.content.cloneNode(true));
+        } else {
+          overlayBody.innerHTML = '<p class="muted">内容不可用。</p>';
+        }
+      }
+
+      overlay.classList.add("visible");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeOverlay() {
+      overlay.classList.remove("visible");
+      document.body.style.overflow = "";
+      overlayBody.innerHTML = "";
+    }
+
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("visible")) closeOverlay();
+    });
+    document.addEventListener("click", (e) => {
+      const fileTrigger = e.target.closest("[data-open-file]");
+      if (fileTrigger) {
+        const handled = openFileReference(fileTrigger.getAttribute("data-open-file"));
+        if (handled) e.preventDefault();
+        return;
+      }
+
+      const materialLink = e.target.closest(".md-content a[href]");
+      if (!materialLink) return;
+      const handled = openFileReference(materialLink.getAttribute("href"));
+      if (handled) e.preventDefault();
+    });
+
+    function collectFeedback() {
+      const directFeedback = document.getElementById("directFeedback")?.value || "";
+      const responses = cards.map((card, index) => {
+        const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]')?.value || "";
+        const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]')?.value || "";
+        return { question_id: card.question_id, question: card.question, decision, comment };
+      });
+      return { ...basePayload, exported_at: new Date().toISOString(), direct_feedback: directFeedback, responses };
+    }
+
+    function saveLocal() {
+      const payload = collectFeedback();
+      localStorage.setItem(storageKey, JSON.stringify(payload));
+      document.getElementById("feedbackPreview").textContent = JSON.stringify(payload, null, 2);
+    }
+
+    function restoreLocal() {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) { saveLocal(); return; }
+      try {
+        const payload = JSON.parse(raw);
+        const directFeedback = document.getElementById("directFeedback");
+        if (directFeedback) directFeedback.value = payload.direct_feedback || "";
+        payload.responses?.forEach((response, index) => {
+          const decision = document.querySelector('[data-feedback-field="decision"][data-index="' + index + '"]');
+          const comment = document.querySelector('[data-feedback-field="comment"][data-index="' + index + '"]');
+          if (decision) decision.value = response.decision || "";
+          if (comment) comment.value = response.comment || "";
+        });
+      } catch (_) { localStorage.removeItem(storageKey); }
+      saveLocal();
+    }
+
+    document.querySelectorAll("select, textarea").forEach((field) => {
+      field.addEventListener("input", saveLocal);
+      field.addEventListener("change", saveLocal);
+    });
+
+    document.getElementById("copyFeedback").addEventListener("click", async () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const status = document.getElementById("copyStatus");
+      if (navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(text);
+          if (status) status.textContent = "已复制";
+          return;
+        } catch (_) {
+          window.prompt("复制反馈 JSON", text);
+        }
+      } else {
+        window.prompt("复制反馈 JSON", text);
+      }
+      if (status) status.textContent = "请从弹窗复制";
+    });
+
+    document.getElementById("downloadFeedback").addEventListener("click", () => {
+      saveLocal();
+      const text = document.getElementById("feedbackPreview").textContent;
+      const blob = new Blob([text], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "phase-4b-摄像头模型加载反馈-feedback.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+
+    restoreLocal();
+  </script>
+</body>
+</html>

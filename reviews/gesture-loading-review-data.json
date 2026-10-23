@@ -1,0 +1,82 @@
+{
+  "phase": "Phase 4B 摄像头模型加载反馈",
+  "artifact": "04B-prototype-手势小狗探险MVP.html",
+  "status": "pending_pm",
+  "updated_at": "2026-10-23",
+  "summary": {
+    "key_decisions": [
+      "可见loading持续到首帧推理返回",
+      "慢加载、失败、超时可恢复；取消后旧请求不启动摄像头"
+    ],
+    "discarded_options": [
+      "虚假百分比",
+      "模型未就绪时提前要求举手"
+    ],
+    "next_stage_conditions": [
+      "试玩确认等待文案；整体Phase 4B门禁保持"
+    ],
+    "execution_details_not_for_pm": [
+      "计时器、并发去重、取消隔离和测试实现"
+    ]
+  },
+  "materials": [
+    {
+      "title": "修复与验收摘要",
+      "file": "reviews/gesture-loading-review.md"
+    },
+    {
+      "title": "输入规格",
+      "file": "04A-prototype-spec-手势输入闭环.md"
+    }
+  ],
+  "visualizations": [
+    {
+      "type": "stage_flow",
+      "title": "摄像头准备反馈",
+      "steps": [
+        {
+          "label": "等待授权",
+          "status": "done",
+          "detail": "请允许浏览器使用摄像头"
+        },
+        {
+          "label": "准备动作助手",
+          "status": "done",
+          "detail": "加载模型并等待首帧；8秒提醒、60秒可重试"
+        },
+        {
+          "label": "举起一只手",
+          "status": "done",
+          "detail": "首次推理成功后找手；三帧见手才允许继续"
+        }
+      ]
+    }
+  ],
+  "decision_cards": [
+    {
+      "question_id": "Q-GESTURE-LOADING-01",
+      "question": "首次开启摄像头时，等待提示是否清楚？",
+      "why_it_matters": "避免模型未启动时误以为手势摆错。",
+      "recommended_decision": "刷新页面体验一次摄像头启动后确认。",
+      "options": [
+        "确认",
+        "修改",
+        "暂缓，补材料"
+      ],
+      "source_files": [
+        "reviews/gesture-loading-review.md"
+      ],
+      "evidence_refs": [],
+      "downstream_impact": [
+        "GI-02摄像头准备体验"
+      ],
+      "route_hint": "L0"
+    }
+  ],
+  "risks": [
+    "真实模型+模拟摄像头已验证；真实设备识别体验待试玩。本次未缩短模型实际下载时间。"
+  ],
+  "next_actions": [
+    "刷新本地游戏，点击开启摄像头体验等待提示。"
+  ]
+}

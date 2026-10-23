@@ -2,6 +2,23 @@
 
 > 记录变更路由与执行过程。正式阶段产物只保留当前可信状态，不写历史流水。
 
+## CR-20261023-gesture-model-loading
+
+### Change Routing Decision
+
+- 用户请求：摄像头打开后关键点迟迟不出现，希望模型加载有 loading 或提醒。
+- 路由层级：L0 实现层。
+- 最早修正点：集成式 04B 的 GI-02 加载反馈与异步生命周期。
+- 判断依据：04A 已规定 requesting/loading/finding-hand/ready/error、模型 loading 与失败重试；当前模型状态提示被 CSS 隐藏，取景提示提前进入找手。
+- 为什么不是更低层：已是实现层；无需新增 screen 或改变输入就绪规则。
+- 必须修改的源真相文件：`04B-prototype-手势小狗探险MVP.html`。
+- 需要重新生成 / 复核的下游文件：摄像头启动专项 QA、工作流记录与审查摘要。
+- 是否需要 PM 确认：用户已授权加载提示；遵循已有 04A 状态与失败/键盘路径，体验完成后待试玩。
+- 本次禁止直接修改：玩法、识别阈值、隐私授权、三帧见手门槛、整体 Phase 4B 待审结论。
+- PM 确认状态：confirmed（修复方向）；执行状态：verified。
+- 验证：加载专项8/8、输入/角色回归11/11；真实MediaPipe+模拟摄像头首帧通过，三个视口无滚动或按钮遮挡。见 `reviews/gesture-loading-review.md`。
+- QA：TARGETED；验证模型/首帧延迟、返回及键盘取消后的异步竞争、错误重试与低高度可见性。
+
 ## CR-20261022-loading-performance
 
 - 日期：2026-10-22

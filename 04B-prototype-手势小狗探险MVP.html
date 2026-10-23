@@ -881,6 +881,13 @@
     #gi01 .mode-actions { justify-content: center; }
     #gi02 .step-column { justify-content: center; }
     #gi02 .step-column h2 { font-size: clamp(32px, 3.5vw, 44px); }
+    .setup-loading { max-width:210px; display:flex; align-items:center; gap:10px; margin:0 0 12px; color:var(--ink); font-size:16px; line-height:1.45; }
+    .setup-loading[hidden] { display:none; }
+    .setup-loading::before { content:""; flex:0 0 22px; width:22px; height:22px; border:3px solid #c8dcd3; border-top-color:var(--river-dark); border-radius:50%; animation:setup-spin 1s linear infinite; }
+    #gi02[data-setup-busy="true"] .camera-readout { visibility:hidden; }
+    #gi02[data-setup-busy="true"] #gi02-title { font-size:24px; line-height:1.25; text-align:left; }
+    @keyframes setup-spin { to { transform:rotate(360deg); } }
+    @media (prefers-reduced-motion:reduce) { .setup-loading::before { animation:none; } }
     #gi05 .keyboard-grid { align-items: center; }
     #gi05 .key-task { text-align: center; }
     #lv00 .level-card { grid-template-rows: auto auto minmax(0,1fr) auto; }
@@ -1518,6 +1525,7 @@
         <div class="step-column">
           <span class="eyebrow">准备 1 / 2</span>
           <h2 id="gi02-title">举起一只手</h2>
+          <div id="setup-loading" class="setup-loading" role="status" aria-live="polite" aria-atomic="true" hidden><span id="setup-loading-copy"></span></div>
           <p class="lead">让整只手出现在画面里。</p>
           <ol class="step-list">
             <li class="step-item" id="step-camera"><span class="step-number">1</span><span>开启摄像头</span></li>
@@ -2249,14 +2257,74 @@
         });
       }
 
+      let recognizerLoadPromise = null;
+      let cameraSetupAttempt = null;
+
+      function setCameraLoading(phase, slow = false) {
+        const busy = Boolean(phase);
+        $('#gi02').dataset.setupBusy = String(busy);
+        $('#setup-loading').hidden = !busy;
+        $('#setup-video').setAttribute('aria-busy', String(busy));
+        if (!busy) return;
+        $('#gi02-title').textContent = phase === 'requesting' ? '正在开启摄像头' : '正在准备动作助手';
+        $('#setup-loading-copy').textContent = phase === 'requesting'
+          ? '请允许浏览器使用摄像头。'
+          : slow ? '准备有点久，可以稍等或改用按键。'
+          : phase === 'warming' ? '正在启动识别，马上就好。' : '首次准备可能稍久，小手可以先放下。';
+      }
+
+      function clearCameraSetupAttempt() {
+        if (cameraSetupAttempt) {
+          clearTimeout(cameraSetupAttempt.slowTimer);
+          clearTimeout(cameraSetupAttempt.timeoutTimer);
+        }
+        cameraSetupAttempt = null;
+        setCameraLoading(null);
+      }
+
       async function loadRecognizer() {
         if (state.recognizerRuntime) return state.recognizerRuntime;
-        const module = await import('./gesture-recognizer-runtime.mjs');
-        const runtime = new module.LocalGestureRecognizerRuntime();
-        await runtime.load();
-        state.recognizerRuntime = runtime;
-        state.recognizerInfo = module.RECOGNIZER_INFO;
-        return runtime;
+        if (recognizerLoadPromise) return recognizerLoadPromise;
+        const pending = (async () => {
+          const module = await import('./gesture-recognizer-runtime.mjs');
+          const runtime = new module.LocalGestureRecognizerRuntime();
+          try {
+            await runtime.load();
+            // A timed-out attempt must not replace a later retry's runtime.
+            if (recognizerLoadPromise !== pending) throw new Error('model_load_cancelled');
+            state.recognizerRuntime = runtime;
+            state.recognizerInfo = module.RECOGNIZER_INFO;
+            return runtime;
+          } catch (error) { runtime.close(); throw error; }
+        })();
+        recognizerLoadPromise = pending;
+        try { return await pending; }
+        finally { if (recognizerLoadPromise === pending) recognizerLoadPromise = null; }
+      }
+
+      function failCameraSetup(error, attempt) {
+        if (cameraSetupAttempt !== attempt) return;
+        const hadCamera = Boolean(state.cameraStream);
+        if (error?.message === 'model_load_timeout') recognizerLoadPromise = null;
+        stopCamera();
+        state.cameraStatus = 'error';
+        state.modelStatus = 'error';
+        state.lastRecognizerError = String(error?.message || error || 'model_load_failed');
+        $('#gi02-title').textContent = '准备遇到问题';
+        const button = $('#enable-camera');
+        button.setAttribute('aria-label', '再试一次'); button.title = '再试一次';
+        $('span', button).textContent = '再试一次';
+        button.disabled = false;
+        setStatus('camera-dot', 'camera-label', '已关闭');
+        setStatus('model-dot', 'model-label', '未就绪');
+        setStatus('hand-dot', 'hand-label', '未检测');
+        $('#camera-error h3').textContent = hadCamera ? '动作助手暂时没有准备好' : '摄像头暂时不能使用';
+        $('#camera-error-copy').textContent = error?.message === 'unsupported'
+          ? '当前浏览器环境没有摄像头接口，可以马上改用按键。'
+          : error?.message === 'model_load_timeout' ? '准备时间有点长，请检查网络后再试一次，也可以改用按键。'
+          : hadCamera ? '动作助手启动失败，可以再试一次或改用按键。' : '权限未开启或没有可用设备，可以再试一次或改用按键。';
+        $('#camera-error').classList.add('show');
+        announce($('#camera-error-copy').textContent);
       }
 
       function startRecognizerLoop() {
@@ -2320,7 +2388,13 @@
       function handleRecognizerFrame(result) {
         if (result.type === 'error') {
           state.lastRecognizerError = String(result.error?.message || result.error || 'recognizer_error');
+          if (cameraSetupAttempt) failCameraSetup(result.error, cameraSetupAttempt);
           return;
+        }
+        if (cameraSetupAttempt && state.modelStatus === 'ready') {
+          clearCameraSetupAttempt();
+          $('#gi02-title').textContent = '举起一只手';
+          announce('动作助手已准备好，把一只手举到肩膀旁边就可以');
         }
         const wasPresent = state.handPresence;
         state.handPresence = Boolean(result.handPresent);
@@ -2372,21 +2446,29 @@
       }
 
       async function enableCamera() {
-        if (!state.privacyAcknowledged) return;
+        if (!state.privacyAcknowledged || cameraSetupAttempt) return;
         if (isFileProtocol) {
           showLocalLaunchGate();
           announce('手势模式需要从本地游戏地址打开');
           return;
         }
+        stopCamera();
+        const attempt = {};
+        cameraSetupAttempt = attempt;
         const button = $('#enable-camera');
         button.disabled = true;
         button.setAttribute('aria-label', '等待浏览器授权'); button.title = '等待浏览器授权';
+        $('span', button).textContent = '等待授权';
         state.cameraStatus = 'requesting';
+        state.modelStatus = 'idle';
+        state.lastRecognizerError = null;
+        setCameraLoading('requesting');
         setStatus('camera-dot', 'camera-label', '等待授权');
         $('#camera-error').classList.remove('show');
         try {
           if (!navigator.mediaDevices?.getUserMedia) throw new Error('unsupported');
           const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+          if (cameraSetupAttempt !== attempt) { stream.getTracks().forEach(track => track.stop()); return; }
           state.cameraStream = stream;
           state.cameraStatus = 'active';
           attachStream(stream);
@@ -2394,31 +2476,42 @@
           $('#step-camera').classList.add('done');
           setStatus('camera-dot', 'camera-label', '已开启', true);
           button.setAttribute('aria-label', '摄像头已开启'); button.title = '摄像头已开启';
+          $('span', button).textContent = '摄像头已开启';
           state.modelStatus = 'loading';
+          setCameraLoading('loading');
           setStatus('model-dot', 'model-label', '正在加载本机模型');
+          attempt.slowTimer = setTimeout(() => {
+            if (cameraSetupAttempt === attempt) { attempt.slow = true; setCameraLoading('loading', true); }
+          }, 8000);
+          attempt.timeoutTimer = setTimeout(() => failCameraSetup(new Error('model_load_timeout'), attempt), 60000);
+          // Paint the feedback before local model initialization can occupy the main thread.
+          await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
+          if (cameraSetupAttempt !== attempt) return;
           await loadRecognizer();
+          if (cameraSetupAttempt !== attempt) return;
           state.modelStatus = 'ready';
           $('#step-model').classList.add('done');
           setStatus('model-dot', 'model-label', 'MediaPipe 已就绪', true);
           setStatus('hand-dot', 'hand-label', '把手举到肩膀旁边');
+          setCameraLoading('warming', attempt.slow);
           startRecognizerLoop();
-          announce('动作助手已准备好，把一只手举到肩膀旁边就可以');
-        } catch (error) {
-          state.cameraStatus = 'error';
-          state.modelStatus = 'error';
-          state.lastRecognizerError = String(error?.message || error || 'model_load_failed');
-          button.setAttribute('aria-label', '再次尝试开启摄像头'); button.title = '再次尝试';
-          button.disabled = false;
-          setStatus('camera-dot', 'camera-label', state.cameraStream ? '已开启' : '无法开启', Boolean(state.cameraStream));
-          setStatus('model-dot', 'model-label', '模型加载失败');
-          setStatus('hand-dot', 'hand-label', '未检测');
-          $('#camera-error-copy').textContent = error?.message === 'unsupported' ? '当前浏览器环境没有摄像头接口，可以马上改用按键。' : state.cameraStream ? '本机动作模型没有准备好，可以重试或马上改用按键。' : '权限未开启或没有可用设备，可以马上改用按键。';
-          $('#camera-error').classList.add('show');
-          announce('动作助手没有准备好，可以重试或改用按键');
-        }
+        } catch (error) { failCameraSetup(error, attempt); }
       }
 
       function stopCamera() {
+        clearCameraSetupAttempt();
+        state.inputReady = false;
+        state.handReadyFrames = 0;
+        $('#start-practice').disabled = true;
+        $('#enable-camera').disabled = false;
+        $('#enable-camera').setAttribute('aria-label', '开启摄像头');
+        $('#enable-camera').title = '开启摄像头';
+        $('#enable-camera span').textContent = '开启摄像头';
+        $('#gi02-title').textContent = '举起一只手';
+        $('#setup-framing').textContent = '先开启摄像头';
+        $('#setup-framing').classList.remove('seen');
+        $('#setup-placeholder').style.display = '';
+        ['step-camera', 'step-model', 'step-hand'].forEach(id => $(`#${id}`).classList.remove('done'));
         stopRecognizerLoop();
         if (state.cameraStream) {
           state.cameraStream.getTracks().forEach(track => track.stop());
@@ -2426,7 +2519,7 @@
         }
         state.cameraStatus = 'stopped';
         state.handPresence = false;
-        ['setup-video', 'game-video'].forEach(id => { const video = $(`#${id}`); if (video) video.srcObject = null; });
+        ['setup-video', 'lab-video', 'game-video'].forEach(id => { const video = $(`#${id}`); if (video) video.srcObject = null; });
         ['setup-landmarks', 'game-landmarks'].forEach(id => { const canvas = $(`#${id}`); canvas?.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height); });
       }
 

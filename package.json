@@ -18,7 +18,8 @@
     "qa:wire-browser": "node tests/wire-loop-targeted.mjs",
     "qa:wire-regression": "node tests/wire-loop-regression.mjs",
     "assets:build-images": "python3 scripts/build-runtime-images.py",
-    "qa:loading": "node tests/loading-targeted.mjs"
+    "qa:loading": "node tests/loading-targeted.mjs",
+    "qa:gesture-loading": "node tests/gesture-loading-targeted.mjs"
   },
   "devDependencies": {
     "playwright": "^1.59.1"

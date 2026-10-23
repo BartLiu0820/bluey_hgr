@@ -1,6 +1,6 @@
 # Workflow State
 
-> 更新日期：2026-10-22
+> 更新日期：2026-10-23
 
 ## Project
 
@@ -43,6 +43,7 @@
 
 | 阶段 | 产物 | Review Slice | Review Console | PM 结论 | 下一步 |
 |---|---|---|---|---|---|
+| 摄像头模型加载反馈 | 集成式04B GI-02 | pending_pm | `reviews/gesture-loading-review.html` | 首帧前可见loading、慢加载/超时/重试和取消已验证 | 刷新后体验首次摄像头准备；整体Phase 4B门禁不变 |
 | 加载性能优化 | 集成式04B、game-loading.js、WebP交付 | pending_pm | `reviews/loading-performance-review.html` | 压缩与分阶段真实加载完成，故障恢复/角色/计分回归通过 | 试玩确认等待文案和画质；整体Phase 4B门禁不变 |
 | 火线冲击试玩修复 | `wire-loop-*`、03/04A火线与集成04B | pending_pm | `changes/CR-20260905-wire-loop-playtest-fixes.md` | 去柄/1.6倍转腕/分类与失联分离/稳握恢复已完成；核心17/17与浏览器17/17通过 | 刷新原页面，真实摄像头复测 |
 | 火线冲击首版实现 | `04B-prototype-手势小狗探险MVP.html`、wire-loop模块 | pending_pm | `reviews/wire-loop-implementation-review.md` | 首版已实现；核心14/14、新浏览器14/14、旧角色11/11、计分9/9、物理4/4、字体4/4通过 | 实摄手感/儿童试玩、专属蜂鸣待补 |
@@ -83,6 +84,7 @@
 
 | Change ID | 用户请求 | 路由层级 | 最早修正点 | PM 确认状态 | 执行状态 |
 |---|---|---|---|---|---|
+| CR-20261023-gesture-model-loading | 摄像头开启后模型等待需可见提示 | L0 | 集成式04B GI-02 | confirmed（修复方向）；体验pending_pm | verified：加载专项8/8、输入/角色回归11/11；三视口通过 |
 | CR-20261022-loading-performance | 素材压缩与分阶段预加载 loading | L1→L0 | 两份04A加载状态 | confirmed（用户请求优化方向）；体验pending_pm | verified：234张运行图片-92%；首屏图片28.58→1.12MB；加载10/10、角色11/11、动作6/6、计分9/9、L1物理4/4、火线核心及浏览器17/17 |
 | CR-20260905-wire-loop-playtest-fixes | 去手柄、增大转腕、修复频繁休息弹窗 | L2→L1→L0；去柄L0 | 03/04A火线→输入/runtime/UI/renderer→集成04B | confirmed（修复授权；体验pending_pm） | verified：核心17/17、浏览器17/17（含未知/失联/恢复），五视口审图通过；实摄待复测 |
 | CR-20260905-wire-loop-implementation | 开始火线冲击开发；允许手动路由与规格同步后编码测试 | L4→L3→L2→L1→L0 | 01/01A→02→03/04A火线→集成04B | confirmed（开发授权；体验pending_pm） | 首版代码及自动验证完成；实摄/儿童与专属蜂鸣待补 |
